@@ -94,9 +94,15 @@ class PathFactory
                 ->setType('string')
             ;
 
+            $name = strtolower($result);
+
+            if (substr($name, 0, 1) == ':') {
+                $name = substr($name, 1);
+            }
+
             $parameter = new Parameter();
             $parameter
-                ->setName(Inflector::humanize($result))
+                ->setName($name)
                 ->setAllowEmptyValue(false)
                 ->setDeprecated(false)
                 ->setRequired(true)
