@@ -132,6 +132,20 @@ prefix.
 bin/cake swagger models
 ```
 
+### Reporting Issues
+
+This is a new library so please take some steps before reporting issues. You can copy & paste the JSON SwaggerBake 
+outputs into https://editor.swagger.io/ which will automatically convert the JSON into YML and display potential 
+schema issues.
+
+Please included the following in your issues a long with a brief description:
+
+- Steps to Reproduce
+- Expected Outcome
+- Actual Outcome
+
+Feature requests are welcomed.
+
 ### Contribute
 
 Send pull request to help improve this library. You can include SwaggerBake in your primary Cake project as a 
