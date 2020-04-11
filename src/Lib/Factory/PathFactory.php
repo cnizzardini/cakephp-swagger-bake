@@ -10,6 +10,7 @@ use Cake\Utility\Inflector;
 //use ReflectionMethod;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
+use SwaggerBake\Lib\OpenApi\Schema;
 
 /**
  * Class SwaggerPath
@@ -87,13 +88,21 @@ class PathFactory
         }
 
         foreach ($results as $result) {
+
+            $schema = new Schema();
+            $schema
+                ->setType('string')
+            ;
+
             $parameter = new Parameter();
             $parameter
                 ->setName(Inflector::humanize($result))
                 ->setAllowEmptyValue(false)
                 ->setDeprecated(false)
                 ->setRequired(true)
-                ->setIn('path');
+                ->setIn('path')
+                ->setSchema($schema)
+            ;
             $return[] = $parameter;
         }
 

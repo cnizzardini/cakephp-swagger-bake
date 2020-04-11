@@ -19,6 +19,9 @@ class Schema implements JsonSerializable
         if (empty($vars['required'])) {
             unset($vars['required']);
         }
+        if (empty($vars['properties'])) {
+            unset($vars['properties']);
+        }
         return $vars;
     }
 
