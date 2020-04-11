@@ -181,41 +181,42 @@ class Swagger
                 continue;
             }
 
-            if (in_array($path->getType(), ['put','patch', 'post'])) {
+            if (!in_array($path->getType(), ['put','patch', 'post'])) {
+                continue;
+            }
 
-                $schema = new Schema();
-                $schema->setType('object');
+            $schema = new Schema();
+            $schema->setType('object');
 
-                foreach ($this->getSchemaByName($className)->getProperties() as $propertyName => $property) {
+            foreach ($this->getSchemaByName($className)->getProperties() as $propertyName => $property) {
 
-                    if (isset($property['readOnly']) && $property['readOnly'] == 1) {
-                        continue;
-                    }
-
-                    $schemaProperty = new SchemaProperty();
-                    $schemaProperty
-                        ->setName($propertyName)
-                        ->setType($property['type']);
-                    ;
-
-                    $schema->pushProperty($schemaProperty);
+                if (isset($property['readOnly']) && $property['readOnly'] == 1) {
+                    continue;
                 }
 
-
-                $content = new Content();
-                $content
-                    ->setMimeType('application/x-www-form-urlencoded')
-                    ->setSchema($schema);
+                $schemaProperty = new SchemaProperty();
+                $schemaProperty
+                    ->setName($propertyName)
+                    ->setType($property['type']);
                 ;
 
-                $requestBody = new RequestBody();
-                $requestBody
-                    ->pushContent($content)
-                    ->setRequired(true)
-                ;
-
-                return $requestBody;
+                $schema->pushProperty($schemaProperty);
             }
+
+
+            $content = new Content();
+            $content
+                ->setMimeType('application/x-www-form-urlencoded')
+                ->setSchema($schema);
+            ;
+
+            $requestBody = new RequestBody();
+            $requestBody
+                ->pushContent($content)
+                ->setRequired(true)
+            ;
+
+            return $requestBody;
         }
 
         return null;
