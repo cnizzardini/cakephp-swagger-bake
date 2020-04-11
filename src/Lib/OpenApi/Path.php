@@ -28,6 +28,11 @@ class Path
         $vars = get_object_vars($this);
         unset($vars['type']);
         unset($vars['path']);
+
+        if (in_array($this->type, ['get','delete'])) {
+            unset($vars['requestBody']);
+        }
+
         return $vars;
     }
 
