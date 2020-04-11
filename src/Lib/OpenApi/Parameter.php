@@ -22,10 +22,7 @@ class Parameter implements JsonSerializable
 
     public function toArray() : array
     {
-        $vars = get_object_vars($this);
-        return array_filter($vars, function ($var) {
-            return !empty($var) ? true : null;
-        });
+        return get_object_vars($this);
     }
 
     public function jsonSerialize()

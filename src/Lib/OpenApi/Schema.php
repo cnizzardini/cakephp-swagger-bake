@@ -16,9 +16,7 @@ class Schema implements JsonSerializable
     {
         $vars = get_object_vars($this);
         unset($vars['name']);
-        return array_filter($vars, function ($var) {
-            return !empty($var) ? true : null;
-        });
+        return $vars;
     }
 
     public function jsonSerialize()

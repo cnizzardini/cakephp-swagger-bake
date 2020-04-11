@@ -17,9 +17,7 @@ class Response implements JsonSerializable
         unset($vars['code']);
         unset($vars['schemaRef']);
         $vars['content']['application/json']['schema']['$ref'] = $this->schemaRef;
-        return array_filter($vars, function ($var) {
-            return !empty($var) ? true : null;
-        });
+        return $vars;
     }
 
     public function jsonSerialize()

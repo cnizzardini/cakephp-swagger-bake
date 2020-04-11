@@ -26,13 +26,9 @@ class Path
     public function toArray() : array
     {
         $vars = get_object_vars($this);
-
         unset($vars['type']);
         unset($vars['path']);
-
-        return array_filter($vars, function ($var) {
-            return !empty($var) ? true : null;
-        });
+        return $vars;
     }
 
     /**
