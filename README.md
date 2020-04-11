@@ -60,10 +60,10 @@ $this->addPlugin('SwaggerBake');
 Get going into just four, yep FOUR, easy steps:
 
 Step 1: Create a base swagger.yml file in `config\swagger.yml`. An example is provided in 
-[assets/swagger.yml](assets/swagger.yml). SwaggerBake will append path operations to this file.
+[here](assets/swagger.yml). SwaggerBake will append path operations to this file.
 
 Step 2: Create a `config/swagger_bake.php` file. An example is provided in 
-[assets/swagger_bake.php](assets/swagger_bake.php). 
+[here](assets/swagger_bake.php). 
 
 - prefix: The relative path that SwaggerBake will scan for your APIs routes (e.g. `/api/`)
 - yml: The YML file from step 1 (generally `/config/swagger.yml`).
