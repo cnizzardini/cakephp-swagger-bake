@@ -93,6 +93,9 @@ bin/cake swagger models
 
 ### OpenApi 3 Specification Support
 
+SwaggerBake builds on your existing swagger.yml definitions. This allows you to add custom definitions. SwaggerBake 
+will not overwrite paths or schemas that already exist in your definition file. Read more on this in Basic Usage.
+
 SwaggerBake will generate: 
 
 - Path
@@ -108,9 +111,6 @@ SwaggerBake will generate:
         - Type
         - Property
             - Type
-
-SwaggerBake builds on your existing swagger.yml definitions. This allows you to add custom definitions. SwaggerBake 
-will not overwrite paths or schemas that already exist in your definition file. Read more on this in Basic Usage.
 
 SwaggerBake does not currently generate all portions of the specification, but I have plans to generate: 
 
