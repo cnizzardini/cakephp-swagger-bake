@@ -5,6 +5,7 @@ namespace SwaggerBake\Lib;
 
 use Cake\Utility\Inflector;
 use LogicException;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory as Factory;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Parameter;
@@ -76,7 +77,7 @@ class Swagger
     public function writeFile(string $output) : void
     {
         if (!is_writable($output)) {
-            throw new LogicException("Output file is not writable, given $output");
+            throw new SwaggerBakeRunTimeException("Output file is not writable, given $output");
         }
 
         file_put_contents($output, $this->toString());
