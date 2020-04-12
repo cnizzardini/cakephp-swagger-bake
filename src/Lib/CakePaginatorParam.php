@@ -14,14 +14,13 @@ class CakePaginatorParam
         $paginators = [
             'page' => 'integer',
             'limit' => 'integer',
-            'rows' => 'integer',
             'sort' => 'string',
             'direction' => 'string'
         ];
 
         $parameter = new Parameter();
         $parameter
-            ->setAllowEmptyValue(true)
+            ->setAllowEmptyValue(false)
             ->setDeprecated(false)
             ->setRequired(false)
             ->setIn('query');
