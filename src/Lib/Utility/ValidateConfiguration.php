@@ -4,10 +4,7 @@
 namespace SwaggerBake\Lib\Utility;
 
 
-use Cake\Core\Configure;
-use Cake\Routing\Router;
 use LogicException;
-use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 
 class ValidateConfiguration
