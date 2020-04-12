@@ -30,16 +30,21 @@ Get going in just four easy steps:
 - Create a `config/swagger_bake.php` file. See the example file [here](assets/swagger_bake.php) for further 
 explanation.
 
-- Use the `swagger bake` command to generate your swagger documentation. 
-
-```sh
-bin/cake swagger bake
-```
 
 - Create a route for SwaggerBake in `config/routes.php`
 
 ```php
-$builder->connect('/api', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
+$routes->scope('/api', function (RouteBuilder $builder) {
+    $builder->setExtensions(['json']);
+    // $builder->resources() here
+    $builder->connect('/', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
+});
+```
+
+- Use the `swagger bake` command to generate your swagger documentation. 
+
+```sh
+bin/cake swagger bake
 ```
 
 Using the above example you should now see your swagger documentation after browsing to http://your-project/api
@@ -110,7 +115,7 @@ There are several options to extend the functionality of SwaggerBake
 #### Using Your Own SwaggerUI
 
 You may use your own swagger install in lieu of the version that comes with SwaggerBake. Simply don't add a custom 
-route as indicated in step 4 of Basic Usage. In this case just reference the generated swagger.json with your own 
+route as indicated in step 3 of Basic Usage. In this case just reference the generated swagger.json with your own 
 Swagger UI install.
 
 #### Generate Swagger On Your Terms
@@ -166,6 +171,51 @@ This is built for CakePHP 4.x only.
 | Version  | Supported | Unit Tests | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | 4.0 | Yes  | Yes |  |
+
+## Common Issues
+
+### Swagger UI 
+
+`No API definition provided.`
+Verify that swagger.json exists.
+
+### SwaggerBakeRunTimeExceptions 
+
+`Unable to create swagger file. Try creating an empty file first or checking permissions`
+Create the swagger.json manually matching the path in your `config/swagger_bake.php` file.
+
+`Output file is not writable`
+Change permissions on your `swagger.json file`, `764` should do.
+
+`Controller not found`
+Make sure a controller actually exists for the route resource. 
+
+### Other Issues
+
+#### Not all of my actions (paths) are showing in Swagger
+
+By default Cake RESTful resources will only create routes for index, view, add, edit and delete. You can add your own 
+paths. Here is an example for adding a route for Employees::salutation.
+
+```php
+$builder->resources(
+    'Employees',
+    [
+        'map' => [
+            'salutation' => [
+                'action' => 'salutation',
+                'method' => 'GET',
+                'path' => ':id/salutation'
+            ]
+        ]
+    ]
+);
+```
+
+Read the cake documentation on 
+[Mapping additional resource routes](https://book.cakephp.org/4/en/development/routing.html#mapping-additional-resource-routes). 
+You can also remove default routes, 
+read [Limiting the routes created](https://book.cakephp.org/4/en/development/routing.html#limiting-the-routes-created).
 
 ## Reporting Issues
 
