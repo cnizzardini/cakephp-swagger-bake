@@ -68,7 +68,7 @@ array first. Here's an example:
 ```php
 $swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create();
 $swagger->toArray(); # returns swagger array
-$swagger->__toString(); # returns swagger json
+$swagger->toString(); # returns swagger json
 ```
 
 ### Console Commands
