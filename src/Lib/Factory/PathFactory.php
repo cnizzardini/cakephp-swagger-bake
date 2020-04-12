@@ -3,7 +3,7 @@
 
 namespace SwaggerBake\Lib\Factory;
 
-use Cake\Routing\Route\DashedRoute;
+use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
 //use Doctrine\Common\Annotations\AnnotationReader;
 //use ReflectionClass;
@@ -22,7 +22,7 @@ class PathFactory
         $this->prefix = $prefix;
     }
 
-    public function create(DashedRoute $route) : ?Path
+    public function create(Route $route) : ?Path
     {
         $path = new Path();
         $defaults = (array) $route->defaults;
@@ -49,7 +49,7 @@ class PathFactory
         return $path;
     }
 
-    private function createPath(DashedRoute $route) : string
+    private function createPath(Route $route) : string
     {
         $pieces = array_map(
             function ($piece) {
@@ -66,7 +66,7 @@ class PathFactory
         return substr(implode('/', $pieces), $length);
     }
 
-    private function createParameters(DashedRoute $route) : array
+    private function createParameters(Route $route) : array
     {
         return array_merge(
             $this->getPathParameters($route),
@@ -74,7 +74,7 @@ class PathFactory
         );
     }
 
-    private function getPathParameters(DashedRoute $route) : array
+    private function getPathParameters(Route $route) : array
     {
         $return = [];
 

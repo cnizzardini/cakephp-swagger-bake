@@ -4,7 +4,7 @@
 namespace SwaggerBake\Lib;
 
 
-use Cake\Routing\Route\DashedRoute;
+use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
 use InvalidArgumentException;
 
@@ -42,7 +42,7 @@ class CakeRoute
         });
     }
 
-    public function getControllerFromRoute(DashedRoute $route) : string
+    public function getControllerFromRoute(Route $route) : string
     {
         $defaults = (array) $route->defaults;
         return $defaults['controller'];

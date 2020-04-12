@@ -21,7 +21,7 @@
     "autoload-dev": {
         "psr-4": {
             "SwaggerBake\\Test\\": "tests/",
-            "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
+            "Cake\\Test\\": "vendor/cakephp/cakephp/tests/",
         }
     },
     "support": {

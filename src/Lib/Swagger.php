@@ -25,13 +25,46 @@ class Swagger
             $array['paths'] = [];
         }
         if (!isset($array['components'])) {
-            $array['components'] = [
-                'schemas'
-            ];
+            $array['components']['schemas'] = [];
         }
+
         $this->array = $array;
         $this->cakeModel = $cakeModel;
         $this->cakeRoute = $cakeModel->getCakeRoute();
+    }
+
+    public function getArray(): array
+    {
+        $this->buildSchemas();
+        $this->buildPaths();
+
+        foreach ($this->array['paths'] as $method => $paths) {
+            foreach ($paths as $pathId => $path) {
+                if (!is_array($path)) {
+                    $this->array['paths'][$method][$pathId] = $path->toArray();
+                }
+            }
+        }
+
+        foreach ($this->array['components']['schemas'] as $schema) {
+            if (!is_array($schema)) {
+                $schema->toArray();
+            }
+        }
+
+        ksort($this->array['paths']);
+        ksort($this->array['components']['schemas']);
+        return $this->array;
+    }
+
+    public function toString()
+    {
+        return json_encode($this->getArray(), JSON_PRETTY_PRINT);
+    }
+
+    public function __toString(): string
+    {
+        return $this->toString();
     }
 
     public function pushSchema(Schema $schema): Swagger
@@ -69,40 +102,6 @@ class Swagger
         }
 
         return null;
-    }
-
-    public function getArray(): array
-    {
-        $this->buildSchemas();
-        $this->buildPaths();
-
-        foreach ($this->array['paths'] as $method => $paths) {
-            foreach ($paths as $pathId => $path) {
-                if (!is_array($path)) {
-                    $this->array['paths'][$method][$pathId] = $path->toArray();
-                }
-            }
-        }
-
-        foreach ($this->array['components']['schemas'] as $schema) {
-            if (!is_array($schema)) {
-                $schema->toArray();
-            }
-        }
-
-        ksort($this->array['paths']);
-        ksort($this->array['components']['schemas']);
-        return $this->array;
-    }
-
-    public function toString()
-    {
-        return json_encode($this->getArray(), JSON_PRETTY_PRINT);
-    }
-
-    public function __toString(): string
-    {
-        return $this->toString();
     }
 
     private function buildSchemas(): void
