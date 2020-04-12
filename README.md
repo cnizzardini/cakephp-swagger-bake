@@ -177,6 +177,7 @@ This is built for CakePHP 4.x only.
 ### Swagger UI 
 
 `No API definition provided.`
+
 Verify that swagger.json exists.
 
 ### SwaggerBakeRunTimeExceptions 
