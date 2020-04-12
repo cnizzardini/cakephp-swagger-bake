@@ -108,17 +108,18 @@ $swagger->toString(); # returns swagger json
 
 In addition to `swagger bake` these console helpers provide insight into how your Swagger documentation is generated.
 
-`swagger routes` generates a list of routes that will be added to your swagger documentation. It uses the `prefix` 
+#### `swagger routes` 
+Generates a list of routes that will be added to your swagger documentation. It uses the `prefix` 
 config from your `config/swagger_bake.php` file.
 
 ```sh
 bin/cake swagger routes
 ```
 
-`swagger models` generates a list of models that will be added to your swagger documentation. These models must have 
-Cake\ORM\Entities and exist in your App\Controller namespace following CakePHP conventions. Entity attributes marked 
-as hidden in your App\Model\Entity classes will be ignored. It only retrieves models that are resources in your route 
-prefix.
+#### `swagger models` 
+Generates a list of models that will be added to your swagger documentation. These models must have Cake\ORM\Entities 
+and exist in your App\Controller namespace following CakePHP conventions. Entity attributes marked as hidden in your 
+App\Model\Entity classes will be ignored. It only retrieves models that are resources in your route prefix.
 
 ```sh
 bin/cake swagger models
