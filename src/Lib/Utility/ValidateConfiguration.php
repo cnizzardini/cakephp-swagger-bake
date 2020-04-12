@@ -12,7 +12,7 @@ use SwaggerBake\Lib\Configuration;
 
 class ValidateConfiguration
 {
-    public static function validate()
+    public static function validate() : void
     {
         $config = new Configuration();
         $ymlFile = $config->getYml();

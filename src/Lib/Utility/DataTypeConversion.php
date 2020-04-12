@@ -6,7 +6,7 @@ namespace SwaggerBake\Lib\Utility;
 
 class DataTypeConversion
 {
-    public static function convert(string $type)
+    public static function convert(string $type) : string
     {
         switch ($type)
         {
