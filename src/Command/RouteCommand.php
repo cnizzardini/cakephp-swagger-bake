@@ -38,6 +38,7 @@ class RouteCommand extends Command
 
         if (empty($routes)) {
             $io->out("<warning>No routes were found for: $prefix</warning>");
+            $io->out('<info>https://book.cakephp.org/4/en/development/routing.html#restful-routing</info>');
             return;
         }
 
