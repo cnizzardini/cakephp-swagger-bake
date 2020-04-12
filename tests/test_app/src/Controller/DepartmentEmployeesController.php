@@ -14,7 +14,6 @@ class DepartmentEmployeesController extends AppController
 {
     /**
      * Index method
-     * @SwagPaginator
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()

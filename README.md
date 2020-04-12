@@ -54,6 +54,17 @@ You can enable hot reloading. This setting re-generates swagger.json on each rel
 SwaggerBake will parse some of your doc blocks for information. The first line of Doc Blocks above Controller Actions 
 are used for the Path Summary. 
 
+```php
+/**
+ * This will appear in the path summary
+ * 
+ * This line will not appear in the path summary
+ */
+public function index() {
+
+}
+```
+
 SwaggerBake provides some optional Annotations for additional functionality.
 
 ##### `@SwagPaginator`
@@ -66,14 +77,28 @@ query parameters to Swagger:
 - direction
 
 ```php
+use SwaggerBake\Lib\Annotation\SwagPaginator;
+
 /**
  * @SwagPaginator
  */
-public function index()
-{
+public function index() {
     $employees = $this->paginate($this->Employees);
     $this->set(compact('employees'));
     $this->viewBuilder()->setOption('serialize', ['employees']);
+}
+```
+
+##### `@SwagQuery`
+Add custom query parameters with SwagQuery
+
+```php
+use SwaggerBake\Lib\Annotation\SwagQuery;
+/**
+ * @SwagQuery(name="queryParamName", type="string", required=false)
+ */
+public function index() {
+
 }
 ```
 

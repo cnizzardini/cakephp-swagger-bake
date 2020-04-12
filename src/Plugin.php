@@ -7,6 +7,7 @@ use Cake\Console\CommandCollection;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
+use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Command\BakeCommand;
 use SwaggerBake\Command\ModelCommand;
 use SwaggerBake\Command\RouteCommand;
@@ -21,6 +22,7 @@ class Plugin extends BasePlugin
     {
         parent::bootstrap($app);
         Configure::load('swagger_bake', 'default');
+        AnnotationLoader::load();
     }
 
     public function console(CommandCollection $commands): CommandCollection

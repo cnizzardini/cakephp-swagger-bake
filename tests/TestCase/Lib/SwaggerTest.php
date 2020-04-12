@@ -8,6 +8,7 @@ use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Lib\CakeModel;
 use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
@@ -35,6 +36,8 @@ class SwaggerTest extends TestCase
             });
         });
         $this->router = $router;
+
+        AnnotationLoader::load();
     }
 
     public function testGetArrayWithExistingPathsAndSchema()

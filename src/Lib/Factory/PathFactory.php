@@ -5,10 +5,12 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
+use Doctrine\Common\Annotations\AnnotationReader;
 use phpDocumentor\Reflection\DocBlock;
-use ReflectionMethod;
 use phpDocumentor\Reflection\DocBlockFactory;
-use SwaggerBake\Lib\CakePaginatorParam;
+use ReflectionClass;
+use ReflectionMethod;
+use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
@@ -21,7 +23,6 @@ class PathFactory
 {
     private $route;
     private $prefix = '';
-    private $dockBlock;
     private $namespace = '';
 
     public function __construct(Route $route, Configuration $config)
@@ -146,17 +147,35 @@ class PathFactory
     {
         $return = [];
 
-        if ($this->dockBlock == null) {
-            return $return;
-        }
+        $defaults = (array) $this->route->defaults;
+        $className = $defaults['controller'] . 'Controller';
+        $controller = $this->namespace . 'Controller\\' . $className;
+        $instance = new $controller;
 
-        foreach ($this->dockBlock->getTags() as $tag) {
-            if ($tag->getName() == 'SwagPaginator') {
-                $return = array_merge($return, (new CakePaginatorParam())->getQueryParameters());
+        $class = new ReflectionClass($instance);
+        $methods = $class->getMethods();
+        $reader = new AnnotationReader();
+
+        foreach ($methods as $method) {
+            $annotations = $reader->getMethodAnnotations($method);
+            if (empty($annotations)) {
+                continue;
             }
-            if ($tag->getName() == 'SwaqQuery') {
-                //$return = array_merge($return, []);
+            foreach ($annotations as $annotation) {
+                if ($annotation instanceof SwagAnnotation\SwagPaginator) {
+                    $return = array_merge(
+                        $return,
+                        (new SwagAnnotation\SwagPaginatorHandler())->getQueryParameters($annotation)
+                    );
+                }
+                if ($annotation instanceof SwagAnnotation\SwagQuery) {
+                    $return = array_merge(
+                        $return,
+                        [(new SwagAnnotation\SwagQueryHandler())->getQueryParameters($annotation)]
+                    );
+                }
             }
+
         }
 
         return $return;

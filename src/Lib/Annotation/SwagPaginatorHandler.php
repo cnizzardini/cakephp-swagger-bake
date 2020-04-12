@@ -1,15 +1,13 @@
 <?php
 
-
-namespace SwaggerBake\Lib;
-
+namespace SwaggerBake\Lib\Annotation;
 
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
 
-class CakePaginatorParam
+class SwagPaginatorHandler
 {
-    public function getQueryParameters() : array
+    public function getQueryParameters(SwagPaginator $annotation) : array
     {
         $paginators = [
             'page' => 'integer',

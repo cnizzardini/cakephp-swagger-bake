@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace SwaggerBakeTest\App\Controller;
 
+use SwaggerBake\Lib\Annotation\SwagQuery;
+use SwaggerBake\Lib\Annotation\SwagPaginator;
+
 /**
  * Departments Controller
  *
@@ -16,6 +19,7 @@ class DepartmentsController extends AppController
      * Gets Departments
      *
      * @SwagPaginator
+     * @SwagQuery(name="random", type="bool", required=true)
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
