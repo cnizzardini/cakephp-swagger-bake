@@ -90,7 +90,7 @@ public function index() {
 ```
 
 ##### `@SwagQuery`
-Add custom query parameters with SwagQuery
+Add custom query parameters with @SwagQuery
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagQuery;
