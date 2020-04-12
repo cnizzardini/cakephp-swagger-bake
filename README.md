@@ -67,7 +67,7 @@ public function index() {
 
 SwaggerBake provides some optional Annotations for additional functionality.
 
-##### `@SwagPaginator`
+#### `@SwagPaginator`
 Use @SwagPaginator on Controller actions using 
 [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html). This will add the following 
 query params to Swagger:
@@ -89,7 +89,7 @@ public function index() {
 }
 ```
 
-##### `@SwagQuery`
+#### `@SwagQuery`
 Add custom query parameters with @SwagQuery
 
 ```php
