@@ -5,13 +5,10 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
-use Doctrine\Common\Annotations\AnnotationReader;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
-use ReflectionClass;
 use ReflectionMethod;
-use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
@@ -52,7 +49,7 @@ class PathFactory
                 ->setTags([
                     Inflector::humanize(Inflector::underscore($defaults['controller']))
                 ])
-                ->setParameters($this->createParameters())
+                ->setParameters($this->getPathParameters())
             ;
         }
 
@@ -74,14 +71,6 @@ class PathFactory
         $length = strlen($this->prefix);
 
         return substr(implode('/', $pieces), $length);
-    }
-
-    private function createParameters() : array
-    {
-        return array_merge(
-            $this->getPathParameters(),
-            $this->getQueryParameters()
-        );
     }
 
     private function getPathParameters() : array
@@ -158,48 +147,5 @@ class PathFactory
 
         $docFactory = DocBlockFactory::createInstance();
         return $docFactory->create($comments);
-    }
-
-    private function getQueryParameters() : array
-    {
-        $return = [];
-
-        $defaults = (array) $this->route->defaults;
-        $actionName = $defaults['action'];
-        $className = $defaults['controller'] . 'Controller';
-        $controller = $this->namespace . 'Controller\\' . $className;
-        $instance = new $controller;
-
-        $class = new ReflectionClass($instance);
-        $methods = $class->getMethods();
-        $reader = new AnnotationReader();
-
-        $filteredMethods = array_filter($methods, function ($method) use ($actionName) {
-            return $method->name == $actionName;
-        });
-
-        foreach ($filteredMethods as $method) {
-            $annotations = $reader->getMethodAnnotations($method);
-            if (empty($annotations)) {
-                continue;
-            }
-            foreach ($annotations as $annotation) {
-                if ($annotation instanceof SwagAnnotation\SwagPaginator) {
-                    $return = array_merge(
-                        $return,
-                        (new SwagAnnotation\SwagPaginatorHandler())->getQueryParameters($annotation)
-                    );
-                }
-                if ($annotation instanceof SwagAnnotation\SwagQuery) {
-                    $return = array_merge(
-                        $return,
-                        [(new SwagAnnotation\SwagQueryHandler())->getQueryParameters($annotation)]
-                    );
-                }
-            }
-
-        }
-
-        return $return;
     }
 }

@@ -108,6 +108,20 @@ public function index() {
 }
 ```
 
+#### `@SwagHeader`
+For header parameters use @SwagHeader
+
+```php
+use SwaggerBake\Lib\Annotation\SwagHeader;
+
+/**
+ * @SwagHeader(name="queryParamName", type="string", required=false)
+ */
+public function index() {
+
+}
+```
+
 ### Extensibility
 
 There are several options to extend the functionality of SwaggerBake

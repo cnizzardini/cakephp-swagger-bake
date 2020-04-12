@@ -156,6 +156,16 @@ class Swagger
                 $path->setRequestBody($requestBody);
             }
 
+            $headers = (new HeaderParameter($route, $this->config))->getHeaderParameters();
+            foreach ($headers as $parameter) {
+                $path->pushParameter($parameter);
+            }
+
+            $queries = (new QueryParameter($route, $this->config))->getQueryParameters();
+            foreach ($queries as $parameter) {
+                $path->pushParameter($parameter);
+            }
+
             $this->pushPath($path);
         }
     }
