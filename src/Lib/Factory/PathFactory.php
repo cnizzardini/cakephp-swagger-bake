@@ -137,6 +137,7 @@ class PathFactory
         $methodName = $defaults['action'];
 
         $controller = $this->namespace . 'Controller\\' . $className;
+
         if (!class_exists($controller)) {
             throw new SwaggerBakeRunTimeException("Controller not found, given $controller");
         }
@@ -149,8 +150,14 @@ class PathFactory
             return null;
         }
 
+        $comments = $reflectionMethod->getDocComment();
+
+        if (!$comments) {
+            return null;
+        }
+
         $docFactory = DocBlockFactory::createInstance();
-        return $docFactory->create($reflectionMethod->getDocComment());
+        return $docFactory->create($comments);
     }
 
     private function getQueryParameters() : array
