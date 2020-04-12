@@ -128,39 +128,10 @@ bin/cake swagger models
 ### OpenApi 3 Specification Support
 
 SwaggerBake builds on your existing swagger.yml definitions. This allows you to add custom definitions. SwaggerBake 
-will not overwrite paths or schemas that already exist in your definition file. Read more on this in Basic Usage.
+will not overwrite paths or schemas that already exist in your definition file. 
 
-SwaggerBake will generate: 
-
-- Path
-    - Operation
-        - OperationId
-        - HTTP Method
-        - Tags
-        - Parameter
-            - In (Path Only)
-            - Query (For Cake Paginator only, use @SwagPaginator annotation)
-        - Response
-- Component
-    - Schema
-        - Type
-        - Property
-            - Type
-
-SwaggerBake does not currently generate all portions of the specification, but I have plans to generate: 
-
-- Path
-    - Operation
-        - Summary *
-        - Parameter
-            - Custom Query Parameters *
-- Component
-    - Schema
-        - Required *
-        - Property
-            - Format *
-
-`*` indicates desired development
+Not every portion of the OpenApi 3 spec is supported just yet, but I am working on that. Please create feature request 
+issues if you notice something missing.
 
 SwaggerBake has been developed for application/json and has not been tested with application/xml.
 
