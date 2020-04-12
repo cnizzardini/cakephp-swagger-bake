@@ -94,6 +94,7 @@ Add custom query parameters with @SwagQuery
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagQuery;
+
 /**
  * @SwagQuery(name="queryParamName", type="string", required=false)
  */
