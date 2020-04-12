@@ -176,11 +176,9 @@ This is built for CakePHP 4.x only.
 
 | Version  | Supported | Unit Tests | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| 4.0 | Yes  | @todo |  |
+| 4.0 | Yes  | Yes |  |
 
 ### Unit Tests
-
-@todo 
 
 ```sh
 vendor/bin/phpunit
