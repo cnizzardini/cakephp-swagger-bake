@@ -36,7 +36,7 @@ explanation.
 bin/cake swagger bake
 ```
 
-Step 4: Create a route for SwaggerBake in `config/routes.php`
+- Create a route for SwaggerBake in `config/routes.php`
 
 ```php
 $builder->connect('/api', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
