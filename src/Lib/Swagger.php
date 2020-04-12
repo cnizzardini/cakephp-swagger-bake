@@ -18,20 +18,25 @@ use Symfony\Component\Yaml\Yaml;
 class Swagger
 {
     private $array = [];
+    private $cakeModel;
+    private $cakeRoute;
+    private $config;
 
-    public function __construct(string $ymlFile, CakeModel $cakeModel)
+    public function __construct(CakeModel $cakeModel)
     {
-        $array = Yaml::parseFile($ymlFile);
+
+        $this->cakeModel = $cakeModel;
+        $this->cakeRoute = $cakeModel->getCakeRoute();
+        $this->config = $cakeModel->getConfig();
+
+        $array = Yaml::parseFile($this->config->getYml());
         if (!isset($array['paths'])) {
             $array['paths'] = [];
         }
         if (!isset($array['components'])) {
             $array['components']['schemas'] = [];
         }
-
         $this->array = $array;
-        $this->cakeModel = $cakeModel;
-        $this->cakeRoute = $cakeModel->getCakeRoute();
     }
 
     public function getArray(): array
@@ -118,6 +123,7 @@ class Swagger
     {
         $schemaFactory = new Factory\SchemaFactory();
         $models = $this->cakeModel->getModels();
+
         foreach ($models as $model) {
             if ($this->getSchemaByName($model->getName())) {
                 continue;
@@ -133,7 +139,7 @@ class Swagger
 
         foreach ($this->cakeRoute->getRoutes() as $route) {
 
-            $path = (new Factory\PathFactory($route, $prefix))->create();
+            $path = (new Factory\PathFactory($route, $this->config))->create();
             if (is_null($path)) {
                 continue;
             }

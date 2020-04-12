@@ -17,10 +17,10 @@ class CakeRoute
     private $router;
     private $prefix;
 
-    public function __construct(Router $router, string $prefix = '/')
+    public function __construct(Router $router, Configuration $config)
     {
         $this->router = $router;
-        $this->prefix = $prefix;
+        $this->prefix = $config->getPrefix();
     }
 
     public function getRoutes() : array

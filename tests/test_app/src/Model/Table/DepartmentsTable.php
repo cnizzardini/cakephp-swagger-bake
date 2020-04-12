@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SwaggerBake\Test\Model\Table;
+namespace SwaggerBakeTest\App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;

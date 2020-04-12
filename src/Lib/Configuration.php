@@ -7,11 +7,22 @@ use LogicException;
 
 class Configuration
 {
-    public function __construct()
+    private $configs = [];
+    private $root = '';
+
+    public function __construct($config = [], $root = ROOT)
     {
+        $this->root = $root;
+
+        if (!empty($config)) {
+            $this->configs = $config;
+            return;
+        }
+
         $this->configs = array_merge(
             [
-                'hotReload' => false
+                'hotReload' => false,
+                'namespace' => '\App\\'
             ],
             Configure::read('SwaggerBake')
         );
@@ -26,28 +37,33 @@ class Configuration
         return $this->configs[$var];
     }
 
-    public function getYml()
+    public function getYml() : string
     {
-        return ROOT .$this->get('yml');
+        return $this->root . $this->get('yml');
     }
 
-    public function getJson()
+    public function getJson() : string
     {
-        return ROOT . $this->get('json');
+        return $this->root . $this->get('json');
     }
 
-    public function getPrefix()
+    public function getPrefix() : string
     {
         return $this->get('prefix');
     }
 
-    public function getWebPath()
+    public function getWebPath() : string
     {
         return $this->get('webPath');
     }
 
-    public function getHotReload()
+    public function getHotReload() : bool
     {
-        return $this->get('hotReload');
+        return (bool) $this->get('hotReload');
+    }
+
+    public function getNamespace() : string
+    {
+        return $this->get('namespace');
     }
 }

@@ -17,11 +17,17 @@ use SwaggerBake\Lib\Model\ExpressiveModel;
  */
 class CakeModel
 {
-    public function __construct(CakeRoute $cakeRoute, string $prefix, string $namespace = '\App\Model\Entity\\')
+    private $cakeRoute;
+    private $prefix;
+    private $namespace;
+    private $config;
+
+    public function __construct(CakeRoute $cakeRoute, Configuration $config)
     {
         $this->cakeRoute = $cakeRoute;
-        $this->prefix = $prefix;
-        $this->namespace = $namespace;
+        $this->prefix = $config->getPrefix();
+        $this->namespace = $config->getNamespace();
+        $this->config = $config;
     }
 
     public function getModels() : array
@@ -42,7 +48,7 @@ class CakeModel
             }
 
             $className = Inflector::classify($tableName);
-            $entity = $this->namespace . $className;
+            $entity = $this->namespace . 'Model\Entity\\' . $className;
             if (!class_exists($entity, true)) {
                 continue;
             }
@@ -69,6 +75,11 @@ class CakeModel
     public function getPrefix() : string
     {
         return $this->prefix;
+    }
+
+    public function getConfig() : Configuration
+    {
+        return $this->config;
     }
 
     private function getTablesFromRoutes(array $routes) : array

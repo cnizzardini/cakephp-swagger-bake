@@ -19,10 +19,9 @@ class SwaggerFactory
         ValidateConfiguration::validate();
 
         $config = new Configuration();
-        $ymlFile = $config->getYml();
         $prefix = $config->getPrefix();
 
-        $cakeRoute = new CakeRoute(new Router(), $prefix);
+        $cakeRoute = new CakeRoute(new Router(), $config);
         $routes = $cakeRoute->getRoutes();
 
         if (empty($routes)) {
@@ -30,8 +29,7 @@ class SwaggerFactory
         }
 
         return new Swagger(
-            $ymlFile,
-            new CakeModel($cakeRoute, $prefix)
+            new CakeModel($cakeRoute, $config)
         );
     }
 }

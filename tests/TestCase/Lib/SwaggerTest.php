@@ -10,6 +10,7 @@ use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\CakeModel;
 use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
 class SwaggerTest extends TestCase
@@ -18,8 +19,6 @@ class SwaggerTest extends TestCase
         'plugin.SwaggerBake.DepartmentEmployees',
         'plugin.SwaggerBake.Departments',
         'plugin.SwaggerBake.Employees',
-        'plugin.SwaggerBake.EmployeeSalaries',
-        'plugin.SwaggerBake.EmployeeTitles',
     ];
 
     private $router;
@@ -30,10 +29,7 @@ class SwaggerTest extends TestCase
         $router = new Router();
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Employees', function (RouteBuilder $routes) {
-                $routes->resources('EmployeeSalaries');
-                //$routes->resources('EmployeeTitles');
-            });
+            $builder->resources('Employees');
             $builder->resources('Departments', function (RouteBuilder $routes) {
                 $routes->resources('DepartmentEmployees');
             });
@@ -43,13 +39,18 @@ class SwaggerTest extends TestCase
 
     public function testGetArrayWithExistingPathsAndSchema()
     {
-        $prefix = '/api';
-        $cakeRoute = new CakeRoute($this->router, $prefix);
+        $config = new Configuration([
+            'prefix' => '/api',
+            'yml' => '/config/swagger-with-existing.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'namespace' => '\SwaggerBakeTest\App\\'
+        ], SWAGGER_BAKE_TEST_APP);
 
-        $swagger = new Swagger(
-            'tests/assets/swagger-with-existing.yml',
-            new CakeModel($cakeRoute, $prefix)
-        );
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
 
         $arr = json_decode($swagger->toString(), true);
 
@@ -59,15 +60,18 @@ class SwaggerTest extends TestCase
 
     public function testGetArrayFromBareBones()
     {
-        $prefix = '/api';
-        $cakeRoute = new CakeRoute($this->router, $prefix);
+        $config = new Configuration([
+            'prefix' => '/api',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'namespace' => '\SwaggerBakeTest\App\\'
+        ], SWAGGER_BAKE_TEST_APP);
 
-        $swagger = new Swagger(
-            'tests/assets/swagger-bare-bones.yml',
-            new CakeModel($cakeRoute, $prefix, '\SwaggerBake\Test\Model\Entity\\')
-        );
+        $cakeRoute = new CakeRoute($this->router, $config);
 
-
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
         $arr = json_decode($swagger->toString(), true);
 
         $this->assertTrue(isset($arr['paths']['/departments']));

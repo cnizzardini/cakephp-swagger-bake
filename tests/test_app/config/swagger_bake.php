@@ -5,6 +5,7 @@ return [
         'yml' => '/config/swagger.yml',
         'json' => '/webroot/swagger.json',
         'webPath' => '/swagger.json',
-        'hotReload' => false
+        'hotReload' => false,
+        'namespace' => '\App\\'
     ]
 ];

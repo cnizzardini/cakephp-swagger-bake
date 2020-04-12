@@ -33,8 +33,7 @@ class RouteCommand extends Command
 
         $config = new Configuration();
         $prefix = $config->getPrefix();
-
-        $cakeRoute = new CakeRoute(new Router(), $prefix);
+        $cakeRoute = new CakeRoute(new Router(), $config);
         $routes = $cakeRoute->getRoutes();
 
         if (empty($routes)) {

@@ -9,6 +9,7 @@ use phpDocumentor\Reflection\DocBlock;
 use ReflectionMethod;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\CakePaginatorParam;
+use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -18,10 +19,16 @@ use SwaggerBake\Lib\OpenApi\Schema;
  */
 class PathFactory
 {
-    public function __construct(Route $route, string $prefix)
+    private $route;
+    private $prefix = '';
+    private $dockBlock;
+    private $namespace = '';
+
+    public function __construct(Route $route, Configuration $config)
     {
+        $this->namespace = $config->getNamespace();
         $this->route = $route;
-        $this->prefix = $prefix;
+        $this->prefix = $config->getPrefix();
         $this->dockBlock = $this->getDocBlock();
     }
 
@@ -122,7 +129,7 @@ class PathFactory
         $className = $defaults['controller'] . 'Controller';
         $methodName = $defaults['action'];
 
-        $controller = '\App\Controller\\' . $className;
+        $controller = $this->namespace . 'Controller\\' . $className;
         $instance = new $controller;
 
         try {

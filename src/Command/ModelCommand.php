@@ -27,10 +27,9 @@ class ModelCommand extends Command
         ValidateConfiguration::validate();
 
         $config = new Configuration();
-        $prefix = $config->getPrefix();
 
-        $cakeRoute = new CakeRoute(new Router(), $prefix);
-        $cakeModel = new CakeModel($cakeRoute, $prefix);
+        $cakeRoute = new CakeRoute(new Router(), $config);
+        $cakeModel = new CakeModel($cakeRoute, $config);
         $models = $cakeModel->getModels();
 
         $header = ['Attribute','Data Type', 'Swagger Type','Default','Primary Key'];
