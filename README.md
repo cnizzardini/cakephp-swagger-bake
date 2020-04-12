@@ -132,6 +132,14 @@ prefix.
 bin/cake swagger models
 ```
 
+## Supported Versions
+
+This is built for CakePHP 4.x only.
+
+| Version  | Supported | Unit Tests | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| 4.0 | Yes  | Yes |  |
+
 ### Reporting Issues
 
 This is a new library so please take some steps before reporting issues. You can copy & paste the JSON SwaggerBake 
@@ -169,14 +177,6 @@ local source to make developing easier:
 
 Undo these steps when you're done. Read the full composer documentation on loading from path here: 
 [https://getcomposer.org/doc/05-repositories.md#path](https://getcomposer.org/doc/05-repositories.md#path)
-
-## Supported Versions
-
-This is built for CakePHP 4.x only.
-
-| Version  | Supported | Unit Tests | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| 4.0 | Yes  | Yes |  |
 
 ### Unit Tests
 
