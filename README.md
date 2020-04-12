@@ -94,7 +94,7 @@ Swagger UI install.
 
 If you want to hook the build process into some other portion of your application you can use the Swagger class to do
 so. Check out the [Bake Command](src/Command/BakeCommand.php) for a use-case. Once you've constructed an instance of 
-`Swagger`, simply call `$swagger->__toString()` to get the JSON or `$swagger->toArray()` if want you to view/modify the 
+`Swagger`, simply call `$swagger->toString()` to get the JSON or `$swagger->toArray()` if want you to view/modify the 
 array first. Here's an example:
 
 ```php
