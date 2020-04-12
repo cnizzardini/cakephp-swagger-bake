@@ -87,6 +87,9 @@ class CakeModel
         $return = [];
         foreach ($routes as $route) {
             $controllerName = $this->cakeRoute->getControllerFromRoute($route);
+            if (empty($controllerName)) {
+                continue;
+            }
             $return[] = Inflector::underscore($controllerName);
         }
         return array_unique($return);
