@@ -50,7 +50,7 @@ You can enable hot reloading. This setting re-generates swagger.json on each rel
 
 ### Annotations
 
-SwaggerBake requires the use of Annotations to provide additional functionality.
+SwaggerBake provides some optional Annotations for additional functionality.
 
 #### `@SwagPaginator`
 Use @SwagPaginator on Controller actions that use the 
