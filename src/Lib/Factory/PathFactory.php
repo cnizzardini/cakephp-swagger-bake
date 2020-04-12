@@ -165,6 +165,7 @@ class PathFactory
         $return = [];
 
         $defaults = (array) $this->route->defaults;
+        $actionName = $defaults['action'];
         $className = $defaults['controller'] . 'Controller';
         $controller = $this->namespace . 'Controller\\' . $className;
         $instance = new $controller;
@@ -173,7 +174,11 @@ class PathFactory
         $methods = $class->getMethods();
         $reader = new AnnotationReader();
 
-        foreach ($methods as $method) {
+        $filteredMethods = array_filter($methods, function ($method) use ($actionName) {
+            return $method->name == $actionName;
+        });
+
+        foreach ($filteredMethods as $method) {
             $annotations = $reader->getMethodAnnotations($method);
             if (empty($annotations)) {
                 continue;
