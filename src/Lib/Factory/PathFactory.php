@@ -5,6 +5,7 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
+use phpDocumentor\Reflection\DocBlock;
 use ReflectionMethod;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\CakePaginatorParam;
@@ -17,39 +18,39 @@ use SwaggerBake\Lib\OpenApi\Schema;
  */
 class PathFactory
 {
-    public function __construct(string $prefix)
+    public function __construct(Route $route, string $prefix)
     {
+        $this->route = $route;
         $this->prefix = $prefix;
+        $this->dockBlock = $this->getDocBlock();
     }
 
-    public function create(Route $route) : ?Path
+    public function create() : ?Path
     {
         $path = new Path();
-        $defaults = (array) $route->defaults;
+        $defaults = (array) $this->route->defaults;
 
         if (empty($defaults['_method'])) {
             return null;
         }
 
         foreach ((array) $defaults['_method'] as $method) {
-
             $path
                 ->setType(strtolower($method))
-                ->setPath($this->createPath($route))
-                ->setOperationId($route->getName())
-                ->setSummary('@todo')
+                ->setPath($this->createPath())
+                ->setOperationId($this->route->getName())
+                ->setSummary($this->dockBlock ? $this->dockBlock->getSummary() : '')
                 ->setTags([
                     Inflector::humanize(Inflector::underscore($defaults['controller']))
                 ])
-                ->setParameters($this->createParameters($route))
+                ->setParameters($this->createParameters())
             ;
-
         }
 
         return $path;
     }
 
-    private function createPath(Route $route) : string
+    private function createPath() : string
     {
         $pieces = array_map(
             function ($piece) {
@@ -58,7 +59,7 @@ class PathFactory
                 }
                 return $piece;
             },
-            explode('/', $route->template)
+            explode('/', $this->route->template)
         );
 
         $length = strlen($this->prefix);
@@ -66,19 +67,19 @@ class PathFactory
         return substr(implode('/', $pieces), $length);
     }
 
-    private function createParameters(Route $route) : array
+    private function createParameters() : array
     {
         return array_merge(
-            $this->getPathParameters($route),
-            $this->getQueryParameters($route)
+            $this->getPathParameters(),
+            $this->getQueryParameters()
         );
     }
 
-    private function getPathParameters(Route $route) : array
+    private function getPathParameters() : array
     {
         $return = [];
 
-        $pieces = explode('/', $route->template);
+        $pieces = explode('/', $this->route->template);
         $results = array_filter($pieces, function ($piece) {
            return substr($piece, 0, 1) == ':' ? true : null;
         });
@@ -115,11 +116,9 @@ class PathFactory
         return $return;
     }
 
-    private function getQueryParameters(Route $route) : array
+    private function getDocBlock() : ?DocBlock
     {
-        $return = [];
-
-        $defaults = (array) $route->defaults;
+        $defaults = (array) $this->route->defaults;
         $className = $defaults['controller'] . 'Controller';
         $methodName = $defaults['action'];
 
@@ -129,15 +128,27 @@ class PathFactory
         try {
             $reflectionMethod = new ReflectionMethod(get_class($instance), $methodName);
         } catch (\Exception $e) {
-            return $return;
+            return null;
         }
 
         $docFactory = DocBlockFactory::createInstance();
-        $docblock = $docFactory->create($reflectionMethod->getDocComment());
+        return $docFactory->create($reflectionMethod->getDocComment());
+    }
 
-        foreach ($docblock->getTags() as $tag) {
+    private function getQueryParameters() : array
+    {
+        $return = [];
+
+        if ($this->dockBlock == null) {
+            return $return;
+        }
+
+        foreach ($this->dockBlock->getTags() as $tag) {
             if ($tag->getName() == 'SwagPaginator') {
-                $return = (new CakePaginatorParam())->getQueryParameters();
+                $return = array_merge($return, (new CakePaginatorParam())->getQueryParameters());
+            }
+            if ($tag->getName() == 'SwaqQuery') {
+                //$return = array_merge($return, []);
             }
         }
 
