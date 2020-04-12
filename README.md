@@ -48,6 +48,32 @@ Using the above example you should now see your swagger documentation after brow
 You can enable hot reloading. This settings re-generates swagger.json on each reload of Swagger UI. Simply set 
 `hotReload` equal to `true` in your `config/swagger_bake.php` file. This is not recommended for production.
 
+### Annotations
+
+SwaggerBake requires the use of Annotations to provide additional functionality.
+
+#### `@SwagPaginator`
+Use @SwagPaginator on Controller actions that use the 
+[CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html). This will add the following 
+query parameters to Swagger:
+- page
+- limit
+- rows
+- sort
+- direction
+
+```php
+/**
+ * @SwagPaginator
+ */
+public function index()
+{
+    $employees = $this->paginate($this->Employees);
+    $this->set(compact('employees'));
+    $this->viewBuilder()->setOption('serialize', ['employees']);
+}
+```
+
 ### Extensibility
 
 There are several options to extend the functionality of SwaggerBake
@@ -105,6 +131,7 @@ SwaggerBake will generate:
         - Tags
         - Parameter
             - In (Path Only)
+            - Query (For Cake Paginator only, use @SwagPaginator annotation)
         - Response
 - Component
     - Schema
@@ -118,7 +145,7 @@ SwaggerBake does not currently generate all portions of the specification, but I
     - Operation
         - Summary *
         - Parameter
-            - In (Query) ([Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html)) *
+            - Custom Query Parameters *
 - Component
     - Schema
         - Required *

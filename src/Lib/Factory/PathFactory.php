@@ -5,9 +5,9 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
-//use Doctrine\Common\Annotations\AnnotationReader;
-//use ReflectionClass;
-//use ReflectionMethod;
+use ReflectionMethod;
+use phpDocumentor\Reflection\DocBlockFactory;
+use SwaggerBake\Lib\CakePaginatorParam;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -70,7 +70,7 @@ class PathFactory
     {
         return array_merge(
             $this->getPathParameters($route),
-            []//$this->getQueryParameters($route)
+            $this->getQueryParameters($route)
         );
     }
 
@@ -115,8 +115,10 @@ class PathFactory
         return $return;
     }
 
-/*    private function getQueryParameters(DashedRoute $route) : array
+    private function getQueryParameters(Route $route) : array
     {
+        $return = [];
+
         $defaults = (array) $route->defaults;
         $className = $defaults['controller'] . 'Controller';
         $methodName = $defaults['action'];
@@ -124,20 +126,21 @@ class PathFactory
         $controller = '\App\Controller\\' . $className;
         $instance = new $controller;
 
-        $reflection = new ReflectionClass(get_class($instance));
-        $reflectionMethod = new ReflectionMethod(get_class($instance), 'index');
+        try {
+            $reflectionMethod = new ReflectionMethod(get_class($instance), $methodName);
+        } catch (\Exception $e) {
+            return $return;
+        }
 
-        $annotationReader = new AnnotationReader();
-        echo '<pre>' . __FILE__ . ':' . __LINE__;
-        print_r($annotationReader->getMethodAnnotations($reflectionMethod));
-        echo '</pre>';
-        die();
+        $docFactory = DocBlockFactory::createInstance();
+        $docblock = $docFactory->create($reflectionMethod->getDocComment());
 
-        return [];
+        foreach ($docblock->getTags() as $tag) {
+            if ($tag->getName() == 'SwagPaginator') {
+                $return = (new CakePaginatorParam())->getQueryParameters();
+            }
+        }
+
+        return $return;
     }
-
-    private function getPaginatorQueryParameters(DashedRoute $route)
-    {
-
-    }*/
 }
