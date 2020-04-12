@@ -1,11 +1,10 @@
 <?php
 
-
 namespace SwaggerBake\Lib\Utility;
-
 
 use LogicException;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 class ValidateConfiguration
 {
@@ -31,7 +30,7 @@ class ValidateConfiguration
         $output = $config->getJson();
 
         if (!file_exists($output) && !touch($output)) {
-            throw new LogicException(
+            throw new SwaggerBakeRunTimeException(
                 'Unable to create swagger file. Try creating an empty file first or checking permissions'
             );
         }
