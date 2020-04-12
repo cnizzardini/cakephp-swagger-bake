@@ -182,12 +182,15 @@ Verify that swagger.json exists.
 ### SwaggerBakeRunTimeExceptions 
 
 `Unable to create swagger file. Try creating an empty file first or checking permissions`
+
 Create the swagger.json manually matching the path in your `config/swagger_bake.php` file.
 
 `Output file is not writable`
+
 Change permissions on your `swagger.json file`, `764` should do.
 
 `Controller not found`
+
 Make sure a controller actually exists for the route resource. 
 
 ### Other Issues
