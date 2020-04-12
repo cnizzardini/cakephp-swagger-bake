@@ -5,42 +5,6 @@ builds swagger JSON for you with minimal configuration and effort. It operates o
 application is [RESTful](https://book.cakephp.org/4/en/development/rest.html). Swagger UI 3.25.0 comes pre-installed 
 with this plugin.
 
-SwaggerBake will generate: 
-
-- Path
-    - Operation
-        - OperationId
-        - HTTP Method
-        - Tags
-        - Parameter
-            - In (Path Only)
-        - Response
-- Component
-    - Schema
-        - Type
-        - Property
-            - Type
-
-SwaggerBake builds on your existing swagger.yml definitions. This allows you to add custom definitions. SwaggerBake 
-will not overwrite paths or schemas that already exist in your definition file. Read more on this in Basic Usage.
-
-SwaggerBake does not currently generate all portions of the specification, but I have plans to generate: 
-
-- Path
-    - Operation
-        - Summary *
-        - Parameter
-            - In (Query) ([Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html)) *
-- Component
-    - Schema
-        - Required *
-        - Property
-            - Format *
-
-`*` indicates desired development
-
-SwaggerBake has been developed for application/json and has not been tested with application/xml.
-
 ## Installation
 
 SwaggerBake requires CakePHP4 and a few dependencies that will be automatically installed via composer.
@@ -131,6 +95,44 @@ prefix.
 ```sh
 bin/cake swagger models
 ```
+
+## OpenApi 3 Specification Support
+
+SwaggerBake will generate: 
+
+- Path
+    - Operation
+        - OperationId
+        - HTTP Method
+        - Tags
+        - Parameter
+            - In (Path Only)
+        - Response
+- Component
+    - Schema
+        - Type
+        - Property
+            - Type
+
+SwaggerBake builds on your existing swagger.yml definitions. This allows you to add custom definitions. SwaggerBake 
+will not overwrite paths or schemas that already exist in your definition file. Read more on this in Basic Usage.
+
+SwaggerBake does not currently generate all portions of the specification, but I have plans to generate: 
+
+- Path
+    - Operation
+        - Summary *
+        - Parameter
+            - In (Query) ([Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html)) *
+- Component
+    - Schema
+        - Required *
+        - Property
+            - Format *
+
+`*` indicates desired development
+
+SwaggerBake has been developed for application/json and has not been tested with application/xml.
 
 ## Supported Versions
 
