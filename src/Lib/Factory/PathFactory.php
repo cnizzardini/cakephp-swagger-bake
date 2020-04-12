@@ -127,6 +127,11 @@ class PathFactory
     private function getDocBlock() : ?DocBlock
     {
         $defaults = (array) $this->route->defaults;
+
+        if (!isset($defaults['controller'])) {
+            return null;
+        }
+
         $className = $defaults['controller'] . 'Controller';
         $methodName = $defaults['action'];
 
