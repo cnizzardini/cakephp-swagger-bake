@@ -42,9 +42,14 @@ class CakeRoute
         });
     }
 
-    public function getControllerFromRoute(Route $route) : string
+    public function getControllerFromRoute(Route $route) : ?string
     {
         $defaults = (array) $route->defaults;
+
+        if (!isset($defaults['controller'])) {
+            return null;
+        }
+
         return $defaults['controller'];
     }
 }
