@@ -10,6 +10,7 @@ use Cake\Core\Configure;
 use Cake\Routing\Router;
 use SwaggerBake\Lib\CakeModel;
 use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
@@ -24,7 +25,9 @@ class ModelCommand extends Command
         $io->out("Running...");
 
         ValidateConfiguration::validate();
-        $prefix = Configure::read('SwaggerBake.prefix');
+
+        $config = new Configuration();
+        $prefix = $config->getPrefix();
 
         $cakeRoute = new CakeRoute(new Router(), $prefix);
         $cakeModel = new CakeModel($cakeRoute, $prefix);

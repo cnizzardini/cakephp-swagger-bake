@@ -11,6 +11,7 @@ use Cake\Core\Configure;
 use Cake\Routing\Router;
 use InvalidArgumentException;
 use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**
@@ -30,7 +31,8 @@ class RouteCommand extends Command
             ['Route name', 'URI template', 'Defaults'],
         ];
 
-        $prefix = Configure::read('SwaggerBake.prefix');
+        $config = new Configuration();
+        $prefix = $config->getPrefix();
 
         $cakeRoute = new CakeRoute(new Router(), $prefix);
         $routes = $cakeRoute->getRoutes();

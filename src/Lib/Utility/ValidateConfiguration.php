@@ -6,14 +6,16 @@ namespace SwaggerBake\Lib\Utility;
 
 use Cake\Core\Configure;
 use Cake\Routing\Router;
-use SwaggerBake\Lib\CakeRoute;
 use LogicException;
+use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\Configuration;
 
 class ValidateConfiguration
 {
     public static function validate()
     {
-        $ymlFile = getcwd() . Configure::read('SwaggerBake.yml');
+        $config = new Configuration();
+        $ymlFile = $config->getYml();
 
         if (empty($ymlFile) || !strstr($ymlFile, '.yml')) {
             throw new LogicException('Yml file is required');
@@ -23,21 +25,13 @@ class ValidateConfiguration
             throw new LogicException('Yml file not found, try specifying full path to file');
         }
 
-        $prefix = Configure::read('SwaggerBake.prefix');
+        $prefix = $config->getPrefix();
 
         if (empty($prefix)) {
             throw new LogicException('Prefix is required');
         }
 
-        $cakeRoute = new CakeRoute(new Router(), $prefix);
-        $routes = $cakeRoute->getRoutes();
-
-        if (empty($routes)) {
-            $io->out("<warning>No routes were found for: $prefix</warning>");
-            return;
-        }
-
-        $output = getcwd() . Configure::read('SwaggerBake.json');;
+        $output = $config->getJson();
 
         if (!file_exists($output) && !touch($output)) {
             throw new LogicException(

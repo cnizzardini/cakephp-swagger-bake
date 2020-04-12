@@ -23,16 +23,11 @@ $this->addPlugin('SwaggerBake');
 
 Get going into just four, yep FOUR, easy steps:
 
-Step 1: Create a base swagger.yml file in `config\swagger.yml`. An example is provided in 
-[here](assets/swagger.yml). SwaggerBake will append path operations to this file.
+Step 1: Create a base swagger.yml file in `config\swagger.yml`. An example is provided [here](assets/swagger.yml). 
+SwaggerBake will append path operations to this file.
 
-Step 2: Create a `config/swagger_bake.php` file. An example is provided in 
-[here](assets/swagger_bake.php). 
-
-- prefix: The relative path that SwaggerBake will scan for your APIs routes (e.g. `/api/`)
-- yml: The YML file from step 1 (generally `/config/swagger.yml`).
-- json: A web accessible output file relative to your projects `/` root (generally `/webroot/swagger.json`).
-- webPath: The path browsers will use to access the JSON file (generally `/swagger.json`).
+Step 2: Create a `config/swagger_bake.php` file. An example is provided [here](assets/swagger_bake.php) with further 
+explanation of the configuration options.
 
 Step 3: Use the `swagger bake` command to generate your swagger documentation. 
 
@@ -48,6 +43,11 @@ $builder->connect('/api', ['controller' => 'Swagger', 'action' => 'index', 'plug
 
 Using the above example you should now see your swagger documentation after browsing to http://your-project/api
 
+##### Hot Reload Swagger JSON
+
+You can enable hot reloading. This settings re-generates swagger.json on each reload of Swagger UI. Simply set 
+`hotReload` equal to `true` in your `config/swagger_bake.php` file.
+
 ### Extensibility
 
 There are several options to extend the functionality of SwaggerBake
@@ -58,7 +58,7 @@ You may use your own swagger install in lieu of the version that comes with Swag
 route as indicated in step 4 of Basic Usage. In this case just reference the generated swagger.json with your own 
 Swagger UI install.
 
-##### Generate Swagger On Demand
+##### Generate Swagger On Your Terms
 
 If you want to hook the build process into some other portion of your application you can use the Swagger class to do
 so. Check out the [Bake Command](src/Command/BakeCommand.php) for a use-case. Once you've constructed an instance of 
@@ -66,12 +66,7 @@ so. Check out the [Bake Command](src/Command/BakeCommand.php) for a use-case. On
 array first. Here's an example:
 
 ```php
-$cakeRoute = new \SwaggerBake\Lib\CakeRoute(new \Cake\Routing\Router(), '/api');
-$swagger = new \SwaggerBake\Lib\Swagger(
-    '/config/swagger.yml',
-    new \SwaggerBake\Lib\CakeModel($cakeRoute, '/api'),
-);
-
+$swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create();
 $swagger->toArray(); # returns swagger array
 $swagger->__toString(); # returns swagger json
 ```

@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Controller;
 
-use Cake\Core\Configure;
-use SwaggerBake\Controller\AppController;
+use Cake\Event\EventInterface;
+use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Factory\SwaggerFactory;
 
 /**
  * Swagger Controller
@@ -14,6 +15,19 @@ use SwaggerBake\Controller\AppController;
  */
 class SwaggerController extends AppController
 {
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        $config = new Configuration();
+
+        if ($config->getHotReload()) {
+            $config = new Configuration();
+            $output = $config->getJson();
+            $swagger = (new SwaggerFactory())->create();
+            $swagger->writeFile($output);
+        }
+    }
+
     /**
      * Index method
      *
@@ -21,8 +35,9 @@ class SwaggerController extends AppController
      */
     public function index()
     {
+        $config = new Configuration();
         $title = 'SwaggerUI';
-        $url = Configure::read('SwaggerBake.webPath');
+        $url = $config->getWebPath();
         $this->set(compact('title','url'));
         return $this->render();
     }
