@@ -156,12 +156,6 @@ class Swagger
                 $path->setRequestBody($requestBody);
             }
 
-/*            $parameters = $this->getRequestBodySchema($path);
-            $path->setRequestBody()
-            foreach ($parameters as $parameter) {
-                $path->pushParameter($parameter);
-            }*/
-
             $this->pushPath($path);
         }
     }
