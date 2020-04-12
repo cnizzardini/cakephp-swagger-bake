@@ -23,10 +23,9 @@ $this->addPlugin('SwaggerBake');
 
 ### Basic Usage
 
-Get going into just four, yep FOUR, easy steps:
+Get going in just four, yep FOUR, easy steps:
 
 Step 1: Create a base swagger.yml file in `config\swagger.yml`. An example is provided [here](assets/swagger.yml). 
-SwaggerBake will append path operations to this file.
 
 Step 2: Create a `config/swagger_bake.php` file. An example is provided [here](assets/swagger_bake.php) with further 
 explanation of the configuration options.
@@ -152,8 +151,8 @@ schema issues.
 Please included the following in your issues a long with a brief description:
 
 - Steps to Reproduce
-- Expected Outcome
 - Actual Outcome
+- Expected Outcome
 
 Feature requests are welcomed.
 
@@ -161,6 +160,8 @@ Feature requests are welcomed.
 
 Send pull request to help improve this library. You can include SwaggerBake in your primary Cake project as a 
 local source to make developing easier:
+
+- Make a clone of this repository
 
 - Remove `cnizzardini\cakephp-swagger-bake` from your `composer.json`
 
