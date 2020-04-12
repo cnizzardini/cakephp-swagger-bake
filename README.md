@@ -98,7 +98,7 @@ so. Check out the [Bake Command](src/Command/BakeCommand.php) for a use-case. On
 array first. Here's an example:
 
 ```php
-$swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create();
+$swagger = (new \SwaggerBake\Lib\Factory\SwaggerFactory())->create();
 $swagger->toArray(); # returns swagger array
 $swagger->toString(); # returns swagger json
 ```
