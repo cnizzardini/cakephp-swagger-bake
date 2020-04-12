@@ -5,7 +5,7 @@ builds swagger JSON for you with minimal configuration and effort. It operates o
 application is [RESTful](https://book.cakephp.org/4/en/development/rest.html). Swagger UI 3.25.0 comes pre-installed 
 with this plugin.
 
-## Installation
+### Installation
 
 SwaggerBake requires CakePHP4 and a few dependencies that will be automatically installed via composer.
 
@@ -96,7 +96,7 @@ prefix.
 bin/cake swagger models
 ```
 
-## OpenApi 3 Specification Support
+### OpenApi 3 Specification Support
 
 SwaggerBake will generate: 
 
@@ -134,7 +134,7 @@ SwaggerBake does not currently generate all portions of the specification, but I
 
 SwaggerBake has been developed for application/json and has not been tested with application/xml.
 
-## Supported Versions
+### Supported Versions
 
 This is built for CakePHP 4.x only.
 
