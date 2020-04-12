@@ -6,6 +6,7 @@ namespace SwaggerBake\Lib\Factory;
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
 use Doctrine\Common\Annotations\AnnotationReader;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
@@ -136,6 +137,10 @@ class PathFactory
         $methodName = $defaults['action'];
 
         $controller = $this->namespace . 'Controller\\' . $className;
+        if (!class_exists($controller)) {
+            throw new SwaggerBakeRunTimeException("Controller not found, given $controller");
+        }
+
         $instance = new $controller;
 
         try {
