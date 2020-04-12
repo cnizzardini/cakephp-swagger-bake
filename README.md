@@ -49,12 +49,10 @@ Using the above example you should now see your swagger documentation after brow
 You can enable hot reloading. This setting re-generates swagger.json on each reload of Swagger UI. Simply set 
 `hotReload` equal to `true` in your `config/swagger_bake.php` file. This is not recommended for production.
 
-### DocBlock Parsing
+## Annotations and Doc Block
 
 SwaggerBake will parse some of your doc blocks for information. The first line of Doc Blocks above Controller Actions 
 are used for the Path Summary. 
-
-## Annotations
 
 SwaggerBake provides some optional Annotations for additional functionality.
 
