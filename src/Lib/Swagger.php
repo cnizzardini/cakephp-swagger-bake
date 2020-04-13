@@ -175,19 +175,13 @@ class Swagger
         $return = [];
         foreach ($path->getTags() as $tag) {
             $className = Inflector::classify($tag);
-            if (!$this->getSchemaByName($className)) {
-                continue;
+            $response = new Response();
+
+            if ($this->getSchemaByName($className)) {
+                $response->setSchemaRef('#/components/schemas/' . $className);
             }
 
-            $schemaRef = '#/components/schemas/' . $className;
-
-            $response = new Response();
-            $response
-                ->setCode(200)
-                ->setSchemaRef($schemaRef)
-            ;
-
-            $return[200] = $response;
+            $return[200] = $response->setCode(200);
         }
 
         return $return;
