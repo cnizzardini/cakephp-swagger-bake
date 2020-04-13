@@ -9,8 +9,9 @@ class AnnotationLoader
 {
     public static function load()
     {
+        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagHeader::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagPaginator::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagQuery::class);
-        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagHeader::class);
+        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagPost::class);
     }
 }
