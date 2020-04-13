@@ -10,7 +10,9 @@ class AbstractParameter
 {
     protected $route;
     protected $reader;
+    protected $className;
     protected $actionName;
+    protected $controller;
     protected $reflectionClass;
     protected $reflectionMethods;
 
@@ -21,10 +23,10 @@ class AbstractParameter
 
         $defaults = (array) $this->route->defaults;
         $this->actionName = $defaults['action'];
-        $className = $defaults['controller'] . 'Controller';
+        $this->className = $defaults['controller'] . 'Controller';
 
-        $controller = $this->namespace . 'Controller\\' . $className;
-        $instance = new $controller;
+        $this->controller = $this->namespace . 'Controller\\' . $this->className;
+        $instance = new $this->controller;
 
         $this->reflectionClass = new ReflectionClass($instance);
         $this->reflectionMethods = $this->reflectionClass->getMethods();
