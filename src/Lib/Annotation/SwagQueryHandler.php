@@ -7,7 +7,7 @@ use SwaggerBake\Lib\OpenApi\Schema;
 
 class SwagQueryHandler
 {
-    public function getQueryParameters(SwagQuery $annotation) : Parameter
+    public function getQueryParameter(SwagQuery $annotation) : Parameter
     {
         $parameter = new Parameter();
         $parameter
