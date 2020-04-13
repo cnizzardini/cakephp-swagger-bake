@@ -27,7 +27,9 @@ class QueryParameter extends AbstractParameter
                 if ($annotation instanceof SwagAnnotation\SwagQuery) {
                     $return = array_merge(
                         $return,
-                        [(new SwagAnnotation\SwagQueryHandler())->getQueryParameters($annotation)]
+                        [
+                            (new SwagAnnotation\SwagQueryHandler())->getQueryParameter($annotation)
+                        ]
                     );
                 }
             }
