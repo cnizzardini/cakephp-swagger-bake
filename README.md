@@ -150,11 +150,11 @@ Swagger UI install.
 
 There a three options for generating swagger.json:
 
-1. Integrate `swagger bake` into your build process.
+1. Call `swagger bake` which can be included as part of your build process.
 
-2. Enable the `hotReload` option in config/swagger_bake.php.
+2. Enable the `hotReload` option in config/swagger_bake.php (recommended for local development only).
 
-3. Call Swagger programmatically: 
+3. Call SwaggerBake programmatically: 
 
 ```php
 $swagger = (new \SwaggerBake\Lib\Factory\SwaggerFactory())->create();
@@ -168,14 +168,14 @@ $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
 In addition to `swagger bake` these console helpers provide insight into how your Swagger documentation is generated.
 
 #### `swagger routes` 
-Generates a list of routes that will be added to your swagger documentation.
+Displays a list of routes that can be viewed in Swagger.
 
 ```sh
 bin/cake swagger routes
 ```
 
 #### `swagger models` 
-Generates a list of models that will be added to your swagger documentation.
+Displays a list of models that can be viewed in Swagger.
 
 ```sh
 bin/cake swagger models
