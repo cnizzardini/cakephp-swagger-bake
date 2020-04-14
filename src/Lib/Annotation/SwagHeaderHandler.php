@@ -5,9 +5,9 @@ namespace SwaggerBake\Lib\Annotation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
 
-class SwagQueryHandler
+class SwagHeaderHandler
 {
-    public function getQueryParameter(SwagQuery $annotation) : Parameter
+    public function getHeaderParameters(SwagHeader $annotation) : Parameter
     {
         $parameter = new Parameter();
         $parameter
@@ -15,7 +15,7 @@ class SwagQueryHandler
             ->setAllowEmptyValue(false)
             ->setDeprecated(false)
             ->setRequired($annotation->required)
-            ->setIn('query')
+            ->setIn('header')
             ->setSchema((new Schema())->setType($annotation->type));
 
         return $parameter;

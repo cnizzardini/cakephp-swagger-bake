@@ -12,11 +12,13 @@ class SchemaProperty implements JsonSerializable
     private $format = '';
     private $readOnly = false;
     private $writeOnly = false;
+    private $required = false;
 
     public function toArray() : array
     {
         $vars = get_object_vars($this);
         unset($vars['name']);
+        unset($vars['required']);
         return $vars;
     }
 
@@ -112,6 +114,24 @@ class SchemaProperty implements JsonSerializable
     public function setWriteOnly(bool $writeOnly): SchemaProperty
     {
         $this->writeOnly = $writeOnly;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
+    /**
+     * @param bool $required
+     * @return SchemaProperty
+     */
+    public function setRequired(bool $required): SchemaProperty
+    {
+        $this->required = $required;
         return $this;
     }
 }
