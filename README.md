@@ -6,7 +6,7 @@ A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.
 builds your Swagger UI (v3.25) with minimal configuration and effort. 
 
 - Creates paths from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes.
-- Creates schema for your Entities and Tables.
+- Creates schema from your Entities and Tables.
 - Provides additional functionality through Annotations.
 
 ## Installation
