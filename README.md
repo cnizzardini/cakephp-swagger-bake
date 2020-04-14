@@ -105,9 +105,7 @@ use SwaggerBake\Lib\Annotation\SwagQuery;
 /**
  * @SwagQuery(name="queryParamName", type="string", required=false)
  */
-public function index() {
-
-}
+public function index() {}
 ```
 
 #### `@SwagForm`
@@ -119,9 +117,7 @@ use SwaggerBake\Lib\Annotation\SwagForm;
 /**
  * @SwagForm(name="fieldName", type="string", required=false)
  */
-public function index() {
-
-}
+public function index() {}
 ```
 
 #### `@SwagHeader`
@@ -133,9 +129,19 @@ use SwaggerBake\Lib\Annotation\SwagHeader;
 /**
  * @SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
  */
-public function index() {
+public function index() {}
+```
 
-}
+#### `@SwagSecurity`
+Add authentication requirements with @SwagSecurity
+
+```php
+use SwaggerBake\Lib\Annotation\SwagSecurity;
+
+/**
+ * @SwagSecurity(name="BearerAuth", scopes="")
+ */
+public function index() {}
 ```
 
 ### Extensibility

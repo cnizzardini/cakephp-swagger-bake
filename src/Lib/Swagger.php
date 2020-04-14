@@ -1,18 +1,14 @@
 <?php
 
-
 namespace SwaggerBake\Lib;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory as Factory;
-use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Path;
-use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use Symfony\Component\Yaml\Yaml;
 
 class Swagger
@@ -162,6 +158,7 @@ class Swagger
             }
 
             $path->setResponses($this->getPathResponses($path));
+            $path->setSecurity((new Security($route, $this->config))->getPathSecurity());
             $path = $this->withPathParameters($path, $route);
             $path = $this->withRequestBody($path, $route);
 
