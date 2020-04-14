@@ -24,7 +24,6 @@ class Swagger
 
     public function __construct(CakeModel $cakeModel)
     {
-
         $this->cakeModel = $cakeModel;
         $this->cakeRoute = $cakeModel->getCakeRoute();
         $this->config = $cakeModel->getConfig();
@@ -33,9 +32,10 @@ class Swagger
         if (!isset($array['paths'])) {
             $array['paths'] = [];
         }
-        if (!isset($array['components'])) {
+        if (!isset($array['components']['schemas'])) {
             $array['components']['schemas'] = [];
         }
+
         $this->array = $array;
     }
 
@@ -60,6 +60,14 @@ class Swagger
 
         ksort($this->array['paths']);
         ksort($this->array['components']['schemas']);
+
+        if (empty($this->array['components']['schemas'])) {
+            unset($this->array['components']['schemas']);
+        }
+        if (empty($this->array['components'])) {
+            unset($this->array['components']);
+        }
+
         return $this->array;
     }
 
