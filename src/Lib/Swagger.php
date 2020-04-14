@@ -3,12 +3,11 @@
 
 namespace SwaggerBake\Lib;
 
+use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
-use LogicException;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory as Factory;
 use SwaggerBake\Lib\OpenApi\Content;
-use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Response;
@@ -120,6 +119,11 @@ class Swagger
         return null;
     }
 
+    public function getConfig() : Configuration
+    {
+        return $this->config;
+    }
+
     private function buildSchemas(): void
     {
         $schemaFactory = new Factory\SchemaFactory();
@@ -150,24 +154,25 @@ class Swagger
             }
 
             $path->setResponses($this->getPathResponses($path));
-
-            $requestBody = $this->getRequestBody($path);
-            if ($requestBody) {
-                $path->setRequestBody($requestBody);
-            }
-
-            $headers = (new HeaderParameter($route, $this->config))->getHeaderParameters();
-            foreach ($headers as $parameter) {
-                $path->pushParameter($parameter);
-            }
-
-            $queries = (new QueryParameter($route, $this->config))->getQueryParameters();
-            foreach ($queries as $parameter) {
-                $path->pushParameter($parameter);
-            }
+            $path = $this->withPathParameters($path, $route);
+            $path = $this->withRequestBody($path, $route);
 
             $this->pushPath($path);
         }
+    }
+
+    private function withPathParameters(Path $path, Route $route) : Path
+    {
+        $headers = (new HeaderParameter($route, $this->config))->getHeaderParameters();
+        foreach ($headers as $parameter) {
+            $path->pushParameter($parameter);
+        }
+
+        $queries = (new QueryParameter($route, $this->config))->getQueryParameters();
+        foreach ($queries as $parameter) {
+            $path->pushParameter($parameter);
+        }
+        return $path;
     }
 
     private function getPathResponses(Path $path) : array
@@ -187,95 +192,12 @@ class Swagger
         return $return;
     }
 
-    private function getRequestBody(Path $path) : ?RequestBody
+    private function withRequestBody(Path $path, Route $route) : Path
     {
-        foreach ($path->getTags() as $tag) {
-            $className = Inflector::classify($tag);
-            if (!$this->getSchemaByName($className)) {
-                continue;
-            }
-
-            if (!in_array($path->getType(), ['put','patch', 'post'])) {
-                continue;
-            }
-
-            $schema = new Schema();
-            $schema->setType('object');
-
-            foreach ($this->getSchemaByName($className)->getProperties() as $propertyName => $property) {
-
-                if (isset($property['readOnly']) && $property['readOnly'] == 1) {
-                    continue;
-                }
-
-                $schemaProperty = new SchemaProperty();
-                $schemaProperty
-                    ->setName($propertyName)
-                    ->setType($property['type']);
-                ;
-
-                $schema->pushProperty($schemaProperty);
-            }
-
-
-            $content = new Content();
-            $content
-                ->setMimeType('application/x-www-form-urlencoded')
-                ->setSchema($schema);
-            ;
-
-            $requestBody = new RequestBody();
-            $requestBody
-                ->pushContent($content)
-                ->setRequired(true)
-            ;
-
-            return $requestBody;
+        $requestBody = (new RequestBodyBuilder($path, $this, $route))->build();
+        if ($requestBody) {
+            $path->setRequestBody($requestBody);
         }
-
-        return null;
-    }
-
-    private function getRequestBodySchema(Path $path) : array
-    {
-        $return = [];
-
-        foreach ($path->getTags() as $tag) {
-            $className = Inflector::classify($tag);
-            $schema = $this->getSchemaByName($className);
-
-            if (!$schema) {
-                continue;
-            }
-
-            if (in_array($path->getType(), ['put','patch', 'post'])) {
-
-                $parameter = new Parameter();
-                $parameter->setIn('body');
-
-                $swaggerSchema = new Schema();
-                $schemaProperties = [];
-
-                foreach ($schema->getProperties() as $propertyName => $property) {
-
-                    if (isset($property['readOnly']) && $property['readOnly'] == 1) {
-                        continue;
-                    }
-
-                    $schemaProperty = new SchemaProperty();
-                    $schemaProperty
-                        ->setName($propertyName)
-                        ->setType($property['type']);
-                    ;
-
-                    $schemaProperties[$propertyName] = $schemaProperty;
-                }
-
-                $swaggerSchema->setProperties($schemaProperties);
-                $return[] = $parameter->setSchema($swaggerSchema);
-            }
-        }
-
-        return $return;
+        return $path;
     }
 }

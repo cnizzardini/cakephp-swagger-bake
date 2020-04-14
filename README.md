@@ -95,7 +95,7 @@ public function index() {
 ```
 
 #### `@SwagQuery`
-Add custom query parameters with @SwagQuery
+Add query parameters with @SwagQuery
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagQuery;
@@ -108,14 +108,28 @@ public function index() {
 }
 ```
 
+#### `@SwagForm`
+Add form data fields with @SwagForm
+
+```php
+use SwaggerBake\Lib\Annotation\SwagForm;
+
+/**
+ * @SwagForm(name="fieldName", type="string", required=false)
+ */
+public function index() {
+
+}
+```
+
 #### `@SwagHeader`
-For header parameters use @SwagHeader
+Add header parameters with @SwagHeader
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagHeader;
 
 /**
- * @SwagHeader(name="queryParamName", type="string", required=false)
+ * @SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
  */
 public function index() {
 

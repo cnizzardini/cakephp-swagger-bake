@@ -12,6 +12,6 @@ class AnnotationLoader
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagHeader::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagPaginator::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagQuery::class);
-        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagPost::class);
+        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagForm::class);
     }
 }

@@ -85,6 +85,16 @@ class Schema implements JsonSerializable
     }
 
     /**
+     * @param string $propertyName
+     * @return Schema
+     */
+    public function pushRequired(string $propertyName): Schema
+    {
+        $this->required[$propertyName] = $propertyName;
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getProperties(): array
@@ -109,6 +119,13 @@ class Schema implements JsonSerializable
     public function pushProperty(SchemaProperty $property): Schema
     {
         $this->properties[$property->getName()] = $property;
+
+        if ($property->isRequired()) {
+            $this->required[$property->getName()] = $property->getName();
+        } else if(isset($this->required[$property->getName()])) {
+            unset($this->required[$property->getName()]);
+        }
+
         return $this;
     }
 }

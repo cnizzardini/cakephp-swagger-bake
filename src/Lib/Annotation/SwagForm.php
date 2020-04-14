@@ -13,7 +13,7 @@ use InvalidArgumentException;
  *   @Attribute("required",  type = "bool"),
  * })
  */
-class SwagPost
+class SwagForm
 {
     public $name;
     public $type;
