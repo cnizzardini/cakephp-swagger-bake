@@ -224,7 +224,7 @@ Make sure a controller actually exists for the route resource.
 
 ### Other Issues
 
-#### Not all of my actions (paths) are showing in Swagger
+#### Missing actions (missing paths) in Swagger
 
 By default Cake RESTful resources will only create routes for index, view, add, edit and delete. You can add and remove 
 paths using CakePHPs route resource functionality. Here is an example for adding a custom route for 
