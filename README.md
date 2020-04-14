@@ -138,7 +138,7 @@ public function index() {
 
 ### Extensibility
 
-There are several options to extend the functionality of SwaggerBake
+There are several options to extend functionality.
 
 #### Using Your Own SwaggerUI
 
@@ -186,10 +186,10 @@ bin/cake swagger models
 - Swagger uses your existing swagger.yml as a base for adding additional paths and schema.
 - Generates JSON based on the OpenAPI 3 specification. I am still working on implementing the full spec.
 - All Schemas and Paths generated must have the following in your CakePHP Application:
-  - App\Model\Entity class
+  - App\Model\Entity class (for schemas only)
   - App\Controller class
   - Must be a valid route
-  - Entity attributes must not be marked as hidden to be included
+  - Entity attributes must not be marked as hidden to be included (for schemas only)
 - SwaggerBake has been developed for application/json and has not been tested with application/xml.
 
 ## Supported Versions
@@ -226,13 +226,15 @@ Make sure a controller actually exists for the route resource.
 
 #### Not all of my actions (paths) are showing in Swagger
 
-By default Cake RESTful resources will only create routes for index, view, add, edit and delete. You can add your own 
-paths. Here is an example for adding a route for Employees::salutation.
+By default Cake RESTful resources will only create routes for index, view, add, edit and delete. You can add and remove 
+paths using CakePHPs route resource functionality. Here is an example for adding a custom route for 
+Employees::salutation and adding all default routes except for index.
 
 ```php
 $builder->resources(
     'Employees',
     [
+        'only' => ['index','salutation'],
         'map' => [
             'salutation' => [
                 'action' => 'salutation',
@@ -244,10 +246,10 @@ $builder->resources(
 );
 ```
 
-Read the cake documentation on 
-[Mapping additional resource routes](https://book.cakephp.org/4/en/development/routing.html#mapping-additional-resource-routes). 
-You can also remove default routes, 
-read [Limiting the routes created](https://book.cakephp.org/4/en/development/routing.html#limiting-the-routes-created).
+Read the Cake documentation on 
+[Mapping additional routes](https://book.cakephp.org/4/en/development/routing.html#mapping-additional-resource-routes). 
+You can also remove default routes, read
+[Limiting the routes created](https://book.cakephp.org/4/en/development/routing.html#limiting-the-routes-created).
 
 ## Reporting Issues
 
