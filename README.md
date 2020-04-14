@@ -31,7 +31,7 @@ Get going in just four easy steps:
 explanation.
 
 
-- Create a route for SwaggerBake in `config/routes.php`
+- Create a route for the SwaggerUI page in `config/routes.php`
 
 ```php
 $routes->scope('/api', function (RouteBuilder $builder) {
@@ -70,7 +70,7 @@ public function index() {
 }
 ```
 
-SwaggerBake provides some optional Annotations for additional functionality.
+SwaggerBake provides some optional Annotations for enhanced functionality.
 
 #### `@SwagPaginator`
 Use @SwagPaginator on Controller actions using 
