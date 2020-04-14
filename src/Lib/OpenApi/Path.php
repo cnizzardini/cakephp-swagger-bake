@@ -32,6 +32,9 @@ class Path
         if (in_array($this->type, ['get','delete'])) {
             unset($vars['requestBody']);
         }
+        if (empty($vars['security'])) {
+            unset($vars['security']);
+        }
 
         return $vars;
     }
