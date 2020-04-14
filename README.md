@@ -228,7 +228,7 @@ Make sure a controller actually exists for the route resource.
 
 By default Cake RESTful resources will only create routes for index, view, add, edit and delete. You can add and remove 
 paths using CakePHPs route resource functionality. Here is an example for adding a custom route for 
-Employees::salutation and adding all default routes except for index.
+Employees::salutation and removing all default routes except for index.
 
 ```php
 $builder->resources(
