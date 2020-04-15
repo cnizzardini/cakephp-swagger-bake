@@ -48,7 +48,10 @@ class SwaggerTest extends TestCase
             'json' => '/webroot/swagger.json',
             'webPath' => '/swagger.json',
             'hotReload' => false,
-            'namespace' => '\SwaggerBakeTest\App\\'
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\']
+            ]
         ], SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new CakeRoute($this->router, $config);
@@ -69,7 +72,10 @@ class SwaggerTest extends TestCase
             'json' => '/webroot/swagger.json',
             'webPath' => '/swagger.json',
             'hotReload' => false,
-            'namespace' => '\SwaggerBakeTest\App\\'
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\']
+            ]
         ], SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new CakeRoute($this->router, $config);

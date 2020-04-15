@@ -5,6 +5,7 @@ namespace SwaggerBake\Lib;
 use Cake\Routing\Route\Route;
 use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 class AbstractParameter
 {
@@ -15,17 +16,18 @@ class AbstractParameter
     protected $controller;
     protected $reflectionClass;
     protected $reflectionMethods;
+    protected $config;
 
     public function __construct(Route $route, Configuration $config)
     {
-        $this->namespace = $config->getNamespace();
+        $this->config = $config;
         $this->route = $route;
 
         $defaults = (array) $this->route->defaults;
         $this->actionName = $defaults['action'];
         $this->className = $defaults['controller'] . 'Controller';
 
-        $this->controller = $this->namespace . 'Controller\\' . $this->className;
+        $this->controller = $this->getControllerFromNamespaces($this->className);
         $instance = new $this->controller;
 
         $this->reflectionClass = new ReflectionClass($instance);
@@ -39,5 +41,25 @@ class AbstractParameter
         return array_filter($this->reflectionMethods, function ($method) {
             return $method->name == $this->actionName;
         });
+    }
+
+    private function getControllerFromNamespaces(string $className) : ?string
+    {
+        $namespaces = $this->config->getNamespaces();
+
+        if (!isset($namespaces['controllers']) || !is_array($namespaces['controllers'])) {
+            throw new SwaggerBakeRunTimeException(
+                'Invalid configuration, missing SwaggerBake.namespaces.controllers'
+            );
+        }
+
+        foreach ($namespaces['controllers'] as $namespace) {
+            $entity = $namespace . 'Controller\\' . $className;
+            if (class_exists($entity, true)) {
+                return $entity;
+            }
+        }
+
+        return null;
     }
 }

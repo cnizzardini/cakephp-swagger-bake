@@ -9,6 +9,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Database\Schema\TableSchema;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ExpressiveAttribute;
 use SwaggerBake\Lib\Model\ExpressiveModel;
 
@@ -19,14 +20,12 @@ class CakeModel
 {
     private $cakeRoute;
     private $prefix;
-    private $namespace;
     private $config;
 
     public function __construct(CakeRoute $cakeRoute, Configuration $config)
     {
         $this->cakeRoute = $cakeRoute;
         $this->prefix = $config->getPrefix();
-        $this->namespace = $config->getNamespace();
         $this->config = $config;
     }
 
@@ -48,8 +47,8 @@ class CakeModel
             }
 
             $className = Inflector::classify($tableName);
-            $entity = $this->namespace . 'Model\Entity\\' . $className;
-            if (!class_exists($entity, true)) {
+            $entity = $this->getEntityFromNamespaces($className);
+            if (empty($entity)) {
                 continue;
             }
 
@@ -80,6 +79,26 @@ class CakeModel
     public function getConfig() : Configuration
     {
         return $this->config;
+    }
+
+    private function getEntityFromNamespaces(string $className) : ?string
+    {
+        $namespaces = $this->config->getNamespaces();
+
+        if (!isset($namespaces['entities']) || !is_array($namespaces['entities'])) {
+            throw new SwaggerBakeRunTimeException(
+                'Invalid configuration, missing SwaggerBake.namespaces.entities'
+            );
+        }
+
+        foreach ($namespaces['entities'] as $namespace) {
+            $entity = $namespace . 'Model\Entity\\' . $className;
+            if (class_exists($entity, true)) {
+                return $entity;
+            }
+        }
+
+        return null;
     }
 
     private function getTablesFromRoutes(array $routes) : array

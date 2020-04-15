@@ -21,11 +21,11 @@ class PathFactory
 {
     private $route;
     private $prefix = '';
-    private $namespace = '';
+    private $config;
 
     public function __construct(Route $route, Configuration $config)
     {
-        $this->namespace = $config->getNamespace();
+        $this->config = $config;
         $this->route = $route;
         $this->prefix = $config->getPrefix();
         $this->dockBlock = $this->getDocBlock();
@@ -125,7 +125,7 @@ class PathFactory
         $className = $defaults['controller'] . 'Controller';
         $methodName = $defaults['action'];
 
-        $controller = $this->namespace . 'Controller\\' . $className;
+        $controller = $this->getControllerFromNamespaces($className);
 
         if (!class_exists($controller)) {
             throw new SwaggerBakeRunTimeException("Controller not found, given $controller");
@@ -147,5 +147,25 @@ class PathFactory
 
         $docFactory = DocBlockFactory::createInstance();
         return $docFactory->create($comments);
+    }
+
+    private function getControllerFromNamespaces(string $className) : ?string
+    {
+        $namespaces = $this->config->getNamespaces();
+
+        if (!isset($namespaces['controllers']) || !is_array($namespaces['controllers'])) {
+            throw new SwaggerBakeRunTimeException(
+                'Invalid configuration, missing SwaggerBake.namespaces.controllers'
+            );
+        }
+
+        foreach ($namespaces['controllers'] as $namespace) {
+            $entity = $namespace . 'Controller\\' . $className;
+            if (class_exists($entity, true)) {
+                return $entity;
+            }
+        }
+
+        return null;
     }
 }

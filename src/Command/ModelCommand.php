@@ -32,6 +32,10 @@ class ModelCommand extends Command
         $cakeModel = new CakeModel($cakeRoute, $config);
         $models = $cakeModel->getModels();
 
+        if (empty($models)) {
+            return $io->warning('No models found');
+        }
+
         $header = ['Attribute','Data Type', 'Swagger Type','Default','Primary Key'];
 
         foreach ($models as $model) {

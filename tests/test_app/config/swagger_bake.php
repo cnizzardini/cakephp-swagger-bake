@@ -6,6 +6,9 @@ return [
         'json' => '/webroot/swagger.json',
         'webPath' => '/swagger.json',
         'hotReload' => false,
-        'namespace' => '\App\\'
+        'namespaces' => [
+            'controllers' => ['\App\\'],
+            'entities' => ['\App\\'],
+        ]
     ]
 ];

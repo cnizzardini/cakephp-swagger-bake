@@ -10,8 +10,6 @@
  *
  * @var bool $hotReload: Regenerate swagger when Swagger UI page is reloaded. This only works if you are using the
  * built-in Swagger UI.
- *
- * @var bool $namespace: Default namespace, you shouldn't need to touch this. Used for unit tests only
  */
 return [
     'SwaggerBake' => [
@@ -20,7 +18,6 @@ return [
         'json' => '/webroot/swagger.json',
         'webPath' => '/swagger.json',
         'hotReload' => false,
-        'namespace' => '\App\\'
     ]
 ];
 

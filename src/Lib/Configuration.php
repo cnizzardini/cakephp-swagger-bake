@@ -22,7 +22,10 @@ class Configuration
         $this->configs = array_merge(
             [
                 'hotReload' => false,
-                'namespace' => '\App\\'
+                'namespaces' => [
+                    'controllers' => ['\App\\'],
+                    'entities' => ['\App\\'],
+                ]
             ],
             Configure::read('SwaggerBake')
         );
@@ -62,8 +65,8 @@ class Configuration
         return (bool) $this->get('hotReload');
     }
 
-    public function getNamespace() : string
+    public function getNamespaces() : array
     {
-        return $this->get('namespace');
+        return $this->get('namespaces');
     }
 }
