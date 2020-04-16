@@ -1,6 +1,6 @@
 # SwaggerBake plugin for CakePHP4
 
-`Note: This is an alpha stage plugin and prone to lots of changes right now`
+`Note: This is an beta stage plugin`
 
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
 builds your Swagger UI (v3.25) with minimal configuration and effort. 
