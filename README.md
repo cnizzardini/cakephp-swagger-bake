@@ -190,7 +190,7 @@ Swagger UI install.
 #### Using Your Own Controller
 
 You might want to perform some additional logic (checking for authentication) before rending the built-in Swagger UI. 
-This is easy to do. Just create your own controller and route, and reference the built-in layout and template: 
+This is easy to do. Just create your own controller and route then reference the built-in layout and template: 
 
 ```php
 // config/routes.php
