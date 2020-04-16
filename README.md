@@ -32,15 +32,10 @@ Get going in just four easy steps:
 - Create a `config/swagger_bake.php` file. See the example file [here](assets/swagger_bake.php) for further 
 explanation.
 
-
-- Create a route for the SwaggerUI page in `config/routes.php`
+- Create a route for the SwaggerUI page in `config/routes.php`. See Extensibility for other ways to diplay Swagger.
 
 ```php
-$routes->scope('/api', function (RouteBuilder $builder) {
-    $builder->setExtensions(['json']);
-    // $builder->resources() here
-    $builder->connect('/', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
-});
+$builder->connect('/', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
 ```
 
 - Use the `swagger bake` command to generate your swagger documentation. 
@@ -75,9 +70,9 @@ public function index() {
 SwaggerBake provides some optional Annotations for enhanced functionality.
 
 #### `@SwagPaginator`
-Use @SwagPaginator on Controller actions using 
-[CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html). This will add the following 
-query params to Swagger:
+Method level annotation for adding  
+[CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) query parameters. This will 
+add the following query params to Swagger:
 - page
 - limit
 - sort
@@ -97,7 +92,7 @@ public function index() {
 ```
 
 #### `@SwagQuery`
-Add query parameters with @SwagQuery
+Method level annotation for adding query parameters with @SwagQuery
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagQuery;
@@ -109,7 +104,7 @@ public function index() {}
 ```
 
 #### `@SwagForm`
-Add form data fields with @SwagForm
+Method level annotation for adding form data fields with @SwagForm
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagForm;
@@ -121,7 +116,7 @@ public function index() {}
 ```
 
 #### `@SwagHeader`
-Add header parameters with @SwagHeader
+Method level annotation for adding header parameters with @SwagHeader
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagHeader;
@@ -133,7 +128,7 @@ public function index() {}
 ```
 
 #### `@SwagSecurity`
-Add authentication requirements with @SwagSecurity
+Method level annotation for adding authentication requirements with @SwagSecurity
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagSecurity;
@@ -142,6 +137,18 @@ use SwaggerBake\Lib\Annotation\SwagSecurity;
  * @SwagSecurity(name="BearerAuth", scopes="")
  */
 public function index() {}
+```
+
+#### `@SwagEntityAttribute`
+Class level annotation for customizing Schema Attributes with @SwagEntityAttribute
+
+```php
+use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
+
+/**
+ * @SwagEntityAttribute(name="modified", type="string", readOnly=true, required=false)
+ */
+class Employee {
 ```
 
 ### Extensibility

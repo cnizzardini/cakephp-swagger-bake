@@ -130,7 +130,7 @@ class Swagger
 
     private function buildSchemas(): void
     {
-        $schemaFactory = new Factory\SchemaFactory();
+        $schemaFactory = new Factory\SchemaFactory($this->config);
         $models = $this->cakeModel->getModels();
 
         foreach ($models as $model) {

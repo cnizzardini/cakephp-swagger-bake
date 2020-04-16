@@ -8,6 +8,7 @@ use JsonSerializable;
 class Schema implements JsonSerializable
 {
     private $name = '';
+    private $description = '';
     private $type = '';
     private $required = [];
     private $properties = [];
@@ -128,6 +129,24 @@ class Schema implements JsonSerializable
             unset($this->required[$property->getName()]);
         }
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return Schema
+     */
+    public function setDescription(string $description): Schema
+    {
+        $this->description = $description;
         return $this;
     }
 }
