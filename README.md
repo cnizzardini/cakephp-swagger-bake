@@ -197,14 +197,12 @@ This is easy to do. Just create your own controller and route then reference the
 $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 'index']);
 
 // App/Controller/MySwaggerController.php
-use SwaggerBake\Lib\Configuration;
-
 class MySwaggerController extends AppController
 {
     public function index()
     {
         // custom logic here (if desired)
-        $config = new Configuration();
+        $config = new \SwaggerBake\Lib\Configuration();
         $title = 'Easyupp Swagger UI';
         $url = $config->getWebPath();
         $this->set(compact('title','url'));
