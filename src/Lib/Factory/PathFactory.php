@@ -136,7 +136,7 @@ class PathFactory
         $controller = $this->getControllerFromNamespaces($className);
 
         if (!class_exists($controller)) {
-            throw new SwaggerBakeRunTimeException("Controller not found, given $controller");
+            return null;
         }
 
         $instance = new $controller;
@@ -181,6 +181,11 @@ class PathFactory
     {
         $className = $className . 'Controller';
         $controller = $this->getControllerFromNamespaces($className);
+
+        if (!$controller) {
+            return false;
+        }
+
         $annotations = AnnotationUtility::getClassAnnotations($controller);
 
         foreach ($annotations as $annotation) {
