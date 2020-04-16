@@ -177,7 +177,7 @@ use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
 class Employee extends Entity {
 ```
 
-### Extensibility
+### Extending SwaggerBake
 
 There are several options to extend functionality.
 
@@ -186,6 +186,33 @@ There are several options to extend functionality.
 You may use your own swagger install in lieu of the version that comes with SwaggerBake. Simply don't add a custom 
 route as indicated in step 3 of Basic Usage. In this case just reference the generated swagger.json with your own 
 Swagger UI install.
+
+#### Using Your Own Controller
+
+You might want to perform some additional logic (checking for authentication) before rending the built-in Swagger UI. 
+This is easy to do. Just create your own controller and route, and reference the built-in layout and template: 
+
+```php
+// config/routes.php
+$builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 'index']);
+
+// App/Controller/MySwaggerController.php
+use SwaggerBake\Lib\Configuration;
+
+class MySwaggerController extends AppController
+{
+    public function index()
+    {
+        // custom logic here (if desired)
+        $config = new Configuration();
+        $title = 'Easyupp Swagger UI';
+        $url = $config->getWebPath();
+        $this->set(compact('title','url'));
+        $this->viewBuilder()->setLayout('SwaggerBake.default');
+        return $this->render('SwaggerBake.Swagger/index');
+    }
+}
+```
 
 #### Generate Swagger On Your Terms
 
