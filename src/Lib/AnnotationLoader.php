@@ -16,5 +16,6 @@ class AnnotationLoader
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagSecurity::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagEntity::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagEntityAttribute::class);
+        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagPath::class);
     }
 }

@@ -139,6 +139,19 @@ use SwaggerBake\Lib\Annotation\SwagSecurity;
 public function index() {}
 ```
 
+#### `@SwagPath`
+Class level annotation for exposing controllers to Swagger UI with @SwagPath. By default all controllers with routes are 
+added to Swagger. You can hide, but not show controllers with this annotation.
+
+```php
+use SwaggerBake\Lib\Annotation\SwagPath;
+
+/**
+ * @SwagPath(isVisible=false)
+ */
+class UsersController extends AppController
+```
+
 #### `@SwagEntity`
 Class level annotation for exposing entities to Swagger UI with @SwagEntity. By default all entities with routes are 
 added to Swagger.

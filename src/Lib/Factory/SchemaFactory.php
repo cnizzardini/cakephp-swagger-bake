@@ -16,6 +16,7 @@ use SwaggerBake\Lib\Model\ExpressiveAttribute;
 use SwaggerBake\Lib\Model\ExpressiveModel;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
 
 class SchemaFactory
@@ -27,7 +28,7 @@ class SchemaFactory
 
     public function create(ExpressiveModel $model) : ?Schema
     {
-        if (!$this->isEntitySwaggable($model)) {
+        if (!$this->isSwaggable($model)) {
             return null;
         }
 
@@ -125,7 +126,8 @@ class SchemaFactory
     {
         $return = [];
 
-        $annotations = $this->getClassAnnotations($model);
+        $entity = $this->getEntityFromNamespaces($model->getName());
+        $annotations = AnnotationUtility::getClassAnnotations($entity);
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagEntityAttribute) {
@@ -137,9 +139,10 @@ class SchemaFactory
         return $return;
     }
 
-    private function isEntitySwaggable(ExpressiveModel $model) : bool
+    private function isSwaggable(ExpressiveModel $model) : bool
     {
-        $annotations = $this->getClassAnnotations($model);
+        $entity = $this->getEntityFromNamespaces($model->getName());
+        $annotations = AnnotationUtility::getClassAnnotations($entity);
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagEntity) {
@@ -148,27 +151,5 @@ class SchemaFactory
         }
 
         return true;
-    }
-
-    private function getClassAnnotations(ExpressiveModel $model)
-    {
-        $entity = $this->getEntityFromNamespaces($model->getName());
-
-        try {
-            $instance = new $entity;
-            $reflectionClass = new ReflectionClass(get_class($instance));
-        } catch (\Exception $e) {
-            return [];
-        }
-
-        $reader = new AnnotationReader();
-
-        $annotations = $reader->getClassAnnotations($reflectionClass);
-
-        if (!is_array($annotations)) {
-            return [];
-        }
-
-        return $annotations;
     }
 }
