@@ -139,6 +139,19 @@ use SwaggerBake\Lib\Annotation\SwagSecurity;
 public function index() {}
 ```
 
+#### `@SwagEntity`
+Class level annotation for exposing entities to Swagger UI with @SwagEntity. By default all entities with routes are 
+added to Swagger.
+
+```php
+use SwaggerBake\Lib\Annotation\SwagEntity;
+
+/**
+ * @SwagEntity(isVisible=true)
+ */
+class Employee extends Entity {
+```
+
 #### `@SwagEntityAttribute`
 Class level annotation for customizing Schema Attributes with @SwagEntityAttribute
 
@@ -148,7 +161,7 @@ use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
 /**
  * @SwagEntityAttribute(name="modified", type="string", readOnly=true, required=false)
  */
-class Employee {
+class Employee extends Entity {
 ```
 
 ### Extensibility

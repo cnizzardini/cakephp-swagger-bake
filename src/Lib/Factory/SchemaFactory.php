@@ -7,6 +7,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
+use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
 use SwaggerBake\Lib\Annotation\SwagEntityAttributeHandler;
 use SwaggerBake\Lib\Configuration;
@@ -26,6 +27,10 @@ class SchemaFactory
 
     public function create(ExpressiveModel $model) : ?Schema
     {
+        if (!$this->isEntitySwaggable($model)) {
+            return null;
+        }
+
         $docBlock = $this->getDocBlock($model);
 
         $properties = $this->getProperties($model);
@@ -104,22 +109,23 @@ class SchemaFactory
         return null;
     }
 
+    private function getSchemaProperty(ExpressiveAttribute $attribute) : SchemaProperty
+    {
+        $property = new SchemaProperty();
+        $property
+            ->setName($attribute->getName())
+            ->setType(DataTypeConversion::convert($attribute->getType()))
+            ->setReadOnly($attribute->isPrimaryKey())
+        ;
+
+        return $property;
+    }
+
     private function getSwagPropertyAnnotations(ExpressiveModel $model) : array
     {
         $return = [];
 
-        $entity = $this->getEntityFromNamespaces($model->getName());
-
-        try {
-            $instance = new $entity;
-            $reflectionClass = new ReflectionClass(get_class($instance));
-        } catch (\Exception $e) {
-            return $return;
-        }
-
-        $reader = new AnnotationReader();
-
-        $annotations = $reader->getClassAnnotations($reflectionClass);
+        $annotations = $this->getClassAnnotations($model);
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagEntityAttribute) {
@@ -131,15 +137,38 @@ class SchemaFactory
         return $return;
     }
 
-    private function getSchemaProperty(ExpressiveAttribute $attribute) : SchemaProperty
+    private function isEntitySwaggable(ExpressiveModel $model) : bool
     {
-        $property = new SchemaProperty();
-        $property
-            ->setName($attribute->getName())
-            ->setType(DataTypeConversion::convert($attribute->getType()))
-            ->setReadOnly($attribute->isPrimaryKey())
-        ;
+        $annotations = $this->getClassAnnotations($model);
 
-        return $property;
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof SwagEntity) {
+                return $annotation->isVisible;
+            }
+        }
+
+        return true;
+    }
+
+    private function getClassAnnotations(ExpressiveModel $model)
+    {
+        $entity = $this->getEntityFromNamespaces($model->getName());
+
+        try {
+            $instance = new $entity;
+            $reflectionClass = new ReflectionClass(get_class($instance));
+        } catch (\Exception $e) {
+            return [];
+        }
+
+        $reader = new AnnotationReader();
+
+        $annotations = $reader->getClassAnnotations($reflectionClass);
+
+        if (!is_array($annotations)) {
+            return [];
+        }
+
+        return $annotations;
     }
 }

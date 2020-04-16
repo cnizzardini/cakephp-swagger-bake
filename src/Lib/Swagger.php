@@ -138,6 +138,9 @@ class Swagger
                 continue;
             }
             $schema = $schemaFactory->create($model);
+            if (!$schema) {
+                continue;
+            }
             $this->pushSchema($schema);
         }
     }
