@@ -148,8 +148,9 @@ class Swagger
     private function buildPaths(): void
     {
         $prefix = $this->cakeModel->getPrefix();
+        $routes = $this->cakeRoute->getRoutes();
 
-        foreach ($this->cakeRoute->getRoutes() as $route) {
+        foreach ($routes as $route) {
 
             $path = (new Factory\PathFactory($route, $this->config))->create();
             if (is_null($path)) {
