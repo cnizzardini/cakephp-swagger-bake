@@ -199,6 +199,18 @@ $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 
 // App/Controller/MySwaggerController.php
 class MySwaggerController extends AppController
 {
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        $config = new \SwaggerBake\Lib\Configuration();
+
+        if ($config->getHotReload()) {
+            $output = $config->getJson();
+            $swagger = (new SwaggerFactory())->create();
+            $swagger->writeFile($output);
+        }
+    }
+
     public function index()
     {
         // custom logic here (if desired)
