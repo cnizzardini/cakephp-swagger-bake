@@ -4,6 +4,7 @@ namespace SwaggerBake\Lib;
 
 use Cake\Core\Configure;
 use LogicException;
+use Symfony\Component\Yaml\Yaml;
 
 class Configuration
 {
@@ -68,5 +69,16 @@ class Configuration
     public function getNamespaces() : array
     {
         return $this->get('namespaces');
+    }
+
+    public function getParsedYml() : array
+    {
+        return Yaml::parseFile($this->getYml());
+    }
+
+    public function getTitleFromYml()
+    {
+        $yml = $this->getParsedYml();
+        return isset($yml['info']['title']) ? $yml['info']['title'] : '';
     }
 }

@@ -35,7 +35,7 @@ class SwaggerController extends AppController
     public function index()
     {
         $config = new Configuration();
-        $title = 'SwaggerUI';
+        $title = $config->getTitleFromYml();
         $url = $config->getWebPath();
         $this->set(compact('title','url'));
         return $this->render();
