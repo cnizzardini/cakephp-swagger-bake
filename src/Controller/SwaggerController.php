@@ -21,7 +21,6 @@ class SwaggerController extends AppController
         $config = new Configuration();
 
         if ($config->getHotReload()) {
-            $config = new Configuration();
             $output = $config->getJson();
             $swagger = (new SwaggerFactory())->create();
             $swagger->writeFile($output);
