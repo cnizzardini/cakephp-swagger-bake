@@ -14,11 +14,11 @@ use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
-class SwaggerPathTest extends TestCase
+class SwaggerEntityTest extends TestCase
 {
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
-        'plugin.SwaggerBake.EmployeeTitles',
+        'plugin.SwaggerBake.EmployeeSalaries',
     ];
 
     private $router;
@@ -30,7 +30,7 @@ class SwaggerPathTest extends TestCase
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', function (RouteBuilder $routes) {
-                $routes->resources('EmployeeTitles');
+                $routes->resources('EmployeeSalaries');
             });
         });
         $this->router = $router;
@@ -38,7 +38,7 @@ class SwaggerPathTest extends TestCase
         AnnotationLoader::load();
     }
 
-    public function testPathInvisible()
+    public function testEntityExists()
     {
         $config = new Configuration([
             'prefix' => '/api',
@@ -58,6 +58,29 @@ class SwaggerPathTest extends TestCase
 
         $arr = json_decode($swagger->toString(), true);
 
-        $this->assertArrayNotHasKey('/employee-titles', $arr['paths']);
+        $this->assertArrayHasKey('Employee', $arr['components']['schemas']);
+    }
+
+    public function testEntityInvisible()
+    {
+        $config = new Configuration([
+            'prefix' => '/api',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\']
+            ]
+        ], SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $this->assertArrayNotHasKey('EmployeeSalary', $arr['components']['schemas']);
     }
 }

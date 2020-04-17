@@ -11,23 +11,6 @@ use Cake\Validation\Validator;
 /**
  * Employees Model
  *
- * @property \SwaggerBake\Test\Model\Table\DepartmentEmployeesTable&\Cake\ORM\Association\HasMany $DepartmentEmployees
- * @property \SwaggerBake\Test\Model\Table\EmployeeSalariesTable&\Cake\ORM\Association\HasMany $EmployeeSalaries
- * @property \SwaggerBake\Test\Model\Table\EmployeeTitlesTable&\Cake\ORM\Association\HasMany $EmployeeTitles
- *
- * @method \SwaggerBake\Test\Model\Entity\Employee newEmptyEntity()
- * @method \SwaggerBake\Test\Model\Entity\Employee newEntity(array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee[] newEntities(array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee get($primaryKey, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee findOrCreate($search, ?callable $callback = null, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee[] patchEntities(iterable $entities, array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
  */
 class EmployeesTable extends Table
 {
