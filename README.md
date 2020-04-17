@@ -3,11 +3,11 @@
 `Note: This is an beta stage plugin`
 
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
-builds your Swagger UI (v3.25) with minimal configuration and effort. 
+builds your Swagger UI (v3.25) from your existing cake models and routes. A redoc option is also available.
 
 - Creates paths from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes.
 - Creates schema from your Entities and Tables.
-- Provides additional functionality through Annotations.
+- Provides additional functionality through Annotations and Doc Blocks.
 
 ## Installation
 
