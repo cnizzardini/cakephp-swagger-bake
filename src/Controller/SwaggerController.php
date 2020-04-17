@@ -39,6 +39,6 @@ class SwaggerController extends AppController
         $url = $config->getWebPath();
         $this->set(compact('title','url'));
         $this->viewBuilder()->setLayout($config->getLayout($this->request->getParam('doctype')));
-        return $this->render($config->getLayout($this->request->getParam('doctype')));
+        return $this->render($config->getView($this->request->getParam('doctype')));
     }
 }
