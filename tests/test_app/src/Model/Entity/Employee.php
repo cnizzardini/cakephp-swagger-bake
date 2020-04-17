@@ -4,20 +4,11 @@ declare(strict_types=1);
 namespace SwaggerBakeTest\App\Model\Entity;
 
 use Cake\ORM\Entity;
+use SwaggerBake\Lib\Annotation as SwagAnnotation;
 
 /**
  * Employee Entity
- *
- * @property int $id
- * @property \Cake\I18n\FrozenDate $birth_date
- * @property string $first_name
- * @property string $last_name
- * @property string $gender
- * @property \Cake\I18n\FrozenDate $hire_date
- *
- * @property \SwaggerBake\Test\Model\Entity\DepartmentEmployee[] $department_employees
- * @property \SwaggerBake\Test\Model\Entity\EmployeeSalary[] $employee_salaries
- * @property \SwaggerBake\Test\Model\Entity\EmployeeTitle[] $employee_titles
+ * @SwagAnnotation\SwagEntityAttribute(name="gender", type="string", readOnly=true, required=false)
  */
 class Employee extends Entity
 {

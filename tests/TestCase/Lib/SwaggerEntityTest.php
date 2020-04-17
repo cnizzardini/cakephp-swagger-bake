@@ -83,4 +83,29 @@ class SwaggerEntityTest extends TestCase
 
         $this->assertArrayNotHasKey('EmployeeSalary', $arr['components']['schemas']);
     }
+
+    public function testEntityAttribute()
+    {
+        $config = new Configuration([
+            'prefix' => '/api',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\']
+            ]
+        ], SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $employee = $arr['components']['schemas']['Employee'];
+
+        $this->assertTrue($employee['properties']['gender']['readOnly']);
+    }
 }
