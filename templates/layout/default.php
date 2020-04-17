@@ -5,6 +5,7 @@ $this->assign('title', $title);
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- SWAGGER -->
     <meta charset="UTF-8">
     <title><?php echo $this->fetch('title'); ?></title>
     <link rel="stylesheet" type="text/css" href="/swagger_bake/swagger-ui.css" >

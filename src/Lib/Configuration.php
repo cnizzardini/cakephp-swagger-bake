@@ -91,30 +91,18 @@ class Configuration
     public function getLayout(?string $doctype = null) : string
     {
         $doctype = empty($doctype) ? $this->getDocType() : $doctype;
-        switch ($doctype)
-        {
-            case 'redoc':
-                return 'SwaggerBake.redoc';
-                break;
-            case 'swagger':
-                return 'SwaggerBake.swagger';
-                break;
+        if ($doctype == 'redoc') {
+            return 'SwaggerBake.redoc';
         }
-        return 'SwaggerBake.swagger';
+        return 'SwaggerBake.default';
     }
 
     public function getView(?string $doctype = null) : string
     {
         $doctype = empty($doctype) ? $this->getDocType() : $doctype;
-        switch ($doctype)
-        {
-            case 'redoc':
-                return 'SwaggerBake.Swagger/redoc';
-                break;
-            case 'swagger':
-                return 'SwaggerBake.Swagger/swagger';
-                break;
+        if ($doctype == 'redoc') {
+            return 'SwaggerBake.Swagger/redoc';
         }
-        return 'SwaggerBake.swagger';
+        return 'SwaggerBake.Swagger/index';
     }
 }

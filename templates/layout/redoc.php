@@ -4,6 +4,7 @@ $this->assign('title', $title);
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- REDOC -->
     <title><?php echo $this->fetch('title'); ?></title>
     <!-- needed for adaptive design -->
     <meta charset="utf-8"/>
