@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace SwaggerBakeTest\App\Controller;
+use SwaggerBake\Lib\Annotation as SwagAnnotation;
 
 /**
  * Employees Controller
@@ -86,5 +87,31 @@ class EmployeesController extends AppController
         }
         $this->set(compact('employee'));
         $this->viewBuilder()->setOption('serialize', ['employee']);
+    }
+
+    /**
+     * custom-get summary
+     *
+     * @SwagAnnotation\SwagPaginator
+     * @SwagAnnotation\SwagQuery(name="queryParamName", type="string", required=false)
+     * @SwagAnnotation\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
+     */
+    public function customGet()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
+
+    /**
+     * custom-post summary
+     *
+     * @SwagAnnotation\SwagForm(name="fieldName", type="string", required=false)
+     */
+    public function customPost()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
     }
 }

@@ -30,7 +30,20 @@ class SwaggerTest extends TestCase
         $router = new Router();
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Employees');
+            $builder->resources('Employees', [
+                'map' => [
+                    'customGet' => [
+                        'action' => 'customGet',
+                        'method' => 'GET',
+                        'path' => 'custom-get'
+                    ],
+                    'customPost' => [
+                        'action' => 'customPost',
+                        'method' => 'POST',
+                        'path' => 'custom-post'
+                    ]
+                ]
+            ]);
             $builder->resources('Departments', function (RouteBuilder $routes) {
                 $routes->resources('DepartmentEmployees');
             });
@@ -60,8 +73,8 @@ class SwaggerTest extends TestCase
 
         $arr = json_decode($swagger->toString(), true);
 
-        $this->assertTrue(isset($arr['paths']['/pets']));
-        $this->assertTrue(isset($arr['components']['schemas']['Pets']));
+        $this->assertArrayHasKey('/pets', $arr['paths']);
+        $this->assertArrayHasKey('Pets', $arr['components']['schemas']);
     }
 
     public function testGetArrayFromBareBones()
@@ -83,7 +96,74 @@ class SwaggerTest extends TestCase
         $swagger = new Swagger(new CakeModel($cakeRoute, $config));
         $arr = json_decode($swagger->toString(), true);
 
-        $this->assertTrue(isset($arr['paths']['/departments']));
-        $this->assertTrue(isset($arr['components']['schemas']['Department']));
+        $this->assertArrayHasKey('/departments', $arr['paths']);
+        $this->assertArrayHasKey('Department', $arr['components']['schemas']);
+    }
+
+    public function testCustomGetRouteWithAnnotations()
+    {
+        $config = new Configuration([
+            'prefix' => '/api',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\']
+            ]
+        ], SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $arr = json_decode($swagger->toString(), true);
+
+
+        $this->assertArrayHasKey('/employees/custom-get', $arr['paths']);
+        $this->assertArrayHasKey('get', $arr['paths']['/employees/custom-get']);
+        $operation = $arr['paths']['/employees/custom-get']['get'];
+
+        $this->assertEquals('custom-get summary', $operation['summary']);
+
+        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
+            return $param['name'] == 'X-HEAD-ATTRIBUTE';
+        }));
+
+        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
+            return $param['name'] == 'page';
+        }));
+
+        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
+            return $param['name'] == 'queryParamName';
+        }));
+    }
+
+    public function testCustomPostRouteWithAnnotations()
+    {
+        $config = new Configuration([
+            'prefix' => '/api',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\']
+            ]
+        ], SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $arr = json_decode($swagger->toString(), true);
+
+        $operation = $arr['paths']['/employees/custom-post']['post'];
+
+        $this->assertArrayHasKey('schema', $operation['requestBody']['content']['application/x-www-form-urlencoded']);
+
+        $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
+
+        $this->assertArrayHasKey('fieldName', $properties);
     }
 }
