@@ -14,13 +14,15 @@ use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
-/**
- * @class CakeRouteCommand
- * @package SwaggerBake
- * Generates a list of routes matching a prefix
- */
 class RouteCommand extends Command
 {
+    /**
+     * List Cake Routes that can be added to Swagger. Prints to console.
+     *
+     * @param Arguments $args
+     * @param ConsoleIo $io
+     * @return int|void|null
+     */
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $io->out("Running...");

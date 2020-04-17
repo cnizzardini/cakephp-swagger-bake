@@ -35,6 +35,11 @@ class Swagger
         $this->array = $array;
     }
 
+    /**
+     * Returns OpenAPI 3.0 specification as an array
+     *
+     * @return array
+     */
     public function getArray(): array
     {
         $this->buildSchemas();
@@ -67,16 +72,21 @@ class Swagger
         return $this->array;
     }
 
+    /**
+     * Returns OpenAPI 3.0 spec as a JSON string
+     *
+     * @return false|string
+     */
     public function toString()
     {
         return json_encode($this->getArray(), JSON_PRETTY_PRINT);
     }
 
-    public function __toString(): string
-    {
-        return $this->toString();
-    }
-
+    /**
+     * Writes OpenAPI 3.0 spec to a file using the $output argument as a file path
+     *
+     * @param string $output
+     */
     public function writeFile(string $output) : void
     {
         if (!is_writable($output)) {
@@ -86,6 +96,12 @@ class Swagger
         file_put_contents($output, $this->toString());
     }
 
+    /**
+     * Adds a Schema element to OpenAPI 3.0 spec
+     *
+     * @param Schema $schema
+     * @return Swagger
+     */
     public function pushSchema(Schema $schema): Swagger
     {
         $name = $schema->getName();
@@ -95,6 +111,12 @@ class Swagger
         return $this;
     }
 
+    /**
+     * Returns a schema object by $name argument
+     *
+     * @param string $name
+     * @return Schema|null
+     */
     public function getSchemaByName(string $name): ?Schema
     {
         if (isset($this->array['components']['schemas'][$name])) {
@@ -104,6 +126,12 @@ class Swagger
         return null;
     }
 
+    /**
+     * Adds a path to OpenAPI 3.0 spec
+     *
+     * @param Path $path
+     * @return $this
+     */
     public function pushPath(Path $path): Swagger
     {
         $route = $path->getPath();
@@ -114,6 +142,15 @@ class Swagger
         return $this;
     }
 
+    /**
+     * Returns a path by $route and $methodType argument
+     *
+     * @example $swagger->getPathByRouteAndMethodType('/my/route', 'post')
+     *
+     * @param string $route
+     * @param string $methodType
+     * @return Path|null
+     */
     public function getPathByRouteAndMethodType(string $route, string $methodType): ?Path
     {
         if (isset($this->array['paths'][$route][$methodType])) {
@@ -123,6 +160,11 @@ class Swagger
         return null;
     }
 
+    /**
+     * Return the configuration
+     *
+     * @return Configuration
+     */
     public function getConfig() : Configuration
     {
         return $this->config;
@@ -208,5 +250,10 @@ class Swagger
             $path->setRequestBody($requestBody);
         }
         return $path;
+    }
+
+    public function __toString(): string
+    {
+        return $this->toString();
     }
 }

@@ -7,14 +7,12 @@ use Cake\Event\EventInterface;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 
-/**
- * Swagger Controller
- *
- *
- * @method \SwaggerBake\Model\Entity\Swagger[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
 class SwaggerController extends AppController
 {
+    /**
+     * @link https://book.cakephp.org/4/en/controllers.html#controller-callback-methods
+     * @param EventInterface $event
+     */
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -28,7 +26,7 @@ class SwaggerController extends AppController
     }
 
     /**
-     * Index method
+     * Controller action for displaying built-in Swagger UI
      *
      * @return \Cake\Http\Response|null|void Renders view
      */

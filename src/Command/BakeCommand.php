@@ -9,13 +9,15 @@ use Cake\Console\ConsoleIo;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 
-/**
- * @class SwaggerBakeCommand
- * @package SwaggerBake
- * Generates a swagger json file
- */
 class BakeCommand extends Command
 {
+    /**
+     * Writes a swagger.json file
+     *
+     * @param Arguments $args
+     * @param ConsoleIo $io
+     * @return int|void|null
+     */
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $io->out("Running...");
