@@ -80,6 +80,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     Pet:
       type: object
@@ -109,3 +113,5 @@ components:
           format: int32
         message:
           type: string
+security:
+  - BearerAuth: []

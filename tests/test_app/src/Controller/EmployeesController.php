@@ -95,6 +95,7 @@ class EmployeesController extends AppController
      * @SwagAnnotation\SwagPaginator
      * @SwagAnnotation\SwagQuery(name="queryParamName", type="string", required=false)
      * @SwagAnnotation\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
+     * @SwagAnnotation\SwagSecurity(name="BearerAuth")
      */
     public function customGet()
     {

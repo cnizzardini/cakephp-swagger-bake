@@ -137,6 +137,10 @@ class SwaggerTest extends TestCase
         $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
             return $param['name'] == 'queryParamName';
         }));
+
+        $this->assertCount(1, array_filter($operation['security'], function ($param) {
+            return isset($param['BearerAuth']);
+        }));
     }
 
     public function testCustomPostRouteWithAnnotations()

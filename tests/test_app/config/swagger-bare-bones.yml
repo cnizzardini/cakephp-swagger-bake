@@ -6,3 +6,8 @@ info:
     name: MIT
 servers:
   - url: /api
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
