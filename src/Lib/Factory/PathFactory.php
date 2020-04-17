@@ -5,14 +5,18 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
+use SwaggerBake\Lib\Annotation\SwagEntity;
+use SwaggerBake\Lib\Annotation\SwagPath;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Model\ExpressiveModel;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
  * Class SwaggerPath
@@ -37,6 +41,10 @@ class PathFactory
         $defaults = (array) $this->route->defaults;
 
         if (empty($defaults['_method'])) {
+            return null;
+        }
+
+        if (!$this->isSwaggable($defaults['controller'])) {
             return null;
         }
 
@@ -128,7 +136,7 @@ class PathFactory
         $controller = $this->getControllerFromNamespaces($className);
 
         if (!class_exists($controller)) {
-            throw new SwaggerBakeRunTimeException("Controller not found, given $controller");
+            return null;
         }
 
         $instance = new $controller;
@@ -167,5 +175,25 @@ class PathFactory
         }
 
         return null;
+    }
+
+    private function isSwaggable(string $className) : bool
+    {
+        $className = $className . 'Controller';
+        $controller = $this->getControllerFromNamespaces($className);
+
+        if (!$controller) {
+            return false;
+        }
+
+        $annotations = AnnotationUtility::getClassAnnotations($controller);
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof SwagPath) {
+                return $annotation->isVisible;
+            }
+        }
+
+        return true;
     }
 }

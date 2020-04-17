@@ -21,7 +21,6 @@ class SwaggerController extends AppController
         $config = new Configuration();
 
         if ($config->getHotReload()) {
-            $config = new Configuration();
             $output = $config->getJson();
             $swagger = (new SwaggerFactory())->create();
             $swagger->writeFile($output);
@@ -36,9 +35,10 @@ class SwaggerController extends AppController
     public function index()
     {
         $config = new Configuration();
-        $title = 'SwaggerUI';
+        $title = $config->getTitleFromYml();
         $url = $config->getWebPath();
         $this->set(compact('title','url'));
-        return $this->render();
+        $this->viewBuilder()->setLayout($config->getLayout($this->request->getParam('doctype')));
+        return $this->render($config->getLayout($this->request->getParam('doctype')));
     }
 }

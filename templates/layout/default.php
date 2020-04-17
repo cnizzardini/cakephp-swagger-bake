@@ -1,3 +1,6 @@
+<?php
+$this->assign('title', $title);
+?>
 <!-- HTML for static distribution bundle build -->
 <!DOCTYPE html>
 <html lang="en">

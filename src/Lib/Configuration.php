@@ -4,6 +4,7 @@ namespace SwaggerBake\Lib;
 
 use Cake\Core\Configure;
 use LogicException;
+use Symfony\Component\Yaml\Yaml;
 
 class Configuration
 {
@@ -21,6 +22,7 @@ class Configuration
 
         $this->configs = array_merge(
             [
+                'docType' => 'swagger',
                 'hotReload' => false,
                 'namespaces' => [
                     'controllers' => ['\App\\'],
@@ -68,5 +70,51 @@ class Configuration
     public function getNamespaces() : array
     {
         return $this->get('namespaces');
+    }
+
+    public function getParsedYml() : array
+    {
+        return Yaml::parseFile($this->getYml());
+    }
+
+    public function getTitleFromYml()
+    {
+        $yml = $this->getParsedYml();
+        return isset($yml['info']['title']) ? $yml['info']['title'] : '';
+    }
+
+    public function getDocType() : string
+    {
+        return strtolower($this->get('docType'));
+    }
+
+    public function getLayout(?string $doctype = null) : string
+    {
+        $doctype = empty($doctype) ? $this->getDocType() : $doctype;
+        switch ($doctype)
+        {
+            case 'redoc':
+                return 'SwaggerBake.redoc';
+                break;
+            case 'swagger':
+                return 'SwaggerBake.swagger';
+                break;
+        }
+        return 'SwaggerBake.swagger';
+    }
+
+    public function getView(?string $doctype = null) : string
+    {
+        $doctype = empty($doctype) ? $this->getDocType() : $doctype;
+        switch ($doctype)
+        {
+            case 'redoc':
+                return 'SwaggerBake.Swagger/redoc';
+                break;
+            case 'swagger':
+                return 'SwaggerBake.Swagger/swagger';
+                break;
+        }
+        return 'SwaggerBake.swagger';
     }
 }

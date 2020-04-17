@@ -130,7 +130,7 @@ class Swagger
 
     private function buildSchemas(): void
     {
-        $schemaFactory = new Factory\SchemaFactory();
+        $schemaFactory = new Factory\SchemaFactory($this->config);
         $models = $this->cakeModel->getModels();
 
         foreach ($models as $model) {
@@ -138,6 +138,9 @@ class Swagger
                 continue;
             }
             $schema = $schemaFactory->create($model);
+            if (!$schema) {
+                continue;
+            }
             $this->pushSchema($schema);
         }
     }
@@ -145,8 +148,9 @@ class Swagger
     private function buildPaths(): void
     {
         $prefix = $this->cakeModel->getPrefix();
+        $routes = $this->cakeRoute->getRoutes();
 
-        foreach ($this->cakeRoute->getRoutes() as $route) {
+        foreach ($routes as $route) {
 
             $path = (new Factory\PathFactory($route, $this->config))->create();
             if (is_null($path)) {

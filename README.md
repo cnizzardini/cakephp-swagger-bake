@@ -1,13 +1,13 @@
 # SwaggerBake plugin for CakePHP4
 
-`Note: This is an alpha stage plugin and prone to lots of changes right now`
+`Note: This is an beta stage plugin`
 
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
-builds your Swagger UI (v3.25) with minimal configuration and effort. 
+builds your Swagger UI (v3.25) from your existing cake models and routes. A redoc option is also available.
 
 - Creates paths from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes.
 - Creates schema from your Entities and Tables.
-- Provides additional functionality through Annotations.
+- Provides additional functionality through Annotations and Doc Blocks.
 
 ## Installation
 
@@ -32,15 +32,10 @@ Get going in just four easy steps:
 - Create a `config/swagger_bake.php` file. See the example file [here](assets/swagger_bake.php) for further 
 explanation.
 
-
-- Create a route for the SwaggerUI page in `config/routes.php`
+- Create a route for the SwaggerUI page in `config/routes.php`. See Extensibility for other ways to diplay Swagger.
 
 ```php
-$routes->scope('/api', function (RouteBuilder $builder) {
-    $builder->setExtensions(['json']);
-    // $builder->resources() here
-    $builder->connect('/', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
-});
+$builder->connect('/', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
 ```
 
 - Use the `swagger bake` command to generate your swagger documentation. 
@@ -75,9 +70,9 @@ public function index() {
 SwaggerBake provides some optional Annotations for enhanced functionality.
 
 #### `@SwagPaginator`
-Use @SwagPaginator on Controller actions using 
-[CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html). This will add the following 
-query params to Swagger:
+Method level annotation for adding  
+[CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) query parameters. This will 
+add the following query params to Swagger:
 - page
 - limit
 - sort
@@ -97,7 +92,7 @@ public function index() {
 ```
 
 #### `@SwagQuery`
-Add query parameters with @SwagQuery
+Method level annotation for adding query parameters with @SwagQuery
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagQuery;
@@ -109,7 +104,7 @@ public function index() {}
 ```
 
 #### `@SwagForm`
-Add form data fields with @SwagForm
+Method level annotation for adding form data fields with @SwagForm
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagForm;
@@ -121,7 +116,7 @@ public function index() {}
 ```
 
 #### `@SwagHeader`
-Add header parameters with @SwagHeader
+Method level annotation for adding header parameters with @SwagHeader
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagHeader;
@@ -133,7 +128,7 @@ public function index() {}
 ```
 
 #### `@SwagSecurity`
-Add authentication requirements with @SwagSecurity
+Method level annotation for adding authentication requirements with @SwagSecurity
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagSecurity;
@@ -144,7 +139,45 @@ use SwaggerBake\Lib\Annotation\SwagSecurity;
 public function index() {}
 ```
 
-### Extensibility
+#### `@SwagPath`
+Class level annotation for exposing controllers to Swagger UI with @SwagPath. By default all controllers with routes are 
+added to Swagger. You can hide, but not show controllers with this annotation.
+
+```php
+use SwaggerBake\Lib\Annotation\SwagPath;
+
+/**
+ * @SwagPath(isVisible=false)
+ */
+class UsersController extends AppController
+```
+
+#### `@SwagEntity`
+Class level annotation for exposing entities to Swagger UI with @SwagEntity. By default all entities with routes are 
+added to Swagger.
+
+```php
+use SwaggerBake\Lib\Annotation\SwagEntity;
+
+/**
+ * @SwagEntity(isVisible=true)
+ */
+class Employee extends Entity {
+```
+
+#### `@SwagEntityAttribute`
+Class level annotation for customizing Schema Attributes with @SwagEntityAttribute
+
+```php
+use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
+
+/**
+ * @SwagEntityAttribute(name="modified", type="string", readOnly=true, required=false)
+ */
+class Employee extends Entity {
+```
+
+### Extending SwaggerBake
 
 There are several options to extend functionality.
 
@@ -153,6 +186,43 @@ There are several options to extend functionality.
 You may use your own swagger install in lieu of the version that comes with SwaggerBake. Simply don't add a custom 
 route as indicated in step 3 of Basic Usage. In this case just reference the generated swagger.json with your own 
 Swagger UI install.
+
+#### Using Your Own Controller
+
+You might want to perform some additional logic (checking for authentication) before rending the built-in Swagger UI. 
+This is easy to do. Just create your own controller and route then reference the built-in layout and template: 
+
+```php
+// config/routes.php
+$builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 'index']);
+
+// App/Controller/MySwaggerController.php
+class MySwaggerController extends AppController
+{
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        $config = new \SwaggerBake\Lib\Configuration();
+
+        if ($config->getHotReload()) {
+            $output = $config->getJson();
+            $swagger = (new SwaggerFactory())->create();
+            $swagger->writeFile($output);
+        }
+    }
+
+    public function index()
+    {
+        // custom logic here (if desired)
+        $config = new \SwaggerBake\Lib\Configuration();
+        $title = 'Easyupp Swagger UI';
+        $url = $config->getWebPath();
+        $this->set(compact('title','url'));
+        $this->viewBuilder()->setLayout('SwaggerBake.default');
+        return $this->render('SwaggerBake.Swagger/index');
+    }
+}
+```
 
 #### Generate Swagger On Your Terms
 
@@ -235,29 +305,9 @@ Make sure a controller actually exists for the route resource.
 #### Missing actions (missing paths) in Swagger
 
 By default Cake RESTful resources will only create routes for index, view, add, edit and delete. You can add and remove 
-paths using CakePHPs route resource functionality. Here is an example for adding a custom route for 
-Employees::salutation and removing all default routes except for index.
-
-```php
-$builder->resources(
-    'Employees',
-    [
-        'only' => ['index','salutation'],
-        'map' => [
-            'salutation' => [
-                'action' => 'salutation',
-                'method' => 'GET',
-                'path' => ':id/salutation'
-            ]
-        ]
-    ]
-);
-```
-
-Read the Cake documentation on 
-[Mapping additional routes](https://book.cakephp.org/4/en/development/routing.html#mapping-additional-resource-routes). 
-You can also remove default routes, read
-[Limiting the routes created](https://book.cakephp.org/4/en/development/routing.html#limiting-the-routes-created).
+paths using CakePHPs route resource functionality. Read the 
+[Cake Routing documentation](https://book.cakephp.org/4/en/development/routing.html) which describes in detail how to 
+add, remove, modify, and alter routes. 
 
 ## Reporting Issues
 

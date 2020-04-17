@@ -10,6 +10,8 @@
  *
  * @var bool $hotReload: Regenerate swagger when Swagger UI page is reloaded. This only works if you are using the
  * built-in Swagger UI.
+ *
+ * @var string $docType: Options are swagger and redoc, defaults: swagger
  */
 return [
     'SwaggerBake' => [
@@ -18,6 +20,7 @@ return [
         'json' => '/webroot/swagger.json',
         'webPath' => '/swagger.json',
         'hotReload' => false,
+        'docType' => 'swagger'
     ]
 ];
 

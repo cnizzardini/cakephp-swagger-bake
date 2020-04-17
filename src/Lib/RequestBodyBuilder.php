@@ -61,19 +61,13 @@ class RequestBodyBuilder
             return $schema;
         }
 
-        foreach ($this->swagger->getSchemaByName($className)->getProperties() as $propertyName => $property) {
+        foreach ($this->swagger->getSchemaByName($className)->getProperties() as $property) {
 
-            if (isset($property['readOnly']) && $property['readOnly'] == 1) {
+            if ($property->isReadOnly()) {
                 continue;
             }
 
-            $schemaProperty = new SchemaProperty();
-            $schemaProperty
-                ->setName($propertyName)
-                ->setType($property['type']);
-            ;
-
-            $schema->pushProperty($schemaProperty);
+            $schema->pushProperty($property);
         }
 
         return $schema;
