@@ -46,7 +46,7 @@ bin/cake swagger bake
 
 Using the above example you should now see your swagger documentation after browsing to http://your-project/api
 
-![Example](./assets/screenshot.svg)
+![Example](./assets/screenshot.png)
 
 ### Hot Reload Swagger JSON
 
