@@ -140,7 +140,7 @@ public function index() {}
 
 #### `@SwagPath`
 Class level annotation for exposing controllers to Swagger UI with @SwagPath. By default all controllers with routes are 
-added to Swagger. You can hide, but not show controllers with this annotation.
+added to Swagger. You can hide entire paths (controllers) with this annotation.
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagPath;
