@@ -53,14 +53,14 @@ You can enable hot reloading. This setting re-generates swagger.json on each rel
 
 ## Annotations and Doc Block
 
-SwaggerBake will parse some of your doc blocks for information. The first line of Doc Blocks above Controller Actions 
-are used for the Path Summary. 
+SwaggerBake will parse some of your doc blocks for information. The first line is used as the Path Summary and the 
+second as the Path Description.
 
 ```php
 /**
- * This will appear in the path summary
+ * Path Summary
  * 
- * This line will not appear in the path summary
+ * This is the path description
  */
 public function index() {
 

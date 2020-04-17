@@ -13,6 +13,7 @@ use InvalidArgumentException;
 class Path
 {
     private $summary = '';
+    private $description = '';
     private $type = '';
     private $path = '';
     private $tags = [];
@@ -54,6 +55,24 @@ class Path
     public function setSummary(string $summary): Path
     {
         $this->summary = $summary;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return Path
+     */
+    public function setDescription(string $description): Path
+    {
+        $this->description = $description;
         return $this;
     }
 

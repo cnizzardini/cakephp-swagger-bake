@@ -5,14 +5,12 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
-use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Annotation\SwagPath;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Model\ExpressiveModel;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -51,9 +49,10 @@ class PathFactory
         foreach ((array) $defaults['_method'] as $method) {
             $path
                 ->setType(strtolower($method))
-                ->setPath($this->createPath())
+                ->setPath($this->getPathName())
                 ->setOperationId($this->route->getName())
                 ->setSummary($this->dockBlock ? $this->dockBlock->getSummary() : '')
+                ->setDescription($this->dockBlock ? $this->dockBlock->getDescription() : '')
                 ->setTags([
                     Inflector::humanize(Inflector::underscore($defaults['controller']))
                 ])
@@ -64,7 +63,7 @@ class PathFactory
         return $path;
     }
 
-    private function createPath() : string
+    private function getPathName() : string
     {
         $pieces = array_map(
             function ($piece) {
