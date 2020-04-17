@@ -233,6 +233,8 @@ Displays a list of models that can be viewed in Swagger.
 bin/cake swagger models
 ```
 
+![Example](./assets/console-demo.svg)
+
 ## Details
 
 - Swagger uses your existing swagger.yml as a base for adding additional paths and schema.
