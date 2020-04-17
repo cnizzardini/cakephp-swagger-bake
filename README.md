@@ -189,39 +189,14 @@ Swagger UI install.
 #### Using Your Own Controller
 
 You might want to perform some additional logic (checking for authentication) before rending the built-in Swagger UI. 
-This is easy to do. Just create your own controller and route then reference the built-in layout and template: 
+This is easy to do. Just create your own route and controller, then reference the built-in layout and template: 
 
 ```php
 // config/routes.php
 $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 'index']);
-
-// App/Controller/MySwaggerController.php
-class MySwaggerController extends AppController
-{
-    public function beforeFilter(EventInterface $event)
-    {
-        parent::beforeFilter($event);
-        $config = new \SwaggerBake\Lib\Configuration();
-
-        if ($config->getHotReload()) {
-            $output = $config->getJson();
-            $swagger = (new SwaggerFactory())->create();
-            $swagger->writeFile($output);
-        }
-    }
-
-    public function index()
-    {
-        // custom logic here (if desired)
-        $config = new \SwaggerBake\Lib\Configuration();
-        $title = 'Easyupp Swagger UI';
-        $url = $config->getWebPath();
-        $this->set(compact('title','url'));
-        $this->viewBuilder()->setLayout('SwaggerBake.default');
-        return $this->render('SwaggerBake.Swagger/index');
-    }
-}
 ```
+
+Use beforeFilter() and index() methods from [SwaggerController](src/Controller/SwaggerController.php)
 
 #### Generate Swagger On Your Terms
 
