@@ -46,6 +46,8 @@ bin/cake swagger bake
 
 Using the above example you should now see your swagger documentation after browsing to http://your-project/api
 
+![Example](./assets/screenshot.svg)
+
 ### Hot Reload Swagger JSON
 
 You can enable hot reloading. This setting re-generates swagger.json on each reload of Swagger UI. Simply set 
