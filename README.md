@@ -305,29 +305,9 @@ Make sure a controller actually exists for the route resource.
 #### Missing actions (missing paths) in Swagger
 
 By default Cake RESTful resources will only create routes for index, view, add, edit and delete. You can add and remove 
-paths using CakePHPs route resource functionality. Here is an example for adding a custom route for 
-Employees::salutation and removing all default routes except for index.
-
-```php
-$builder->resources(
-    'Employees',
-    [
-        'only' => ['index','salutation'],
-        'map' => [
-            'salutation' => [
-                'action' => 'salutation',
-                'method' => 'GET',
-                'path' => ':id/salutation'
-            ]
-        ]
-    ]
-);
-```
-
-Read the Cake documentation on 
-[Mapping additional routes](https://book.cakephp.org/4/en/development/routing.html#mapping-additional-resource-routes). 
-You can also remove default routes, read
-[Limiting the routes created](https://book.cakephp.org/4/en/development/routing.html#limiting-the-routes-created).
+paths using CakePHPs route resource functionality. Read the 
+[Cake Routing documentation](https://book.cakephp.org/4/en/development/routing.html) which describes in detail how to 
+add, remove, modify, and alter routes. 
 
 ## Reporting Issues
 
