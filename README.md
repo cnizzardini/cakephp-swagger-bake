@@ -166,7 +166,7 @@ use SwaggerBake\Lib\Annotation\SwagPath;
 /**
  * @SwagPath(isVisible=false)
  */
-class UsersController extends AppController
+class UsersController extends AppController {
 ```
 
 #### `@SwagEntity`
