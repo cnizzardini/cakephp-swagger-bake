@@ -150,13 +150,11 @@ class PathFactory
 
     private function withResponses(Path $path, array $annotations) : Path
     {
-        if (empty($annotations)) {
-            return $path;
-        }
-
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof SwagAnnotation\SwagResponseSchema) {
-                $path->pushResponse((new SwagAnnotation\SwagResponseSchemaHandler())->getResponse($annotation));
+        if (!empty($annotations)) {
+            foreach ($annotations as $annotation) {
+                if ($annotation instanceof SwagAnnotation\SwagResponseSchema) {
+                    $path->pushResponse((new SwagAnnotation\SwagResponseSchemaHandler())->getResponse($annotation));
+                }
             }
         }
 
@@ -165,6 +163,7 @@ class PathFactory
         }
 
         $throws = $this->dockBlock->getTagsByName('throws');
+
         foreach ($throws as $throw) {
             $exception = new ExceptionHandler($throw->getType()->__toString());
             $path->pushResponse(
