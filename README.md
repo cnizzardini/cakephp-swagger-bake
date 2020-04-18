@@ -53,18 +53,18 @@ You can enable hot reloading. This setting re-generates swagger.json on each rel
 
 ## Annotations and Doc Block
 
-SwaggerBake will parse some of your doc blocks for information. The first line of Doc Blocks above Controller Actions 
-are used for the Path Summary. 
+SwaggerBake will parse some of your doc blocks for information. The first line reads as the Path Summary and the 
+second as the Path Description, `@see` and `@deprecated` are also supported.
 
 ```php
 /**
- * This will appear in the path summary
+ * Path Summary
  * 
- * This line will not appear in the path summary
+ * This is the path description
+ * @see https://book.cakephp.org/4/en/index.html The link and this description appear in Swagger
+ * @deprecated
  */
-public function index() {
-
-}
+public function index() {}
 ```
 
 SwaggerBake provides some optional Annotations for enhanced functionality.
@@ -248,9 +248,10 @@ bin/cake swagger models
 
 This is built for CakePHP 4.x only.
 
-| Version  | Supported | Unit Tests | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| 4.0 | Yes  | Yes |  |
+| Version | Cake Version  | Supported | Unit Tests | Notes | 
+| ------------- | ------------- | ------------- | ------------- | ------------- | 
+| 2.* | 4.0 | Yes  | Yes | Currently supported | 
+| 1.* | 3.8 | No  | No | 1.* is being left available for possible Cake 3 support in the future | 
 
 ## Common Issues
 
@@ -308,6 +309,7 @@ local source to make developing easier:
 
 - Add a paths repository to your `composer.json`
 ```
+"minimum-stability": "dev",
 "repositories": [
     {
         "type": "path",

@@ -13,6 +13,8 @@ use InvalidArgumentException;
 class Path
 {
     private $summary = '';
+    private $description = '';
+    private $externalDocs;
     private $type = '';
     private $path = '';
     private $tags = [];
@@ -35,6 +37,9 @@ class Path
         if (empty($vars['security'])) {
             unset($vars['security']);
         }
+        if (empty($vars['externalDocs'])) {
+            unset($vars['externalDocs']);
+        }
 
         return $vars;
     }
@@ -54,6 +59,24 @@ class Path
     public function setSummary(string $summary): Path
     {
         $this->summary = $summary;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return Path
+     */
+    public function setDescription(string $description): Path
+    {
+        $this->description = $description;
         return $this;
     }
 
@@ -242,6 +265,24 @@ class Path
     public function setPath(string $path): Path
     {
         $this->path = $path;
+        return $this;
+    }
+
+    /**
+     * @return OperationExternalDoc
+     */
+    public function getExternalDocs() : OperationExternalDoc
+    {
+        return $this->externalDocs;
+    }
+
+    /**
+     * @param OperationExternalDoc $externalDoc
+     * @return Path
+     */
+    public function setExternalDocs(OperationExternalDoc $externalDoc) : Path
+    {
+        $this->externalDocs = $externalDoc;
         return $this;
     }
 }

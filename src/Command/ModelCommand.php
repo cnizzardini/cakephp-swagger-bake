@@ -14,12 +14,15 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
-/**
- * @class ModelCommand
- * @package SwaggerBake
- */
 class ModelCommand extends Command
 {
+    /**
+     * List Cake Entities that can be added to Swagger. Prints to console.
+     *
+     * @param Arguments $args
+     * @param ConsoleIo $io
+     * @return int|void|null
+     */
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $io->out("Running...");

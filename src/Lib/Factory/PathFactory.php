@@ -5,14 +5,13 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
-use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Annotation\SwagPath;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Model\ExpressiveModel;
+use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -48,23 +47,31 @@ class PathFactory
             return null;
         }
 
+
         foreach ((array) $defaults['_method'] as $method) {
             $path
                 ->setType(strtolower($method))
-                ->setPath($this->createPath())
+                ->setPath($this->getPathName())
                 ->setOperationId($this->route->getName())
                 ->setSummary($this->dockBlock ? $this->dockBlock->getSummary() : '')
+                ->setDescription($this->dockBlock ? $this->dockBlock->getDescription() : '')
                 ->setTags([
                     Inflector::humanize(Inflector::underscore($defaults['controller']))
                 ])
                 ->setParameters($this->getPathParameters())
+                ->setDeprecated($this->isDeprecated())
             ;
+
+            $externalDoc = $this->getExternalDoc();
+            if ($externalDoc) {
+                $path->setExternalDocs($externalDoc);
+            }
         }
 
         return $path;
     }
 
-    private function createPath() : string
+    private function getPathName() : string
     {
         $pieces = array_map(
             function ($piece) {
@@ -195,5 +202,45 @@ class PathFactory
         }
 
         return true;
+    }
+
+    private function isDeprecated() : bool
+    {
+        if (!$this->dockBlock || !$this->dockBlock instanceof DocBlock) {
+            return false;
+        }
+
+        return $this->dockBlock->hasTag('deprecated');
+    }
+
+    private function getExternalDoc() : ?OperationExternalDoc
+    {
+        if (!$this->dockBlock || !$this->dockBlock instanceof DocBlock) {
+            return null;
+        }
+
+        if (!$this->dockBlock->hasTag('see')) {
+            return null;
+        }
+
+        $tags = $this->dockBlock->getTagsByName('see');
+        $seeTag = reset($tags);
+        $str = $seeTag->__toString();
+        $pieces = explode(' ', $str);
+
+        if (!filter_var($pieces[0], FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        $externalDoc = new OperationExternalDoc();
+        $externalDoc->setUrl($pieces[0]);
+
+        array_shift($pieces);
+
+        if (!empty($pieces)) {
+            $externalDoc->setDescription(implode(' ', $pieces));
+        }
+
+        return $externalDoc;
     }
 }

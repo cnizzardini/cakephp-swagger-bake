@@ -14,6 +14,11 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 class SwaggerFactory
 {
+    /**
+     * Factory for Swagger objects
+     *
+     * @return Swagger
+     */
     public function create() : Swagger
     {
         ValidateConfiguration::validate();
