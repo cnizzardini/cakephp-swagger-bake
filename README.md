@@ -145,6 +145,18 @@ use SwaggerBake\Lib\Annotation\SwagSecurity;
 public function index() {}
 ```
 
+#### `@SwagOperation`
+Method level annotation for hiding a controller action from swagger.
+
+```php
+use SwaggerBake\Lib\Annotation\SwagOperation;
+
+/**
+ * @Swag\SwagOperation(isVisible=false)
+ */
+public function index() {}
+```
+
 #### `@SwagRequestBody`
 Method level annotation for describing request body. Set ignoreCakeSchema for full control over request body.
 
