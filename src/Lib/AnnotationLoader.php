@@ -13,6 +13,7 @@ class AnnotationLoader
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagEntityAttribute::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagForm::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagHeader::class);
+        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagOperation::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagPaginator::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagPath::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagQuery::class);

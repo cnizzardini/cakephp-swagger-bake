@@ -118,4 +118,16 @@ class EmployeesController extends AppController
         $this->set(compact('hello'));
         $this->viewBuilder()->setOption('serialize', ['hello']);
     }
+
+    /**
+     * custom-hidden should be hidden from swagger
+     *
+     * @Swag\SwagOperation(isVisible=false)
+     */
+    public function customHidden()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
 }

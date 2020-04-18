@@ -48,11 +48,18 @@ class PathFactory
             return null;
         }
 
-        if (!$this->isSwaggable($defaults['controller'])) {
+        if (!$this->isControllerVisible($defaults['controller'])) {
             return null;
         }
 
         foreach ((array) $defaults['_method'] as $method) {
+
+            $methodAnnotations = $this->getMethodAnnotations($defaults['controller'], $defaults['action']);
+
+            if (!$this->isMethodVisible($methodAnnotations)) {
+                continue;
+            }
+
             $path
                 ->setType(strtolower($method))
                 ->setPath($this->getPathName())
@@ -65,8 +72,6 @@ class PathFactory
                 ->setParameters($this->getPathParameters())
                 ->setDeprecated($this->isDeprecated())
             ;
-
-            $methodAnnotations = $this->getMethodAnnotations($defaults['controller'], $defaults['action']);
 
             $path = $this->withResponses($path, $methodAnnotations);
             $path = $this->withRequestBody($path, $methodAnnotations);
@@ -247,7 +252,7 @@ class PathFactory
         return null;
     }
 
-    private function isSwaggable(string $className) : bool
+    private function isControllerVisible(string $className) : bool
     {
         $className = $className . 'Controller';
         $controller = $this->getControllerFromNamespaces($className);
@@ -260,6 +265,17 @@ class PathFactory
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagAnnotation\SwagPath) {
+                return $annotation->isVisible;
+            }
+        }
+
+        return true;
+    }
+
+    private function isMethodVisible(array $annotations) : bool
+    {
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof SwagAnnotation\SwagOperation) {
                 return $annotation->isVisible;
             }
         }

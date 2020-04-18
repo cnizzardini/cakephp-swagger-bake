@@ -39,7 +39,12 @@ class SwaggerOperationTest extends TestCase
                         'action' => 'customPost',
                         'method' => 'POST',
                         'path' => 'custom-post'
-                    ]
+                    ],
+                    'customHidden' => [
+                        'action' => 'customHidden',
+                        'method' => 'GET',
+                        'path' => 'custom-hidden'
+                    ],
                 ]
             ]);
             $builder->resources('Departments', function (RouteBuilder $routes) {
@@ -126,5 +131,28 @@ class SwaggerOperationTest extends TestCase
 
         $this->assertCount(1, $properties);
         $this->assertArrayHasKey('fieldName', $properties);
+    }
+
+    public function testHiddenOperation()
+    {
+        $config = new Configuration([
+            'prefix' => '/api',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\']
+            ]
+        ], SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $arr = json_decode($swagger->toString(), true);
+
+
+        $this->assertArrayNotHasKey('/employees/custom-hidden', $arr['paths']);
     }
 }
