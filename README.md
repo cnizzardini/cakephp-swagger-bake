@@ -308,6 +308,7 @@ local source to make developing easier:
 
 - Add a paths repository to your `composer.json`
 ```
+"minimum-stability": "dev",
 "repositories": [
     {
         "type": "path",
