@@ -248,9 +248,10 @@ bin/cake swagger models
 
 This is built for CakePHP 4.x only.
 
-| Version  | Supported | Unit Tests | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| 4.0 | Yes  | Yes |  |
+| Version | Cake Version  | Supported | Unit Tests | Notes | 
+| ------------- | ------------- | ------------- | ------------- | ------------- | 
+| 2.* | 4.0 | Yes  | Yes | Currently supported | 
+| 1.* | 3.8 | No  | No | 1.* is being left available for possible Cake 3 support in the future | 
 
 ## Common Issues
 
