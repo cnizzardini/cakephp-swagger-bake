@@ -10,12 +10,12 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 /**
  * Class SwaggerPath
