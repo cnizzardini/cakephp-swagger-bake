@@ -59,7 +59,7 @@ class PathFactory
                     Inflector::humanize(Inflector::underscore($defaults['controller']))
                 ])
                 ->setParameters($this->getPathParameters())
-                ->setDeprecated($this->dockBlock->hasTag('deprecated'))
+                ->setDeprecated($this->isDeprecated())
             ;
 
             $externalDoc = $this->getExternalDoc();
@@ -204,8 +204,21 @@ class PathFactory
         return true;
     }
 
+    private function isDeprecated() : bool
+    {
+        if (!$this->dockBlock || !$this->dockBlock instanceof DocBlock) {
+            return false;
+        }
+
+        return $this->dockBlock->hasTag('deprecated');
+    }
+
     private function getExternalDoc() : ?OperationExternalDoc
     {
+        if (!$this->dockBlock || !$this->dockBlock instanceof DocBlock) {
+            return null;
+        }
+
         if (!$this->dockBlock->hasTag('see')) {
             return null;
         }
