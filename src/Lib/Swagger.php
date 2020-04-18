@@ -203,9 +203,7 @@ class Swagger
                 continue;
             }
 
-            if (empty($path->getResponses())) {
-                $path->setResponses($this->getPathResponses($path));
-            }
+            $path = $this->pathWithResponses($path);
 
             $path->setSecurity((new Security($route, $this->config))->getPathSecurity());
             $path = $this->withPathParameters($path, $route);
@@ -229,9 +227,8 @@ class Swagger
         return $path;
     }
 
-    private function getPathResponses(Path $path) : array
+    private function pathWithResponses(Path $path) : Path
     {
-        $return = [];
         foreach ($path->getTags() as $tag) {
             $className = Inflector::classify($tag);
             $response = new Response();
@@ -240,10 +237,14 @@ class Swagger
                 $response->setSchemaRef('#/components/schemas/' . $className);
             }
 
-            $return[200] = $response->setCode(200);
+            $path->pushResponse($response->setCode(200));
         }
 
-        return $return;
+        if (empty($path->getResponses())) {
+            $path->pushResponse((new Response())->setCode(200));
+        }
+
+        return $path;
     }
 
     private function withRequestBody(Path $path, Route $route) : Path
