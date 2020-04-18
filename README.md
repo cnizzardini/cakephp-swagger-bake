@@ -277,7 +277,7 @@ bin/cake swagger models
 - Entity Attributes: 
   - Hidden attributes will not be visible
   - Primary Keys will be set to read only by default.
-  - DateTime fields named `created`, and `modified` will are automatically set to read only per Cake convention. 
+  - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention. 
 - SwaggerBake has been developed for application/json and has not been tested with application/xml.
 
 ## Supported Versions
