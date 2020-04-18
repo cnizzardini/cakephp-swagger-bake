@@ -9,7 +9,7 @@ builds your Swagger UI (v3.25) from your existing cake models and routes. A redo
 - Creates schema from your Entities and Tables.
 - Provides additional functionality through Annotations and Doc Blocks.
 
-View the [demo project](https://github.com/cnizzardini/cakephp-swagger-bake-demo).
+[Demo Site](http://cakephpswaggerbake.cnizz.com/) | [Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo)
 
 ## Installation
 
