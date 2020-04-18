@@ -61,7 +61,7 @@ second as the Path Description, `@see` and `@deprecated` are also supported.
  * Path Summary
  * 
  * This is the path description
- * @see https://book.cakephp.org/4/en/index.html A description about the documentation link will display in SwaggerUI
+ * @see https://book.cakephp.org/4/en/index.html The link and this description appear in Swagger
  * @deprecated
  */
 public function index() {}
