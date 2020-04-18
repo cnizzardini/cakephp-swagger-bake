@@ -64,9 +64,7 @@ second as the Path Description. Additional docblocks support are `@see` and `@de
  * @see https://book.cakephp.org/4/en/index.html A description about the documentation link will display in SwaggerUI
  * @deprecated
  */
-public function index() {
-
-}
+public function index() {}
 ```
 
 SwaggerBake provides some optional Annotations for enhanced functionality.
