@@ -8,6 +8,14 @@ use ReflectionClass;
 
 class AnnotationUtility
 {
+    /**
+     * Gets class annotations from full namespace argument
+     *
+     * @uses AnnotationReader
+     * @uses ReflectionClass
+     * @param string $namespace
+     * @return array
+     */
     public static function getClassAnnotations(string $namespace) : array
     {
         try {
@@ -26,5 +34,43 @@ class AnnotationUtility
         }
 
         return $annotations;
+    }
+
+    /**
+     * Gets method annotations from full namespace and method arguments
+     *
+     * @uses AnnotationReader
+     * @uses ReflectionClass
+     * @param string $namespace
+     * @param string $method
+     * @return array
+     */
+    public static function getMethodAnnotations(string $namespace, string $method) : array
+    {
+        $return = [];
+
+        try {
+            $instance = new $namespace;
+            $reflectionClass = new ReflectionClass(get_class($instance));
+            $reflectedMethods = $reflectionClass->getMethods();
+        } catch (Exception $e) {
+            return $return;
+        }
+
+        $argMethodAnnotations = array_filter($reflectedMethods, function ($refMethod) use ($method) {
+            return $refMethod->name == $method;
+        });
+
+        $reader = new AnnotationReader();
+
+        foreach ($argMethodAnnotations as $methodAnnotation) {
+            $annotations = $reader->getMethodAnnotations($methodAnnotation);
+            if (empty($annotations)) {
+                continue;
+            }
+            $return = array_merge($return, $annotations);
+        }
+
+        return $return;
     }
 }

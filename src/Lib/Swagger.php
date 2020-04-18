@@ -203,7 +203,10 @@ class Swagger
                 continue;
             }
 
-            $path->setResponses($this->getPathResponses($path));
+            if (empty($path->getResponses())) {
+                $path->setResponses($this->getPathResponses($path));
+            }
+
             $path->setSecurity((new Security($route, $this->config))->getPathSecurity());
             $path = $this->withPathParameters($path, $route);
             $path = $this->withRequestBody($path, $route);

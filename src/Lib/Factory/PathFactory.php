@@ -5,17 +5,17 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
-use SwaggerBake\Lib\Annotation\SwagPath;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
+use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 /**
  * Class SwaggerPath
@@ -47,7 +47,6 @@ class PathFactory
             return null;
         }
 
-
         foreach ((array) $defaults['_method'] as $method) {
             $path
                 ->setType(strtolower($method))
@@ -61,6 +60,8 @@ class PathFactory
                 ->setParameters($this->getPathParameters())
                 ->setDeprecated($this->isDeprecated())
             ;
+
+            $path = $this->withResponses($path, $defaults['controller'], $defaults['action']);
 
             $externalDoc = $this->getExternalDoc();
             if ($externalDoc) {
@@ -127,6 +128,28 @@ class PathFactory
         }
 
         return $return;
+    }
+
+    private function withResponses(Path $path, string $className, string $method) : Path
+    {
+        $className = $className . 'Controller';
+        $controller = $this->getControllerFromNamespaces($className);
+        $annotations = AnnotationUtility::getMethodAnnotations($controller, $method);
+
+        if (empty($annotations)) {
+            return $path;
+        }
+
+        $responses = [];
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof SwagAnnotation\SwagResponseSchema) {
+                $resp = (new SwagAnnotation\SwagResponseSchemaHandler())->getResponse($annotation);
+                $responses[$resp->getCode()] = $resp;
+            }
+        }
+
+        return $path->setResponses($responses);
     }
 
     private function getDocBlock() : ?DocBlock
@@ -196,7 +219,7 @@ class PathFactory
         $annotations = AnnotationUtility::getClassAnnotations($controller);
 
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof SwagPath) {
+            if ($annotation instanceof SwagAnnotation\SwagPath) {
                 return $annotation->isVisible;
             }
         }
