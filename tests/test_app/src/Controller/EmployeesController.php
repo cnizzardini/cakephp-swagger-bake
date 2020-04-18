@@ -2,7 +2,8 @@
 declare(strict_types=1);
 
 namespace SwaggerBakeTest\App\Controller;
-use SwaggerBake\Lib\Annotation as SwagAnnotation;
+
+use SwaggerBake\Lib\Annotation as Swag;
 
 /**
  * Employees Controller
@@ -92,10 +93,11 @@ class EmployeesController extends AppController
     /**
      * custom-get summary
      *
-     * @SwagAnnotation\SwagPaginator
-     * @SwagAnnotation\SwagQuery(name="queryParamName", type="string", required=false)
-     * @SwagAnnotation\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
-     * @SwagAnnotation\SwagSecurity(name="BearerAuth")
+     * @Swag\SwagPaginator
+     * @Swag\SwagQuery(name="queryParamName", type="string", required=false)
+     * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
+     * @Swag\SwagSecurity(name="BearerAuth")
+     * @Swag\SwagResponseSchema(refEntity="", description="hello world")
      */
     public function customGet()
     {
@@ -107,7 +109,7 @@ class EmployeesController extends AppController
     /**
      * custom-post summary
      *
-     * @SwagAnnotation\SwagForm(name="fieldName", type="string", required=false)
+     * @Swag\SwagForm(name="fieldName", type="string", required=false)
      */
     public function customPost()
     {

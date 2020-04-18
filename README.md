@@ -96,7 +96,7 @@ public function index() {
 ```
 
 #### `@SwagQuery`
-Method level annotation for adding query parameters with @SwagQuery
+Method level annotation for adding query parameters.
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagQuery;
@@ -108,7 +108,7 @@ public function index() {}
 ```
 
 #### `@SwagForm`
-Method level annotation for adding form data fields with @SwagForm
+Method level annotation for adding form data fields.
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagForm;
@@ -120,7 +120,7 @@ public function index() {}
 ```
 
 #### `@SwagHeader`
-Method level annotation for adding header parameters with @SwagHeader
+Method level annotation for adding header parameters.
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagHeader;
@@ -132,7 +132,7 @@ public function index() {}
 ```
 
 #### `@SwagSecurity`
-Method level annotation for adding authentication requirements with @SwagSecurity
+Method level annotation for adding authentication requirements.
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagSecurity;
@@ -143,9 +143,22 @@ use SwaggerBake\Lib\Annotation\SwagSecurity;
 public function index() {}
 ```
 
+#### `@SwagResponseSchema`
+Method level annotation for defining custom response schema. Leave refEntity empty to define no schema.
+
+```php
+use SwaggerBake\Lib\Annotation\SwagResponseSchema;
+
+/**
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Lead", description="summary", httpCode=200)
+ * @Swag\SwagResponseSchema(refEntity="", description="fatal error", httpCode=500)
+ */
+public function index() {}
+```
+
 #### `@SwagPath`
-Class level annotation for exposing controllers to Swagger UI with @SwagPath. By default all controllers with routes are 
-added to Swagger. You can hide entire paths (controllers) with this annotation.
+Class level annotation for exposing controllers to Swagger UI. You can hide entire paths (controllers) with this 
+annotation.
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagPath;
@@ -157,8 +170,7 @@ class UsersController extends AppController
 ```
 
 #### `@SwagEntity`
-Class level annotation for exposing entities to Swagger UI with @SwagEntity. By default all entities with routes are 
-added to Swagger.
+Class level annotation for exposing entities to Swagger UI.  You can hide entities with this annotation.
 
 ```php
 use SwaggerBake\Lib\Annotation\SwagEntity;

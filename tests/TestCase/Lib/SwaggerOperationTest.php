@@ -3,8 +3,6 @@
 
 namespace SwaggerBake\Test\TestCase\Lib;
 
-
-use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
@@ -94,6 +92,11 @@ class SwaggerOperationTest extends TestCase
         $this->assertCount(1, array_filter($operation['security'], function ($param) {
             return isset($param['BearerAuth']);
         }));
+
+        $this->assertCount(1, array_filter($operation['responses'], function ($response) {
+            return isset($response['description']) && $response['description'] == 'hello world';
+        }));
+
     }
 
     public function testCustomPostRouteWithAnnotations()
