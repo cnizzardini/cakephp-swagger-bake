@@ -180,8 +180,7 @@ public function index() {}
 ```
 
 #### `@SwagPath`
-Class level annotation for exposing controllers to Swagger UI. You can hide entire paths (controllers) with this 
-annotation.
+Class level annotation for exposing controllers to Swagger UI. You can hide entire controllers with this annotation.
 
 ```php
 /**
