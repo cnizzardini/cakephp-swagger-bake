@@ -12,6 +12,8 @@
  * built-in Swagger UI.
  *
  * @var string $docType: Options are swagger and redoc, defaults: swagger
+ *
+ * @var array $namespaces: Can be used if your controllers or entities exist in non-standard namespace such as a plugin
  */
 return [
     'SwaggerBake' => [
@@ -20,7 +22,11 @@ return [
         'json' => '/webroot/swagger.json',
         'webPath' => '/swagger.json',
         'hotReload' => false,
-        'docType' => 'swagger'
+        'docType' => 'swagger',
+        'namespaces' => [
+            'controllers' => ['\App\\'],
+            'entities' => ['\App\\'],
+        ]
     ]
 ];
 
