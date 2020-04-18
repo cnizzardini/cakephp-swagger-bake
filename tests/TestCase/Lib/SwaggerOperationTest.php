@@ -3,8 +3,6 @@
 
 namespace SwaggerBake\Test\TestCase\Lib;
 
-
-use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
@@ -41,7 +39,12 @@ class SwaggerOperationTest extends TestCase
                         'action' => 'customPost',
                         'method' => 'POST',
                         'path' => 'custom-post'
-                    ]
+                    ],
+                    'customHidden' => [
+                        'action' => 'customHidden',
+                        'method' => 'GET',
+                        'path' => 'custom-hidden'
+                    ],
                 ]
             ]);
             $builder->resources('Departments', function (RouteBuilder $routes) {
@@ -94,6 +97,11 @@ class SwaggerOperationTest extends TestCase
         $this->assertCount(1, array_filter($operation['security'], function ($param) {
             return isset($param['BearerAuth']);
         }));
+
+        $this->assertCount(1, array_filter($operation['responses'], function ($response) {
+            return isset($response['description']) && $response['description'] == 'hello world';
+        }));
+
     }
 
     public function testCustomPostRouteWithAnnotations()
@@ -121,6 +129,57 @@ class SwaggerOperationTest extends TestCase
 
         $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
 
+        $this->assertCount(1, $properties);
         $this->assertArrayHasKey('fieldName', $properties);
+    }
+
+    public function testHiddenOperation()
+    {
+        $config = new Configuration([
+            'prefix' => '/api',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\']
+            ]
+        ], SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $arr = json_decode($swagger->toString(), true);
+
+
+        $this->assertArrayNotHasKey('/employees/custom-hidden', $arr['paths']);
+    }
+
+    public function testExceptionResponseSchema()
+    {
+        $config = new Configuration([
+            'prefix' => '/api',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\']
+            ]
+        ], SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $arr = json_decode($swagger->toString(), true);
+
+        $responses = $arr['paths']['/employees/custom-get']['get']['responses'];
+
+        $this->assertArrayHasKey(400, $responses);
+        $this->assertArrayHasKey(401, $responses);
+        $this->assertArrayHasKey(403, $responses);
+        $this->assertArrayHasKey(500, $responses);
     }
 }

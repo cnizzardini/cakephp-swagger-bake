@@ -70,10 +70,10 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @param string $schemaRef
-     * @return Response
+     * @param string|null $schemaRef
+     * @return $this
      */
-    public function setSchemaRef(string $schemaRef): Response
+    public function setSchemaRef(?string $schemaRef): Response
     {
         $this->schemaRef = $schemaRef;
         return $this;

@@ -5,15 +5,17 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
-use SwaggerBake\Lib\Annotation\SwagPath;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
+use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\ExceptionHandler;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
+use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 
@@ -34,6 +36,11 @@ class PathFactory
         $this->dockBlock = $this->getDocBlock();
     }
 
+    /**
+     * Creates a Path and returns it
+     *
+     * @return Path|null
+     */
     public function create() : ?Path
     {
         $path = new Path();
@@ -43,12 +50,18 @@ class PathFactory
             return null;
         }
 
-        if (!$this->isSwaggable($defaults['controller'])) {
+        if (!$this->isControllerVisible($defaults['controller'])) {
             return null;
         }
 
-
         foreach ((array) $defaults['_method'] as $method) {
+
+            $methodAnnotations = $this->getMethodAnnotations($defaults['controller'], $defaults['action']);
+
+            if (!$this->isMethodVisible($methodAnnotations)) {
+                continue;
+            }
+
             $path
                 ->setType(strtolower($method))
                 ->setPath($this->getPathName())
@@ -62,10 +75,9 @@ class PathFactory
                 ->setDeprecated($this->isDeprecated())
             ;
 
-            $externalDoc = $this->getExternalDoc();
-            if ($externalDoc) {
-                $path->setExternalDocs($externalDoc);
-            }
+            $path = $this->withResponses($path, $methodAnnotations);
+            $path = $this->withRequestBody($path, $methodAnnotations);
+            $path = $this->withExternalDoc($path);
         }
 
         return $path;
@@ -129,6 +141,73 @@ class PathFactory
         return $return;
     }
 
+    private function getMethodAnnotations(string $className, string $method) : array
+    {
+        $className = $className . 'Controller';
+        $controller = $this->getControllerFromNamespaces($className);
+        return AnnotationUtility::getMethodAnnotations($controller, $method);
+    }
+
+    private function withResponses(Path $path, array $annotations) : Path
+    {
+        if (!empty($annotations)) {
+            foreach ($annotations as $annotation) {
+                if ($annotation instanceof SwagAnnotation\SwagResponseSchema) {
+                    $path->pushResponse((new SwagAnnotation\SwagResponseSchemaHandler())->getResponse($annotation));
+                }
+            }
+        }
+
+        if (!$this->dockBlock->hasTag('throws')) {
+            return $path;
+        }
+
+        $throws = $this->dockBlock->getTagsByName('throws');
+
+        foreach ($throws as $throw) {
+            $exception = new ExceptionHandler($throw->getType()->__toString());
+            $path->pushResponse(
+                (new Response())->setCode($exception->getCode())->setDescription($exception->getMessage())
+            );
+        }
+
+
+        return $path;
+    }
+
+    private function withRequestBody(Path $path, array $annotations) : Path
+    {
+        if (empty($annotations)) {
+            return $path;
+        }
+
+        $contents = [];
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof SwagAnnotation\SwagRequestBody) {
+                $requestBody = (new SwagAnnotation\SwagRequestBodyHandler())->getResponse($annotation);
+            }
+        }
+
+        if (!isset($requestBody)) {
+            return $path;
+        }
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof SwagAnnotation\SwagRequestBodyContent) {
+                $requestBody->pushContent(
+                    (new SwagAnnotation\SwagRequestBodyContentHandler())->getContent($annotation)
+                );
+            }
+        }
+
+        if (empty($requestBody->getContent())) {
+            return $path->setRequestBody($requestBody);
+        }
+
+        return $path->setRequestBody($requestBody);
+    }
+
     private function getDocBlock() : ?DocBlock
     {
         $defaults = (array) $this->route->defaults;
@@ -184,7 +263,7 @@ class PathFactory
         return null;
     }
 
-    private function isSwaggable(string $className) : bool
+    private function isControllerVisible(string $className) : bool
     {
         $className = $className . 'Controller';
         $controller = $this->getControllerFromNamespaces($className);
@@ -196,7 +275,18 @@ class PathFactory
         $annotations = AnnotationUtility::getClassAnnotations($controller);
 
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof SwagPath) {
+            if ($annotation instanceof SwagAnnotation\SwagPath) {
+                return $annotation->isVisible;
+            }
+        }
+
+        return true;
+    }
+
+    private function isMethodVisible(array $annotations) : bool
+    {
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof SwagAnnotation\SwagOperation) {
                 return $annotation->isVisible;
             }
         }
@@ -213,14 +303,14 @@ class PathFactory
         return $this->dockBlock->hasTag('deprecated');
     }
 
-    private function getExternalDoc() : ?OperationExternalDoc
+    private function withExternalDoc(Path $path) : Path
     {
         if (!$this->dockBlock || !$this->dockBlock instanceof DocBlock) {
-            return null;
+            return $path;
         }
 
         if (!$this->dockBlock->hasTag('see')) {
-            return null;
+            return $path;
         }
 
         $tags = $this->dockBlock->getTagsByName('see');
@@ -229,7 +319,7 @@ class PathFactory
         $pieces = explode(' ', $str);
 
         if (!filter_var($pieces[0], FILTER_VALIDATE_URL)) {
-            return null;
+            return $path;
         }
 
         $externalDoc = new OperationExternalDoc();
@@ -241,6 +331,6 @@ class PathFactory
             $externalDoc->setDescription(implode(' ', $pieces));
         }
 
-        return $externalDoc;
+        return $path->setExternalDocs($externalDoc);
     }
 }

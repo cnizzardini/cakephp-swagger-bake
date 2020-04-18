@@ -26,6 +26,7 @@ return [
         'namespaces' => [
             'controllers' => ['\App\\'],
             'entities' => ['\App\\'],
+            'tables' => ['\App\\']
         ]
     ]
 ];

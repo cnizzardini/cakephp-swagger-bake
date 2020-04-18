@@ -27,6 +27,7 @@ class Configuration
                 'namespaces' => [
                     'controllers' => ['\App\\'],
                     'entities' => ['\App\\'],
+                    'tables' => ['\App\\']
                 ]
             ],
             Configure::read('SwaggerBake')

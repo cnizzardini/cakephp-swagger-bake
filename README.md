@@ -59,7 +59,7 @@ You can enable hot reloading. This setting re-generates swagger.json on each rel
 ## Annotations and Doc Block
 
 SwaggerBake will parse some of your doc blocks for information. The first line reads as the Path Summary and the 
-second as the Path Description, `@see` and `@deprecated` are also supported.
+second as the Path Description, `@see`, `@deprecated`, and `@throws` are also supported.
 
 ```php
 /**
@@ -68,11 +68,14 @@ second as the Path Description, `@see` and `@deprecated` are also supported.
  * This is the path description
  * @see https://book.cakephp.org/4/en/index.html The link and this description appear in Swagger
  * @deprecated
+ * @throws BadRequestException
+ * @throws Exception
  */
 public function index() {}
 ```
 
-SwaggerBake provides some optional Annotations for enhanced functionality.
+SwaggerBake provides some optional Annotations for enhanced functionality. These can be imported individually from 
+`SwaggerBake\Lib\Annotation` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Annotation as Swag`.
 
 #### `@SwagPaginator`
 Method level annotation for adding  [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
@@ -83,10 +86,9 @@ query parameters. This will add the following query params to Swagger:
 - direction
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagPaginator;
-
+use SwaggerBake\Lib\Annotation as Swag;
 /**
- * @SwagPaginator
+ * @Swag\SwagPaginator
  */
 public function index() {
     $employees = $this->paginate($this->Employees);
@@ -96,75 +98,103 @@ public function index() {
 ```
 
 #### `@SwagQuery`
-Method level annotation for adding query parameters with @SwagQuery
+Method level annotation for adding query parameters.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagQuery;
-
 /**
- * @SwagQuery(name="queryParamName", type="string", required=false)
+ * @Swag\SwagQuery(name="queryParamName", type="string", required=false)
  */
 public function index() {}
 ```
 
 #### `@SwagForm`
-Method level annotation for adding form data fields with @SwagForm
+Method level annotation for adding form data fields.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagForm;
-
 /**
- * @SwagForm(name="fieldName", type="string", required=false)
+ * @Swag\SwagForm(name="fieldName", type="string", required=false)
  */
 public function index() {}
 ```
 
 #### `@SwagHeader`
-Method level annotation for adding header parameters with @SwagHeader
+Method level annotation for adding header parameters.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagHeader;
-
 /**
- * @SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
+ * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
  */
 public function index() {}
 ```
 
 #### `@SwagSecurity`
-Method level annotation for adding authentication requirements with @SwagSecurity
+Method level annotation for adding authentication requirements.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagSecurity;
-
 /**
- * @SwagSecurity(name="BearerAuth", scopes="")
+ * @Swag\SwagSecurity(name="BearerAuth", scopes="")
+ */
+public function index() {}
+```
+
+#### `@Swag\SwagOperation`
+Method level annotation for hiding a controller action from swagger.
+
+```php
+/**
+ * @Swag\SwagOperation(isVisible=false)
+ */
+public function index() {}
+```
+
+#### `@SwagRequestBody`
+Method level annotation for describing request body. Set ignoreCakeSchema for full control over request body.
+
+```php
+/**
+ * @Swag\SwagRequestBody(description="my description", required=true, ignoreCakeSchema=true)
+ */
+public function index() {}
+```
+
+#### `@SwagRequestBodyContent`
+Method level annotation for describing custom content in request body.
+
+```php
+/**
+ * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Lead", mimeType="application/x-www-form-urlencoded")
+ * @Swag\SwagRequestBodyContent(refEntity="", mimeType="text/plain")
+ */
+public function index() {}
+```
+
+#### `@SwagResponseSchema`
+Method level annotation for defining custom response schema. Leave refEntity empty to define no schema.
+
+```php
+/**
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Lead", description="summary", httpCode=200)
+ * @Swag\SwagResponseSchema(refEntity="", description="fatal error", httpCode=500)
  */
 public function index() {}
 ```
 
 #### `@SwagPath`
-Class level annotation for exposing controllers to Swagger UI with @SwagPath. By default all controllers with routes are 
-added to Swagger. You can hide entire paths (controllers) with this annotation.
+Class level annotation for exposing controllers to Swagger UI. You can hide entire controllers with this annotation.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagPath;
-
 /**
- * @SwagPath(isVisible=false)
+ * @Swag\SwagPath(isVisible=false)
  */
-class UsersController extends AppController
+class UsersController extends AppController {
 ```
 
 #### `@SwagEntity`
-Class level annotation for exposing entities to Swagger UI with @SwagEntity. By default all entities with routes are 
-added to Swagger.
+Class level annotation for exposing entities to Swagger UI.  You can hide entities with this annotation.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagEntity;
-
 /**
- * @SwagEntity(isVisible=true)
+ * @Swag\SwagEntity(isVisible=true)
  */
 class Employee extends Entity {
 ```
@@ -173,10 +203,8 @@ class Employee extends Entity {
 Class level annotation for customizing Schema Attributes with @SwagEntityAttribute
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
-
 /**
- * @SwagEntityAttribute(name="modified", type="string", readOnly=true, required=false)
+ * @Swag\SwagEntityAttribute(name="modified", type="string", readOnly=true, required=false)
  */
 class Employee extends Entity {
 ```
@@ -246,7 +274,12 @@ bin/cake swagger models
   - App\Model\Entity class (for schemas only)
   - App\Controller class
   - Must be a valid route
-  - Entity attributes must not be marked as hidden to be included (for schemas only)
+- Entity Attributes: 
+  - Hidden attributes will not be visible
+  - Primary Keys will be set to read only by default.
+  - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention. 
+- Table Validators:
+  - Fields set to not allow empty will be marked as required in Swagger.  
 - SwaggerBake has been developed for application/json and has not been tested with application/xml.
 
 ## Supported Versions

@@ -4,6 +4,7 @@
 namespace SwaggerBake\Lib\OpenApi;
 
 use InvalidArgumentException;
+use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * Class Path
@@ -168,9 +169,9 @@ class Path
     }
 
     /**
-     * @return array
+     * @return RequestBody|null
      */
-    public function getRequestBody() : array
+    public function getRequestBody() : ?RequestBody
     {
         return $this->requestBody;
     }
@@ -181,7 +182,7 @@ class Path
      */
     public function setRequestBody(RequestBody $requestBody) : Path
     {
-        $this->requestBody = $requestBody->toArray();
+        $this->requestBody = $requestBody;
         return $this;
     }
 
@@ -191,6 +192,15 @@ class Path
     public function getResponses(): array
     {
         return $this->responses;
+    }
+
+    /**
+     * @param int $code
+     * @return Response|null
+     */
+    public function getResponseByCode(int $code) : ?Response
+    {
+        return isset($this->responses[$code]) ? $this->responses[$code] : null;
     }
 
     /**
@@ -210,7 +220,7 @@ class Path
     public function pushResponse(Response $response): Path
     {
         $code = $response->getCode();
-        $this->responses[$code] = $response->toArray();
+        $this->responses[$code] = $response;
         return $this;
     }
 

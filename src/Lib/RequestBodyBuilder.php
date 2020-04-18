@@ -22,6 +22,11 @@ class RequestBodyBuilder
 
     public function build() : ?RequestBody
     {
+        $requestBody = $this->path->getRequestBody();
+        if (!$requestBody) {
+            $requestBody = new RequestBody();
+        }
+
         foreach ($this->path->getTags() as $tag) {
 
             if (!in_array($this->path->getType(), ['put','patch', 'post'])) {
@@ -30,7 +35,10 @@ class RequestBodyBuilder
 
             $schema = new Schema();
             $schema->setType('object');
-            $schema = $this->withSchemaFromModel($schema, $tag);
+
+            if (!$requestBody->isIgnoreCakeSchema()) {
+                $schema = $this->withSchemaFromModel($schema, $tag);
+            }
             $schema = $this->withSchemaFromAnnotations($schema);
             break;
         }
@@ -45,7 +53,7 @@ class RequestBodyBuilder
             ->setSchema($schema);
         ;
 
-        $requestBody = new RequestBody();
+
         $requestBody
             ->pushContent($content)
             ->setRequired(true)
