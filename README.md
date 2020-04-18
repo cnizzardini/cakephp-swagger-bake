@@ -283,7 +283,10 @@ bin/cake swagger models
   - App\Model\Entity class (for schemas only)
   - App\Controller class
   - Must be a valid route
-  - Entity attributes must not be marked as hidden to be included (for schemas only)
+- Entity Attributes: 
+  - Hidden attributes will not be visible
+  - Primary Keys will be set to read only by default.
+  - DateTime fields named `created`, and `modified` will are automatically set to read only per Cake convention. 
 - SwaggerBake has been developed for application/json and has not been tested with application/xml.
 
 ## Supported Versions

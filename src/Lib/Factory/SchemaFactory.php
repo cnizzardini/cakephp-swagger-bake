@@ -21,6 +21,9 @@ use SwaggerBake\Lib\Utility\DataTypeConversion;
 
 class SchemaFactory
 {
+    private const READ_ONLY_FIELDS = ['created','modified'];
+    private const DATETIME_TYPES = ['date','datetime','timestamp'];
+
     public function __construct(Configuration $config)
     {
         $this->config = $config;
@@ -112,11 +115,15 @@ class SchemaFactory
 
     private function getSchemaProperty(ExpressiveAttribute $attribute) : SchemaProperty
     {
+        $isReadOnly = $attribute->isPrimaryKey();
+        $isReadOnlyField = in_array($attribute->getName(), self::READ_ONLY_FIELDS);
+        $isDateTimeField = in_array($attribute->getType(), self::DATETIME_TYPES);
+
         $property = new SchemaProperty();
         $property
             ->setName($attribute->getName())
             ->setType(DataTypeConversion::convert($attribute->getType()))
-            ->setReadOnly($attribute->isPrimaryKey())
+            ->setReadOnly(($isReadOnly || ($isReadOnlyField && $isDateTimeField)))
         ;
 
         return $property;
