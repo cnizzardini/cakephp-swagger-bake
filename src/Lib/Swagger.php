@@ -189,9 +189,7 @@ class Swagger
 
     private function buildPaths(): void
     {
-        $prefix = $this->cakeModel->getPrefix();
         $routes = $this->cakeRoute->getRoutes();
-
         foreach ($routes as $route) {
 
             $path = (new Factory\PathFactory($route, $this->config))->create();
@@ -204,16 +202,21 @@ class Swagger
             }
 
             $path = $this->pathWithResponses($path);
-
-            $path->setSecurity((new Security($route, $this->config))->getPathSecurity());
-            $path = $this->withPathParameters($path, $route);
-            $path = $this->withRequestBody($path, $route);
+            $path = $this->pathWithSecurity($path, $route);
+            $path = $this->pathWithParameters($path, $route);
+            $path = $this->pathWithRequestBody($path, $route);
 
             $this->pushPath($path);
         }
     }
 
-    private function withPathParameters(Path $path, Route $route) : Path
+    private function pathWithSecurity(Path $path, Route $route) : Path
+    {
+        $path->setSecurity((new Security($route, $this->config))->getPathSecurity());
+        return $path;
+    }
+
+    private function pathWithParameters(Path $path, Route $route) : Path
     {
         $headers = (new HeaderParameter($route, $this->config))->getHeaderParameters();
         foreach ($headers as $parameter) {
@@ -247,7 +250,7 @@ class Swagger
         return $path;
     }
 
-    private function withRequestBody(Path $path, Route $route) : Path
+    private function pathWithRequestBody(Path $path, Route $route) : Path
     {
         $requestBody = (new RequestBodyBuilder($path, $this, $route))->build();
         if ($requestBody) {
