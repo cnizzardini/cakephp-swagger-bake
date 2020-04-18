@@ -10,10 +10,13 @@ class RequestBody implements JsonSerializable
     private $description = '';
     private $content = [];
     private $required = false;
+    private $ignoreCakeSchema = false;
 
     public function toArray() : array
     {
-        return get_object_vars($this);
+        $vars = get_object_vars($this);
+        unset($vars['ignoreCakeSchema']);
+        return $vars;
     }
 
     public function jsonSerialize()
@@ -37,6 +40,11 @@ class RequestBody implements JsonSerializable
     {
         $this->description = $description;
         return $this;
+    }
+
+    public function getContent() : array
+    {
+        return $this->content;
     }
 
     public function pushContent(Content $content) : RequestBody
@@ -69,6 +77,24 @@ class RequestBody implements JsonSerializable
     public function setRequired(bool $required): RequestBody
     {
         $this->required = $required;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIgnoreCakeSchema(): bool
+    {
+        return $this->ignoreCakeSchema;
+    }
+
+    /**
+     * @param bool $ignoreCakeSchema
+     * @return RequestBody
+     */
+    public function setIgnoreCakeSchema(bool $ignoreCakeSchema): RequestBody
+    {
+        $this->ignoreCakeSchema = $ignoreCakeSchema;
         return $this;
     }
 }

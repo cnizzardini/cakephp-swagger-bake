@@ -8,10 +8,6 @@ use SwaggerBake\Lib\Annotation\SwagPaginator;
 
 /**
  * EmployeeSalaries Controller
- *
- * @property \App\Model\Table\EmployeeSalariesTable $EmployeeSalaries
- *
- * @method \App\Model\Entity\EmployeeSalary[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class EmployeeSalariesController extends AppController
 {
@@ -33,10 +29,6 @@ class EmployeeSalariesController extends AppController
 
     /**
      * View method
-     *
-     * @param string|null $id Employee Salary id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
@@ -50,8 +42,6 @@ class EmployeeSalariesController extends AppController
 
     /**
      * Add method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -72,10 +62,6 @@ class EmployeeSalariesController extends AppController
 
     /**
      * Edit method
-     *
-     * @param string|null $id Employee Salary id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function edit($id = null)
     {
@@ -98,10 +84,6 @@ class EmployeeSalariesController extends AppController
 
     /**
      * Delete method
-     *
-     * @param string|null $id Employee Salary id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
     {

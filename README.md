@@ -143,6 +143,31 @@ use SwaggerBake\Lib\Annotation\SwagSecurity;
 public function index() {}
 ```
 
+#### `@SwagRequestBody`
+Method level annotation for describing request body. Set ignoreCakeSchema for full control over request body.
+
+```php
+use SwaggerBake\Lib\Annotation\SwagRequestBody;
+
+/**
+ * @Swag\SwagRequestBody(description="my description", required=true, ignoreCakeSchema=true)
+ */
+public function index() {}
+```
+
+#### `@SwagRequestBodyContent`
+Method level annotation for describing custom content in request body.
+
+```php
+use SwaggerBake\Lib\Annotation\SwagRequestBodyContent;
+``
+/**
+ * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Lead", mimeType="application/x-www-form-urlencoded")
+ * @Swag\SwagRequestBodyContent(refEntity="", mimeType="text/plain")
+ */
+public function index() {}
+```
+
 #### `@SwagResponseSchema`
 Method level annotation for defining custom response schema. Leave refEntity empty to define no schema.
 

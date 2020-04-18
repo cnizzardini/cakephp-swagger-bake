@@ -168,9 +168,9 @@ class Path
     }
 
     /**
-     * @return array
+     * @return RequestBody|null
      */
-    public function getRequestBody() : array
+    public function getRequestBody() : ?RequestBody
     {
         return $this->requestBody;
     }
@@ -181,7 +181,7 @@ class Path
      */
     public function setRequestBody(RequestBody $requestBody) : Path
     {
-        $this->requestBody = $requestBody->toArray();
+        $this->requestBody = $requestBody;
         return $this;
     }
 

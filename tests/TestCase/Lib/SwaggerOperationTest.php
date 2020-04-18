@@ -124,6 +124,7 @@ class SwaggerOperationTest extends TestCase
 
         $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
 
+        $this->assertCount(1, $properties);
         $this->assertArrayHasKey('fieldName', $properties);
     }
 }

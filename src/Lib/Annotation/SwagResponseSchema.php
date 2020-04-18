@@ -21,11 +21,7 @@ class SwagResponseSchema
 
     public function __construct(array $values)
     {
-        if (!isset($values['refEntity']) && $values['refEntity'] != null) {
-            throw new InvalidArgumentException('refEntity parameter is required');
-        }
-
-        $values = array_merge(['httpCode' => 200, 'description' => ''], $values);
+        $values = array_merge(['refEntity' => '','httpCode' => 200, 'description' => ''], $values);
 
         $this->refEntity = $values['refEntity'];
         $this->httpCode = intval($values['httpCode']);

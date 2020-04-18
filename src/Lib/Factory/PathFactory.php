@@ -66,7 +66,10 @@ class PathFactory
                 ->setDeprecated($this->isDeprecated())
             ;
 
-            $path = $this->withResponses($path, $defaults['controller'], $defaults['action']);
+            $methodAnnotations = $this->getMethodAnnotations($defaults['controller'], $defaults['action']);
+
+            $path = $this->withResponses($path, $methodAnnotations);
+            $path = $this->withRequestBody($path, $methodAnnotations);
             $path = $this->withExternalDoc($path);
         }
 
@@ -131,12 +134,15 @@ class PathFactory
         return $return;
     }
 
-    private function withResponses(Path $path, string $className, string $method) : Path
+    private function getMethodAnnotations(string $className, string $method) : array
     {
         $className = $className . 'Controller';
         $controller = $this->getControllerFromNamespaces($className);
-        $annotations = AnnotationUtility::getMethodAnnotations($controller, $method);
+        return AnnotationUtility::getMethodAnnotations($controller, $method);
+    }
 
+    private function withResponses(Path $path, array $annotations) : Path
+    {
         if (empty($annotations)) {
             return $path;
         }
@@ -151,6 +157,39 @@ class PathFactory
         }
 
         return $path->setResponses($responses);
+    }
+
+    private function withRequestBody(Path $path, array $annotations) : Path
+    {
+        if (empty($annotations)) {
+            return $path;
+        }
+
+        $contents = [];
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof SwagAnnotation\SwagRequestBody) {
+                $requestBody = (new SwagAnnotation\SwagRequestBodyHandler())->getResponse($annotation);
+            }
+        }
+
+        if (!isset($requestBody)) {
+            return $path;
+        }
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof SwagAnnotation\SwagRequestBodyContent) {
+                $requestBody->pushContent(
+                    (new SwagAnnotation\SwagRequestBodyContentHandler())->getContent($annotation)
+                );
+            }
+        }
+
+        if (empty($requestBody->getContent())) {
+            return $path->setRequestBody($requestBody);
+        }
+
+        return $path->setRequestBody($requestBody);
     }
 
     private function getDocBlock() : ?DocBlock

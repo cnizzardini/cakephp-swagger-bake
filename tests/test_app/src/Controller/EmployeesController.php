@@ -109,6 +109,7 @@ class EmployeesController extends AppController
     /**
      * custom-post summary
      *
+     * @Swag\SwagRequestBody(description="Hello", ignoreCakeSchema=true)
      * @Swag\SwagForm(name="fieldName", type="string", required=false)
      */
     public function customPost()
