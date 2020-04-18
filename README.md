@@ -278,6 +278,8 @@ bin/cake swagger models
   - Hidden attributes will not be visible
   - Primary Keys will be set to read only by default.
   - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention. 
+- Table Validators:
+  - Fields set to not allow empty will be marked as required in Swagger.  
 - SwaggerBake has been developed for application/json and has not been tested with application/xml.
 
 ## Supported Versions

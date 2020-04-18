@@ -3,7 +3,8 @@
 
 namespace SwaggerBake\Lib\Factory;
 
-use Doctrine\Common\Annotations\AnnotationReader;
+use Cake\Utility\Inflector;
+use Cake\Validation\Validator;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
@@ -23,6 +24,7 @@ class SchemaFactory
 {
     private const READ_ONLY_FIELDS = ['created','modified'];
     private const DATETIME_TYPES = ['date','datetime','timestamp'];
+    private $validator;
 
     public function __construct(Configuration $config)
     {
@@ -34,6 +36,8 @@ class SchemaFactory
         if (!$this->isSwaggable($model)) {
             return null;
         }
+
+        $this->validator = $this->getValidator($model->getName());
 
         $docBlock = $this->getDocBlock($model);
 
@@ -99,7 +103,7 @@ class SchemaFactory
 
         if (!isset($namespaces['entities']) || !is_array($namespaces['entities'])) {
             throw new SwaggerBakeRunTimeException(
-                'Invalid configuration, missing SwaggerBake.namespaces.controllers'
+                'Invalid configuration, missing SwaggerBake.namespaces.entities'
             );
         }
 
@@ -107,6 +111,26 @@ class SchemaFactory
             $entity = $namespace . 'Model\Entity\\' . $className;
             if (class_exists($entity, true)) {
                 return $entity;
+            }
+        }
+
+        return null;
+    }
+
+    private function getTableFromNamespaces(string $className) : ?string
+    {
+        $namespaces = $this->config->getNamespaces();
+
+        if (!isset($namespaces['tables']) || !is_array($namespaces['tables'])) {
+            throw new SwaggerBakeRunTimeException(
+                'Invalid configuration, missing SwaggerBake.namespaces.tables'
+            );
+        }
+
+        foreach ($namespaces['tables'] as $namespace) {
+            $table = $namespace . 'Model\Table\\' . $className;
+            if (class_exists($table, true)) {
+                return $table;
             }
         }
 
@@ -123,6 +147,7 @@ class SchemaFactory
             ->setName($attribute->getName())
             ->setType(DataTypeConversion::convert($attribute->getType()))
             ->setReadOnly(($attribute->isPrimaryKey() || ($isReadOnlyField && $isDateTimeField)))
+            ->setRequired($this->isAttributeRequired($attribute))
         ;
 
         return $property;
@@ -157,5 +182,32 @@ class SchemaFactory
         }
 
         return true;
+    }
+
+    private function isAttributeRequired(ExpressiveAttribute $attribute) : bool
+    {
+        if (!$this->validator) {
+            return false;
+        }
+
+        $validationSet = $this->validator->field($attribute->getName());
+        if (!$validationSet->isEmptyAllowed()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function getValidator(string $className) : ?Validator
+    {
+        try {
+            $table = $this->getTableFromNamespaces(Inflector::pluralize($className) . 'Table');
+            $instance = new $table;
+            $validator = $instance->validationDefault(new Validator());
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return $validator;
     }
 }
