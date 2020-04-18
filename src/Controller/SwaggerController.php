@@ -10,7 +10,7 @@ use SwaggerBake\Lib\Factory\SwaggerFactory;
 class SwaggerController extends AppController
 {
     /**
-     * @link https://book.cakephp.org/4/en/controllers.html#controller-callback-methods
+     * @see https://book.cakephp.org/4/en/controllers.html#controller-callback-methods
      * @param EventInterface $event
      */
     public function beforeFilter(EventInterface $event)
