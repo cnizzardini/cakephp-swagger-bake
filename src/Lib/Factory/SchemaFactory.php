@@ -115,7 +115,6 @@ class SchemaFactory
 
     private function getSchemaProperty(ExpressiveAttribute $attribute) : SchemaProperty
     {
-        $isReadOnly = $attribute->isPrimaryKey();
         $isReadOnlyField = in_array($attribute->getName(), self::READ_ONLY_FIELDS);
         $isDateTimeField = in_array($attribute->getType(), self::DATETIME_TYPES);
 
@@ -123,7 +122,7 @@ class SchemaFactory
         $property
             ->setName($attribute->getName())
             ->setType(DataTypeConversion::convert($attribute->getType()))
-            ->setReadOnly(($isReadOnly || ($isReadOnlyField && $isDateTimeField)))
+            ->setReadOnly(($attribute->isPrimaryKey() || ($isReadOnlyField && $isDateTimeField)))
         ;
 
         return $property;
