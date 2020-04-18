@@ -74,7 +74,8 @@ second as the Path Description, `@see`, `@deprecated`, and `@throws` are also su
 public function index() {}
 ```
 
-SwaggerBake provides some optional Annotations for enhanced functionality.
+SwaggerBake provides some optional Annotations for enhanced functionality. These can be imported individually from 
+`SwaggerBake\Lib\Annotation` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Annotation as Swag`.
 
 #### `@SwagPaginator`
 Method level annotation for adding  [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
@@ -85,10 +86,9 @@ query parameters. This will add the following query params to Swagger:
 - direction
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagPaginator;
-
+use SwaggerBake\Lib\Annotation as Swag;
 /**
- * @SwagPaginator
+ * @Swag\SwagPaginator
  */
 public function index() {
     $employees = $this->paginate($this->Employees);
@@ -101,10 +101,8 @@ public function index() {
 Method level annotation for adding query parameters.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagQuery;
-
 /**
- * @SwagQuery(name="queryParamName", type="string", required=false)
+ * @Swag\SwagQuery(name="queryParamName", type="string", required=false)
  */
 public function index() {}
 ```
@@ -113,10 +111,8 @@ public function index() {}
 Method level annotation for adding form data fields.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagForm;
-
 /**
- * @SwagForm(name="fieldName", type="string", required=false)
+ * @Swag\SwagForm(name="fieldName", type="string", required=false)
  */
 public function index() {}
 ```
@@ -125,10 +121,8 @@ public function index() {}
 Method level annotation for adding header parameters.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagHeader;
-
 /**
- * @SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
+ * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
  */
 public function index() {}
 ```
@@ -137,20 +131,16 @@ public function index() {}
 Method level annotation for adding authentication requirements.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagSecurity;
-
 /**
- * @SwagSecurity(name="BearerAuth", scopes="")
+ * @Swag\SwagSecurity(name="BearerAuth", scopes="")
  */
 public function index() {}
 ```
 
-#### `@SwagOperation`
+#### `@Swag\SwagOperation`
 Method level annotation for hiding a controller action from swagger.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagOperation;
-
 /**
  * @Swag\SwagOperation(isVisible=false)
  */
@@ -161,8 +151,6 @@ public function index() {}
 Method level annotation for describing request body. Set ignoreCakeSchema for full control over request body.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagRequestBody;
-
 /**
  * @Swag\SwagRequestBody(description="my description", required=true, ignoreCakeSchema=true)
  */
@@ -173,8 +161,6 @@ public function index() {}
 Method level annotation for describing custom content in request body.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagRequestBodyContent;
-``
 /**
  * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Lead", mimeType="application/x-www-form-urlencoded")
  * @Swag\SwagRequestBodyContent(refEntity="", mimeType="text/plain")
@@ -186,8 +172,6 @@ public function index() {}
 Method level annotation for defining custom response schema. Leave refEntity empty to define no schema.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagResponseSchema;
-
 /**
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Lead", description="summary", httpCode=200)
  * @Swag\SwagResponseSchema(refEntity="", description="fatal error", httpCode=500)
@@ -200,10 +184,8 @@ Class level annotation for exposing controllers to Swagger UI. You can hide enti
 annotation.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagPath;
-
 /**
- * @SwagPath(isVisible=false)
+ * @Swag\SwagPath(isVisible=false)
  */
 class UsersController extends AppController {
 ```
@@ -212,10 +194,8 @@ class UsersController extends AppController {
 Class level annotation for exposing entities to Swagger UI.  You can hide entities with this annotation.
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagEntity;
-
 /**
- * @SwagEntity(isVisible=true)
+ * @Swag\SwagEntity(isVisible=true)
  */
 class Employee extends Entity {
 ```
@@ -224,10 +204,8 @@ class Employee extends Entity {
 Class level annotation for customizing Schema Attributes with @SwagEntityAttribute
 
 ```php
-use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
-
 /**
- * @SwagEntityAttribute(name="modified", type="string", readOnly=true, required=false)
+ * @Swag\SwagEntityAttribute(name="modified", type="string", readOnly=true, required=false)
  */
 class Employee extends Entity {
 ```
