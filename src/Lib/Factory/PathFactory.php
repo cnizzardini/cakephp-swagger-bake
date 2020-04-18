@@ -34,6 +34,11 @@ class PathFactory
         $this->dockBlock = $this->getDocBlock();
     }
 
+    /**
+     * Creates a Path and returns it
+     *
+     * @return Path|null
+     */
     public function create() : ?Path
     {
         $path = new Path();
