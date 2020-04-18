@@ -98,6 +98,10 @@ class EmployeesController extends AppController
      * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
      * @Swag\SwagSecurity(name="BearerAuth")
      * @Swag\SwagResponseSchema(refEntity="", description="hello world")
+     * @throws BadRequestException
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws Exception
      */
     public function customGet()
     {

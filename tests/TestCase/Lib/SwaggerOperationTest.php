@@ -155,4 +155,32 @@ class SwaggerOperationTest extends TestCase
 
         $this->assertArrayNotHasKey('/employees/custom-hidden', $arr['paths']);
     }
+
+    public function testExceptionResponseSchema()
+    {
+        $config = new Configuration([
+            'prefix' => '/api',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\']
+            ]
+        ], SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $arr = json_decode($swagger->toString(), true);
+
+        $operation = $arr['paths']['/employees/custom-get']['get'];
+
+        echo '<pre>' . __FILE__ . ':' . __LINE__;
+        print_r($operation);
+        echo '</pre>';
+        die();
+
+    }
 }

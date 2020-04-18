@@ -59,7 +59,7 @@ You can enable hot reloading. This setting re-generates swagger.json on each rel
 ## Annotations and Doc Block
 
 SwaggerBake will parse some of your doc blocks for information. The first line reads as the Path Summary and the 
-second as the Path Description, `@see` and `@deprecated` are also supported.
+second as the Path Description, `@see`, `@deprecated`, and `@throws` are also supported.
 
 ```php
 /**
@@ -68,6 +68,8 @@ second as the Path Description, `@see` and `@deprecated` are also supported.
  * This is the path description
  * @see https://book.cakephp.org/4/en/index.html The link and this description appear in Swagger
  * @deprecated
+ * @throws BadRequestException
+ * @throws Exception
  */
 public function index() {}
 ```

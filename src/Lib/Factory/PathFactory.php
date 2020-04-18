@@ -11,9 +11,11 @@ use ReflectionMethod;
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\ExceptionHandler;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
+use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 
@@ -157,6 +159,19 @@ class PathFactory
                 $path->pushResponse((new SwagAnnotation\SwagResponseSchemaHandler())->getResponse($annotation));
             }
         }
+
+        if (!$this->dockBlock->hasTag('throws')) {
+            return $path;
+        }
+
+        $throws = $this->dockBlock->getTagsByName('throws');
+        foreach ($throws as $throw) {
+            $exception = new ExceptionHandler($throw->getType()->__toString());
+            $path->pushResponse(
+                (new Response())->setCode($exception->getCode())->setDescription($exception->getMessage())
+            );
+        }
+
 
         return $path;
     }
