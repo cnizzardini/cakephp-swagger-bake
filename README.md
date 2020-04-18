@@ -53,14 +53,16 @@ You can enable hot reloading. This setting re-generates swagger.json on each rel
 
 ## Annotations and Doc Block
 
-SwaggerBake will parse some of your doc blocks for information. The first line is used as the Path Summary and the 
-second as the Path Description.
+SwaggerBake will parse some of your doc blocks for information. The first line reads as the Path Summary and the 
+second as the Path Description. Additional docblocks support are `@see` and `@deprecated` for now.
 
 ```php
 /**
  * Path Summary
  * 
  * This is the path description
+ * @see https://book.cakephp.org/4/en/index.html A description about the documentation link will display in SwaggerUI
+ * @deprecated
  */
 public function index() {
 

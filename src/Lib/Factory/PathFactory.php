@@ -11,6 +11,7 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -46,6 +47,7 @@ class PathFactory
             return null;
         }
 
+
         foreach ((array) $defaults['_method'] as $method) {
             $path
                 ->setType(strtolower($method))
@@ -57,7 +59,13 @@ class PathFactory
                     Inflector::humanize(Inflector::underscore($defaults['controller']))
                 ])
                 ->setParameters($this->getPathParameters())
+                ->setDeprecated($this->dockBlock->hasTag('deprecated'))
             ;
+
+            $externalDoc = $this->getExternalDoc();
+            if ($externalDoc) {
+                $path->setExternalDocs($externalDoc);
+            }
         }
 
         return $path;
@@ -194,5 +202,32 @@ class PathFactory
         }
 
         return true;
+    }
+
+    private function getExternalDoc() : ?OperationExternalDoc
+    {
+        if (!$this->dockBlock->hasTag('see')) {
+            return null;
+        }
+
+        $tags = $this->dockBlock->getTagsByName('see');
+        $seeTag = reset($tags);
+        $str = $seeTag->__toString();
+        $pieces = explode(' ', $str);
+
+        if (!filter_var($pieces[0], FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        $externalDoc = new OperationExternalDoc();
+        $externalDoc->setUrl($pieces[0]);
+
+        array_shift($pieces);
+
+        if (!empty($pieces)) {
+            $externalDoc->setDescription(implode(' ', $pieces));
+        }
+
+        return $externalDoc;
     }
 }
