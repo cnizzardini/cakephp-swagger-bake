@@ -97,7 +97,7 @@ class EmployeesController extends AppController
      * @Swag\SwagQuery(name="queryParamName", type="string", required=false)
      * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
      * @Swag\SwagSecurity(name="BearerAuth")
-     * @Swag\SwagResponseSchema(refEntity="", description="hello world")
+     * @Swag\SwagResponseSchema(refEntity="", description="hello world", httpCode=200)
      * @throws BadRequestException
      * @throws UnauthorizedException
      * @throws ForbiddenException
