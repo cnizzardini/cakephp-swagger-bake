@@ -152,16 +152,13 @@ class PathFactory
             return $path;
         }
 
-        $responses = [];
-
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagAnnotation\SwagResponseSchema) {
-                $resp = (new SwagAnnotation\SwagResponseSchemaHandler())->getResponse($annotation);
-                $responses[$resp->getCode()] = $resp;
+                $path->pushResponse((new SwagAnnotation\SwagResponseSchemaHandler())->getResponse($annotation));
             }
         }
 
-        return $path->setResponses($responses);
+        return $path;
     }
 
     private function withRequestBody(Path $path, array $annotations) : Path
