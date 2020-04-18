@@ -67,11 +67,7 @@ class PathFactory
             ;
 
             $path = $this->withResponses($path, $defaults['controller'], $defaults['action']);
-
-            $externalDoc = $this->getExternalDoc();
-            if ($externalDoc) {
-                $path->setExternalDocs($externalDoc);
-            }
+            $path = $this->withExternalDoc($path);
         }
 
         return $path;
@@ -241,14 +237,14 @@ class PathFactory
         return $this->dockBlock->hasTag('deprecated');
     }
 
-    private function getExternalDoc() : ?OperationExternalDoc
+    private function withExternalDoc(Path $path) : Path
     {
         if (!$this->dockBlock || !$this->dockBlock instanceof DocBlock) {
-            return null;
+            return $path;
         }
 
         if (!$this->dockBlock->hasTag('see')) {
-            return null;
+            return $path;
         }
 
         $tags = $this->dockBlock->getTagsByName('see');
@@ -257,7 +253,7 @@ class PathFactory
         $pieces = explode(' ', $str);
 
         if (!filter_var($pieces[0], FILTER_VALIDATE_URL)) {
-            return null;
+            return $path;
         }
 
         $externalDoc = new OperationExternalDoc();
@@ -269,6 +265,6 @@ class PathFactory
             $externalDoc->setDescription(implode(' ', $pieces));
         }
 
-        return $externalDoc;
+        return $path->setExternalDocs($externalDoc);
     }
 }
