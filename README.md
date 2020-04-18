@@ -54,7 +54,7 @@ You can enable hot reloading. This setting re-generates swagger.json on each rel
 ## Annotations and Doc Block
 
 SwaggerBake will parse some of your doc blocks for information. The first line reads as the Path Summary and the 
-second as the Path Description. Additional docblocks support are `@see` and `@deprecated` for now.
+second as the Path Description, `@see` and `@deprecated` are also supported.
 
 ```php
 /**
