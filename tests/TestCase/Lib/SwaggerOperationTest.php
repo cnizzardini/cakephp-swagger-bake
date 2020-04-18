@@ -175,12 +175,11 @@ class SwaggerOperationTest extends TestCase
         $swagger = new Swagger(new CakeModel($cakeRoute, $config));
         $arr = json_decode($swagger->toString(), true);
 
-        $operation = $arr['paths']['/employees/custom-get']['get'];
+        $responses = $arr['paths']['/employees/custom-get']['get']['responses'];
 
-        echo '<pre>' . __FILE__ . ':' . __LINE__;
-        print_r($operation);
-        echo '</pre>';
-        die();
-
+        $this->assertArrayHasKey(400, $responses);
+        $this->assertArrayHasKey(401, $responses);
+        $this->assertArrayHasKey(403, $responses);
+        $this->assertArrayHasKey(500, $responses);
     }
 }

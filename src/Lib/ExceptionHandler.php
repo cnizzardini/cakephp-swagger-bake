@@ -30,6 +30,11 @@ class ExceptionHandler
                 }
             }
         } catch(Exception $e) {
+
+        }
+
+        if ($this->code < 400) {
+            $this->message = 'Internal Server Error';
             $this->code = 500;
         }
     }
