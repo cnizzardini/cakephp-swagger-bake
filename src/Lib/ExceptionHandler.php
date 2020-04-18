@@ -6,7 +6,7 @@ use Exception;
 
 class ExceptionHandler
 {
-    private $message = '';
+    private $message = 'Unknown Error';
     private $code = 500;
 
     public function __construct(string $exceptionClass)
@@ -25,7 +25,10 @@ class ExceptionHandler
             foreach ($trying as $try) {
                 if (class_exists($try)) {
                     $instance = new $try();
-                    $this->message = $instance->getMessage();
+                    $this->message = trim($instance->getMessage());
+                    if (empty($this->message)) {
+                        $this->message = get_class($instance);
+                    }
                     $this->code = $instance->getCode();
                 }
             }
@@ -33,10 +36,8 @@ class ExceptionHandler
 
         }
 
-        if ($this->code < 400) {
-            $this->message = 'Internal Server Error';
-            $this->code = 500;
-        }
+        $this->message = empty($this->message) ? 'Unknown Error' : $this->message;
+        $this->code = $this->code < 400 ? 500 : $this->code;
     }
 
     public function getCode() : int
