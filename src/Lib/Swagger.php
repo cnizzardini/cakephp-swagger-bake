@@ -245,7 +245,7 @@ class Swagger
             }
         }
 
-        if (empty($path->getResponses())) {
+        if (!$path->getResponseByCode(200)) {
             $path->pushResponse((new Response())->setCode(200));
         }
 
