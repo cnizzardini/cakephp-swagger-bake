@@ -15,6 +15,11 @@ class ExceptionHandler
             $exceptionClass = substr($exceptionClass, 1);
         }
 
+        $pieces = explode(' ', trim($exceptionClass));
+        if (count($pieces) == 1) {
+            $exceptionClass = reset($pieces);
+        }
+
         $trying = [
             $exceptionClass,
             '\\' . $exceptionClass,
@@ -25,11 +30,8 @@ class ExceptionHandler
             foreach ($trying as $try) {
                 if (class_exists($try)) {
                     $instance = new $try();
-                    $this->message = trim($instance->getMessage());
-                    if (empty($this->message)) {
-                        $this->message = get_class($instance);
-                    }
                     $this->code = $instance->getCode();
+                    $this->assignMessage($instance);
                 }
             }
         } catch(Exception $e) {
@@ -38,6 +40,23 @@ class ExceptionHandler
 
         $this->message = empty($this->message) ? 'Unknown Error' : $this->message;
         $this->code = $this->code < 400 ? 500 : $this->code;
+    }
+
+    private function assignMessage($instance) : void
+    {
+        $this->message = trim($instance->getMessage());
+        if (!empty($this->message)) {
+            return;
+        }
+
+        $class = get_class($instance);
+        $pieces = explode('\\', $class);
+        if (!empty($pieces)) {
+            $this->message = end($pieces);
+            return;
+        }
+
+        $this->message = $class;
     }
 
     public function getCode() : int
