@@ -1,10 +1,10 @@
 <?php
 
-
 namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
+use Exception;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionMethod;
@@ -227,7 +227,7 @@ class PathFactory
 
         try {
             $reflectionMethod = new ReflectionMethod(get_class($instance), $methodName);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
 
