@@ -53,12 +53,7 @@ class SwaggerOperationTest extends TestCase
         });
         $this->router = $router;
 
-        AnnotationLoader::load();
-    }
-
-    public function testCustomGetRouteWithAnnotations()
-    {
-        $config = new Configuration([
+        $this->config = new Configuration([
             'prefix' => '/api',
             'yml' => '/config/swagger-bare-bones.yml',
             'json' => '/webroot/swagger.json',
@@ -70,9 +65,14 @@ class SwaggerOperationTest extends TestCase
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
-        $cakeRoute = new CakeRoute($this->router, $config);
+        AnnotationLoader::load();
+    }
 
-        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+    public function testCustomGetRouteWithAnnotations()
+    {
+        $cakeRoute = new CakeRoute($this->router, $this->config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
 
@@ -106,21 +106,9 @@ class SwaggerOperationTest extends TestCase
 
     public function testCustomPostRouteWithAnnotations()
     {
-        $config = new Configuration([
-            'prefix' => '/api',
-            'yml' => '/config/swagger-bare-bones.yml',
-            'json' => '/webroot/swagger.json',
-            'webPath' => '/swagger.json',
-            'hotReload' => false,
-            'namespaces' => [
-                'controllers' => ['\SwaggerBakeTest\App\\'],
-                'entities' => ['\SwaggerBakeTest\App\\']
-            ]
-        ], SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new CakeRoute($this->router, $this->config);
 
-        $cakeRoute = new CakeRoute($this->router, $config);
-
-        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
         $operation = $arr['paths']['/employees/custom-post']['post'];
@@ -135,21 +123,9 @@ class SwaggerOperationTest extends TestCase
 
     public function testHiddenOperation()
     {
-        $config = new Configuration([
-            'prefix' => '/api',
-            'yml' => '/config/swagger-bare-bones.yml',
-            'json' => '/webroot/swagger.json',
-            'webPath' => '/swagger.json',
-            'hotReload' => false,
-            'namespaces' => [
-                'controllers' => ['\SwaggerBakeTest\App\\'],
-                'entities' => ['\SwaggerBakeTest\App\\']
-            ]
-        ], SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new CakeRoute($this->router, $this->config);
 
-        $cakeRoute = new CakeRoute($this->router, $config);
-
-        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
 
@@ -158,21 +134,9 @@ class SwaggerOperationTest extends TestCase
 
     public function testExceptionResponseSchema()
     {
-        $config = new Configuration([
-            'prefix' => '/api',
-            'yml' => '/config/swagger-bare-bones.yml',
-            'json' => '/webroot/swagger.json',
-            'webPath' => '/swagger.json',
-            'hotReload' => false,
-            'namespaces' => [
-                'controllers' => ['\SwaggerBakeTest\App\\'],
-                'entities' => ['\SwaggerBakeTest\App\\']
-            ]
-        ], SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new CakeRoute($this->router, $this->config);
 
-        $cakeRoute = new CakeRoute($this->router, $config);
-
-        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
         $responses = $arr['paths']['/employees/custom-get']['get']['responses'];
