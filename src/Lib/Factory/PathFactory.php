@@ -181,8 +181,6 @@ class PathFactory
             return $path;
         }
 
-        $contents = [];
-
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagAnnotation\SwagRequestBody) {
                 $requestBody = (new SwagAnnotation\SwagRequestBodyHandler())->getResponse($annotation);
