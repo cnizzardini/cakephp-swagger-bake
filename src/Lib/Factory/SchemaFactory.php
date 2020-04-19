@@ -55,7 +55,9 @@ class SchemaFactory
             return $property->isRequired();
         });
 
-        $schema->setRequired($requiredProperties);
+        if (!empty($requiredProperties)) {
+            $schema->setRequired(array_keys($requiredProperties));
+        }
 
         return $schema;
     }

@@ -63,7 +63,8 @@ class SwaggerTest extends TestCase
             'hotReload' => false,
             'namespaces' => [
                 'controllers' => ['\SwaggerBakeTest\App\\'],
-                'entities' => ['\SwaggerBakeTest\App\\']
+                'entities' => ['\SwaggerBakeTest\App\\'],
+                'tables' => ['\SwaggerBakeTest\App\\'],
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
@@ -87,7 +88,8 @@ class SwaggerTest extends TestCase
             'hotReload' => false,
             'namespaces' => [
                 'controllers' => ['\SwaggerBakeTest\App\\'],
-                'entities' => ['\SwaggerBakeTest\App\\']
+                'entities' => ['\SwaggerBakeTest\App\\'],
+                'tables' => ['\SwaggerBakeTest\App\\'],
             ]
         ], SWAGGER_BAKE_TEST_APP);
 

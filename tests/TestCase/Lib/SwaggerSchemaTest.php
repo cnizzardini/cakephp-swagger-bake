@@ -1,10 +1,7 @@
 <?php
 
-
 namespace SwaggerBake\Test\TestCase\Lib;
 
-
-use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
@@ -14,11 +11,10 @@ use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
-class SwaggerPathTest extends TestCase
+class SwaggerSchemaTest extends TestCase
 {
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
-        'plugin.SwaggerBake.EmployeeTitles',
     ];
 
     private $router;
@@ -29,20 +25,13 @@ class SwaggerPathTest extends TestCase
         $router = new Router();
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Employees', function (RouteBuilder $routes) {
-                $routes->resources('EmployeeTitles');
-            });
+            $builder->resources('Employees');
         });
         $this->router = $router;
 
-        AnnotationLoader::load();
-    }
-
-    public function testPathInvisible()
-    {
-        $config = new Configuration([
+        $this->config = new Configuration([
             'prefix' => '/api',
-            'yml' => '/config/swagger-bare-bones.yml',
+            'yml' => '/config/swagger-with-existing.yml',
             'json' => '/webroot/swagger.json',
             'webPath' => '/swagger.json',
             'hotReload' => false,
@@ -53,12 +42,22 @@ class SwaggerPathTest extends TestCase
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
-        $cakeRoute = new CakeRoute($this->router, $config);
+        AnnotationLoader::load();
+    }
 
-        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+    public function testEmployeeTableProperties()
+    {
+        $cakeRoute = new CakeRoute($this->router, $this->config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
 
         $arr = json_decode($swagger->toString(), true);
 
-        $this->assertArrayNotHasKey('/employee-titles', $arr['paths']);
+        $this->assertArrayHasKey('Employee', $arr['components']['schemas']);
+        $employee = $arr['components']['schemas']['Employee'];
+
+        $this->assertCount(4, $employee['required']);
+        $this->assertEquals('birth_date', $employee['required'][0]);
+        $this->assertArrayHasKey('birth_date', $employee['properties']);
     }
 }
