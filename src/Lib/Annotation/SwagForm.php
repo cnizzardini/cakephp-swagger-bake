@@ -27,11 +27,13 @@ class SwagForm
             throw new InvalidArgumentException('Name parameter is required');
         }
 
-        $type = strtolower($values['type']);
+        $values = array_merge(['type' => 'string', 'required' => false], $values);
 
-        if (!in_array($type, OpenApiDataType::TYPES)) {
+        if (!in_array($values['type'], OpenApiDataType::TYPES)) {
+            $type = $values['type'];
+            $name = $values['name'];
             throw new SwaggerBakeRunTimeException(
-                "Invalid Data Type, given `$type` but must be one of: " .
+                "Invalid Data Type, given [$type] for [$name] but must be one of: " .
                 implode(',', OpenApiDataType::TYPES)
             );
         }
@@ -39,7 +41,7 @@ class SwagForm
         $values = array_merge(['type' => 'string', 'required' => false], $values);
 
         $this->name = $values['name'];
-        $this->type = $type;
+        $this->type = $values['type'];
         $this->required = $values['required'];
     }
 }
