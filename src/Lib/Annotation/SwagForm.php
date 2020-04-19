@@ -3,6 +3,8 @@
 namespace SwaggerBake\Lib\Annotation;
 
 use InvalidArgumentException;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\Utility\OpenApiDataType;
 
 /**
  * @Annotation
@@ -25,10 +27,19 @@ class SwagForm
             throw new InvalidArgumentException('Name parameter is required');
         }
 
+        $type = strtolower($values['type']);
+
+        if (!in_array($type, OpenApiDataType::TYPES)) {
+            throw new SwaggerBakeRunTimeException(
+                "Invalid Data Type, given `$type` but must be one of: " .
+                implode(',', OpenApiDataType::TYPES)
+            );
+        }
+
         $values = array_merge(['type' => 'string', 'required' => false], $values);
 
         $this->name = $values['name'];
-        $this->type = $values['type'];
+        $this->type = $type;
         $this->required = $values['required'];
     }
 }
