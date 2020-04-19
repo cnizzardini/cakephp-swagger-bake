@@ -158,7 +158,7 @@ class PathFactory
             }
         }
 
-        if (!$this->dockBlock->hasTag('throws')) {
+        if (!$this->dockBlock || !$this->dockBlock->hasTag('throws')) {
             return $path;
         }
 
