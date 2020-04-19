@@ -38,7 +38,7 @@ explanation.
 - Create a route for the SwaggerUI page in `config/routes.php`. See Extensibility for other ways to diplay Swagger.
 
 ```php
-$builder->connect('/', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
+$builder->connect('/api', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
 ```
 
 - Use the `swagger bake` command to generate your swagger documentation. 
