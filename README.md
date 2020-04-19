@@ -286,7 +286,7 @@ This is built for CakePHP 4.x only.
 
 | Version | Cake Version  | Supported | Unit Tests | Notes | 
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
-| 1.* | 4.0 | Yes  | Yes | Currently supported | 
+| 1.* | 4.0.x | Yes  | Yes | Currently supported | 
 
 ## Common Issues
 
