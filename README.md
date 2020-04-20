@@ -74,10 +74,10 @@ SwaggerBake works with your existing YML definitions and will not overwrite anyt
 
 ## Doc Blocks
 
-SwaggerBake will parse your doc blocks for information. The first line reads as the Path Summary and the 
-second as the Path Description, `@see`, `@deprecated`, and `@throws` are also supported. Throw tags are documented  
-using their corresponding HTTP status code. For instance, a `MethodNotAllowedException` displays as a 405 
-response in Swagger UI, while a standard PHP Exception displays as a 500 code.
+SwaggerBake will parse your [DocBlocks](https://docs.phpdoc.org/latest/guides/docblocks.html) for information. The 
+first line reads as the Path Summary and the second as the Path Description, `@see`, `@deprecated`, and `@throws` are 
+also supported. Throw tags use the Exception classes HTTP status code. For instance, a `MethodNotAllowedException` 
+displays as a 405 response in Swagger UI, while a standard PHP Exception displays as a 500 code.
 
 ```php
 /**
