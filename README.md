@@ -56,8 +56,8 @@ You can enable hot reloading. This setting re-generates swagger.json on each rel
 
 ## Automatic Documentation
 
-SwaggerBake will automatically build the following from your existing routes and models without additional 
-configurations or annotations:
+I built this library to reduce the need for annotations to build documentation. SwaggerBake will automatically 
+build the following from your existing routes and models without additional effort:
 
 - Paths
     - Path Summary
