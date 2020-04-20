@@ -19,7 +19,7 @@ class DepartmentsController extends AppController
      * Gets Departments
      *
      * @SwagPaginator
-     * @SwagQuery(name="random", type="bool", required=true)
+     * @SwagQuery(name="random", type="boolean", required=true)
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
