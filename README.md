@@ -52,18 +52,39 @@ Using the above example you should now see your swagger documentation after brow
 ### Hot Reload Swagger JSON
 
 You can enable hot reloading. This setting re-generates swagger.json on each reload of Swagger UI. Simply set 
-`hotReload` equal to `true` in your `config/swagger_bake.php` file. This is not recommended for production.
+`hotReload` equal to `true` in your `config/swagger_bake.php` file.
 
-## Annotations and Doc Block
+## Automatic Documentation
 
-SwaggerBake will parse some of your doc blocks for information. The first line reads as the Path Summary and the 
-second as the Path Description, `@see`, `@deprecated`, and `@throws` are also supported.
+SwaggerBake will automatically build the following from your existing routes and models without additional 
+configurations or annotations:
+
+- Paths
+    - Path Summary
+    - Route
+    - Path Parameters
+- Operations
+    - GET, POST, PATCH, DELETE
+    - Form fields using your Cake models
+    - Responses
+    - Sub resources
+- Schema
+
+SwaggerBake works with your existing YML definitions and will not overwrite anything.
+
+## Doc Blocks
+
+SwaggerBake will parse your doc blocks for information. The first line reads as the Path Summary and the 
+second as the Path Description, `@see`, `@deprecated`, and `@throws` are also supported. Throw tags are documented  
+using their corresponding HTTP status code. For instance, a `MethodNotAllowedException` displays as a 405 
+response in Swagger UI, while a standard PHP Exception displays as a 500 code.
 
 ```php
 /**
- * Path Summary
+ * Swagger Path Summary
  * 
- * This is the path description
+ * This displays as the operations long description
+ * 
  * @see https://book.cakephp.org/4/en/index.html The link and this description appear in Swagger
  * @deprecated
  * @throws BadRequestException
@@ -71,6 +92,8 @@ second as the Path Description, `@see`, `@deprecated`, and `@throws` are also su
  */
 public function index() {}
 ```
+
+## Annotations for Extended Functionality
 
 SwaggerBake provides some optional Annotations for enhanced functionality. These can be imported individually from 
 `SwaggerBake\Lib\Annotation` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Annotation as Swag`.
