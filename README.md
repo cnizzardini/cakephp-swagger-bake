@@ -310,7 +310,7 @@ This is built for CakePHP 4.x only.
 | Version | Cake Version  | Supported | Unit Tests | Notes | 
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
 | 1.* | 4.0.* | Yes  | Yes | Currently supported | 
-| cake-3.8 | 3.8.* | NO  | Yes | See branch [cake-3.8](tree/cake-3.8). Completely untested and unsupported | 
+| cake-3.8 | 3.8.* | NO  | Yes | See branch cake-3.8. Completely untested and unsupported | 
 
 ## Common Issues
 
