@@ -171,7 +171,6 @@ class PathFactory
             );
         }
 
-
         return $path;
     }
 
