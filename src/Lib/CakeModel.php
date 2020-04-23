@@ -35,7 +35,7 @@ class CakeModel
     }
 
     /**
-     * Gets an array of ExpressiveModel
+     * Gets an array of ExpressiveModel objects
      *
      * @return array
      */

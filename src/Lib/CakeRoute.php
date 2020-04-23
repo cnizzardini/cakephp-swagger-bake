@@ -35,6 +35,10 @@ class CakeRoute
 
     }
 
+    /**
+     * Gets an array of Route objects
+     * @return array
+     */
     public function getRoutes() : array
     {
         if (empty($this->prefix) || !filter_var('http://foo.com' . $this->prefix, FILTER_VALIDATE_URL)) {
@@ -48,6 +52,12 @@ class CakeRoute
         });
     }
 
+    /**
+     * Returns controller name from the given Route argument
+     *
+     * @param Route $route
+     * @return string|null
+     */
     public function getControllerFromRoute(Route $route) : ?string
     {
         $defaults = (array) $route->defaults;
