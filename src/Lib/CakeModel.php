@@ -18,8 +18,13 @@ use SwaggerBake\Lib\Model\ExpressiveModel;
  */
 class CakeModel
 {
+    /** @var CakeRoute */
     private $cakeRoute;
+
+    /** @var string */
     private $prefix;
+
+    /** @var Configuration */
     private $config;
 
     public function __construct(CakeRoute $cakeRoute, Configuration $config)
