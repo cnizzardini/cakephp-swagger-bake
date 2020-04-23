@@ -14,6 +14,7 @@ use InvalidArgumentException;
  */
 class CakeRoute
 {
+    /** @var string[]  */
     private const EXCLUDED_PLUGINS = [
         'DebugKit'
     ];
@@ -36,9 +37,9 @@ class CakeRoute
     }
 
     /**
-     * Gets an array of Route objects
+     * Gets an array of Route
      *
-     * @return array
+     * @return Route[]
      */
     public function getRoutes() : array
     {
@@ -54,7 +55,7 @@ class CakeRoute
     }
 
     /**
-     * Returns controller name from the given Route argument
+     * Returns controller name from the Route argument
      *
      * @param Route $route
      * @return string|null

@@ -35,9 +35,9 @@ class CakeModel
     }
 
     /**
-     * Gets an array of ExpressiveModel objects
+     * Gets an array of ExpressiveModel
      *
-     * @return array
+     * @return ExpressiveModel[]
      */
     public function getModels() : array
     {
