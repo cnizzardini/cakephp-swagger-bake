@@ -37,6 +37,7 @@ class CakeRoute
 
     /**
      * Gets an array of Route objects
+     *
      * @return array
      */
     public function getRoutes() : array
