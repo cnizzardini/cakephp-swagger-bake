@@ -34,6 +34,11 @@ class CakeModel
         $this->config = $config;
     }
 
+    /**
+     * Gets an array of ExpressiveModel
+     *
+     * @return array
+     */
     public function getModels() : array
     {
         $return = [];
