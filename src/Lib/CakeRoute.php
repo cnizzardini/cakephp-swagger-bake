@@ -14,13 +14,25 @@ use InvalidArgumentException;
  */
 class CakeRoute
 {
+    private const EXCLUDED_PLUGINS = [
+        'DebugKit'
+    ];
+
+    /** @var Router  */
     private $router;
+
+    /** @var string  */
     private $prefix;
+
+    /** @var int  */
+    private $prefixLength = 0;
 
     public function __construct(Router $router, Configuration $config)
     {
         $this->router = $router;
         $this->prefix = $config->getPrefix();
+        $this->prefixLength = strlen($this->prefix);
+
     }
 
     public function getRoutes() : array
@@ -29,16 +41,10 @@ class CakeRoute
             throw new InvalidArgumentException('route prefix is invalid');
         }
 
-        $length = strlen($this->prefix);
+        $routes = $this->router::routes();
 
-        return array_filter($this->router::routes(), function ($route) use ($length) {
-            if (substr($route->template, 0, $length) != $this->prefix) {
-                return null;
-            }
-            if (substr($route->template, $length) == '') {
-                return null;
-            }
-            return true;
+        return array_filter($routes, function ($route) {
+            return $this->isRouteAllowed($route);
         });
     }
 
@@ -51,5 +57,27 @@ class CakeRoute
         }
 
         return $defaults['controller'];
+    }
+
+    private function isRouteAllowed(Route $route) : bool
+    {
+        if (substr($route->template, 0, $this->prefixLength) != $this->prefix) {
+            return false;
+        }
+        if (substr($route->template, $this->prefixLength) == '') {
+            return false;
+        }
+
+        $defaults = (array) $route->defaults;
+
+        if (!isset($defaults['_method']) || empty($defaults['_method'])) {
+            return false;
+        }
+
+        if (isset($defaults['plugin']) && in_array($defaults['plugin'], self::EXCLUDED_PLUGINS)) {
+            return false;
+        }
+
+        return true;
     }
 }

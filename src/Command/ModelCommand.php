@@ -25,7 +25,9 @@ class ModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out("Running...");
+        $io->hr();
+        $io->out("| SwaggerBake is checking your models...");
+        $io->hr();
 
         ValidateConfiguration::validate();
 
@@ -36,7 +38,11 @@ class ModelCommand extends Command
         $models = $cakeModel->getModels();
 
         if (empty($models)) {
-            return $io->warning('No models found');
+            $io->out();
+            $io->warning('No models were found that are associated with: ' . $config->getPrefix());
+            $io->out("Have you added RESTful routes? Do you have models associated with those routes?");
+            $io->out();
+            return;
         }
 
         $header = ['Attribute','Data Type', 'Swagger Type','Default','Primary Key'];
