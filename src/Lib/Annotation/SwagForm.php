@@ -17,8 +17,13 @@ use SwaggerBake\Lib\Utility\OpenApiDataType;
  */
 class SwagForm
 {
+    /** @var string */
     public $name;
+
+    /** @var string */
     public $type;
+
+    /** @var bool */
     public $required;
 
     public function __construct(array $values)
@@ -42,6 +47,6 @@ class SwagForm
 
         $this->name = $values['name'];
         $this->type = $values['type'];
-        $this->required = $values['required'];
+        $this->required = (bool) $values['required'];
     }
 }

@@ -14,8 +14,13 @@ use InvalidArgumentException;
  */
 class SwagRequestBodyContent
 {
+    /** @var string */
     public $refEntity;
+
+    /** @var string */
     public $mimeType;
+
+    /** @var bool */
     public $ignoreCakeSchema;
 
     public function __construct(array $values)

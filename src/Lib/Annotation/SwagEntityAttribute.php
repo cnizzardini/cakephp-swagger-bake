@@ -17,10 +17,19 @@ use InvalidArgumentException;
  */
 class SwagEntityAttribute
 {
+    /** @var string */
     public $name;
+
+    /** @var string */
     public $type;
+
+    /** @var bool */
     public $readOnly;
+
+    /** @var bool */
     public $writeOnly;
+
+    /** @var bool */
     public $required;
 
     public function __construct(array $values)
