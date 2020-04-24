@@ -97,9 +97,14 @@ class PathFactory
             explode('/', $this->route->getTemplate())
         );
 
-        $length = strlen($this->prefix);
+        if ($this->prefix == '/') {
+            return implode('/', $pieces);
+        }
 
-        return substr(implode('/', $pieces), $length);
+        return substr(
+            implode('/', $pieces),
+            strlen($this->prefix)
+        );
     }
 
     private function getPathParameters() : array
