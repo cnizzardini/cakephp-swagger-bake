@@ -1,9 +1,8 @@
 <?php
 
-
 namespace SwaggerBake\Lib;
 
-
+use SwaggerBake\Lib\Model\ExpressiveRoute;
 use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
 use InvalidArgumentException;
@@ -33,13 +32,12 @@ class CakeRoute
         $this->router = $router;
         $this->prefix = $config->getPrefix();
         $this->prefixLength = strlen($this->prefix);
-
     }
 
     /**
      * Gets an array of Route
      *
-     * @return Route[]
+     * @return ExpressiveRoute[]
      */
     public function getRoutes() : array
     {
@@ -47,28 +45,38 @@ class CakeRoute
             throw new InvalidArgumentException('route prefix is invalid');
         }
 
-        $routes = $this->router::routes();
-
-        return array_filter($routes, function ($route) {
+        $filteredRoutes = array_filter($this->router::routes(), function ($route) {
             return $this->isRouteAllowed($route);
         });
+
+        $routes = [];
+
+        foreach ($filteredRoutes as $route) {
+            $routes[$route->getName()] = $this->createExpressiveRouteFromRoute($route);
+        }
+
+        ksort($routes);
+
+        return $routes;
     }
 
-    /**
-     * Returns controller name from the Route argument
-     *
-     * @param Route $route
-     * @return string|null
-     */
-    public function getControllerFromRoute(Route $route) : ?string
+    private function createExpressiveRouteFromRoute(Route $route) : ExpressiveRoute
     {
         $defaults = (array) $route->defaults;
 
-        if (!isset($defaults['controller'])) {
-            return null;
+        $methods = $defaults['_method'];
+        if (!is_array($defaults['_method'])) {
+            $methods = explode(', ', $defaults['_method']);
         }
 
-        return $defaults['controller'];
+        return (new ExpressiveRoute())
+            ->setPlugin($defaults['plugin'])
+            ->setController($defaults['controller'])
+            ->setName($route->getName())
+            ->setAction($defaults['action'])
+            ->setMethods($methods)
+            ->setTemplate($route->template)
+        ;
     }
 
     private function isRouteAllowed(Route $route) : bool

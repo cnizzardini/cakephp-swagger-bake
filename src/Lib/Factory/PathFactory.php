@@ -2,7 +2,6 @@
 
 namespace SwaggerBake\Lib\Factory;
 
-use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
 use Exception;
 use phpDocumentor\Reflection\DocBlock;
@@ -12,6 +11,7 @@ use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\ExceptionHandler;
+use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
@@ -28,7 +28,7 @@ class PathFactory
     private $prefix = '';
     private $config;
 
-    public function __construct(Route $route, Configuration $config)
+    public function __construct(ExpressiveRoute $route, Configuration $config)
     {
         $this->config = $config;
         $this->route = $route;
@@ -44,19 +44,21 @@ class PathFactory
     public function create() : ?Path
     {
         $path = new Path();
-        $defaults = (array) $this->route->defaults;
 
-        if (empty($defaults['_method'])) {
+        if (empty($this->route->getMethods())) {
             return null;
         }
 
-        if (!$this->isControllerVisible($defaults['controller'])) {
+        if (!$this->isControllerVisible($this->route->getController())) {
             return null;
         }
 
-        foreach ((array) $defaults['_method'] as $method) {
+        foreach ($this->route->getMethods() as $method) {
 
-            $methodAnnotations = $this->getMethodAnnotations($defaults['controller'], $defaults['action']);
+            $methodAnnotations = $this->getMethodAnnotations(
+                $this->route->getController(),
+                $this->route->getAction()
+            );
 
             if (!$this->isMethodVisible($methodAnnotations)) {
                 continue;
@@ -69,7 +71,7 @@ class PathFactory
                 ->setSummary($this->dockBlock ? $this->dockBlock->getSummary() : '')
                 ->setDescription($this->dockBlock ? $this->dockBlock->getDescription() : '')
                 ->setTags([
-                    Inflector::humanize(Inflector::underscore($defaults['controller']))
+                    Inflector::humanize(Inflector::underscore($this->route->getController()))
                 ])
                 ->setParameters($this->getPathParameters())
                 ->setDeprecated($this->isDeprecated())
@@ -92,7 +94,7 @@ class PathFactory
                 }
                 return $piece;
             },
-            explode('/', $this->route->template)
+            explode('/', $this->route->getTemplate())
         );
 
         $length = strlen($this->prefix);
@@ -104,7 +106,7 @@ class PathFactory
     {
         $return = [];
 
-        $pieces = explode('/', $this->route->template);
+        $pieces = explode('/', $this->route->getTemplate());
         $results = array_filter($pieces, function ($piece) {
            return substr($piece, 0, 1) == ':' ? true : null;
         });
@@ -207,14 +209,12 @@ class PathFactory
 
     private function getDocBlock() : ?DocBlock
     {
-        $defaults = (array) $this->route->defaults;
-
-        if (!isset($defaults['controller'])) {
+        if (empty($this->route->getController())) {
             return null;
         }
 
-        $className = $defaults['controller'] . 'Controller';
-        $methodName = $defaults['action'];
+        $className = $this->route->getController() . 'Controller';
+        $methodName = $this->route->getAction();
 
         $controller = $this->getControllerFromNamespaces($className);
 

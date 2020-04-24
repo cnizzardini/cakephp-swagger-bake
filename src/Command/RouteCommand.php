@@ -32,7 +32,7 @@ class RouteCommand extends Command
         ValidateConfiguration::validate();
 
         $output = [
-            ['Route name', 'URI template', 'Defaults'],
+            ['Route name', 'URI template', 'Method(s)', 'Controller', 'Action', 'Plugin'],
         ];
 
         $config = new Configuration();
@@ -49,9 +49,14 @@ class RouteCommand extends Command
         }
 
         foreach ($routes as $route) {
-            $name = $route->options['_name'] ?? $route->getName();
-            ksort($route->defaults);
-            $output[] = [$name, $route->template, json_encode($route->defaults)];
+            $output[] = [
+                $route->getName(),
+                $route->getTemplate(),
+                implode(', ', $route->getMethods()),
+                $route->getController(),
+                $route->getAction(),
+                $route->getPlugin(),
+            ];
         }
 
         $io->helper('table')->output($output);

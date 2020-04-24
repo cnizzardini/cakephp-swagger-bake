@@ -2,7 +2,6 @@
 
 namespace SwaggerBake\Lib;
 
-
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
 
 class Security extends AbstractParameter

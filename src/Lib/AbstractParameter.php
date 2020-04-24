@@ -2,10 +2,10 @@
 
 namespace SwaggerBake\Lib;
 
-use Cake\Routing\Route\Route;
 use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\Model\ExpressiveRoute;
 
 class AbstractParameter
 {
@@ -18,14 +18,13 @@ class AbstractParameter
     protected $reflectionMethods;
     protected $config;
 
-    public function __construct(Route $route, Configuration $config)
+    public function __construct(ExpressiveRoute $route, Configuration $config)
     {
         $this->config = $config;
         $this->route = $route;
 
-        $defaults = (array) $this->route->defaults;
-        $this->actionName = $defaults['action'];
-        $this->className = $defaults['controller'] . 'Controller';
+        $this->actionName = $this->route->getAction();
+        $this->className = $this->route->getController() . 'Controller';
 
         $this->controller = $this->getControllerFromNamespaces($this->className);
         $instance = new $this->controller;

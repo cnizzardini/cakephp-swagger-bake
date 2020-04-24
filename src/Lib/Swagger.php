@@ -2,10 +2,10 @@
 
 namespace SwaggerBake\Lib;
 
-use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory as Factory;
+use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -210,13 +210,13 @@ class Swagger
         }
     }
 
-    private function pathWithSecurity(Path $path, Route $route) : Path
+    private function pathWithSecurity(Path $path, ExpressiveRoute $route) : Path
     {
         $path->setSecurity((new Security($route, $this->config))->getPathSecurity());
         return $path;
     }
 
-    private function pathWithParameters(Path $path, Route $route) : Path
+    private function pathWithParameters(Path $path, ExpressiveRoute $route) : Path
     {
         $headers = (new HeaderParameter($route, $this->config))->getHeaderParameters();
         foreach ($headers as $parameter) {
@@ -251,7 +251,7 @@ class Swagger
         return $path;
     }
 
-    private function pathWithRequestBody(Path $path, Route $route) : Path
+    private function pathWithRequestBody(Path $path, ExpressiveRoute $route) : Path
     {
         $requestBody = (new RequestBodyBuilder($path, $this, $route))->build();
         if ($requestBody) {
