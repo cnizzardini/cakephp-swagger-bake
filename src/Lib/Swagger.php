@@ -235,7 +235,7 @@ class Swagger
         foreach ($path->getTags() as $tag) {
             $className = Inflector::classify($tag);
 
-            if (!$path->getResponseByCode(200) && $this->getSchemaByName($className)) {
+            if (!$path->hasSuccessResponseCode() && $this->getSchemaByName($className)) {
                 $response = new Response();
                 $response
                     ->setSchemaRef('#/components/schemas/' . $className)
@@ -244,7 +244,7 @@ class Swagger
             }
         }
 
-        if (!$path->getResponseByCode(200)) {
+        if (!$path->hasSuccessResponseCode()) {
             $path->pushResponse((new Response())->setCode(200));
         }
 

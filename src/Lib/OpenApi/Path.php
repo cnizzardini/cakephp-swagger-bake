@@ -26,13 +26,13 @@ class Path
     private $security = [];
     private $deprecated = false;
 
-    public function toArray() : array
+    public function toArray(): array
     {
         $vars = get_object_vars($this);
         unset($vars['type']);
         unset($vars['path']);
 
-        if (in_array($this->type, ['get','delete'])) {
+        if (in_array($this->type, ['get', 'delete'])) {
             unset($vars['requestBody']);
         }
         if (empty($vars['security'])) {
@@ -43,6 +43,15 @@ class Path
         }
 
         return $vars;
+    }
+
+    public function hasSuccessResponseCode() : bool
+    {
+        $results = array_filter($this->getResponses(), function ($response) {
+            return ($response->getCode() >= 200 && $response->getCode() < 300);
+        });
+
+        return count($results) > 0;
     }
 
     /**
