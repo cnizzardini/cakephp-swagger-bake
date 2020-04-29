@@ -196,7 +196,7 @@ class Path
     }
 
     /**
-     * @return array
+     * @return Response[]
      */
     public function getResponses(): array
     {
