@@ -343,6 +343,11 @@ paths using CakePHPs route resource functionality. Read the
 [Cake Routing documentation](https://book.cakephp.org/4/en/development/routing.html) which describes in detail how to 
 add, remove, modify, and alter routes. 
 
+#### Missing CSRF token body
+
+Either disable CSRF protection on your main route in `config/routes.php` or enable CSRF protection in Swagger 
+UI. The library does not currently support adding this in for you.
+
 ## Reporting Issues
 
 This is a new library so please take some steps before reporting issues. You can copy & paste the JSON SwaggerBake 
