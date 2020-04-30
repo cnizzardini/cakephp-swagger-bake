@@ -15,6 +15,11 @@ class DataTypeConversion
             case 'biginteger':
             case 'mediuminteger':
                 return 'integer';
+            case 'decimal':
+            case 'float':
+                return 'number';
+            case 'uuid':
+            case 'text':
             case 'varchar':
             case 'char':
             case 'date':
