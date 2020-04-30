@@ -162,6 +162,9 @@ class Swagger
         return $this->config;
     }
 
+    /**
+     * Builds schemas from cake models
+     */
     private function buildSchemas(): void
     {
         $schemaFactory = new Factory\SchemaFactory($this->config);
@@ -179,6 +182,9 @@ class Swagger
         }
     }
 
+    /**
+     * Builds paths from cake routes
+     */
     private function buildPaths(): void
     {
         $routes = $this->cakeRoute->getRoutes();
@@ -202,12 +208,26 @@ class Swagger
         }
     }
 
+    /**
+     * Sets security on a path
+     *
+     * @param Path $path
+     * @param ExpressiveRoute $route
+     * @return Path
+     */
     private function pathWithSecurity(Path $path, ExpressiveRoute $route) : Path
     {
         $path->setSecurity((new Security($route, $this->config))->getPathSecurity());
         return $path;
     }
 
+    /**
+     * Sets header parameters on a path
+     *
+     * @param Path $path
+     * @param ExpressiveRoute $route
+     * @return Path
+     */
     private function pathWithParameters(Path $path, ExpressiveRoute $route) : Path
     {
         $headers = (new HeaderParameter($route, $this->config))->getHeaderParameters();
@@ -222,6 +242,12 @@ class Swagger
         return $path;
     }
 
+    /**
+     * Sets responses on a path
+     *
+     * @param Path $path
+     * @return Path
+     */
     private function pathWithResponses(Path $path) : Path
     {
         foreach ($path->getTags() as $tag) {
@@ -257,6 +283,13 @@ class Swagger
         return $path;
     }
 
+    /**
+     * Sets a request body on a path
+     *
+     * @param Path $path
+     * @param ExpressiveRoute $route
+     * @return Path
+     */
     private function pathWithRequestBody(Path $path, ExpressiveRoute $route) : Path
     {
         $requestBody = (new RequestBodyBuilder($path, $this, $route))->build();
@@ -266,7 +299,10 @@ class Swagger
         return $path;
     }
 
-    private function buildFromDefaults()
+    /**
+     * Constructs the primary array used in this class from pre-defined swagger.yml
+     */
+    private function buildFromDefaults() : void
     {
         $array = Yaml::parseFile($this->config->getYml());
         if (!isset($array['paths'])) {
