@@ -20,13 +20,10 @@ class SwagRequestBodyContent
     /** @var string */
     public $mimeType;
 
-    /** @var bool */
-    public $ignoreCakeSchema;
-
     public function __construct(array $values)
     {
         $values = array_merge(['refEntity' => '', 'mimeType' => 'text/plain'], $values);
         $this->refEntity = $values['refEntity'];
-        $this->mimeType = (bool) $values['mimeType'];
+        $this->mimeType = $values['mimeType'];
     }
 }
