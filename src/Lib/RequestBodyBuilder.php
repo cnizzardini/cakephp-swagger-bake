@@ -46,12 +46,10 @@ class RequestBodyBuilder
             return null;
         }
 
-        $content = new Content();
-        $content
+        $content = (new Content())
             ->setMimeType('application/x-www-form-urlencoded')
             ->setSchema($schema);
         ;
-
 
         $requestBody
             ->pushContent($content)
