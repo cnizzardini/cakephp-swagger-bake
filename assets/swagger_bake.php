@@ -23,6 +23,7 @@ return [
         'webPath' => '/swagger.json',
         'hotReload' => false,
         'docType' => 'swagger',
+        'exceptionSchema' => 'Exception',
         'namespaces' => [
             'controllers' => ['\App\\'],
             'entities' => ['\App\\'],

@@ -9,3 +9,18 @@ servers:
 paths:
 
 definitions:
+
+components:
+  schemas:
+    Exception:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 500
+        url:
+          type: string
+          example: /url/path
+        message:
+          type: string
+          example: Internal Error

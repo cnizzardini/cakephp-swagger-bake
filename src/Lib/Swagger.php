@@ -9,6 +9,7 @@ use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use Symfony\Component\Yaml\Yaml;
 
 class Swagger
@@ -23,16 +24,7 @@ class Swagger
         $this->cakeModel = $cakeModel;
         $this->cakeRoute = $cakeModel->getCakeRoute();
         $this->config = $cakeModel->getConfig();
-
-        $array = Yaml::parseFile($this->config->getYml());
-        if (!isset($array['paths'])) {
-            $array['paths'] = [];
-        }
-        if (!isset($array['components']['schemas'])) {
-            $array['components']['schemas'] = [];
-        }
-
-        $this->array = $array;
+        $this->buildFromDefaults();
     }
 
     /**
@@ -248,6 +240,20 @@ class Swagger
             $path->pushResponse((new Response())->setCode(200));
         }
 
+        $exceptionSchema = $this->getSchemaByName($this->getConfig()->getExceptionSchema());
+        if (!$exceptionSchema) {
+            return $path;
+        }
+
+        foreach ($path->getResponses() as $response) {
+            if ($response->getCode() < 400) {
+                continue;
+            }
+            $path->pushResponse(
+                $response->setSchemaRef('#/components/schemas/' . $exceptionSchema->getName())
+            );
+        }
+
         return $path;
     }
 
@@ -258,6 +264,37 @@ class Swagger
             $path->setRequestBody($requestBody);
         }
         return $path;
+    }
+
+    private function buildFromDefaults()
+    {
+        $array = Yaml::parseFile($this->config->getYml());
+        if (!isset($array['paths'])) {
+            $array['paths'] = [];
+        }
+        if (!isset($array['components']['schemas'])) {
+            $array['components']['schemas'] = [];
+        }
+
+        foreach ($array['components']['schemas'] as $schemaName => $schemaVar) {
+            $schema = (new Schema())
+                ->setName($schemaName)
+                ->setType($schemaVar['type']);
+
+            foreach ($schemaVar['properties'] as $propertyName => $propertyVar) {
+                $property = (new SchemaProperty())
+                    ->setType($propertyVar['type'])
+                    ->setName($propertyName)
+                    ->setFormat($propertyVar['type'] ?? '')
+                    ->setExample($propertyVar['example'] ?? '')
+                ;
+                $schema->pushProperty($property);
+            }
+
+            $array['components']['schemas'][$schemaName] = $schema;
+        }
+
+        $this->array = $array;
     }
 
     public function __toString(): string

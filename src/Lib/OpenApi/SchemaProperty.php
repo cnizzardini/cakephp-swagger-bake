@@ -7,11 +7,25 @@ use JsonSerializable;
 
 class SchemaProperty implements JsonSerializable
 {
+    /** @var string  */
     private $name = '';
+
+    /** @var string  */
     private $type = '';
+
+    /** @var string  */
     private $format = '';
+
+    /** @var string  */
+    private $example = '';
+
+    /** @var bool  */
     private $readOnly = false;
+
+    /** @var bool  */
     private $writeOnly = false;
+
+    /** @var bool  */
     private $required = false;
 
     public function toArray() : array
@@ -132,6 +146,24 @@ class SchemaProperty implements JsonSerializable
     public function setRequired(bool $required): SchemaProperty
     {
         $this->required = $required;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExample(): string
+    {
+        return $this->example;
+    }
+
+    /**
+     * @param string $example
+     * @return SchemaProperty
+     */
+    public function setExample(string $example): SchemaProperty
+    {
+        $this->example = $example;
         return $this;
     }
 }
