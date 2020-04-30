@@ -15,6 +15,7 @@ use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
+use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
@@ -187,14 +188,12 @@ class PathFactory
             return $path;
         }
 
+        $requestBody = new RequestBody();
+
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagAnnotation\SwagRequestBody) {
                 $requestBody = (new SwagAnnotation\SwagRequestBodyHandler())->getResponse($annotation);
             }
-        }
-
-        if (!isset($requestBody)) {
-            return $path;
         }
 
         foreach ($annotations as $annotation) {
