@@ -35,17 +35,13 @@ class SwaggerEntityTest extends TestCase
         });
         $this->router = $router;
 
-        AnnotationLoader::load();
-    }
-
-    public function testEntityExists()
-    {
-        $config = new Configuration([
+        $this->config = new Configuration([
             'prefix' => '/api',
             'yml' => '/config/swagger-bare-bones.yml',
             'json' => '/webroot/swagger.json',
             'webPath' => '/swagger.json',
             'hotReload' => false,
+            'exceptionSchema' => 'Exception',
             'namespaces' => [
                 'controllers' => ['\SwaggerBakeTest\App\\'],
                 'entities' => ['\SwaggerBakeTest\App\\'],
@@ -53,9 +49,14 @@ class SwaggerEntityTest extends TestCase
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
-        $cakeRoute = new CakeRoute($this->router, $config);
+        AnnotationLoader::load();
+    }
 
-        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+    public function testEntityExists()
+    {
+        $cakeRoute = new CakeRoute($this->router, $this->config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
 
         $arr = json_decode($swagger->toString(), true);
 
@@ -64,22 +65,9 @@ class SwaggerEntityTest extends TestCase
 
     public function testEntityInvisible()
     {
-        $config = new Configuration([
-            'prefix' => '/api',
-            'yml' => '/config/swagger-bare-bones.yml',
-            'json' => '/webroot/swagger.json',
-            'webPath' => '/swagger.json',
-            'hotReload' => false,
-            'namespaces' => [
-                'controllers' => ['\SwaggerBakeTest\App\\'],
-                'entities' => ['\SwaggerBakeTest\App\\'],
-                'tables' => ['\SwaggerBakeTest\App\\'],
-            ]
-        ], SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new CakeRoute($this->router, $this->config);
 
-        $cakeRoute = new CakeRoute($this->router, $config);
-
-        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
 
         $arr = json_decode($swagger->toString(), true);
 
@@ -88,21 +76,9 @@ class SwaggerEntityTest extends TestCase
 
     public function testEntityAttribute()
     {
-        $config = new Configuration([
-            'prefix' => '/api',
-            'yml' => '/config/swagger-bare-bones.yml',
-            'json' => '/webroot/swagger.json',
-            'webPath' => '/swagger.json',
-            'hotReload' => false,
-            'namespaces' => [
-                'controllers' => ['\SwaggerBakeTest\App\\'],
-                'entities' => ['\SwaggerBakeTest\App\\']
-            ]
-        ], SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new CakeRoute($this->router, $this->config);
 
-        $cakeRoute = new CakeRoute($this->router, $config);
-
-        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
 
         $arr = json_decode($swagger->toString(), true);
 
