@@ -253,7 +253,7 @@ class Swagger
         foreach ($path->getTags() as $tag) {
             $className = Inflector::classify($tag);
 
-            if (!$path->hasSuccessResponseCode() && $this->getSchemaByName($className)) {
+            if ($path->hasSuccessResponseCode() || !$this->getSchemaByName($className)) {
                 continue;
             }
 
