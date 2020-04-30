@@ -70,7 +70,9 @@ build the following from your existing routes and models without additional effo
     - Sub resources
 - Schema
 
-SwaggerBake works with your existing YML definitions and will not overwrite anything.
+SwaggerBake works with your existing YML definitions and will not overwrite anything. By default, it uses 
+components > schemas > Exception as your Swagger documentations Exception schema. See the default 
+[swagger.yml](assets/swagger.yml).
 
 ## Doc Blocks
 
