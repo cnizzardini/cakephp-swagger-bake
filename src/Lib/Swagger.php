@@ -339,9 +339,11 @@ class Swagger
 
             $schema = (new Schema())
                 ->setName($schemaName)
-                ->setType(isset($schemaVar['type']));
+                ->setType($schemaVar['type'])
+                ->setDescription($schemaVar['description'] ?? '');
 
             $schemaVar['properties'] = $schemaVar['properties'] ?? [];
+
             foreach ($schemaVar['properties'] as $propertyName => $propertyVar) {
                 $property = (new SchemaProperty())
                     ->setType($propertyVar['type'])
