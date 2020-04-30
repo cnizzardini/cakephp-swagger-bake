@@ -254,12 +254,13 @@ class Swagger
             $className = Inflector::classify($tag);
 
             if (!$path->hasSuccessResponseCode() && $this->getSchemaByName($className)) {
-                $response = new Response();
-                $response
-                    ->setSchemaRef('#/components/schemas/' . $className)
-                    ->setCode(200);
-                $path->pushResponse($response);
+                continue;
             }
+
+            $response = (new Response())
+                ->setSchemaRef('#/components/schemas/' . $className)
+                ->setCode(200);
+            $path->pushResponse($response);
         }
 
         if (!$path->hasSuccessResponseCode()) {
