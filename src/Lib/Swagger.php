@@ -51,8 +51,13 @@ class Swagger
             }
         }
 
-        ksort($this->array['paths']);
-        ksort($this->array['components']['schemas']);
+        ksort($this->array['paths'], SORT_STRING);
+        uksort($this->array['components']['schemas'], function ($a, $b) {
+            return strcasecmp(
+                preg_replace('/\s+/', '', $a),
+                preg_replace('/\s+/', '', $b)
+            );
+        });
 
         if (empty($this->array['components']['schemas'])) {
             unset($this->array['components']['schemas']);
@@ -254,6 +259,23 @@ class Swagger
             $className = Inflector::classify($tag);
 
             if ($path->hasSuccessResponseCode() || !$this->getSchemaByName($className)) {
+                continue;
+            }
+
+            if ($path->getType() == 'get' && strstr($path->getOperationId(),':index')) {
+                $tags = $path->getTags();
+                $tag = preg_replace('/\s+/', '', reset($tags));
+                $schema = (new Schema())
+                    ->setName($tag)
+                    ->setType('array')
+                    ->setItems(['$ref' => '#/components/schemas/' . $className])
+                ;
+                $this->pushSchema($schema);
+
+                $response = (new Response())
+                    ->setSchemaRef('#/components/schemas/' . $tag)
+                    ->setCode(200);
+                $path->pushResponse($response);
                 continue;
             }
 

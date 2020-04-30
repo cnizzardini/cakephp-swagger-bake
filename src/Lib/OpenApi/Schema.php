@@ -7,11 +7,23 @@ use JsonSerializable;
 
 class Schema implements JsonSerializable
 {
+    /** @var string */
     private $name = '';
+
+    /** @var string */
     private $description = '';
+
+    /** @var string */
     private $type = '';
+
+    /** @var array */
     private $required = [];
+
+    /** @var array */
     private $properties = [];
+
+    /** @var array */
+    private $items = [];
 
     public function toArray() : array
     {
@@ -24,6 +36,9 @@ class Schema implements JsonSerializable
         }
         if (empty($vars['properties'])) {
             unset($vars['properties']);
+        }
+        if (empty($vars['items'])) {
+            unset($vars['items']);
         }
         return $vars;
     }
@@ -149,4 +164,24 @@ class Schema implements JsonSerializable
         $this->description = $description;
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
+    /**
+     * @param array $items
+     * @return Schema
+     */
+    public function setItems(array $items): Schema
+    {
+        $this->items = $items;
+        return $this;
+    }
+
+
 }
