@@ -51,7 +51,7 @@ class SwagForm
 
         $this->name = $values['name'];
         $this->type = $values['type'];
-        $this->description = $values['example'];
+        $this->description = $values['description'];
         $this->required = (bool) $values['required'];
     }
 }
