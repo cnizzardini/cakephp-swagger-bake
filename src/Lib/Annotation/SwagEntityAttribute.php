@@ -43,7 +43,7 @@ class SwagEntityAttribute
         }
 
         $values = array_merge(
-            ['type' => 'string', 'readOnly' => false, 'writeOnly' => false, 'required' => false],
+            ['type' => 'string', 'description' => '', 'readOnly' => false, 'writeOnly' => false, 'required' => false],
             $values
         );
 
