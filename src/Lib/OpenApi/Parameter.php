@@ -40,7 +40,11 @@ class Parameter implements JsonSerializable
 
     public function jsonSerialize()
     {
-        return $this->toArray();
+        $vars = $this->toArray();
+        if (empty($vars['description'])) {
+            unset($vars['description']);
+        }
+        return $vars;
     }
 
     /**
