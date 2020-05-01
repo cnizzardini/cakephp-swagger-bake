@@ -19,6 +19,9 @@ class SchemaProperty implements JsonSerializable
     /** @var string  */
     private $example = '';
 
+    /** @var string  */
+    private $description = '';
+
     /** @var bool  */
     private $readOnly = false;
 
@@ -164,6 +167,24 @@ class SchemaProperty implements JsonSerializable
     public function setExample(string $example): SchemaProperty
     {
         $this->example = $example;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return SchemaProperty
+     */
+    public function setDescription(string $description): SchemaProperty
+    {
+        $this->description = $description;
         return $this;
     }
 }

@@ -12,7 +12,8 @@ use SwaggerBake\Lib\Utility\OpenApiDataType;
  * @Attributes({
  *   @Attribute("name", type = "string"),
  *   @Attribute("type",  type = "string"),
- *   @Attribute("required",  type = "bool"),
+ *   @Attribute("description",  type="string"),
+ *   @Attribute("required",  type="boolean"),
  * })
  */
 class SwagForm
@@ -23,6 +24,9 @@ class SwagForm
     /** @var string */
     public $type;
 
+    /** @var string */
+    public $description;
+
     /** @var bool */
     public $required;
 
@@ -32,7 +36,7 @@ class SwagForm
             throw new InvalidArgumentException('Name parameter is required');
         }
 
-        $values = array_merge(['type' => 'string', 'required' => false], $values);
+        $values = array_merge(['type' => 'string', 'description' => '', 'required' => false], $values);
 
         if (!in_array($values['type'], OpenApiDataType::TYPES)) {
             $type = $values['type'];
@@ -47,6 +51,7 @@ class SwagForm
 
         $this->name = $values['name'];
         $this->type = $values['type'];
+        $this->description = $values['example'];
         $this->required = (bool) $values['required'];
     }
 }
