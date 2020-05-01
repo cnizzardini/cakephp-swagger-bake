@@ -125,7 +125,7 @@ Method level annotation for adding query parameters.
 
 ```php
 /**
- * @Swag\SwagQuery(name="queryParamName", type="string", required=false)
+ * @Swag\SwagQuery(name="queryParamName", type="string", description="string", required=false)
  */
 public function index() {}
 ```
@@ -135,7 +135,7 @@ Method level annotation for adding form data fields.
 
 ```php
 /**
- * @Swag\SwagForm(name="fieldName", type="string", required=false)
+ * @Swag\SwagForm(name="fieldName", type="string", description="string", required=false)
  */
 public function index() {}
 ```
@@ -145,7 +145,7 @@ Method level annotation for adding header parameters.
 
 ```php
 /**
- * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
+ * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="string", required=false)
  */
 public function index() {}
 ```
@@ -185,8 +185,7 @@ Method level annotation for describing custom content in request body.
 
 ```php
 /**
- * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Lead", mimeType="application/x-www-form-urlencoded")
- * @Swag\SwagRequestBodyContent(refEntity="", mimeType="text/plain")
+ * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Lead", mimeType="application/json")
  */
 public function index() {}
 ```
@@ -227,7 +226,7 @@ Class level annotation for customizing Schema Attributes with @SwagEntityAttribu
 
 ```php
 /**
- * @Swag\SwagEntityAttribute(name="modified", type="string", readOnly=true, required=false)
+ * @Swag\SwagEntityAttribute(name="modified", type="string", description="string", readOnly=true, required=false)
  */
 class Employee extends Entity {
 ```
