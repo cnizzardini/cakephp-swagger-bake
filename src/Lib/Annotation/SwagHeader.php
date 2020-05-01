@@ -10,6 +10,7 @@ use InvalidArgumentException;
  * @Attributes({
  *   @Attribute("name", type = "string"),
  *   @Attribute("type",  type = "string"),
+ *   @Attribute("description",  type = "string"),
  *   @Attribute("required",  type = "bool"),
  * })
  */
@@ -21,6 +22,9 @@ class SwagHeader
     /** @var string */
     public $type;
 
+    /** @var string */
+    public $description;
+
     /** @var bool */
     public $required;
 
@@ -30,10 +34,11 @@ class SwagHeader
             throw new InvalidArgumentException('Name parameter is required');
         }
 
-        $values = array_merge(['type' => 'string', 'required' => false], $values);
+        $values = array_merge(['type' => 'string', 'description' => '', 'required' => false], $values);
 
         $this->name = $values['name'];
         $this->type = $values['type'];
+        $this->description = $values['description'];
         $this->required = (bool) $values['required'];
     }
 }
