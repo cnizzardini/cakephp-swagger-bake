@@ -36,6 +36,14 @@ class SchemaProperty implements JsonSerializable
         $vars = get_object_vars($this);
         unset($vars['name']);
         unset($vars['required']);
+
+        if (empty($vars['example'])) {
+            unset($vars['example']);
+        }
+        if (empty($vars['description'])) {
+            unset($vars['description']);
+        }
+
         return $vars;
     }
 
