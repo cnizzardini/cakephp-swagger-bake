@@ -2,15 +2,27 @@
 
 namespace SwaggerBake\Lib\Annotation;
 
+use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Response;
 
 class SwagResponseSchemaHandler
 {
     public function getResponse(SwagResponseSchema $annotation) : Response
     {
-        return (new Response())
-            ->setSchemaRef($annotation->refEntity)
+        $response = (new Response())
             ->setCode(intval($annotation->httpCode))
             ->setDescription($annotation->description);
+
+        if (empty($annotation->schemaFormat) && empty($annotation->mimeType)) {
+            return $response;
+        }
+
+        return $response->pushContent(
+            (new Content())
+                ->setSchema($annotation->refEntity)
+                ->setFormat($annotation->schemaFormat)
+                ->setType($annotation->schemaType)
+                ->setMimeType($annotation->mimeType)
+        );
     }
 }

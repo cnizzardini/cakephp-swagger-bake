@@ -6,6 +6,7 @@ use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory as Factory;
 use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -273,15 +274,23 @@ class Swagger
                 $this->pushSchema($schema);
 
                 $response = (new Response())
-                    ->setSchemaRef('#/components/schemas/' . $tag)
-                    ->setCode(200);
+                    ->setCode(200)
+                    ->pushContent(
+                        (new Content())
+                            ->setMimeType('application/json')
+                            ->setSchema('#/components/schemas/' . $tag)
+                    );
                 $path->pushResponse($response);
                 continue;
             }
 
             $response = (new Response())
-                ->setSchemaRef('#/components/schemas/' . $className)
-                ->setCode(200);
+                ->setCode(200)
+                ->pushContent(
+                    (new Content())
+                        ->setMimeType('application/json')
+                        ->setSchema('#/components/schemas/' . $className)
+                );
             $path->pushResponse($response);
         }
 
@@ -299,7 +308,11 @@ class Swagger
                 continue;
             }
             $path->pushResponse(
-                $response->setSchemaRef('#/components/schemas/' . $exceptionSchema->getName())
+                $response->pushContent(
+                    (new Content())
+                        ->setMimeType('application/json')
+                        ->setSchema('#/components/schemas/' . $exceptionSchema->getName())
+                )
             );
         }
 
