@@ -12,12 +12,25 @@ use JsonSerializable;
  */
 class Parameter implements JsonSerializable
 {
+    /** @var string **/
     private $name = '';
+
+    /** @var string **/
     private $in = '';
+
+    /** @var string **/
     private $description = '';
+
+    /** @var bool **/
     private $required = false;
+
+    /** @var Schema **/
     private $schema;
+
+    /** @var bool **/
     private $deprecated = false;
+
+    /** @var bool **/
     private $allowEmptyValue = true;
 
     public function toArray() : array
@@ -27,7 +40,11 @@ class Parameter implements JsonSerializable
 
     public function jsonSerialize()
     {
-        return $this->toArray();
+        $vars = $this->toArray();
+        if (empty($vars['description'])) {
+            unset($vars['description']);
+        }
+        return $vars;
     }
 
     /**

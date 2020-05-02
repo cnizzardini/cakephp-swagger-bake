@@ -12,6 +12,7 @@ class SwagHeaderHandler
         $parameter = new Parameter();
         $parameter
             ->setName($annotation->name)
+            ->setDescription($annotation->description)
             ->setAllowEmptyValue(false)
             ->setDeprecated(false)
             ->setRequired($annotation->required)

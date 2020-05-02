@@ -50,23 +50,26 @@ class SwaggerTest extends TestCase
         });
         $this->router = $router;
 
-        AnnotationLoader::load();
-    }
-
-    public function testGetArrayWithExistingPathsAndSchema()
-    {
-        $config = new Configuration([
+        $this->config = [
             'prefix' => '/api',
             'yml' => '/config/swagger-with-existing.yml',
             'json' => '/webroot/swagger.json',
             'webPath' => '/swagger.json',
             'hotReload' => false,
+            'exceptionSchema' => 'Exception',
             'namespaces' => [
                 'controllers' => ['\SwaggerBakeTest\App\\'],
                 'entities' => ['\SwaggerBakeTest\App\\'],
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
-        ], SWAGGER_BAKE_TEST_APP);
+        ];
+
+        AnnotationLoader::load();
+    }
+
+    public function testGetArrayWithExistingPathsAndSchema()
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new CakeRoute($this->router, $config);
 
@@ -80,18 +83,9 @@ class SwaggerTest extends TestCase
 
     public function testGetArrayFromBareBones()
     {
-        $config = new Configuration([
-            'prefix' => '/api',
-            'yml' => '/config/swagger-bare-bones.yml',
-            'json' => '/webroot/swagger.json',
-            'webPath' => '/swagger.json',
-            'hotReload' => false,
-            'namespaces' => [
-                'controllers' => ['\SwaggerBakeTest\App\\'],
-                'entities' => ['\SwaggerBakeTest\App\\'],
-                'tables' => ['\SwaggerBakeTest\App\\'],
-            ]
-        ], SWAGGER_BAKE_TEST_APP);
+        $vars = $this->config;
+        $vars['yml'] = '/config/swagger-bare-bones.yml';
+        $config = new Configuration($vars, SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new CakeRoute($this->router, $config);
 

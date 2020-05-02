@@ -24,6 +24,7 @@ class Configuration
             [
                 'docType' => 'swagger',
                 'hotReload' => false,
+                'exceptionSchema' => 'Exception',
                 'namespaces' => [
                     'controllers' => ['\App\\'],
                     'entities' => ['\App\\'],
@@ -87,6 +88,11 @@ class Configuration
     public function getDocType() : string
     {
         return strtolower($this->get('docType'));
+    }
+
+    public function getExceptionSchema() : string
+    {
+        return $this->get('exceptionSchema');
     }
 
     public function getLayout(?string $doctype = null) : string

@@ -70,7 +70,9 @@ build the following from your existing routes and models without additional effo
     - Sub resources
 - Schema
 
-SwaggerBake works with your existing YML definitions and will not overwrite anything.
+SwaggerBake works with your existing YML definitions and will not overwrite anything. By default, it uses 
+components > schemas > Exception as your Swagger documentations Exception schema. See the default 
+[swagger.yml](assets/swagger.yml) and `exceptionSchema` in [swagger_bake.php](assets/swagger_bake.php) for more info.
 
 ## Doc Blocks
 
@@ -123,7 +125,7 @@ Method level annotation for adding query parameters.
 
 ```php
 /**
- * @Swag\SwagQuery(name="queryParamName", type="string", required=false)
+ * @Swag\SwagQuery(name="queryParamName", type="string", description="string", required=false)
  */
 public function index() {}
 ```
@@ -133,7 +135,7 @@ Method level annotation for adding form data fields.
 
 ```php
 /**
- * @Swag\SwagForm(name="fieldName", type="string", required=false)
+ * @Swag\SwagForm(name="fieldName", type="string", description="string", required=false)
  */
 public function index() {}
 ```
@@ -143,7 +145,7 @@ Method level annotation for adding header parameters.
 
 ```php
 /**
- * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
+ * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="string", required=false)
  */
 public function index() {}
 ```
@@ -183,8 +185,7 @@ Method level annotation for describing custom content in request body.
 
 ```php
 /**
- * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Lead", mimeType="application/x-www-form-urlencoded")
- * @Swag\SwagRequestBodyContent(refEntity="", mimeType="text/plain")
+ * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Lead", mimeType="application/json")
  */
 public function index() {}
 ```
@@ -225,7 +226,7 @@ Class level annotation for customizing Schema Attributes with @SwagEntityAttribu
 
 ```php
 /**
- * @Swag\SwagEntityAttribute(name="modified", type="string", readOnly=true, required=false)
+ * @Swag\SwagEntityAttribute(name="modified", type="string", description="string", readOnly=true, required=false)
  */
 class Employee extends Entity {
 ```
@@ -342,6 +343,11 @@ By default Cake RESTful resources will only create routes for index, view, add, 
 paths using CakePHPs route resource functionality. Read the 
 [Cake Routing documentation](https://book.cakephp.org/4/en/development/routing.html) which describes in detail how to 
 add, remove, modify, and alter routes. 
+
+#### Missing CSRF token body
+
+Either disable CSRF protection on your main route in `config/routes.php` or enable CSRF protection in Swagger 
+UI. The library does not currently support adding this in for you.
 
 ## Reporting Issues
 

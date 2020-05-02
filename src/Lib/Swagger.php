@@ -2,13 +2,14 @@
 
 namespace SwaggerBake\Lib;
 
-use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory as Factory;
+use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use Symfony\Component\Yaml\Yaml;
 
 class Swagger
@@ -23,16 +24,7 @@ class Swagger
         $this->cakeModel = $cakeModel;
         $this->cakeRoute = $cakeModel->getCakeRoute();
         $this->config = $cakeModel->getConfig();
-
-        $array = Yaml::parseFile($this->config->getYml());
-        if (!isset($array['paths'])) {
-            $array['paths'] = [];
-        }
-        if (!isset($array['components']['schemas'])) {
-            $array['components']['schemas'] = [];
-        }
-
-        $this->array = $array;
+        $this->buildFromDefaults();
     }
 
     /**
@@ -59,8 +51,13 @@ class Swagger
             }
         }
 
-        ksort($this->array['paths']);
-        ksort($this->array['components']['schemas']);
+        ksort($this->array['paths'], SORT_STRING);
+        uksort($this->array['components']['schemas'], function ($a, $b) {
+            return strcasecmp(
+                preg_replace('/\s+/', '', $a),
+                preg_replace('/\s+/', '', $b)
+            );
+        });
 
         if (empty($this->array['components']['schemas'])) {
             unset($this->array['components']['schemas']);
@@ -170,6 +167,9 @@ class Swagger
         return $this->config;
     }
 
+    /**
+     * Builds schemas from cake models
+     */
     private function buildSchemas(): void
     {
         $schemaFactory = new Factory\SchemaFactory($this->config);
@@ -187,6 +187,9 @@ class Swagger
         }
     }
 
+    /**
+     * Builds paths from cake routes
+     */
     private function buildPaths(): void
     {
         $routes = $this->cakeRoute->getRoutes();
@@ -210,13 +213,27 @@ class Swagger
         }
     }
 
-    private function pathWithSecurity(Path $path, Route $route) : Path
+    /**
+     * Sets security on a path
+     *
+     * @param Path $path
+     * @param ExpressiveRoute $route
+     * @return Path
+     */
+    private function pathWithSecurity(Path $path, ExpressiveRoute $route) : Path
     {
         $path->setSecurity((new Security($route, $this->config))->getPathSecurity());
         return $path;
     }
 
-    private function pathWithParameters(Path $path, Route $route) : Path
+    /**
+     * Sets header parameters on a path
+     *
+     * @param Path $path
+     * @param ExpressiveRoute $route
+     * @return Path
+     */
+    private function pathWithParameters(Path $path, ExpressiveRoute $route) : Path
     {
         $headers = (new HeaderParameter($route, $this->config))->getHeaderParameters();
         foreach ($headers as $parameter) {
@@ -230,35 +247,117 @@ class Swagger
         return $path;
     }
 
+    /**
+     * Sets responses on a path
+     *
+     * @param Path $path
+     * @return Path
+     */
     private function pathWithResponses(Path $path) : Path
     {
         foreach ($path->getTags() as $tag) {
             $className = Inflector::classify($tag);
 
+            if ($path->hasSuccessResponseCode() || !$this->getSchemaByName($className)) {
+                continue;
+            }
 
-            if (!$path->getResponseByCode(200) && $this->getSchemaByName($className)) {
-                $response = new Response();
-                $response
-                    ->setSchemaRef('#/components/schemas/' . $className)
+            if ($path->getType() == 'get' && strstr($path->getOperationId(),':index')) {
+                $tags = $path->getTags();
+                $tag = preg_replace('/\s+/', '', reset($tags));
+                $schema = (new Schema())
+                    ->setName($tag)
+                    ->setType('array')
+                    ->setItems(['$ref' => '#/components/schemas/' . $className])
+                ;
+                $this->pushSchema($schema);
+
+                $response = (new Response())
+                    ->setSchemaRef('#/components/schemas/' . $tag)
                     ->setCode(200);
                 $path->pushResponse($response);
+                continue;
             }
+
+            $response = (new Response())
+                ->setSchemaRef('#/components/schemas/' . $className)
+                ->setCode(200);
+            $path->pushResponse($response);
         }
 
-        if (!$path->getResponseByCode(200)) {
+        if (!$path->hasSuccessResponseCode()) {
             $path->pushResponse((new Response())->setCode(200));
+        }
+
+        $exceptionSchema = $this->getSchemaByName($this->getConfig()->getExceptionSchema());
+        if (!$exceptionSchema) {
+            return $path;
+        }
+
+        foreach ($path->getResponses() as $response) {
+            if ($response->getCode() < 400) {
+                continue;
+            }
+            $path->pushResponse(
+                $response->setSchemaRef('#/components/schemas/' . $exceptionSchema->getName())
+            );
         }
 
         return $path;
     }
 
-    private function pathWithRequestBody(Path $path, Route $route) : Path
+    /**
+     * Sets a request body on a path
+     *
+     * @param Path $path
+     * @param ExpressiveRoute $route
+     * @return Path
+     */
+    private function pathWithRequestBody(Path $path, ExpressiveRoute $route) : Path
     {
         $requestBody = (new RequestBodyBuilder($path, $this, $route))->build();
         if ($requestBody) {
             $path->setRequestBody($requestBody);
         }
         return $path;
+    }
+
+    /**
+     * Constructs the primary array used in this class from pre-defined swagger.yml
+     */
+    private function buildFromDefaults() : void
+    {
+        $array = Yaml::parseFile($this->config->getYml());
+        if (!isset($array['paths'])) {
+            $array['paths'] = [];
+        }
+        if (!isset($array['components']['schemas'])) {
+            $array['components']['schemas'] = [];
+        }
+
+        foreach ($array['components']['schemas'] as $schemaName => $schemaVar) {
+
+            $schema = (new Schema())
+                ->setName($schemaName)
+                ->setType($schemaVar['type'])
+                ->setDescription($schemaVar['description'] ?? '');
+
+            $schemaVar['properties'] = $schemaVar['properties'] ?? [];
+
+            foreach ($schemaVar['properties'] as $propertyName => $propertyVar) {
+                $property = (new SchemaProperty())
+                    ->setType($propertyVar['type'])
+                    ->setName($propertyName)
+                    ->setFormat($propertyVar['type'] ?? '')
+                    ->setExample($propertyVar['example'] ?? '')
+                ;
+                $schema->pushProperty($property);
+            }
+
+            $array['components']['schemas'][$schemaName] = $schema;
+        }
+
+        $this->array = $array;
     }
 
     public function __toString(): string

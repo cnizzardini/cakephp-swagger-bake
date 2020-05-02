@@ -14,7 +14,10 @@ use InvalidArgumentException;
  */
 class SwagSecurity
 {
+    /** @var string */
     public $name;
+
+    /** @var string */
     public $scopes;
 
     public function __construct(array $values)

@@ -59,6 +59,7 @@ class SwaggerOperationTest extends TestCase
             'json' => '/webroot/swagger.json',
             'webPath' => '/swagger.json',
             'hotReload' => false,
+            'exceptionSchema' => 'Exception',
             'namespaces' => [
                 'controllers' => ['\SwaggerBakeTest\App\\'],
                 'entities' => ['\SwaggerBakeTest\App\\'],

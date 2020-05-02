@@ -3,17 +3,16 @@
 
 namespace SwaggerBake\Lib;
 
-use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
+use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 class RequestBodyBuilder
 {
-    public function __construct(Path $path, Swagger $swagger, Route $route)
+    public function __construct(Path $path, Swagger $swagger, ExpressiveRoute $route)
     {
         $this->path = $path;
         $this->route = $route;
@@ -47,12 +46,10 @@ class RequestBodyBuilder
             return null;
         }
 
-        $content = new Content();
-        $content
+        $content = (new Content())
             ->setMimeType('application/x-www-form-urlencoded')
             ->setSchema($schema);
         ;
-
 
         $requestBody
             ->pushContent($content)

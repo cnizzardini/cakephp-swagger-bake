@@ -10,6 +10,7 @@ class SwagFormHandler
     {
         $schemaProperty = new SchemaProperty();
         $schemaProperty
+            ->setDescription($annotation->description)
             ->setName($annotation->name)
             ->setType($annotation->type)
             ->setRequired($annotation->required)

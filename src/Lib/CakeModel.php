@@ -18,8 +18,13 @@ use SwaggerBake\Lib\Model\ExpressiveModel;
  */
 class CakeModel
 {
+    /** @var CakeRoute */
     private $cakeRoute;
+
+    /** @var string */
     private $prefix;
+
+    /** @var Configuration */
     private $config;
 
     public function __construct(CakeRoute $cakeRoute, Configuration $config)
@@ -29,6 +34,11 @@ class CakeModel
         $this->config = $config;
     }
 
+    /**
+     * Gets an array of ExpressiveModel
+     *
+     * @return ExpressiveModel[]
+     */
     public function getModels() : array
     {
         $return = [];
@@ -105,11 +115,10 @@ class CakeModel
     {
         $return = [];
         foreach ($routes as $route) {
-            $controllerName = $this->cakeRoute->getControllerFromRoute($route);
-            if (empty($controllerName)) {
+            if (empty($route->getController())) {
                 continue;
             }
-            $return[] = Inflector::underscore($controllerName);
+            $return[] = Inflector::underscore($route->getController());
         }
         return array_unique($return);
     }

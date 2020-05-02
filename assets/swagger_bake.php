@@ -13,6 +13,8 @@
  *
  * @var string $docType: Options are swagger and redoc, defaults: swagger
  *
+ * @var string $exceptionSchema: The name of your Exception schema in your swagger.yml definition file.
+ *
  * @var array $namespaces: Can be used if your controllers or entities exist in non-standard namespace such as a plugin
  */
 return [
@@ -21,13 +23,17 @@ return [
         'yml' => '/config/swagger.yml',
         'json' => '/webroot/swagger.json',
         'webPath' => '/swagger.json',
-        'hotReload' => false,
+        'hotReload' => \Cake\Core\Configure::read('debug'),
+        /** optional configurations below:  **/
+        /*
         'docType' => 'swagger',
+        'exceptionSchema' => 'Exception',
         'namespaces' => [
             'controllers' => ['\App\\'],
             'entities' => ['\App\\'],
             'tables' => ['\App\\']
         ]
+        */
     ]
 ];
 

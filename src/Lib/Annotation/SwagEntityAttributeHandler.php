@@ -11,6 +11,7 @@ class SwagEntityAttributeHandler
         $schemaProperty = new SchemaProperty();
         $schemaProperty
             ->setName($annotation->name)
+            ->setDescription($annotation->description)
             ->setType($annotation->type)
             ->setReadOnly($annotation->readOnly)
             ->setWriteOnly($annotation->writeOnly)

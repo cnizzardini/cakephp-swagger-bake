@@ -13,6 +13,7 @@ use InvalidArgumentException;
  */
 class SwagOperation
 {
+    /** @var bool */
     public $isVisible;
 
     public function __construct(array $values)

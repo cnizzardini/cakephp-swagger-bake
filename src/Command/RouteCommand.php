@@ -25,12 +25,14 @@ class RouteCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out("Running...");
+        $io->hr();
+        $io->out("| SwaggerBake is checking your routes...");
+        $io->hr();
 
         ValidateConfiguration::validate();
 
         $output = [
-            ['Route name', 'URI template', 'Defaults'],
+            ['Route name', 'URI template', 'Method(s)', 'Controller', 'Action', 'Plugin'],
         ];
 
         $config = new Configuration();
@@ -39,15 +41,22 @@ class RouteCommand extends Command
         $routes = $cakeRoute->getRoutes();
 
         if (empty($routes)) {
-            $io->out("<warning>No routes were found for: $prefix</warning>");
-            $io->out('<info>https://book.cakephp.org/4/en/development/routing.html#restful-routing</info>');
+            $io->out();
+            $io->warning("No routes were found for: $prefix");
+            $io->out("Have you added RESTful routes? Do you have models associated with those routes?");
+            $io->out();
             return;
         }
 
         foreach ($routes as $route) {
-            $name = $route->options['_name'] ?? $route->getName();
-            ksort($route->defaults);
-            $output[] = [$name, $route->template, json_encode($route->defaults)];
+            $output[] = [
+                $route->getName(),
+                $route->getTemplate(),
+                implode(', ', $route->getMethods()),
+                $route->getController(),
+                $route->getAction(),
+                $route->getPlugin(),
+            ];
         }
 
         $io->helper('table')->output($output);

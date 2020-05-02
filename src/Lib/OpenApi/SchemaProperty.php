@@ -7,11 +7,28 @@ use JsonSerializable;
 
 class SchemaProperty implements JsonSerializable
 {
+    /** @var string  */
     private $name = '';
+
+    /** @var string  */
     private $type = '';
+
+    /** @var string  */
     private $format = '';
+
+    /** @var string  */
+    private $example = '';
+
+    /** @var string  */
+    private $description = '';
+
+    /** @var bool  */
     private $readOnly = false;
+
+    /** @var bool  */
     private $writeOnly = false;
+
+    /** @var bool  */
     private $required = false;
 
     public function toArray() : array
@@ -19,6 +36,14 @@ class SchemaProperty implements JsonSerializable
         $vars = get_object_vars($this);
         unset($vars['name']);
         unset($vars['required']);
+
+        if (empty($vars['example'])) {
+            unset($vars['example']);
+        }
+        if (empty($vars['description'])) {
+            unset($vars['description']);
+        }
+
         return $vars;
     }
 
@@ -132,6 +157,42 @@ class SchemaProperty implements JsonSerializable
     public function setRequired(bool $required): SchemaProperty
     {
         $this->required = $required;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExample(): string
+    {
+        return $this->example;
+    }
+
+    /**
+     * @param string $example
+     * @return SchemaProperty
+     */
+    public function setExample(string $example): SchemaProperty
+    {
+        $this->example = $example;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return SchemaProperty
+     */
+    public function setDescription(string $description): SchemaProperty
+    {
+        $this->description = $description;
         return $this;
     }
 }

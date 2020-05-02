@@ -15,8 +15,13 @@ use InvalidArgumentException;
  */
 class SwagResponseSchema
 {
+    /** @var string */
     public $refEntity;
+
+    /** @var int */
     public $httpCode = 200;
+
+    /** @var string */
     public $description;
 
     public function __construct(array $values)
