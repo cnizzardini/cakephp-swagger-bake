@@ -185,7 +185,7 @@ Method level annotation for describing custom content in request body.
 
 ```php
 /**
- * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Lead", mimeType="application/json")
+ * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Actor", mimeType="application/json")
  */
 public function index() {}
 ```
@@ -195,8 +195,10 @@ Method level annotation for defining custom response schema. Leave refEntity emp
 
 ```php
 /**
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Lead", description="summary", httpCode=200)
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="summary", httpCode=200)
  * @Swag\SwagResponseSchema(refEntity="", description="fatal error", httpCode=500)
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", mimeType="application/xml")
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", mimeType="application/json")
  */
 public function index() {}
 ```

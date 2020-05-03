@@ -273,24 +273,14 @@ class Swagger
                 ;
                 $this->pushSchema($schema);
 
-                $response = (new Response())
-                    ->setCode(200)
-                    ->pushContent(
-                        (new Content())
-                            ->setMimeType('application/json')
-                            ->setSchema('#/components/schemas/' . $tag)
-                    );
+                $response = (new Response())->setCode(200);
+                $response = $this->responseWithContent($response, '#/components/schemas/' . $tag);
                 $path->pushResponse($response);
                 continue;
             }
 
-            $response = (new Response())
-                ->setCode(200)
-                ->pushContent(
-                    (new Content())
-                        ->setMimeType('application/json')
-                        ->setSchema('#/components/schemas/' . $className)
-                );
+            $response = (new Response())->setCode(200);
+            $response = $this->responseWithContent($response, '#/components/schemas/' . $className);
             $path->pushResponse($response);
         }
 
@@ -308,15 +298,24 @@ class Swagger
                 continue;
             }
             $path->pushResponse(
-                $response->pushContent(
-                    (new Content())
-                        ->setMimeType('application/json')
-                        ->setSchema('#/components/schemas/' . $exceptionSchema->getName())
-                )
+                $this->responseWithContent($response, '#/components/schemas/' . $exceptionSchema->getName())
             );
         }
 
         return $path;
+    }
+
+    /**
+     * @param Response $response
+     * @param string $schema
+     * @return Response
+     */
+    private function responseWithContent(Response $response, string $schema) : Response
+    {
+        foreach ($this->config->getResponseContentTypes() as $mimeType) {
+            $response->pushContent((new Content())->setMimeType($mimeType)->setSchema($schema));
+        }
+        return $response;
     }
 
     /**

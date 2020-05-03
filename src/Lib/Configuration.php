@@ -25,6 +25,8 @@ class Configuration
                 'docType' => 'swagger',
                 'hotReload' => false,
                 'exceptionSchema' => 'Exception',
+                'requestAccepts' => ['application/x-www-form-urlencoded'],
+                'responseContentTypes' => ['application/json'],
                 'namespaces' => [
                     'controllers' => ['\App\\'],
                     'entities' => ['\App\\'],
@@ -111,5 +113,15 @@ class Configuration
             return 'SwaggerBake.Swagger/redoc';
         }
         return 'SwaggerBake.Swagger/index';
+    }
+
+    public function getRequestAccepts() : array
+    {
+        return $this->get('requestAccepts');
+    }
+
+    public function getResponseContentTypes() : array
+    {
+        return $this->get('responseContentTypes');
     }
 }

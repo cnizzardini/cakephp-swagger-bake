@@ -158,6 +158,8 @@ class PathFactory
 
     private function withResponses(Path $path, array $annotations) : Path
     {
+        $responses = $path->getResponses();
+
         if (!empty($annotations)) {
             foreach ($annotations as $annotation) {
                 if ($annotation instanceof SwagAnnotation\SwagResponseSchema) {
