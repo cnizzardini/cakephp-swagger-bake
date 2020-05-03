@@ -52,7 +52,7 @@ Using the above example you should now see your swagger documentation after brow
 ### Hot Reload Swagger JSON
 
 You can enable hot reloading. This setting re-generates swagger.json on each reload of Swagger UI. Simply set 
-`hotReload` equal to `true` in your `config/swagger_bake.php` file.
+`hotReload` equal to `true` (using `Configure::read('debug')` is recommended) in your `config/swagger_bake.php` file. 
 
 ## Automatic Documentation
 
