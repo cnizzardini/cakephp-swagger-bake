@@ -36,6 +36,8 @@ class SwaggerSchemaTest extends TestCase
             'webPath' => '/swagger.json',
             'hotReload' => false,
             'exceptionSchema' => 'Exception',
+            'requestAccepts' => ['application/x-www-form-urlencoded'],
+            'responseContentTypes' => ['application/json'],
             'namespaces' => [
                 'controllers' => ['\SwaggerBakeTest\App\\'],
                 'entities' => ['\SwaggerBakeTest\App\\'],
