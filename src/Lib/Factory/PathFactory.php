@@ -5,8 +5,6 @@ namespace SwaggerBake\Lib\Factory;
 use Cake\Utility\Inflector;
 use Exception;
 use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlockFactory;
-use ReflectionMethod;
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
@@ -19,6 +17,7 @@ use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
+use SwaggerBake\Lib\Utility\DocBlockUtility;
 
 /**
  * Class SwaggerPath
@@ -253,29 +252,17 @@ class PathFactory
 
         $className = $this->route->getController() . 'Controller';
         $methodName = $this->route->getAction();
-
         $controller = $this->getControllerFromNamespaces($className);
 
         if (!class_exists($controller)) {
             return null;
         }
 
-        $instance = new $controller;
-
         try {
-            $reflectionMethod = new ReflectionMethod(get_class($instance), $methodName);
+            return DocBlockUtility::getMethodDocBlock(new $controller, $methodName);
         } catch (Exception $e) {
             return null;
         }
-
-        $comments = $reflectionMethod->getDocComment();
-
-        if (!$comments) {
-            return null;
-        }
-
-        $docFactory = DocBlockFactory::createInstance();
-        return $docFactory->create($comments);
     }
 
     /**
