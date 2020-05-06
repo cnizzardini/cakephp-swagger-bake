@@ -37,7 +37,7 @@ class AnnotationUtility
     }
 
     /**
-     * Gets method annotations from full namespace and method arguments
+     * Returns an array of Lib/Annotation objects that can be applied to methods
      *
      * @uses AnnotationReader
      * @uses ReflectionClass
@@ -60,6 +60,37 @@ class AnnotationUtility
         $argMethodAnnotations = array_filter($reflectedMethods, function ($refMethod) use ($method) {
             return $refMethod->name == $method;
         });
+
+        $reader = new AnnotationReader();
+
+        foreach ($argMethodAnnotations as $methodAnnotation) {
+            $annotations = $reader->getMethodAnnotations($methodAnnotation);
+            if (empty($annotations)) {
+                continue;
+            }
+            $return = array_merge($return, $annotations);
+        }
+
+        return $return;
+    }
+
+    public static function getClassProperties(string $namespace) : array
+    {
+        $return = [];
+
+        try {
+            $instance = new $namespace;
+            $reflectionClass = new ReflectionClass(get_class($instance));
+            $reflectedProperties = $reflectionClass->getProperties();
+        } catch (Exception $e) {
+            return $return;
+        }
+
+        echo '<pre>' . __FILE__ . ':' . __LINE__;
+        print_r($reflectedProperties);
+        echo '</pre>';
+        die();
+
 
         $reader = new AnnotationReader();
 
