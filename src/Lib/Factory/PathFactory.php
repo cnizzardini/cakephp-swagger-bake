@@ -87,7 +87,8 @@ class PathFactory
     }
 
     /**
-     * @todo document this method
+     * Returns a route (e.g. /api/model/action)
+     *
      * @return string
      */
     private function getPathName() : string
@@ -159,7 +160,8 @@ class PathFactory
     }
 
     /**
-     * @todo need to properly document return types
+     * Returns an array of Lib/Annotation objects that can be applied to methods
+     *
      * @param string $className
      * @param string $method
      * @return array
