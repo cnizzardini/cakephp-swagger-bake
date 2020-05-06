@@ -86,6 +86,10 @@ class PathFactory
         return $path;
     }
 
+    /**
+     * @todo document this method
+     * @return string
+     */
     private function getPathName() : string
     {
         $pieces = array_map(
@@ -108,6 +112,11 @@ class PathFactory
         );
     }
 
+    /**
+     * Returns an array of Parameter
+     *
+     * @return Parameter[]
+     */
     private function getPathParameters() : array
     {
         $return = [];
@@ -149,6 +158,12 @@ class PathFactory
         return $return;
     }
 
+    /**
+     * @todo need to properly document return types
+     * @param string $className
+     * @param string $method
+     * @return array
+     */
     private function getMethodAnnotations(string $className, string $method) : array
     {
         $className = $className . 'Controller';
@@ -156,10 +171,15 @@ class PathFactory
         return AnnotationUtility::getMethodAnnotations($controller, $method);
     }
 
+    /**
+     * Returns path with responses
+     *
+     * @param Path $path
+     * @param array $annotations
+     * @return Path
+     */
     private function withResponses(Path $path, array $annotations) : Path
     {
-        $responses = $path->getResponses();
-
         if (!empty($annotations)) {
             foreach ($annotations as $annotation) {
                 if ($annotation instanceof SwagAnnotation\SwagResponseSchema) {
@@ -184,6 +204,13 @@ class PathFactory
         return $path;
     }
 
+    /**
+     * Returns Path with request body
+     *
+     * @param Path $path
+     * @param array $annotations
+     * @return Path
+     */
     private function withRequestBody(Path $path, array $annotations) : Path
     {
         if (empty($annotations)) {
@@ -213,6 +240,9 @@ class PathFactory
         return $path->setRequestBody($requestBody);
     }
 
+    /**
+     * @return DocBlock|null
+     */
     private function getDocBlock() : ?DocBlock
     {
         if (empty($this->route->getController())) {
@@ -246,6 +276,10 @@ class PathFactory
         return $docFactory->create($comments);
     }
 
+    /**
+     * @param string $className
+     * @return string|null
+     */
     private function getControllerFromNamespaces(string $className) : ?string
     {
         $namespaces = $this->config->getNamespaces();
@@ -266,6 +300,10 @@ class PathFactory
         return null;
     }
 
+    /**
+     * @param string $className
+     * @return bool
+     */
     private function isControllerVisible(string $className) : bool
     {
         $className = $className . 'Controller';
@@ -286,6 +324,10 @@ class PathFactory
         return true;
     }
 
+    /**
+     * @param array $annotations
+     * @return bool
+     */
     private function isMethodVisible(array $annotations) : bool
     {
         foreach ($annotations as $annotation) {
@@ -297,6 +339,11 @@ class PathFactory
         return true;
     }
 
+    /**
+     * Check if this path/operation is deprecated
+     *
+     * @return bool
+     */
     private function isDeprecated() : bool
     {
         if (!$this->dockBlock || !$this->dockBlock instanceof DocBlock) {
@@ -306,6 +353,11 @@ class PathFactory
         return $this->dockBlock->hasTag('deprecated');
     }
 
+    /**
+     * Defines external documentation using see tag
+     * @param Path $path
+     * @return Path
+     */
     private function withExternalDoc(Path $path) : Path
     {
         if (!$this->dockBlock || !$this->dockBlock instanceof DocBlock) {
