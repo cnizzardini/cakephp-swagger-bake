@@ -179,7 +179,7 @@ Method level annotation for hiding a controller action from swagger.
 
 ```php
 /**
- * @Swag\SwagOperation(isVisible=false)
+ * @SwagOperation(isVisible=false)
  */
 public function index() {}
 ```
