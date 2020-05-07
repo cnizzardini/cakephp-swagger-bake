@@ -15,9 +15,7 @@ use SwaggerBake\Lib\Swagger;
 class SwagPaginatorTest extends TestCase
 {
     public $fixtures = [
-        'plugin.SwaggerBake.DepartmentEmployees',
         'plugin.SwaggerBake.Departments',
-        'plugin.SwaggerBake.Employees',
     ];
 
     private $router;
