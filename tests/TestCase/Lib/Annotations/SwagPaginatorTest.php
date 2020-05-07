@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SwaggerBake\Test\TestCase\Lib;
+namespace SwaggerBake\Test\TestCase\Lib\Annotations;
 
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
@@ -12,10 +12,10 @@ use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
-class SwagHeaderTest extends TestCase
+class SwagPaginatorTest extends TestCase
 {
     public $fixtures = [
-        'plugin.SwaggerBake.Employees',
+        'plugin.SwaggerBake.Departments',
     ];
 
     private $router;
@@ -26,15 +26,7 @@ class SwagHeaderTest extends TestCase
         $router = new Router();
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Employees', [
-                'map' => [
-                    'customGet' => [
-                        'action' => 'customGet',
-                        'method' => 'GET',
-                        'path' => 'custom-get'
-                    ],
-                ]
-            ]);
+            $builder->resources('Departments');
         });
         $this->router = $router;
 
@@ -57,22 +49,28 @@ class SwagHeaderTest extends TestCase
         AnnotationLoader::load();
     }
 
-    public function testSwagHeader()
+    public function testSwagPaginator()
     {
         $cakeRoute = new CakeRoute($this->router, $this->config);
 
         $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
-
-        $this->assertArrayHasKey('/employees/custom-get', $arr['paths']);
-        $this->assertArrayHasKey('get', $arr['paths']['/employees/custom-get']);
-        $operation = $arr['paths']['/employees/custom-get']['get'];
-
-        $this->assertEquals('custom-get summary', $operation['summary']);
+        $this->assertArrayHasKey('/departments', $arr['paths']);
+        $this->assertArrayHasKey('get', $arr['paths']['/departments']);
+        $operation = $arr['paths']['/departments']['get'];
 
         $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return $param['name'] == 'X-HEAD-ATTRIBUTE';
+            return isset($param['name']) && $param['name'] == 'page' && $param['schema']['type'] == 'integer';
+        }));
+        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
+            return isset($param['name']) && $param['name'] == 'limit' && $param['schema']['type'] == 'integer';
+        }));
+        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
+            return isset($param['name']) && $param['name'] == 'sort' && $param['schema']['type'] == 'string';
+        }));
+        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
+            return isset($param['name']) && $param['name'] == 'direction' && $param['schema']['type'] == 'string';
         }));
     }
 }

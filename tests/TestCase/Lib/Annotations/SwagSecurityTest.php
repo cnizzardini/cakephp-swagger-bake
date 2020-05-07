@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SwaggerBake\Test\TestCase\Lib;
+namespace SwaggerBake\Test\TestCase\Lib\Annotations;
 
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
@@ -12,10 +12,10 @@ use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
-class SwagQueryTest extends TestCase
+class SwagSecurityTest extends TestCase
 {
     public $fixtures = [
-        'plugin.SwaggerBake.Departments',
+        'plugin.SwaggerBake.Employees',
     ];
 
     private $router;
@@ -26,7 +26,15 @@ class SwagQueryTest extends TestCase
         $router = new Router();
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Departments');
+            $builder->resources('Employees', [
+                'map' => [
+                    'customGet' => [
+                        'action' => 'customGet',
+                        'method' => 'GET',
+                        'path' => 'custom-get'
+                    ],
+                ]
+            ]);
         });
         $this->router = $router;
 
@@ -49,19 +57,22 @@ class SwagQueryTest extends TestCase
         AnnotationLoader::load();
     }
 
-    public function testSwagQuery()
+    public function testSwagHeader()
     {
         $cakeRoute = new CakeRoute($this->router, $this->config);
 
         $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
-        $this->assertArrayHasKey('/departments', $arr['paths']);
-        $this->assertArrayHasKey('get', $arr['paths']['/departments']);
-        $operation = $arr['paths']['/departments']['get'];
 
-        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return isset($param['name']) && $param['name'] == 'random';
+        $this->assertArrayHasKey('/employees/custom-get', $arr['paths']);
+        $this->assertArrayHasKey('get', $arr['paths']['/employees/custom-get']);
+        $operation = $arr['paths']['/employees/custom-get']['get'];
+
+        $this->assertEquals('custom-get summary', $operation['summary']);
+
+        $this->assertCount(1, array_filter($operation['security'], function ($param) {
+            return isset($param['BearerAuth']);
         }));
     }
 }
