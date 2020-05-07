@@ -1,7 +1,10 @@
 # SwaggerBake plugin for CakePHP4
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
-builds your Swagger UI (v3.25.1) and ReDoc (2.0.0-rc.28) from your existing cake models and routes.
+builds your Swagger UI and ReDoc from your existing cake models and routes.
 
 - Creates paths from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes.
 - Creates schema from your Entities and Tables.
