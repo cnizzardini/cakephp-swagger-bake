@@ -12,11 +12,9 @@ use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
-class SwaggerOperationTest extends TestCase
+class SwagHeaderTest extends TestCase
 {
     public $fixtures = [
-        'plugin.SwaggerBake.DepartmentEmployees',
-        'plugin.SwaggerBake.Departments',
         'plugin.SwaggerBake.Employees',
     ];
 
@@ -35,16 +33,8 @@ class SwaggerOperationTest extends TestCase
                         'method' => 'GET',
                         'path' => 'custom-get'
                     ],
-                    'customHidden' => [
-                        'action' => 'customHidden',
-                        'method' => 'GET',
-                        'path' => 'custom-hidden'
-                    ],
                 ]
             ]);
-            $builder->resources('Departments', function (RouteBuilder $routes) {
-                $routes->resources('DepartmentEmployees');
-            });
         });
         $this->router = $router;
 
@@ -67,7 +57,7 @@ class SwaggerOperationTest extends TestCase
         AnnotationLoader::load();
     }
 
-    public function testHiddenOperation()
+    public function testSwagHeader()
     {
         $cakeRoute = new CakeRoute($this->router, $this->config);
 
@@ -75,21 +65,18 @@ class SwaggerOperationTest extends TestCase
         $arr = json_decode($swagger->toString(), true);
 
 
-        $this->assertArrayNotHasKey('/employees/custom-hidden', $arr['paths']);
-    }
+        $this->assertArrayHasKey('/employees/custom-get', $arr['paths']);
+        $this->assertArrayHasKey('get', $arr['paths']['/employees/custom-get']);
+        $operation = $arr['paths']['/employees/custom-get']['get'];
 
-    public function testExceptionResponseSchema()
-    {
-        $cakeRoute = new CakeRoute($this->router, $this->config);
+        $this->assertEquals('custom-get summary', $operation['summary']);
 
-        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
-        $arr = json_decode($swagger->toString(), true);
+        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
+            return $param['name'] == 'X-HEAD-ATTRIBUTE';
+        }));
 
-        $responses = $arr['paths']['/employees/custom-get']['get']['responses'];
-
-        $this->assertArrayHasKey(400, $responses);
-        $this->assertArrayHasKey(401, $responses);
-        $this->assertArrayHasKey(403, $responses);
-        $this->assertArrayHasKey(500, $responses);
+        $this->assertCount(1, array_filter($operation['security'], function ($param) {
+            return isset($param['BearerAuth']);
+        }));
     }
 }
