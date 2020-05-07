@@ -7,7 +7,7 @@ use SwaggerBake\Lib\Annotation as SwagAnnotation;
 
 class AnnotationLoader
 {
-    public static function load()
+    public static function load() : void
     {
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagDto::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagEntity::class);
