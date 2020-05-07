@@ -35,11 +35,6 @@ class SwaggerOperationTest extends TestCase
                         'method' => 'GET',
                         'path' => 'custom-get'
                     ],
-                    'customPost' => [
-                        'action' => 'customPost',
-                        'method' => 'POST',
-                        'path' => 'custom-post'
-                    ],
                     'customHidden' => [
                         'action' => 'customHidden',
                         'method' => 'GET',
@@ -106,23 +101,6 @@ class SwaggerOperationTest extends TestCase
             return isset($response['description']) && $response['description'] == 'hello world';
         }));
 
-    }
-
-    public function testCustomPostRouteWithAnnotations()
-    {
-        $cakeRoute = new CakeRoute($this->router, $this->config);
-
-        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
-        $arr = json_decode($swagger->toString(), true);
-
-        $operation = $arr['paths']['/employees/custom-post']['post'];
-
-        $this->assertArrayHasKey('schema', $operation['requestBody']['content']['application/x-www-form-urlencoded']);
-
-        $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
-
-        $this->assertCount(1, $properties);
-        $this->assertArrayHasKey('fieldName', $properties);
     }
 
     public function testHiddenOperation()
