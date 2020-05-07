@@ -144,4 +144,15 @@ class EmployeesController extends AppController
         $this->set(compact('hello'));
         $this->viewBuilder()->setOption('serialize', ['hello']);
     }
+
+    /**
+     * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Pet", mimeType="application/json")
+     * @Swag\SwagResponseSchema(refEntity="", description="fatal error", httpCode=500)
+     */
+    public function customResponseSchema()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
 }
