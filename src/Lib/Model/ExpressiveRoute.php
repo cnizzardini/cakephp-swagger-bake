@@ -51,10 +51,10 @@ class ExpressiveRoute
     }
 
     /**
-     * @param $plugin
+     * @param string|null $plugin
      * @return $this
      */
-    public function setPlugin(string $plugin): ExpressiveRoute
+    public function setPlugin(?string $plugin): ExpressiveRoute
     {
         $this->plugin = $plugin;
         return $this;
