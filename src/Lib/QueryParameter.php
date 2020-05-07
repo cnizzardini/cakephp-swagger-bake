@@ -2,11 +2,14 @@
 
 namespace SwaggerBake\Lib;
 
-
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
+use SwaggerBake\Lib\OpenApi\Parameter;
 
 class QueryParameter extends AbstractParameter
 {
+    /**
+     * @return Parameter[]
+     */
     public function getQueryParameters() : array
     {
         $return = [];

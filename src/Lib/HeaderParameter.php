@@ -3,9 +3,13 @@
 namespace SwaggerBake\Lib;
 
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
+use SwaggerBake\Lib\OpenApi\Parameter;
 
 class HeaderParameter extends AbstractParameter
 {
+    /**
+     * @return Parameter[]
+     */
     public function getHeaderParameters() : array
     {
         $return = [];

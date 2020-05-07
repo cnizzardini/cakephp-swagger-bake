@@ -15,9 +15,16 @@ use Symfony\Component\Yaml\Yaml;
 
 class Swagger
 {
+    /** @var array */
     private $array = [];
+
+    /** @var CakeModel */
     private $cakeModel;
+
+    /** @var CakeRoute */
     private $cakeRoute;
+
+    /** @var Configuration */
     private $config;
 
     public function __construct(CakeModel $cakeModel)

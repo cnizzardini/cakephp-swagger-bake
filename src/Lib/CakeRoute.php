@@ -60,6 +60,10 @@ class CakeRoute
         return $routes;
     }
 
+    /**
+     * @param Route $route
+     * @return ExpressiveRoute
+     */
     private function createExpressiveRouteFromRoute(Route $route) : ExpressiveRoute
     {
         $defaults = (array) $route->defaults;
@@ -79,6 +83,10 @@ class CakeRoute
         ;
     }
 
+    /**
+     * @param Route $route
+     * @return bool
+     */
     private function isRouteAllowed(Route $route) : bool
     {
         if (substr($route->template, 0, $this->prefixLength) != $this->prefix) {

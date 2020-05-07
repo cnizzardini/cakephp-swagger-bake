@@ -42,6 +42,11 @@ class ExceptionHandler
         $this->code = $this->code < 400 ? 500 : $this->code;
     }
 
+    /**
+     * Assigns ExceptionHandler::message using the Exception $instance argument
+     *
+     * @param $instance
+     */
     private function assignMessage($instance) : void
     {
         $this->message = trim($instance->getMessage());
@@ -59,11 +64,17 @@ class ExceptionHandler
         $this->message = $class;
     }
 
+    /**
+     * @return int
+     */
     public function getCode() : int
     {
         return $this->code;
     }
 
+    /**
+     * @return string
+     */
     public function getMessage() : string
     {
         return $this->message;

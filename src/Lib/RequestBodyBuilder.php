@@ -1,6 +1,5 @@
 <?php
 
-
 namespace SwaggerBake\Lib;
 
 use Cake\Utility\Inflector;
@@ -19,6 +18,9 @@ class RequestBodyBuilder
         $this->swagger = $swagger;
     }
 
+    /**
+     * @return RequestBody|null
+     */
     public function build() : ?RequestBody
     {
         $requestBody = $this->path->getRequestBody();
@@ -35,6 +37,11 @@ class RequestBodyBuilder
         return $this->requestBodyWithContent($requestBody);
     }
 
+    /**
+     * @param Schema $schema
+     * @param string $tag
+     * @return Schema
+     */
     private function withSchemaFromModel(Schema $schema, string $tag) : Schema
     {
         $className = Inflector::classify($tag);
@@ -54,6 +61,10 @@ class RequestBodyBuilder
         return $schema;
     }
 
+    /**
+     * @param Schema $schema
+     * @return Schema
+     */
     private function withSchemaFromAnnotations(Schema $schema) : Schema
     {
         $schemaProperties = (new FormData($this->route, $this->swagger->getConfig()))->getSchemaProperties();

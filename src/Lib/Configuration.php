@@ -40,6 +40,10 @@ class Configuration
         );
     }
 
+    /**
+     * @param string $var
+     * @return mixed
+     */
     public function get(string $var)
     {
         if (!isset($this->configs[$var])) {
@@ -49,57 +53,91 @@ class Configuration
         return $this->configs[$var];
     }
 
+    /**
+     * @return string
+     */
     public function getYml() : string
     {
         return $this->root . $this->get('yml');
     }
 
+    /**
+     * @return string
+     */
     public function getJson() : string
     {
         return $this->root . $this->get('json');
     }
 
+    /**
+     * @return string
+     */
     public function getPrefix() : string
     {
         return $this->get('prefix');
     }
 
+    /**
+     * @return string
+     */
     public function getWebPath() : string
     {
         return $this->get('webPath');
     }
 
+    /**
+     * @return bool
+     */
     public function getHotReload() : bool
     {
         return (bool) $this->get('hotReload');
     }
 
+    /**
+     * @return array
+     */
     public function getNamespaces() : array
     {
         return $this->get('namespaces');
     }
 
+    /**
+     * @return array
+     */
     public function getParsedYml() : array
     {
         return Yaml::parseFile($this->getYml());
     }
 
+    /**
+     * @return mixed|string
+     */
     public function getTitleFromYml()
     {
         $yml = $this->getParsedYml();
         return isset($yml['info']['title']) ? $yml['info']['title'] : '';
     }
 
+    /**
+     * @return string
+     */
     public function getDocType() : string
     {
         return strtolower($this->get('docType'));
     }
 
+    /**
+     * @return string
+     */
     public function getExceptionSchema() : string
     {
         return $this->get('exceptionSchema');
     }
 
+    /**
+     * @param string|null $doctype
+     * @return string
+     */
     public function getLayout(?string $doctype = null) : string
     {
         $doctype = empty($doctype) ? $this->getDocType() : $doctype;
@@ -109,6 +147,10 @@ class Configuration
         return 'SwaggerBake.default';
     }
 
+    /**
+     * @param string|null $doctype
+     * @return string
+     */
     public function getView(?string $doctype = null) : string
     {
         $doctype = empty($doctype) ? $this->getDocType() : $doctype;
@@ -118,11 +160,17 @@ class Configuration
         return 'SwaggerBake.Swagger/index';
     }
 
+    /**
+     * @return array
+     */
     public function getRequestAccepts() : array
     {
         return $this->get('requestAccepts');
     }
 
+    /**
+     * @return array
+     */
     public function getResponseContentTypes() : array
     {
         return $this->get('responseContentTypes');
