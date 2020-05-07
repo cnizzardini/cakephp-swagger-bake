@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SwaggerBake\Test\TestCase\Lib;
+namespace SwaggerBake\Test\TestCase\Lib\Annotations;
 
 
 use Cake\Routing\Route\DashedRoute;
@@ -14,7 +14,7 @@ use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
-class SwaggerPathTest extends TestCase
+class SwagPathTest extends TestCase
 {
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
