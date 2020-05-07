@@ -318,7 +318,8 @@ bin/cake swagger models
   - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention. 
 - Table Validators:
   - Fields set to not allow empty will be marked as required in Swagger.  
-- SwaggerBake has been developed for application/json and has not been tested with application/xml.
+- SwaggerBake has been developed primarily for application/json and application/x-www-form-urlencoded, but does have 
+some support for application/xml and *should* work with application/vnd.api+json.
 
 ## Supported Versions
 
