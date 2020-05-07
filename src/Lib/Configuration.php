@@ -8,7 +8,10 @@ use Symfony\Component\Yaml\Yaml;
 
 class Configuration
 {
+    /** @var array  */
     private $configs = [];
+
+    /** @var string  */
     private $root = '';
 
     public function __construct($config = [], $root = ROOT)
