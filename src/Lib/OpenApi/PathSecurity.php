@@ -6,9 +6,15 @@ use JsonSerializable;
 
 class PathSecurity implements JsonSerializable
 {
+    /** @var string  */
     private $name = '';
+
+    /** @var string[]  */
     private $scopes = [];
 
+    /**
+     * @return array|array[]
+     */
     public function toArray() : array
     {
         return [
@@ -16,6 +22,9 @@ class PathSecurity implements JsonSerializable
         ];
     }
 
+    /**
+     * @return array|array[]|mixed
+     */
     public function jsonSerialize()
     {
         return $this->toArray();

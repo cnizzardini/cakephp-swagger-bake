@@ -16,6 +16,9 @@ class Response implements JsonSerializable
     /** @var Content[]  */
     private $content = [];
 
+    /**
+     * @return array
+     */
     public function toArray() : array
     {
         $vars = get_object_vars($this);
@@ -26,6 +29,9 @@ class Response implements JsonSerializable
         return $vars;
     }
 
+    /**
+     * @return array|mixed
+     */
     public function jsonSerialize()
     {
         return $this->toArray();

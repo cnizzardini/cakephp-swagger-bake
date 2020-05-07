@@ -7,9 +7,16 @@ use JsonSerializable;
 
 class RequestBody implements JsonSerializable
 {
+    /** @var string  */
     private $description = '';
+
+    /** @var Content[]  */
     private $content = [];
+
+    /** @var bool  */
     private $required = false;
+
+    /** @var bool  */
     private $ignoreCakeSchema = false;
 
     public function toArray() : array
