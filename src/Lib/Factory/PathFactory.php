@@ -4,18 +4,21 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Utility\Inflector;
 use Exception;
+use LogicException;
 use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\ExceptionHandler;
 use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 
@@ -77,6 +80,7 @@ class PathFactory
                 ->setDeprecated($this->isDeprecated())
             ;
 
+            $path = $this->withDataTransferObject($path, $methodAnnotations);
             $path = $this->withResponses($path, $methodAnnotations);
             $path = $this->withRequestBody($path, $methodAnnotations);
             $path = $this->withExternalDoc($path);
@@ -170,6 +174,85 @@ class PathFactory
         $className = $className . 'Controller';
         $controller = $this->getControllerFromNamespaces($className);
         return AnnotationUtility::getMethodAnnotations($controller, $method);
+    }
+
+    private function withDataTransferObject(Path $path, array $annotations) : Path
+    {
+        if (empty($annotations)) {
+            return $path;
+        }
+
+        $dataTransferObjects = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagAnnotation\SwagDto;
+        });
+
+        if (empty($dataTransferObjects)) {
+            return $path;
+        }
+
+        $dto = reset($dataTransferObjects);
+        $class = $dto->class;
+
+        if (!class_exists($class)) {
+            return $path;
+        }
+
+        $instance = new $class;
+        $properties = DocBlockUtility::getProperties($instance);
+        if (empty($properties)) {
+            return $path;
+        }
+
+        $filteredProperties = array_filter($properties, function ($property) use ($instance) {
+            if (!isset($property->class) || $property->class != get_class($instance)) {
+                return null;
+            }
+            return true;
+        });
+
+        $pathType = strtolower($path->getType());
+        if ($pathType == 'post') {
+            $requestBody = new RequestBody();
+            $schema = (new Schema())->setType('object');
+        }
+
+        foreach ($filteredProperties as $name => $reflectionProperty) {
+            $docBlock = DocBlockUtility::getPropertyDocBlock($reflectionProperty);
+            $vars = $docBlock->getTagsByName('var');
+            if (empty($vars)) {
+                throw new LogicException('@var must be set for ' . $class . '::' . $name);
+            }
+            $var = reset($vars);
+            $dataType = DocBlockUtility::getDocBlockConvertedVar($var);
+
+            if ($pathType == 'get') {
+                $path->pushParameter(
+                    (new Parameter())
+                        ->setName($name)
+                        ->setIn('query')
+                        ->setRequired(!empty($docBlock->getTagsByName('required')))
+                        ->setDescription($docBlock->getSummary())
+                        ->setSchema((new Schema())->setType($dataType))
+                );
+            } else if ($pathType == 'post' && isset($schema)) {
+                $schema->pushProperty(
+                    (new SchemaProperty())
+                        ->setDescription($docBlock->getSummary())
+                        ->setName($name)
+                        ->setType($dataType)
+                        ->setRequired(!empty($docBlock->getTagsByName('required')))
+                );
+            }
+        }
+
+        if (isset($schema) && isset($requestBody)) {
+            $content = (new Content())->setMimeType('application/x-www-form-urlencoded')->setSchema($schema);
+            $path->setRequestBody(
+                $requestBody->pushContent($content)
+            );
+        }
+
+        return $path;
     }
 
     /**

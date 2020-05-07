@@ -120,6 +120,19 @@ public function index() {
 }
 ```
 
+#### `@SwagDto`
+Method level annotation for building query or form parameters from a DataTransferObject. DTOs are more than just a 
+best practice. Using them with SwaggerBake greatly reduces the amount of annotations you need to write. Consider 
+using a DTO in place of SwagQuery or SwagForm. SwagDto parses property doc blocks to build swagger query and 
+post parameters and should work with any DTO library. This has been tested with spatie/data-transfer-object.
+
+```php
+/**
+ * @Swag\SwagDto(class="\App\My\Dto")
+ */
+public function index() {}
+```
+
 #### `@SwagQuery`
 Method level annotation for adding query parameters.
 
@@ -218,7 +231,7 @@ Class level annotation for exposing entities to Swagger UI.  You can hide entiti
 
 ```php
 /**
- * @Swag\SwagEntity(isVisible=true)
+ * @Swag\SwagEntity(isVisible=false)
  */
 class Employee extends Entity {
 ```
