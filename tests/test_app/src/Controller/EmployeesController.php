@@ -134,4 +134,14 @@ class EmployeesController extends AppController
         $this->set(compact('hello'));
         $this->viewBuilder()->setOption('serialize', ['hello']);
     }
+
+    /**
+     * @Swag\SwagRequestBodyContent(refEntity="", mimeType="text/plain")
+     */
+    public function customRequestBodyContent()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
 }
