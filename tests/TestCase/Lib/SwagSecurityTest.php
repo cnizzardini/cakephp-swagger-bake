@@ -12,7 +12,7 @@ use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
-class SwagHeaderTest extends TestCase
+class SwagSecurityTest extends TestCase
 {
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
@@ -71,8 +71,8 @@ class SwagHeaderTest extends TestCase
 
         $this->assertEquals('custom-get summary', $operation['summary']);
 
-        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return $param['name'] == 'X-HEAD-ATTRIBUTE';
+        $this->assertCount(1, array_filter($operation['security'], function ($param) {
+            return isset($param['BearerAuth']);
         }));
     }
 }
