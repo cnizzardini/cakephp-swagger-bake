@@ -6,10 +6,13 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 class SwagEntityAttributeHandler
 {
+    /**
+     * @param SwagEntityAttribute $annotation
+     * @return SchemaProperty
+     */
     public function getSchemaProperty(SwagEntityAttribute $annotation) : SchemaProperty
     {
-        $schemaProperty = new SchemaProperty();
-        $schemaProperty
+        return (new SchemaProperty())
             ->setName($annotation->name)
             ->setDescription($annotation->description)
             ->setType($annotation->type)
@@ -17,7 +20,5 @@ class SwagEntityAttributeHandler
             ->setWriteOnly($annotation->writeOnly)
             ->setRequired($annotation->required)
         ;
-
-        return $schemaProperty;
     }
 }

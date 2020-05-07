@@ -7,6 +7,10 @@ use SwaggerBake\Lib\OpenApi\Response;
 
 class SwagResponseSchemaHandler
 {
+    /**
+     * @param SwagResponseSchema $annotation
+     * @return Response
+     */
     public function getResponse(SwagResponseSchema $annotation) : Response
     {
         $response = (new Response())

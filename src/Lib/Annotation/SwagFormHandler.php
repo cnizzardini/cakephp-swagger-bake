@@ -6,16 +6,17 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 class SwagFormHandler
 {
+    /**
+     * @param SwagForm $annotation
+     * @return SchemaProperty
+     */
     public function getSchemaProperty(SwagForm $annotation) : SchemaProperty
     {
-        $schemaProperty = new SchemaProperty();
-        $schemaProperty
+        return (new SchemaProperty())
             ->setDescription($annotation->description)
             ->setName($annotation->name)
             ->setType($annotation->type)
             ->setRequired($annotation->required)
         ;
-
-        return $schemaProperty;
     }
 }
