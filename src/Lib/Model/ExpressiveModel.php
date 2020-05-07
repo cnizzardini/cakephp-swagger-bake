@@ -6,7 +6,10 @@ namespace SwaggerBake\Lib\Model;
 
 class ExpressiveModel
 {
+    /** @var string  */
     private $name = '';
+
+    /** @var array  */
     private $attributes = [];
 
     /**
