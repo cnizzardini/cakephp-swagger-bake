@@ -124,7 +124,8 @@ public function index() {
 Method level annotation for building query or form parameters from a DataTransferObject. DTOs are more than just a 
 best practice. Using them with SwaggerBake greatly reduces the amount of annotations you need to write. Consider 
 using a DTO in place of SwagQuery or SwagForm. SwagDto parses property doc blocks to build swagger query and 
-post parameters and should work with any DTO library. This has been tested with spatie/data-transfer-object.
+post parameters and should work with any DTO library. This has been tested with 
+[spatie/data-transfer-object](https://github.com/spatie/data-transfer-object).
 
 ```php
 /**
