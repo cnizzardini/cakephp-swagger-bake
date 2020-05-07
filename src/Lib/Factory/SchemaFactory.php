@@ -1,6 +1,5 @@
 <?php
 
-
 namespace SwaggerBake\Lib\Factory;
 
 use Cake\Utility\Inflector;
@@ -22,8 +21,13 @@ use SwaggerBake\Lib\Utility\DataTypeConversion;
 
 class SchemaFactory
 {
+    /** @var string[]  */
     private const READ_ONLY_FIELDS = ['created','modified'];
+
+    /** @var string[]  */
     private const DATETIME_TYPES = ['date','datetime','timestamp'];
+
+    /** @var Validator */
     private $validator;
 
     public function __construct(Configuration $config)
