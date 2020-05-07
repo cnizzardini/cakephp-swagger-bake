@@ -31,6 +31,10 @@ class SchemaFactory
         $this->config = $config;
     }
 
+    /**
+     * @param ExpressiveModel $model
+     * @return Schema|null
+     */
     public function create(ExpressiveModel $model) : ?Schema
     {
         if (!$this->isSwaggable($model)) {
@@ -62,6 +66,10 @@ class SchemaFactory
         return $schema;
     }
 
+    /**
+     * @param ExpressiveModel $model
+     * @return array
+     */
     private function getProperties(ExpressiveModel $model) : array
     {
         $return = $this->getSwagPropertyAnnotations($model);
@@ -78,6 +86,10 @@ class SchemaFactory
         return $return;
     }
 
+    /**
+     * @param ExpressiveModel $model
+     * @return DocBlock|null
+     */
     private function getDocBlock(ExpressiveModel $model) : ?DocBlock
     {
         $entity = $this->getEntityFromNamespaces($model->getName());
@@ -99,6 +111,10 @@ class SchemaFactory
         return $docFactory->create($comments);
     }
 
+    /**
+     * @param string $className
+     * @return string|null
+     */
     private function getEntityFromNamespaces(string $className) : ?string
     {
         $namespaces = $this->config->getNamespaces();
@@ -119,6 +135,10 @@ class SchemaFactory
         return null;
     }
 
+    /**
+     * @param string $className
+     * @return string|null
+     */
     private function getTableFromNamespaces(string $className) : ?string
     {
         $namespaces = $this->config->getNamespaces();
@@ -139,6 +159,10 @@ class SchemaFactory
         return null;
     }
 
+    /**
+     * @param ExpressiveAttribute $attribute
+     * @return SchemaProperty
+     */
     private function getSchemaProperty(ExpressiveAttribute $attribute) : SchemaProperty
     {
         $isReadOnlyField = in_array($attribute->getName(), self::READ_ONLY_FIELDS);
@@ -155,6 +179,12 @@ class SchemaFactory
         return $property;
     }
 
+    /**
+     * Returns key-value pair of property name => SchemaProperty
+     *
+     * @param ExpressiveModel $model
+     * @return SchemaProperty[]
+     */
     private function getSwagPropertyAnnotations(ExpressiveModel $model) : array
     {
         $return = [];
@@ -172,6 +202,10 @@ class SchemaFactory
         return $return;
     }
 
+    /**
+     * @param ExpressiveModel $model
+     * @return bool
+     */
     private function isSwaggable(ExpressiveModel $model) : bool
     {
         $entity = $this->getEntityFromNamespaces($model->getName());
@@ -186,6 +220,10 @@ class SchemaFactory
         return true;
     }
 
+    /**
+     * @param ExpressiveAttribute $attribute
+     * @return bool
+     */
     private function isAttributeRequired(ExpressiveAttribute $attribute) : bool
     {
         if (!$this->validator) {
@@ -200,6 +238,10 @@ class SchemaFactory
         return false;
     }
 
+    /**
+     * @param string $className
+     * @return Validator|null
+     */
     private function getValidator(string $className) : ?Validator
     {
         try {
