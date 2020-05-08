@@ -27,7 +27,13 @@ class SwagDtoTest extends TestCase
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
+                'only' => ['dtoPost','dtoQuery'],
                 'map' => [
+                    'dtoPost' => [
+                        'action' => 'dtoPost',
+                        'method' => 'POST',
+                        'path' => 'dto-post'
+                    ],
                     'dtoQuery' => [
                         'action' => 'dtoQuery',
                         'method' => 'GET',
@@ -70,4 +76,17 @@ class SwagDtoTest extends TestCase
         $this->assertEquals('firstName', $operation['parameters'][1]['name']);
     }
 
+    public function testSwagDtoPost()
+    {
+        $cakeRoute = new CakeRoute($this->router, $this->config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
+        $arr = json_decode($swagger->toString(), true);
+
+        $operation = $arr['paths']['/employees/dto-post']['post'];
+        $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
+
+        $this->assertArrayHasKey('lastName', $properties);
+        $this->assertArrayHasKey('firstName', $properties);
+    }
 }

@@ -19,6 +19,9 @@ class RequestBody implements JsonSerializable
     /** @var bool  */
     private $ignoreCakeSchema = false;
 
+    /**
+     * @return array
+     */
     public function toArray() : array
     {
         $vars = get_object_vars($this);
@@ -26,6 +29,9 @@ class RequestBody implements JsonSerializable
         return $vars;
     }
 
+    /**
+     * @return array|mixed
+     */
     public function jsonSerialize()
     {
         return $this->toArray();
@@ -49,18 +55,29 @@ class RequestBody implements JsonSerializable
         return $this;
     }
 
+    /**
+     * @return array|Content[]
+     */
     public function getContent() : array
     {
         return $this->content;
     }
 
+    /**
+     * @param Content $content
+     * @return $this
+     */
     public function pushContent(Content $content) : RequestBody
     {
         $this->content[$content->getMimeType()] = $content;
         return $this;
     }
 
-    public function getContentByType(string $mimeType) : ?array
+    /**
+     * @param string $mimeType
+     * @return Content|null
+     */
+    public function getContentByType(string $mimeType) : ?Content
     {
         if (isset($this->content[$mimeType])) {
             return $this->content[$mimeType];

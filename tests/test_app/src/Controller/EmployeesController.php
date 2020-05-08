@@ -157,9 +157,19 @@ class EmployeesController extends AppController
     }
 
     /**
-     * @Swag\SwagDto(class="\SwaggerBakeTest\App\Dto\QueryData")
+     * @Swag\SwagDto(class="\SwaggerBakeTest\App\Dto\EmployeeData")
      */
     public function dtoQuery()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
+
+    /**
+     * @Swag\SwagDto(class="\SwaggerBakeTest\App\Dto\EmployeeData")
+     */
+    public function dtoPost()
     {
         $hello = 'world';
         $this->set(compact('hello'));

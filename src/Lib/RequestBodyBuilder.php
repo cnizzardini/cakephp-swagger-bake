@@ -38,6 +38,40 @@ class RequestBodyBuilder
     }
 
     /**
+     * @param RequestBody $requestBody
+     * @return RequestBody
+     */
+    private function requestBodyWithContent(RequestBody $requestBody) : RequestBody
+    {
+        $tags = $this->path->getTags();
+        $tag = preg_replace('/\s+/', '', reset($tags));
+        $tag = Inflector::singularize($tag);
+
+        foreach ($this->swagger->getConfig()->getRequestAccepts() as $mimeType) {
+
+            if ($requestBody->getContentByType($mimeType)) {
+                continue;
+            }
+
+            if ($mimeType == 'application/x-www-form-urlencoded') {
+                $schema = new Schema();
+                $schema->setType('object');
+                if (!$requestBody->isIgnoreCakeSchema()) {
+                    $schema = $this->withSchemaFromModel($schema, $tag);
+                }
+                $schema = $this->withSchemaFromAnnotations($schema);
+                $requestBody->pushContent((new Content())->setMimeType($mimeType)->setSchema($schema));
+                continue;
+            }
+
+            $schema = '#/components/schemas/' . $tag;
+            $requestBody->pushContent((new Content())->setMimeType($mimeType)->setSchema($schema));
+        }
+
+        return $requestBody;
+    }
+
+    /**
      * @param Schema $schema
      * @param string $tag
      * @return Schema
@@ -78,34 +112,5 @@ class RequestBodyBuilder
         }
 
         return $schema;
-    }
-
-    /**
-     * @param RequestBody $requestBody
-     * @return RequestBody
-     */
-    private function requestBodyWithContent(RequestBody $requestBody) : RequestBody
-    {
-        $tags = $this->path->getTags();
-        $tag = preg_replace('/\s+/', '', reset($tags));
-        $tag = Inflector::singularize($tag);
-
-        foreach ($this->swagger->getConfig()->getRequestAccepts() as $mimeType) {
-            if ($mimeType == 'application/x-www-form-urlencoded') {
-                $schema = new Schema();
-                $schema->setType('object');
-                if (!$requestBody->isIgnoreCakeSchema()) {
-                    $schema = $this->withSchemaFromModel($schema, $tag);
-                }
-                $schema = $this->withSchemaFromAnnotations($schema);
-                $requestBody->pushContent((new Content())->setMimeType($mimeType)->setSchema($schema));
-                continue;
-            }
-
-            $schema = '#/components/schemas/' . $tag;
-            $requestBody->pushContent((new Content())->setMimeType($mimeType)->setSchema($schema));
-        }
-
-        return $requestBody;
     }
 }

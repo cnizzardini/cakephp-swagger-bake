@@ -2,7 +2,7 @@
 
 namespace SwaggerBakeTest\App\Dto;
 
-class QueryData
+class EmployeeData
 {
     /**
      * Last name required
@@ -24,9 +24,9 @@ class QueryData
 
     /**
      * @param string $firstName
-     * @return QueryData
+     * @return EmployeeData
      */
-    public function setFirstName(string $firstName): QueryData
+    public function setFirstName(string $firstName): EmployeeData
     {
         $this->firstName = $firstName;
         return $this;
@@ -42,9 +42,9 @@ class QueryData
 
     /**
      * @param string $lastName
-     * @return QueryData
+     * @return EmployeeData
      */
-    public function setLastName(string $lastName): QueryData
+    public function setLastName(string $lastName): EmployeeData
     {
         $this->lastName = $lastName;
         return $this;

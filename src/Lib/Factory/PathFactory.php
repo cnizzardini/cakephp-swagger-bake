@@ -5,6 +5,7 @@ namespace SwaggerBake\Lib\Factory;
 use Cake\Utility\Inflector;
 use Exception;
 use LogicException;
+use ReflectionClass;
 use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
@@ -197,8 +198,9 @@ class PathFactory
             return $path;
         }
 
-        $instance = new $class;
+        $instance = (new ReflectionClass($class))->newInstanceWithoutConstructor();
         $properties = DocBlockUtility::getProperties($instance);
+
         if (empty($properties)) {
             return $path;
         }
@@ -246,7 +248,10 @@ class PathFactory
         }
 
         if (isset($schema) && isset($requestBody)) {
-            $content = (new Content())->setMimeType('application/x-www-form-urlencoded')->setSchema($schema);
+            $content = (new Content())
+                ->setMimeType('application/x-www-form-urlencoded')
+                ->setSchema($schema);
+
             $path->setRequestBody(
                 $requestBody->pushContent($content)
             );
@@ -297,6 +302,10 @@ class PathFactory
      */
     private function withRequestBody(Path $path, array $annotations) : Path
     {
+        if (!empty($path->getRequestBody())) {
+            return $path;
+        }
+
         if (empty($annotations)) {
             return $path;
         }
