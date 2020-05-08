@@ -347,6 +347,7 @@ class Swagger
     private function buildFromDefaults() : void
     {
         $array = Yaml::parseFile($this->config->getYml());
+
         if (!isset($array['paths'])) {
             $array['paths'] = [];
         }
@@ -359,7 +360,8 @@ class Swagger
             $schema = (new Schema())
                 ->setName($schemaName)
                 ->setType($schemaVar['type'])
-                ->setDescription($schemaVar['description'] ?? '');
+                ->setDescription($schemaVar['description'] ?? '')
+                ->setItems($schemaVar['items'] ?? []);
 
             $schemaVar['properties'] = $schemaVar['properties'] ?? [];
 
