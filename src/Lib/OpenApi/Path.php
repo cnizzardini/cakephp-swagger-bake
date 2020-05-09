@@ -280,6 +280,16 @@ class Path
     }
 
     /**
+     * @param PathSecurity $security
+     * @return $this
+     */
+    public function pushSecurity(PathSecurity $security): Path
+    {
+        $this->security[] = $security;
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isDeprecated(): bool
