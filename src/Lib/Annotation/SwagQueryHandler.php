@@ -9,16 +9,14 @@ class SwagQueryHandler
 {
     public function getQueryParameter(SwagQuery $annotation) : Parameter
     {
-        $parameter = new Parameter();
-        $parameter
+        return (new Parameter())
             ->setName($annotation->name)
             ->setDescription($annotation->description)
             ->setAllowEmptyValue(false)
             ->setDeprecated(false)
             ->setRequired($annotation->required)
             ->setIn('query')
-            ->setSchema((new Schema())->setType($annotation->type));
-
-        return $parameter;
+            ->setSchema((new Schema())->setType($annotation->type))
+        ;
     }
 }

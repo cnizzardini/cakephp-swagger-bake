@@ -6,6 +6,10 @@ use SwaggerBake\Lib\OpenApi\Content;
 
 class SwagRequestBodyContentHandler
 {
+    /**
+     * @param SwagRequestBodyContent $annotation
+     * @return Content|null
+     */
     public function getContent(SwagRequestBodyContent $annotation) : ?Content
     {
         return (new Content())

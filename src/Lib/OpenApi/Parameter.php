@@ -3,6 +3,7 @@
 
 namespace SwaggerBake\Lib\OpenApi;
 
+use LogicException;
 use InvalidArgumentException;
 use JsonSerializable;
 
@@ -35,6 +36,10 @@ class Parameter implements JsonSerializable
 
     public function toArray() : array
     {
+        if (empty($this->in)) {
+            throw new LogicException('Parameter::in is required for ' . $this->name);
+        }
+
         return get_object_vars($this);
     }
 
@@ -43,6 +48,9 @@ class Parameter implements JsonSerializable
         $vars = $this->toArray();
         if (empty($vars['description'])) {
             unset($vars['description']);
+        }
+        if (empty($vars['schema'])) {
+            unset($vars['schema']);
         }
         return $vars;
     }

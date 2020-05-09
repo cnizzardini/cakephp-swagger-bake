@@ -35,11 +35,6 @@ class SwaggerOperationTest extends TestCase
                         'method' => 'GET',
                         'path' => 'custom-get'
                     ],
-                    'customPost' => [
-                        'action' => 'customPost',
-                        'method' => 'POST',
-                        'path' => 'custom-post'
-                    ],
                     'customHidden' => [
                         'action' => 'customHidden',
                         'method' => 'GET',
@@ -60,6 +55,8 @@ class SwaggerOperationTest extends TestCase
             'webPath' => '/swagger.json',
             'hotReload' => false,
             'exceptionSchema' => 'Exception',
+            'requestAccepts' => ['application/x-www-form-urlencoded'],
+            'responseContentTypes' => ['application/json'],
             'namespaces' => [
                 'controllers' => ['\SwaggerBakeTest\App\\'],
                 'entities' => ['\SwaggerBakeTest\App\\'],
@@ -68,59 +65,6 @@ class SwaggerOperationTest extends TestCase
         ], SWAGGER_BAKE_TEST_APP);
 
         AnnotationLoader::load();
-    }
-
-    public function testCustomGetRouteWithAnnotations()
-    {
-        $cakeRoute = new CakeRoute($this->router, $this->config);
-
-        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
-        $arr = json_decode($swagger->toString(), true);
-
-
-        $this->assertArrayHasKey('/employees/custom-get', $arr['paths']);
-        $this->assertArrayHasKey('get', $arr['paths']['/employees/custom-get']);
-        $operation = $arr['paths']['/employees/custom-get']['get'];
-
-        $this->assertEquals('custom-get summary', $operation['summary']);
-
-        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return $param['name'] == 'X-HEAD-ATTRIBUTE';
-        }));
-
-        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return $param['name'] == 'page';
-        }));
-
-        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return $param['name'] == 'queryParamName';
-        }));
-
-        $this->assertCount(1, array_filter($operation['security'], function ($param) {
-            return isset($param['BearerAuth']);
-        }));
-
-        $this->assertCount(1, array_filter($operation['responses'], function ($response) {
-            return isset($response['description']) && $response['description'] == 'hello world';
-        }));
-
-    }
-
-    public function testCustomPostRouteWithAnnotations()
-    {
-        $cakeRoute = new CakeRoute($this->router, $this->config);
-
-        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
-        $arr = json_decode($swagger->toString(), true);
-
-        $operation = $arr['paths']['/employees/custom-post']['post'];
-
-        $this->assertArrayHasKey('schema', $operation['requestBody']['content']['application/x-www-form-urlencoded']);
-
-        $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
-
-        $this->assertCount(1, $properties);
-        $this->assertArrayHasKey('fieldName', $properties);
     }
 
     public function testHiddenOperation()

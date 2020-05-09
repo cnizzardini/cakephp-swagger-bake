@@ -6,7 +6,10 @@ use JsonSerializable;
 
 class OperationExternalDoc implements JsonSerializable
 {
+    /** @var string  */
     private $description = '';
+
+    /** @var string  */
     private $url = '';
 
     public function toArray() : array

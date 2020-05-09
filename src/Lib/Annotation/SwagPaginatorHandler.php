@@ -7,6 +7,10 @@ use SwaggerBake\Lib\OpenApi\Schema;
 
 class SwagPaginatorHandler
 {
+    /**
+     * @param SwagPaginator $annotation
+     * @return array
+     */
     public function getQueryParameters(SwagPaginator $annotation) : array
     {
         $paginators = [
@@ -16,8 +20,7 @@ class SwagPaginatorHandler
             'direction' => 'string'
         ];
 
-        $parameter = new Parameter();
-        $parameter
+        $parameter = (new Parameter())
             ->setAllowEmptyValue(false)
             ->setDeprecated(false)
             ->setRequired(false)

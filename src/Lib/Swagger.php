@@ -6,6 +6,7 @@ use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory as Factory;
 use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -14,9 +15,16 @@ use Symfony\Component\Yaml\Yaml;
 
 class Swagger
 {
+    /** @var array */
     private $array = [];
+
+    /** @var CakeModel */
     private $cakeModel;
+
+    /** @var CakeRoute */
     private $cakeRoute;
+
+    /** @var Configuration */
     private $config;
 
     public function __construct(CakeModel $cakeModel)
@@ -272,16 +280,14 @@ class Swagger
                 ;
                 $this->pushSchema($schema);
 
-                $response = (new Response())
-                    ->setSchemaRef('#/components/schemas/' . $tag)
-                    ->setCode(200);
+                $response = (new Response())->setCode(200);
+                $response = $this->responseWithContent($response, '#/components/schemas/' . $tag);
                 $path->pushResponse($response);
                 continue;
             }
 
-            $response = (new Response())
-                ->setSchemaRef('#/components/schemas/' . $className)
-                ->setCode(200);
+            $response = (new Response())->setCode(200);
+            $response = $this->responseWithContent($response, '#/components/schemas/' . $className);
             $path->pushResponse($response);
         }
 
@@ -299,11 +305,24 @@ class Swagger
                 continue;
             }
             $path->pushResponse(
-                $response->setSchemaRef('#/components/schemas/' . $exceptionSchema->getName())
+                $this->responseWithContent($response, '#/components/schemas/' . $exceptionSchema->getName())
             );
         }
 
         return $path;
+    }
+
+    /**
+     * @param Response $response
+     * @param string $schema
+     * @return Response
+     */
+    private function responseWithContent(Response $response, string $schema) : Response
+    {
+        foreach ($this->config->getResponseContentTypes() as $mimeType) {
+            $response->pushContent((new Content())->setMimeType($mimeType)->setSchema($schema));
+        }
+        return $response;
     }
 
     /**
@@ -328,6 +347,7 @@ class Swagger
     private function buildFromDefaults() : void
     {
         $array = Yaml::parseFile($this->config->getYml());
+
         if (!isset($array['paths'])) {
             $array['paths'] = [];
         }
@@ -340,7 +360,8 @@ class Swagger
             $schema = (new Schema())
                 ->setName($schemaName)
                 ->setType($schemaVar['type'])
-                ->setDescription($schemaVar['description'] ?? '');
+                ->setDescription($schemaVar['description'] ?? '')
+                ->setItems($schemaVar['items'] ?? []);
 
             $schemaVar['properties'] = $schemaVar['properties'] ?? [];
 

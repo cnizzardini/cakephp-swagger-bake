@@ -6,6 +6,10 @@ use SwaggerBake\Lib\OpenApi\RequestBody;
 
 class SwagRequestBodyHandler
 {
+    /**
+     * @param SwagRequestBody $annotation
+     * @return RequestBody
+     */
     public function getResponse(SwagRequestBody $annotation) : RequestBody
     {
         return (new RequestBody())

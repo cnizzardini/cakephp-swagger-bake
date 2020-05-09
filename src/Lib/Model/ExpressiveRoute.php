@@ -6,76 +6,127 @@ use Cake\Routing\Route\Route;
 
 class ExpressiveRoute
 {
-    private
-        $name,
-        $plugin,
-        $controller,
-        $action,
-        $methods = [],
-        $template
-    ;
+    /** @var string|null */
+    private $name;
 
-    public function getName()
+    /** @var string|null */
+    private $plugin;
+
+    /** @var string|null */
+    private $controller;
+
+    /** @var string|null */
+    private $action;
+
+    /** @var array */
+    private $methods = [];
+
+    /** @var string|null */
+    private $template;
+
+    /**
+     * @return string
+     */
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    /**
+     * @param $name
+     * @return $this
+     */
+    public function setName(string $name): ExpressiveRoute
     {
         $this->name = $name;
         return $this;
     }
 
-    public function getPlugin()
+    /**
+     * @return string
+     */
+    public function getPlugin(): ?string
     {
         return $this->plugin;
     }
 
-    public function setPlugin($plugin)
+    /**
+     * @param string|null $plugin
+     * @return $this
+     */
+    public function setPlugin(?string $plugin): ExpressiveRoute
     {
         $this->plugin = $plugin;
         return $this;
     }
 
-    public function getController()
+    /**
+     * @return string
+     */
+    public function getController(): ?string
     {
         return $this->controller;
     }
 
-    public function setController($controller)
+    /**
+     * @param $controller
+     * @return $this
+     */
+    public function setController(string $controller)
     {
         $this->controller = $controller;
         return $this;
     }
 
-    public function getAction()
+    /**
+     * @return string
+     */
+    public function getAction(): ?string
     {
         return $this->action;
     }
 
-    public function setAction($action)
+    /**
+     * @param $action
+     * @return $this
+     */
+    public function setAction($action): ExpressiveRoute
     {
         $this->action = $action;
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getMethods(): array
     {
         return $this->methods;
     }
 
+    /**
+     * @param array $methods
+     * @return $this
+     */
     public function setMethods(array $methods): ExpressiveRoute
     {
         $this->methods = $methods;
         return $this;
     }
 
-    public function getTemplate()
+    /**
+     * @return string
+     */
+    public function getTemplate() : ?string
     {
         return $this->template;
     }
 
-    public function setTemplate($template)
+    /**
+     * @param $template
+     * @return $this
+     */
+    public function setTemplate(string $template): ExpressiveRoute
     {
         $this->template = $template;
         return $this;

@@ -7,19 +7,31 @@ use JsonSerializable;
 
 class Response implements JsonSerializable
 {
+    /** @var int  */
     private $code = 0;
-    private $description = '';
-    private $schemaRef = '';
 
+    /** @var string  */
+    private $description = '';
+
+    /** @var Content[]  */
+    private $content = [];
+
+    /**
+     * @return array
+     */
     public function toArray() : array
     {
         $vars = get_object_vars($this);
         unset($vars['code']);
-        unset($vars['schemaRef']);
-        $vars['content']['application/json']['schema']['$ref'] = $this->schemaRef;
+        if (empty($vars['content'])) {
+            unset($vars['content']);
+        }
         return $vars;
     }
 
+    /**
+     * @return array|mixed
+     */
     public function jsonSerialize()
     {
         return $this->toArray();
@@ -62,22 +74,34 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return Content[]
      */
-    public function getSchemaRef(): string
+    public function getContent(): array
     {
-        return $this->schemaRef;
+        return $this->content;
     }
 
     /**
-     * @param string|null $schemaRef
-     * @return $this
+     * Sets the array of Content[]
+     *
+     * @param Content[] $contents
+     * @return Response
      */
-    public function setSchemaRef(?string $schemaRef): Response
+    public function setContent(array $contents): Response
     {
-        $this->schemaRef = $schemaRef;
+        $this->content = $contents;
         return $this;
     }
 
-
+    /**
+     * Appends to array of Content[]
+     *
+     * @param Content $content
+     * @return Response
+     */
+    public function pushContent(Content $content): Response
+    {
+        $this->content[$content->getMimeType()] = $content;
+        return $this;
+    }
 }

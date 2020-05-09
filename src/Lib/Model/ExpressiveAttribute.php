@@ -6,9 +6,16 @@ namespace SwaggerBake\Lib\Model;
 
 class ExpressiveAttribute
 {
+    /** @var string  */
     private $name = '';
+
+    /** @var string  */
     private $type = '';
+
+    /** @var string  */
     private $default = '';
+
+    /** @var bool  */
     private $isPrimaryKey = false;
 
     /**

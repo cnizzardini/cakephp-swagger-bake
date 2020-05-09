@@ -3,9 +3,13 @@
 namespace SwaggerBake\Lib;
 
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 class FormData extends AbstractParameter
 {
+    /**
+     * @return SchemaProperty[]
+     */
     public function getSchemaProperties() : array
     {
         $return = [];

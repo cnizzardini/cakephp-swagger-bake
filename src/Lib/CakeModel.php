@@ -1,13 +1,10 @@
 <?php
 
-
 namespace SwaggerBake\Lib;
-
 
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\EntityInterface;
 use Cake\Database\Schema\TableSchema;
-use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ExpressiveAttribute;
@@ -76,21 +73,34 @@ class CakeModel
         return $return;
     }
 
+    /**
+     * @return CakeRoute
+     */
     public function getCakeRoute() : CakeRoute
     {
         return $this->cakeRoute;
     }
 
+    /**
+     * @return string
+     */
     public function getPrefix() : string
     {
         return $this->prefix;
     }
 
+    /**
+     * @return Configuration
+     */
     public function getConfig() : Configuration
     {
         return $this->config;
     }
 
+    /**
+     * @param string $className
+     * @return string|null
+     */
     private function getEntityFromNamespaces(string $className) : ?string
     {
         $namespaces = $this->config->getNamespaces();
@@ -111,6 +121,10 @@ class CakeModel
         return null;
     }
 
+    /**
+     * @param array $routes
+     * @return string[]
+     */
     private function getTablesFromRoutes(array $routes) : array
     {
         $return = [];
@@ -123,6 +137,11 @@ class CakeModel
         return array_unique($return);
     }
 
+    /**
+     * @param EntityInterface $entity
+     * @param TableSchema $schema
+     * @return ExpressiveAttribute[]
+     */
     private function getExpressiveAttributes(EntityInterface $entity, TableSchema $schema) : array
     {
         $return = [];
@@ -151,6 +170,11 @@ class CakeModel
         return $return;
     }
 
+    /**
+     * @param array $schemaDebugInfo
+     * @param string $columnName
+     * @return bool
+     */
     private function isPrimaryKey(array $schemaDebugInfo, string $columnName) : bool
     {
         if (!isset($schemaDebugInfo['constraints']['primary']['columns'])) {

@@ -4,21 +4,24 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Utility\Inflector;
 use Exception;
+use LogicException;
+use ReflectionClass;
 use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlockFactory;
-use ReflectionMethod;
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\ExceptionHandler;
 use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
+use SwaggerBake\Lib\Utility\DocBlockUtility;
 
 /**
  * Class SwaggerPath
@@ -78,6 +81,7 @@ class PathFactory
                 ->setDeprecated($this->isDeprecated())
             ;
 
+            $path = $this->withDataTransferObject($path, $methodAnnotations);
             $path = $this->withResponses($path, $methodAnnotations);
             $path = $this->withRequestBody($path, $methodAnnotations);
             $path = $this->withExternalDoc($path);
@@ -86,6 +90,11 @@ class PathFactory
         return $path;
     }
 
+    /**
+     * Returns a route (e.g. /api/model/action)
+     *
+     * @return string
+     */
     private function getPathName() : string
     {
         $pieces = array_map(
@@ -108,6 +117,11 @@ class PathFactory
         );
     }
 
+    /**
+     * Returns an array of Parameter
+     *
+     * @return Parameter[]
+     */
     private function getPathParameters() : array
     {
         $return = [];
@@ -149,6 +163,13 @@ class PathFactory
         return $return;
     }
 
+    /**
+     * Returns an array of Lib/Annotation objects that can be applied to methods
+     *
+     * @param string $className
+     * @param string $method
+     * @return array
+     */
     private function getMethodAnnotations(string $className, string $method) : array
     {
         $className = $className . 'Controller';
@@ -156,6 +177,96 @@ class PathFactory
         return AnnotationUtility::getMethodAnnotations($controller, $method);
     }
 
+    private function withDataTransferObject(Path $path, array $annotations) : Path
+    {
+        if (empty($annotations)) {
+            return $path;
+        }
+
+        $dataTransferObjects = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagAnnotation\SwagDto;
+        });
+
+        if (empty($dataTransferObjects)) {
+            return $path;
+        }
+
+        $dto = reset($dataTransferObjects);
+        $class = $dto->class;
+
+        if (!class_exists($class)) {
+            return $path;
+        }
+
+        $instance = (new ReflectionClass($class))->newInstanceWithoutConstructor();
+        $properties = DocBlockUtility::getProperties($instance);
+
+        if (empty($properties)) {
+            return $path;
+        }
+
+        $filteredProperties = array_filter($properties, function ($property) use ($instance) {
+            if (!isset($property->class) || $property->class != get_class($instance)) {
+                return null;
+            }
+            return true;
+        });
+
+        $pathType = strtolower($path->getType());
+        if ($pathType == 'post') {
+            $requestBody = new RequestBody();
+            $schema = (new Schema())->setType('object');
+        }
+
+        foreach ($filteredProperties as $name => $reflectionProperty) {
+            $docBlock = DocBlockUtility::getPropertyDocBlock($reflectionProperty);
+            $vars = $docBlock->getTagsByName('var');
+            if (empty($vars)) {
+                throw new LogicException('@var must be set for ' . $class . '::' . $name);
+            }
+            $var = reset($vars);
+            $dataType = DocBlockUtility::getDocBlockConvertedVar($var);
+
+            if ($pathType == 'get') {
+                $path->pushParameter(
+                    (new Parameter())
+                        ->setName($name)
+                        ->setIn('query')
+                        ->setRequired(!empty($docBlock->getTagsByName('required')))
+                        ->setDescription($docBlock->getSummary())
+                        ->setSchema((new Schema())->setType($dataType))
+                );
+            } else if ($pathType == 'post' && isset($schema)) {
+                $schema->pushProperty(
+                    (new SchemaProperty())
+                        ->setDescription($docBlock->getSummary())
+                        ->setName($name)
+                        ->setType($dataType)
+                        ->setRequired(!empty($docBlock->getTagsByName('required')))
+                );
+            }
+        }
+
+        if (isset($schema) && isset($requestBody)) {
+            $content = (new Content())
+                ->setMimeType('application/x-www-form-urlencoded')
+                ->setSchema($schema);
+
+            $path->setRequestBody(
+                $requestBody->pushContent($content)
+            );
+        }
+
+        return $path;
+    }
+
+    /**
+     * Returns path with responses
+     *
+     * @param Path $path
+     * @param array $annotations
+     * @return Path
+     */
     private function withResponses(Path $path, array $annotations) : Path
     {
         if (!empty($annotations)) {
@@ -182,8 +293,19 @@ class PathFactory
         return $path;
     }
 
+    /**
+     * Returns Path with request body
+     *
+     * @param Path $path
+     * @param array $annotations
+     * @return Path
+     */
     private function withRequestBody(Path $path, array $annotations) : Path
     {
+        if (!empty($path->getRequestBody())) {
+            return $path;
+        }
+
         if (empty($annotations)) {
             return $path;
         }
@@ -211,6 +333,9 @@ class PathFactory
         return $path->setRequestBody($requestBody);
     }
 
+    /**
+     * @return DocBlock|null
+     */
     private function getDocBlock() : ?DocBlock
     {
         if (empty($this->route->getController())) {
@@ -219,31 +344,23 @@ class PathFactory
 
         $className = $this->route->getController() . 'Controller';
         $methodName = $this->route->getAction();
-
         $controller = $this->getControllerFromNamespaces($className);
 
         if (!class_exists($controller)) {
             return null;
         }
 
-        $instance = new $controller;
-
         try {
-            $reflectionMethod = new ReflectionMethod(get_class($instance), $methodName);
+            return DocBlockUtility::getMethodDocBlock(new $controller, $methodName);
         } catch (Exception $e) {
             return null;
         }
-
-        $comments = $reflectionMethod->getDocComment();
-
-        if (!$comments) {
-            return null;
-        }
-
-        $docFactory = DocBlockFactory::createInstance();
-        return $docFactory->create($comments);
     }
 
+    /**
+     * @param string $className
+     * @return string|null
+     */
     private function getControllerFromNamespaces(string $className) : ?string
     {
         $namespaces = $this->config->getNamespaces();
@@ -264,6 +381,10 @@ class PathFactory
         return null;
     }
 
+    /**
+     * @param string $className
+     * @return bool
+     */
     private function isControllerVisible(string $className) : bool
     {
         $className = $className . 'Controller';
@@ -284,6 +405,10 @@ class PathFactory
         return true;
     }
 
+    /**
+     * @param array $annotations
+     * @return bool
+     */
     private function isMethodVisible(array $annotations) : bool
     {
         foreach ($annotations as $annotation) {
@@ -295,6 +420,11 @@ class PathFactory
         return true;
     }
 
+    /**
+     * Check if this path/operation is deprecated
+     *
+     * @return bool
+     */
     private function isDeprecated() : bool
     {
         if (!$this->dockBlock || !$this->dockBlock instanceof DocBlock) {
@@ -304,6 +434,11 @@ class PathFactory
         return $this->dockBlock->hasTag('deprecated');
     }
 
+    /**
+     * Defines external documentation using see tag
+     * @param Path $path
+     * @return Path
+     */
     private function withExternalDoc(Path $path) : Path
     {
         if (!$this->dockBlock || !$this->dockBlock instanceof DocBlock) {

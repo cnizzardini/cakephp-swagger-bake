@@ -3,9 +3,13 @@
 namespace SwaggerBake\Lib;
 
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
+use SwaggerBake\Lib\OpenApi\PathSecurity;
 
 class Security extends AbstractParameter
 {
+    /**
+     * @return PathSecurity[]
+     */
     public function getPathSecurity() : array
     {
         $return = [];

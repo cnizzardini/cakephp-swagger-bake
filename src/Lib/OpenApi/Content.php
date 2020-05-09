@@ -7,8 +7,25 @@ use JsonSerializable;
 
 class Content implements JsonSerializable
 {
+    /** @var string[]  */
+    private const STANDARD_FORMATS = [
+        'application/json',
+        'application/xml',
+        'application/vnd.api+json',
+        'application/x-www-form-urlencoded'
+    ];
+
+    /** @var string  */
     private $mimeType = '';
+
+    /** @var string|Schema */
     private $schema;
+
+    /** @var string $type value can be string, number etc. */
+    private $type = '';
+
+    /** @var string $format value can be binary for images for instance */
+    private $format = '';
 
     public function toArray() : array
     {
@@ -18,6 +35,12 @@ class Content implements JsonSerializable
             unset($vars['schema']);
             $vars['schema']['$ref'] = $this->schema;
         }
+
+        if (in_array($this->mimeType, self::STANDARD_FORMATS)) {
+            unset($vars['type']);
+            unset($vars['format']);
+        }
+
         return $vars;
     }
 
@@ -61,6 +84,42 @@ class Content implements JsonSerializable
     public function setSchema($schema) : Content
     {
         $this->schema = $schema;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return Content
+     */
+    public function setType(string $type): Content
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormat(): string
+    {
+        return $this->format;
+    }
+
+    /**
+     * @param string $format
+     * @return Content
+     */
+    public function setFormat(string $format): Content
+    {
+        $this->format = $format;
         return $this;
     }
 }

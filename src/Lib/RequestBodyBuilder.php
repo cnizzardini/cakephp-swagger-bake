@@ -1,6 +1,5 @@
 <?php
 
-
 namespace SwaggerBake\Lib;
 
 use Cake\Utility\Inflector;
@@ -19,6 +18,9 @@ class RequestBodyBuilder
         $this->swagger = $swagger;
     }
 
+    /**
+     * @return RequestBody|null
+     */
     public function build() : ?RequestBody
     {
         $requestBody = $this->path->getRequestBody();
@@ -26,39 +28,54 @@ class RequestBodyBuilder
             $requestBody = new RequestBody();
         }
 
-        foreach ($this->path->getTags() as $tag) {
-
-            if (!in_array($this->path->getType(), ['put','patch', 'post'])) {
-                continue;
-            }
-
-            $schema = new Schema();
-            $schema->setType('object');
-
-            if (!$requestBody->isIgnoreCakeSchema()) {
-                $schema = $this->withSchemaFromModel($schema, $tag);
-            }
-            $schema = $this->withSchemaFromAnnotations($schema);
-            break;
-        }
-
-        if (!isset($schema)) {
+        if (!in_array($this->path->getType(), ['put','patch', 'post'])) {
             return null;
         }
 
-        $content = (new Content())
-            ->setMimeType('application/x-www-form-urlencoded')
-            ->setSchema($schema);
-        ;
+        $requestBody->setRequired(true);
 
-        $requestBody
-            ->pushContent($content)
-            ->setRequired(true)
-        ;
+        return $this->requestBodyWithContent($requestBody);
+    }
+
+    /**
+     * @param RequestBody $requestBody
+     * @return RequestBody
+     */
+    private function requestBodyWithContent(RequestBody $requestBody) : RequestBody
+    {
+        $tags = $this->path->getTags();
+        $tag = preg_replace('/\s+/', '', reset($tags));
+        $tag = Inflector::singularize($tag);
+
+        foreach ($this->swagger->getConfig()->getRequestAccepts() as $mimeType) {
+
+            if ($requestBody->getContentByType($mimeType)) {
+                continue;
+            }
+
+            if ($mimeType == 'application/x-www-form-urlencoded') {
+                $schema = new Schema();
+                $schema->setType('object');
+                if (!$requestBody->isIgnoreCakeSchema()) {
+                    $schema = $this->withSchemaFromModel($schema, $tag);
+                }
+                $schema = $this->withSchemaFromAnnotations($schema);
+                $requestBody->pushContent((new Content())->setMimeType($mimeType)->setSchema($schema));
+                continue;
+            }
+
+            $schema = '#/components/schemas/' . $tag;
+            $requestBody->pushContent((new Content())->setMimeType($mimeType)->setSchema($schema));
+        }
 
         return $requestBody;
     }
 
+    /**
+     * @param Schema $schema
+     * @param string $tag
+     * @return Schema
+     */
     private function withSchemaFromModel(Schema $schema, string $tag) : Schema
     {
         $className = Inflector::classify($tag);
@@ -78,6 +95,10 @@ class RequestBodyBuilder
         return $schema;
     }
 
+    /**
+     * @param Schema $schema
+     * @return Schema
+     */
     private function withSchemaFromAnnotations(Schema $schema) : Schema
     {
         $schemaProperties = (new FormData($this->route, $this->swagger->getConfig()))->getSchemaProperties();

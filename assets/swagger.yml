@@ -24,3 +24,8 @@ components:
         message:
           type: string
           example: Internal Error
+    OperationResult:
+      type: object
+      properties:
+        result:
+          type: boolean

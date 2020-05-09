@@ -37,7 +37,7 @@ class AnnotationUtility
     }
 
     /**
-     * Gets method annotations from full namespace and method arguments
+     * Returns an array of Lib/Annotation objects that can be applied to methods
      *
      * @uses AnnotationReader
      * @uses ReflectionClass

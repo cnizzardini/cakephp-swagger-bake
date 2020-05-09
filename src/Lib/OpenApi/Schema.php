@@ -16,15 +16,18 @@ class Schema implements JsonSerializable
     /** @var string */
     private $type = '';
 
-    /** @var array */
+    /** @var string[] */
     private $required = [];
 
-    /** @var array */
+    /** @var SchemaProperty[] */
     private $properties = [];
 
-    /** @var array */
+    /** @var string[] */
     private $items = [];
 
+    /**
+     * @return array
+     */
     public function toArray() : array
     {
         $vars = get_object_vars($this);
@@ -43,6 +46,9 @@ class Schema implements JsonSerializable
         return $vars;
     }
 
+    /**
+     * @return array|mixed
+     */
     public function jsonSerialize()
     {
         return $this->toArray();
@@ -93,7 +99,7 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param array $required
+     * @param string[] $required
      * @return Schema
      */
     public function setRequired(array $required): Schema
@@ -131,7 +137,7 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param SchemaProperty $properties
+     * @param SchemaProperty $property
      * @return Schema
      */
     public function pushProperty(SchemaProperty $property): Schema
@@ -174,7 +180,7 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param array $items
+     * @param string[] $items
      * @return Schema
      */
     public function setItems(array $items): Schema

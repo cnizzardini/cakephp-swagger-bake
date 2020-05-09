@@ -1,10 +1,8 @@
 <?php
 
-
 namespace SwaggerBake\Lib\OpenApi;
 
 use InvalidArgumentException;
-use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * Class Path
@@ -13,17 +11,40 @@ use phpDocumentor\Reflection\Types\Integer;
  */
 class Path
 {
+    /** @var string  */
     private $summary = '';
+
+    /** @var string  */
     private $description = '';
+
+    /** @var OperationExternalDoc|null */
     private $externalDocs;
+
+    /** @var string  */
     private $type = '';
+
+    /** @var string  */
     private $path = '';
+
+    /** @var string[]  */
     private $tags = [];
+
+    /** @var string  */
     private $operationId = '';
+
+    /** @var Parameter[]  */
     private $parameters = [];
+
+    /** @var RequestBody|null */
     private $requestBody;
+
+    /** @var Response[] */
     private $responses = [];
+
+    /** @var PathSecurity[]  */
     private $security = [];
+
+    /** @var bool  */
     private $deprecated = false;
 
     public function toArray(): array
@@ -229,6 +250,13 @@ class Path
     public function pushResponse(Response $response): Path
     {
         $code = $response->getCode();
+        $existingResponse = $this->getResponseByCode($response->getCode());
+        if ($this->getResponseByCode($response->getCode())) {
+            $content = $existingResponse->getContent() + $response->getContent();
+            $existingResponse->setContent($content);
+            $this->responses[$code] = $existingResponse;
+            return $this;
+        }
         $this->responses[$code] = $response;
         return $this;
     }

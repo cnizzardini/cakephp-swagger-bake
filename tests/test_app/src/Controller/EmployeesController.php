@@ -134,4 +134,45 @@ class EmployeesController extends AppController
         $this->set(compact('hello'));
         $this->viewBuilder()->setOption('serialize', ['hello']);
     }
+
+    /**
+     * @Swag\SwagRequestBodyContent(refEntity="", mimeType="text/plain")
+     */
+    public function customRequestBodyContent()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
+
+    /**
+     * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Pet", mimeType="application/json")
+     * @Swag\SwagResponseSchema(refEntity="", description="fatal error", httpCode=500)
+     */
+    public function customResponseSchema()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
+
+    /**
+     * @Swag\SwagDto(class="\SwaggerBakeTest\App\Dto\EmployeeData")
+     */
+    public function dtoQuery()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
+
+    /**
+     * @Swag\SwagDto(class="\SwaggerBakeTest\App\Dto\EmployeeData")
+     */
+    public function dtoPost()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
 }

@@ -1,7 +1,10 @@
 # SwaggerBake plugin for CakePHP4
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
-builds your Swagger UI (v3.25) from your existing cake models and routes. A redoc option is also available.
+builds your Swagger UI and ReDoc from your existing cake models and routes.
 
 - Creates paths from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes.
 - Creates schema from your Entities and Tables.
@@ -52,7 +55,7 @@ Using the above example you should now see your swagger documentation after brow
 ### Hot Reload Swagger JSON
 
 You can enable hot reloading. This setting re-generates swagger.json on each reload of Swagger UI. Simply set 
-`hotReload` equal to `true` in your `config/swagger_bake.php` file.
+`hotReload` equal to `true` (using `Configure::read('debug')` is recommended) in your `config/swagger_bake.php` file. 
 
 ## Automatic Documentation
 
@@ -120,6 +123,20 @@ public function index() {
 }
 ```
 
+#### `@SwagDto`
+Method level annotation for building query or form parameters from a DataTransferObject. DTOs are more than just a 
+best practice. Using them with SwaggerBake greatly reduces the amount of annotations you need to write. Consider 
+using a DTO in place of SwagQuery or SwagForm. SwagDto parses property doc blocks to build swagger query and 
+post parameters and should work with any DTO library. This has been tested with 
+[spatie/data-transfer-object](https://github.com/spatie/data-transfer-object).
+
+```php
+/**
+ * @Swag\SwagDto(class="\App\My\Dto")
+ */
+public function index() {}
+```
+
 #### `@SwagQuery`
 Method level annotation for adding query parameters.
 
@@ -165,7 +182,7 @@ Method level annotation for hiding a controller action from swagger.
 
 ```php
 /**
- * @Swag\SwagOperation(isVisible=false)
+ * @SwagOperation(isVisible=false)
  */
 public function index() {}
 ```
@@ -185,7 +202,7 @@ Method level annotation for describing custom content in request body.
 
 ```php
 /**
- * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Lead", mimeType="application/json")
+ * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Actor", mimeType="application/json")
  */
 public function index() {}
 ```
@@ -195,8 +212,10 @@ Method level annotation for defining custom response schema. Leave refEntity emp
 
 ```php
 /**
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Lead", description="summary", httpCode=200)
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="summary", httpCode=200)
  * @Swag\SwagResponseSchema(refEntity="", description="fatal error", httpCode=500)
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", mimeType="application/xml")
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", mimeType="application/json")
  */
 public function index() {}
 ```
@@ -216,7 +235,7 @@ Class level annotation for exposing entities to Swagger UI.  You can hide entiti
 
 ```php
 /**
- * @Swag\SwagEntity(isVisible=true)
+ * @Swag\SwagEntity(isVisible=false)
  */
 class Employee extends Entity {
 ```
@@ -302,7 +321,8 @@ bin/cake swagger models
   - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention. 
 - Table Validators:
   - Fields set to not allow empty will be marked as required in Swagger.  
-- SwaggerBake has been developed for application/json and has not been tested with application/xml.
+- SwaggerBake has been developed primarily for application/json and application/x-www-form-urlencoded, but does have 
+some support for application/xml and *should* work with application/vnd.api+json.
 
 ## Supported Versions
 
@@ -310,7 +330,7 @@ This is built for CakePHP 4.x only.
 
 | Version | Cake Version  | Supported | Unit Tests | Notes | 
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
-| 1.* | 4.0.* | Yes  | Yes | Currently supported | 
+| 1.* | 4.* | Yes  | Yes | Currently supported | 
 | cake-3.8 | 3.8.* | NO  | Yes | See branch cake-3.8. Completely untested and unsupported | 
 
 ## Common Issues

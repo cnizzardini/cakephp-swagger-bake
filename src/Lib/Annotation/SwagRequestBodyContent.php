@@ -22,7 +22,6 @@ class SwagRequestBodyContent
 
     public function __construct(array $values)
     {
-        $values = array_merge(['refEntity' => '', 'mimeType' => 'text/plain'], $values);
         $this->refEntity = $values['refEntity'];
         $this->mimeType = $values['mimeType'];
     }
