@@ -7,7 +7,9 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory as Factory;
 use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\Content;
+use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Path;
+use SwaggerBake\Lib\OpenApi\PathSecurity;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
@@ -141,28 +143,10 @@ class Swagger
     {
         $route = $path->getPath();
         $methodType = $path->getType();
-        if (!$this->getPathByRouteAndMethodType($route, $methodType)) {
+        if (!$this->hasPathByRouteAndMethodType($route, $methodType)) {
             $this->array['paths'][$route][$methodType] = $path;
         }
         return $this;
-    }
-
-    /**
-     * Returns a path by $route and $methodType argument
-     *
-     * @example $swagger->getPathByRouteAndMethodType('/my/route', 'post')
-     *
-     * @param string $route
-     * @param string $methodType
-     * @return Path|null
-     */
-    public function getPathByRouteAndMethodType(string $route, string $methodType): ?Path
-    {
-        if (isset($this->array['paths'][$route][$methodType])) {
-            return $this->array['paths'][$route][$methodType];
-        }
-
-        return null;
     }
 
     /**
@@ -173,6 +157,16 @@ class Swagger
     public function getConfig() : Configuration
     {
         return $this->config;
+    }
+
+    /**
+     * @param string $route
+     * @param string $methodType
+     * @return Path|null|mixed
+     */
+    private function hasPathByRouteAndMethodType(string $route, string $methodType): bool
+    {
+        return isset($this->array['paths'][$route][$methodType]);
     }
 
     /**
@@ -208,7 +202,7 @@ class Swagger
                 continue;
             }
 
-            if ($this->getPathByRouteAndMethodType($path->getPath(), $path->getType())) {
+            if ($this->hasPathByRouteAndMethodType($path->getPath(), $path->getType())) {
                 continue;
             }
 
@@ -348,9 +342,65 @@ class Swagger
     {
         $array = Yaml::parseFile($this->config->getYml());
 
+        $array = $this->buildFromDefaultPaths($array);
+        $array = $this->buildFromDefaultSchemas($array);
+
+        $this->array = $array;
+    }
+
+    /**
+     * Build paths from YML
+     *
+     * @todo for now an array will work, but should apply proper Path objects in the future
+     * @param $array
+     * @return array
+     */
+    private function buildFromDefaultPaths($array) : array
+    {
         if (!isset($array['paths'])) {
             $array['paths'] = [];
         }
+
+        return $array;
+
+        /*
+        foreach ($array['paths'] as $path => $operations) {
+
+            foreach ($operations as $httpMethod => $vars) {
+                $path = (new Path())
+                    ->setType($httpMethod)
+                    ->setSummary(isset($var['summary']) ? $var['summary'] : '')
+                    ->setDescription(isset($var['description']) ? $var['description'] : '')
+                    ->setTags(isset($var['tags']) ? $var['tags'] : [])
+                    ->setOperationId(isset($var['operationId']) ? $var['operationId'] : '')
+                    ->setDeprecated((bool) isset($var['deprecated']) ? $var['deprecated'] : false)
+
+                if (isset($vars['externalDocs'])) {
+                    $path->setExternalDocs(
+                        (new OperationExternalDoc())
+                            ->setDescription($vars['externalDocs']['description'])
+                            ->setUrl($vars['externalDocs']['url'])
+                    );
+                }
+
+                if (isset($vars['security']) && is_array($vars['security'])) {
+                    foreach ($vars['security'] as $key => $scopes) {
+                        $path->pushSecurity((new PathSecurity())->setName($key)->setScopes($scopes));
+                    }
+                }
+            }
+        }
+        */
+    }
+
+    /**
+     * Build schema from YML
+     *
+     * @param $array
+     * @return array
+     */
+    private function buildFromDefaultSchemas($array) : array
+    {
         if (!isset($array['components']['schemas'])) {
             $array['components']['schemas'] = [];
         }
@@ -378,7 +428,7 @@ class Swagger
             $array['components']['schemas'][$schemaName] = $schema;
         }
 
-        $this->array = $array;
+        return $array;
     }
 
     public function __toString(): string

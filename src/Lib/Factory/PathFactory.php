@@ -177,6 +177,14 @@ class PathFactory
         return AnnotationUtility::getMethodAnnotations($controller, $method);
     }
 
+    /**
+     * Returns a Path after applying Data Transfer Objects from annotations argument
+     *
+     * @param Path $path
+     * @param array $annotations
+     * @return Path
+     * @throws \ReflectionException
+     */
     private function withDataTransferObject(Path $path, array $annotations) : Path
     {
         if (empty($annotations)) {

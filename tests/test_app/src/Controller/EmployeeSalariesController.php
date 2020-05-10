@@ -29,6 +29,8 @@ class EmployeeSalariesController extends AppController
 
     /**
      * View method
+     *
+     * This is overwritten in swagger-with-existing.yml
      */
     public function view($id = null)
     {
