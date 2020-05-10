@@ -7,6 +7,50 @@ info:
 servers:
   - url: /api
 paths:
+  /employee-salaries:
+    get:
+      summary: Index method
+      description: 'phpunit test string'
+      tags:
+        - Employee Salaries
+      operationId: 'employeesalaries:index'
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            description: ''
+            type: integer
+          deprecated: false
+          allowEmptyValue: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            description: ''
+            type: integer
+          deprecated: false
+          allowEmptyValue: false
+        - name: sort
+          in: query
+          required: false
+          schema:
+            description: ''
+            type: string
+          deprecated: false
+          allowEmptyValue: false
+        - name: direction
+          in: query
+          required: false
+          schema:
+            description: ''
+            type: string
+          deprecated: false
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: ''
+      deprecated: false
   /pets:
     get:
       summary: List all pets
