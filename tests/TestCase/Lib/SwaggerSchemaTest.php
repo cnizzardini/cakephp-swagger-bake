@@ -63,4 +63,9 @@ class SwaggerSchemaTest extends TestCase
         $this->assertEquals('birth_date', $employee['required'][0]);
         $this->assertArrayHasKey('birth_date', $employee['properties']);
     }
+
+    public function testYmlSchemaTakesPrecedence()
+    {
+        $this->markTestIncomplete('needs test');
+    }
 }
