@@ -39,14 +39,11 @@ class PathFromRouteFactory
 
         $docBlock = $this->getDocBlock();
 
-        foreach ($this->route->getMethods() as $method) {
-
-            $path
-                ->setResource($this->getResourceName())
-                ->setSummary($docBlock ? $docBlock->getSummary() : '')
-                ->setDescription($docBlock ? $docBlock->getDescription() : '')
-            ;
-        }
+        $path
+            ->setResource($this->getResourceName())
+            ->setSummary($docBlock ? $docBlock->getSummary() : '')
+            ->setDescription($docBlock ? $docBlock->getDescription() : '')
+        ;
 
         return $path;
     }
