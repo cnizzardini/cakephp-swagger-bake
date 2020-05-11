@@ -11,9 +11,9 @@ class PathFromYmlFactory
      *
      * @param string $resource
      * @param array $var
-     * @return Path|null
+     * @return Path
      */
-    public function create(string $resource, array $var) : ?Path
+    public function create(string $resource, array $var) : Path
     {
         return (new Path())
             ->setResource($resource)
