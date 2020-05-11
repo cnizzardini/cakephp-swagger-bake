@@ -5,10 +5,10 @@ namespace SwaggerBake\Lib\Path;
 use Exception;
 use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
+use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 class PathFromRouteFactory
 {
@@ -59,7 +59,7 @@ class PathFromRouteFactory
 
         $className = $this->route->getController() . 'Controller';
         $methodName = $this->route->getAction();
-        $controller = $this->getControllerFromNamespaces($className);
+        $controller = NamespaceUtility::getController($className, $this->config);
 
         if (!class_exists($controller)) {
             return null;
@@ -107,29 +107,5 @@ class PathFromRouteFactory
             },
             explode('/', $this->route->getTemplate())
         );
-    }
-
-    /**
-     * @param string $className
-     * @return string|null
-     */
-    private function getControllerFromNamespaces(string $className) : ?string
-    {
-        $namespaces = $this->config->getNamespaces();
-
-        if (!isset($namespaces['controllers']) || !is_array($namespaces['controllers'])) {
-            throw new SwaggerBakeRunTimeException(
-                'Invalid configuration, missing SwaggerBake.namespaces.controllers'
-            );
-        }
-
-        foreach ($namespaces['controllers'] as $namespace) {
-            $entity = $namespace . 'Controller\\' . $className;
-            if (class_exists($entity, true)) {
-                return $entity;
-            }
-        }
-
-        return null;
     }
 }
