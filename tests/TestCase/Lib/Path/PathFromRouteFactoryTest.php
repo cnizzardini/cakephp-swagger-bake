@@ -55,6 +55,6 @@ class PathFromRouteFactoryTest extends TestCase
 
         $path = (new PathFromRouteFactory($route, $config))->create();
         $this->assertInstanceOf(Path::class, $path);
-        $this->assertEquals('/employees', $path->getPath());
+        $this->assertEquals('/employees', $path->getResource());
     }
 }

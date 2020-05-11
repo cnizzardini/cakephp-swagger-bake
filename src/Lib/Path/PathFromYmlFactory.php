@@ -9,14 +9,14 @@ class PathFromYmlFactory
     /**
      * Creates a Path from Yml definitions that have been converted into an array
      *
-     * @param string $path
+     * @param string $resource
      * @param array $var
      * @return Path|null
      */
-    public function create(string $path, array $var) : ?Path
+    public function create(string $resource, array $var) : ?Path
     {
         return (new Path())
-            ->setPath($path)
+            ->setResource($resource)
             ->setSummary(isset($var['summary']) ? $var['summary'] : '')
             ->setDescription(isset($var['description']) ? $var['description'] : '');
     }

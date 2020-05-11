@@ -42,7 +42,7 @@ class PathFromRouteFactory
         foreach ($this->route->getMethods() as $method) {
 
             $path
-                ->setPath($this->getPathName())
+                ->setResource($this->getResourceName())
                 ->setSummary($docBlock ? $docBlock->getSummary() : '')
                 ->setDescription($docBlock ? $docBlock->getDescription() : '')
             ;
@@ -76,11 +76,11 @@ class PathFromRouteFactory
     }
 
     /**
-     * Returns a route (e.g. /api/model/action)
+     * Returns a routes resource (e.g. /api/model/action)
      *
      * @return string
      */
-    private function getPathName() : string
+    private function getResourceName() : string
     {
         $pieces = $this->getRoutablePieces();
 
