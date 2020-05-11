@@ -29,6 +29,11 @@ class Path
      */
     private $description = '';
 
+    /**
+     * @var Operation[]
+     */
+    private $operations = [];
+
     public function toArray(): array
     {
         $vars = get_object_vars($this);
@@ -90,4 +95,31 @@ class Path
         return $this;
     }
 
+    /**
+     * @return Operation[]
+     */
+    public function getOperations(): array
+    {
+        return $this->operations;
+    }
+
+    /**
+     * @param Operation[] $operations
+     * @return Path
+     */
+    public function setOperations(array $operations): Path
+    {
+        $this->operations = $operations;
+        return $this;
+    }
+
+    /**
+     * @param Operation $operation
+     * @return $this
+     */
+    public function pushOperation(Operation $operation) : Path
+    {
+        $this->operations[$operation->getHttpMethod()] = $operation;
+        return $this;
+    }
 }
