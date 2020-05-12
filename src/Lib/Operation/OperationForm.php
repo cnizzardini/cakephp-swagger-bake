@@ -6,6 +6,7 @@ use LogicException;
 use ReflectionClass;
 use SwaggerBake\Lib\Annotation\SwagForm;
 use SwaggerBake\Lib\Annotation\SwagDto;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\RequestBody;
@@ -19,7 +20,7 @@ class OperationForm
      * @param Operation $operation
      * @param array $annotations
      * @return Operation
-     * @throws \ReflectionException
+     * @throws SwaggerBakeRunTimeException
      */
     public function getOperationWithFormProperties(Operation $operation, array $annotations) : Operation
     {
@@ -28,7 +29,11 @@ class OperationForm
         }
 
         $operation = $this->withSwagForm($operation, $annotations);
-        $operation = $this->withSwagDto($operation, $annotations);
+        try {
+            $operation = $this->withSwagDto($operation, $annotations);
+        } catch (\ReflectionException $e) {
+            throw new SwaggerBakeRunTimeException('ReflectionException: ' . $e->getMessage());
+        }
 
         return $operation;
     }

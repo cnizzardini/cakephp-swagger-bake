@@ -7,6 +7,7 @@ use ReflectionClass;
 use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagPaginator;
 use SwaggerBake\Lib\Annotation\SwagQuery;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -27,7 +28,11 @@ class OperationQueryParameter
 
         $operation = $this->withSwagPaginator($operation, $annotations);
         $operation = $this->withSwagQuery($operation, $annotations);
-        $operation = $this->withSwagDto($operation, $annotations);
+        try {
+            $operation = $this->withSwagDto($operation, $annotations);
+        } catch (\ReflectionException $e) {
+            throw new SwaggerBakeRunTimeException('ReflectionException: ' . $e->getMessage());
+        }
 
         return $operation;
     }
