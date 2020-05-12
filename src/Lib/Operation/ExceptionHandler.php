@@ -1,6 +1,6 @@
 <?php
 
-namespace SwaggerBake\Lib;
+namespace SwaggerBake\Lib\Operation;
 
 use Exception;
 
