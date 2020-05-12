@@ -21,7 +21,7 @@ class OperationForm
      * @return Operation
      * @throws \ReflectionException
      */
-    public function getOperationWithFormProperties(Operation $operation, array $annotations)
+    public function getOperationWithFormProperties(Operation $operation, array $annotations) : Operation
     {
         if ($operation->getHttpMethod() != 'POST') {
             return $operation;
