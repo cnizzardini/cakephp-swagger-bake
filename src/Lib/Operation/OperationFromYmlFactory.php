@@ -23,10 +23,12 @@ class OperationFromYmlFactory
             ->setOperationId(isset($var['operationId']) ? $var['operationId'] : '')
             ->setDeprecated((bool) isset($var['deprecated']) ? $var['deprecated'] : false);
 
-        if (isset($var['externalDocs'])) {
+        if (isset($var['externalDocs']['url'])) {
             $operation->setExternalDocs(
                 (new OperationExternalDoc())
-                    ->setDescription($var['externalDocs']['description'])
+                    ->setDescription(
+                        isset($var['externalDocs']['description']) ? $var['externalDocs']['description'] : ''
+                    )
                     ->setUrl($var['externalDocs']['url'])
             );
         }
