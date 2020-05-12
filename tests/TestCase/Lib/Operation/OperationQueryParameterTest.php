@@ -3,6 +3,7 @@
 namespace SwaggerBake\Test\TestCase\Lib\Operation;
 
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagPaginator;
 use SwaggerBake\Lib\Annotation\SwagQuery;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -14,20 +15,27 @@ class OperationQueryParameterTest extends TestCase
     {
         $operation = (new OperationQueryParameter())
             ->getOperationWithQueryParameters(
-                new Operation(),
+                (new Operation())->setHttpMethod('GET'),
                 [
                     new SwagPaginator(),
-                    new SwagQuery(['name' => 'test', 'type' => 'string', 'description' => '', 'required' => false])
+                    new SwagQuery(['name' => 'test', 'type' => 'string', 'description' => '', 'required' => false]),
+                    new SwagDto(['class' => '\SwaggerBakeTest\App\Dto\EmployeeData'])
                 ]
             );
 
         $parameters = $operation->getParameters();
-        $this->assertCount(5, $parameters);
+        $this->assertCount(7, $parameters);
+
         $param = reset($parameters);
         $this->assertEquals('page', $param->getName());
         $this->assertEquals('query', $param->getIn());
-        $param = end($parameters);
+
+        $param  = $parameters[4];
         $this->assertEquals('test', $param->getName());
+        $this->assertEquals('query', $param->getIn());
+
+        $param = end($parameters);
+        $this->assertEquals('firstName', $param->getName());
         $this->assertEquals('query', $param->getIn());
     }
 }
