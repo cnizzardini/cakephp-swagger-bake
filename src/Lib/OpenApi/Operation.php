@@ -78,9 +78,9 @@ class Operation
      */
     public function setHttpMethod(string $httpMethod): Operation
     {
-        $type = strtolower($httpMethod);
-        if (!in_array($httpMethod, ['get','put', 'post', 'patch', 'delete'])) {
-            throw new InvalidArgumentException("type must be a valid HTTP METHOD, $type given");
+        $httpMethod = strtoupper($httpMethod);
+        if (!in_array($httpMethod, ['GET','PUT', 'POST', 'PATCH', 'DELETE'])) {
+            throw new InvalidArgumentException("Invalid HTTP METHOD: $httpMethod");
         }
 
         $this->httpMethod = $httpMethod;
