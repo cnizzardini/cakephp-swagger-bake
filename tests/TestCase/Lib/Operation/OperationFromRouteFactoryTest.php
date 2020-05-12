@@ -48,7 +48,7 @@ class OperationFromRouteFactoryTest extends TestCase
         ];
     }
 
-    public function testCreatePath()
+    public function testCreate()
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new CakeRoute($this->router, $config);
@@ -56,7 +56,7 @@ class OperationFromRouteFactoryTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = reset($routes);
 
-        $operation = (new OperationFromRouteFactory())->create($route, 'GET');
+        $operation = (new OperationFromRouteFactory($config))->create($route, 'GET');
         $this->assertInstanceOf(Operation::class, $operation);
         $this->assertEquals('GET', $operation->getHttpMethod());
         $this->assertEquals('employees:index', $operation->getOperationId());

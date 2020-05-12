@@ -108,6 +108,10 @@ class OperationQueryParameter
             return $annotation instanceof SwagDto;
         });
 
+        if (empty($swagDtos)) {
+            return $operation;
+        }
+
         $dto = reset($swagDtos);
         $class = $dto->class;
 
