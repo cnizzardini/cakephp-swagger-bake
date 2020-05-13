@@ -2,8 +2,8 @@
 
 namespace SwaggerBake\Lib\Operation;
 
-use LogicException;
 use ReflectionClass;
+use ReflectionException;
 use SwaggerBake\Lib\Annotation\SwagForm;
 use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
@@ -31,7 +31,7 @@ class OperationForm
         $operation = $this->withSwagForm($operation, $annotations);
         try {
             $operation = $this->withSwagDto($operation, $annotations);
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException $e) {
             throw new SwaggerBakeRunTimeException('ReflectionException: ' . $e->getMessage());
         }
 
@@ -74,7 +74,8 @@ class OperationForm
      * @param Operation $operation
      * @param array $annotations
      * @return Operation
-     * @throws \ReflectionException
+     * @throws ReflectionException
+     * @throws SwaggerBakeRunTimeException
      */
     private function withSwagDto(Operation $operation, array $annotations) : Operation
     {
@@ -118,7 +119,7 @@ class OperationForm
             $docBlock = DocBlockUtility::getPropertyDocBlock($reflectionProperty);
             $vars = $docBlock->getTagsByName('var');
             if (empty($vars)) {
-                throw new LogicException('@var must be set for ' . $class . '::' . $name);
+                throw new SwaggerBakeRunTimeException('@var must be set for ' . $class . '::' . $name);
             }
             $var = reset($vars);
             $dataType = DocBlockUtility::getDocBlockConvertedVar($var);
