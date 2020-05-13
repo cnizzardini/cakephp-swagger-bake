@@ -91,14 +91,16 @@ class OperationFromRouteFactory
      */
     private function getDocBlock(string $fullyQualifiedNameSpace, string $methodName) : DocBlock
     {
+        $emptyDocBlock = DocBlockFactory::createInstance()->create('/**  */');
+
         if (!class_exists($fullyQualifiedNameSpace)) {
-            return DocBlockFactory::createInstance()->create('');
+            return $emptyDocBlock;
         }
 
         try {
-            return DocBlockUtility::getMethodDocBlock(new $fullyQualifiedNameSpace, $methodName);
+            return DocBlockUtility::getMethodDocBlock(new $fullyQualifiedNameSpace, $methodName) ?? $emptyDocBlock;
         } catch (Exception $e) {
-            return DocBlockFactory::createInstance()->create('');
+            return $emptyDocBlock;
         }
     }
 
