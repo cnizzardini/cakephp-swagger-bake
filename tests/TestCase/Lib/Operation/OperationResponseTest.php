@@ -2,7 +2,6 @@
 
 namespace SwaggerBake\Test\TestCase\Lib\Operation;
 
-use Cake\Http\Exception\InternalErrorException;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;

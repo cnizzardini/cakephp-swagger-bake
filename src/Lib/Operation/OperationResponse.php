@@ -3,7 +3,6 @@
 
 namespace SwaggerBake\Lib\Operation;
 
-use Cake\Utility\Inflector;
 use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
@@ -51,14 +50,14 @@ class OperationResponse
 
     public function getOperationWithResponses() : Operation
     {
-        $this->withAnnotations();
-        $this->withDocBlockExceptions();
-        $this->withSchema();
+        $this->assignAnnotations();
+        $this->assignDocBlockExceptions();
+        $this->assignSchema();
 
         return $this->operation;
     }
 
-    private function withAnnotations() : void
+    private function assignAnnotations() : void
     {
         $swagResponses = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagResponseSchema;
@@ -85,7 +84,7 @@ class OperationResponse
         }
     }
 
-    private function withDocBlockExceptions() : void
+    private function assignDocBlockExceptions() : void
     {
         if (!$this->doc->hasTag('throws')) {
             return;
@@ -101,7 +100,7 @@ class OperationResponse
         }
     }
 
-    private function withSchema() : void
+    private function assignSchema() : void
     {
         if (!$this->schema) {
             return;
