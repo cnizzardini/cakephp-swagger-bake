@@ -62,42 +62,6 @@ class Path implements JsonSerializable
     }
 
     /**
-     * @return string
-     */
-    public function getSummary(): string
-    {
-        return $this->summary;
-    }
-
-    /**
-     * @param string $summary
-     * @return Path
-     */
-    public function setSummary(string $summary): Path
-    {
-        $this->summary = $summary;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     * @return Path
-     */
-    public function setDescription(string $description): Path
-    {
-        $this->description = $description;
-        return $this;
-    }
-
-    /**
      * @return Operation[]
      */
     public function getOperations(): array
