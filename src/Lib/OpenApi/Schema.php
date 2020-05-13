@@ -132,7 +132,10 @@ class Schema implements JsonSerializable
      */
     public function setProperties(array $properties): Schema
     {
-        $this->properties = $properties;
+        foreach ($properties as $property) {
+            $this->pushProperty($property);
+        }
+
         return $this;
     }
 
