@@ -127,7 +127,7 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param array $properties
+     * @param SchemaProperty[] $properties
      * @return Schema
      */
     public function setProperties(array $properties): Schema
