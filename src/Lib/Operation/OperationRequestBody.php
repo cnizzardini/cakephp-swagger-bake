@@ -65,11 +65,39 @@ class OperationRequestBody
             return $this->operation;
         }
 
+        $this->assignAnnotations();
         $this->assignSwagFormAnnotations();
         $this->assignSwagDto();
         $this->assignSchema();
 
         return $this->operation;
+    }
+
+    /**
+     * Assigns @SwagRequestBody annotations
+     *
+     * @return void
+     */
+    private function assignAnnotations() : void
+    {
+        $swagRequestBodies = array_filter($this->annotations, function ($annotation) {
+            return $annotation instanceof SwagRequestBody;
+        });
+
+        if (empty($swagRequestBodies)) {
+            return;
+        }
+
+        $swagRequestBody = reset($swagRequestBodies);
+
+        $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
+
+        $requestBody
+            ->setDescription($swagRequestBody->description)
+            ->setRequired($swagRequestBody->required)
+        ;
+
+        $this->operation->setRequestBody($requestBody);
     }
 
     /**
