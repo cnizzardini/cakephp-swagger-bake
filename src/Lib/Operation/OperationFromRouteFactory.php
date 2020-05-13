@@ -73,8 +73,8 @@ class OperationFromRouteFactory
         $operation = (new OperationQueryParameter())
             ->getOperationWithQueryParameters($operation, $methodAnnotations);
 
-        $operation = (new OperationForm())
-            ->getOperationWithFormProperties($operation, $methodAnnotations);
+        $operation = (new OperationRequestBody($this->config, $operation, $doc, $methodAnnotations, $route, $schema))
+            ->getOperationWithRequestBody();
 
         $operation = (new OperationResponse($this->config, $operation, $doc, $methodAnnotations, $route, $schema))
             ->getOperationWithResponses();
