@@ -2,14 +2,14 @@
 
 namespace SwaggerBake\Lib\OpenApi;
 
-use InvalidArgumentException;
+use JsonSerializable;
 
 /**
  * Class Path
  * @todo implement $ref
  * @see https://swagger.io/specification/
  */
-class Path
+class Path implements JsonSerializable
 {
     /**
      * The endpoint (resource) for the path
@@ -38,7 +38,21 @@ class Path
     {
         $vars = get_object_vars($this);
         unset($vars['resource']);
+        unset($vars['operations']);
+
+        foreach ($this->getOperations() as $operation) {
+            $vars[strtolower($operation->getHttpMethod())] = $operation;
+        }
+
         return $vars;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 
     /**
@@ -119,7 +133,8 @@ class Path
      */
     public function pushOperation(Operation $operation) : Path
     {
-        $this->operations[$operation->getHttpMethod()] = $operation;
+        $httpMethod = strtolower($operation->getHttpMethod());
+        $this->operations[$httpMethod] = $operation;
         return $this;
     }
 }

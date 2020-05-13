@@ -3,12 +3,13 @@
 namespace SwaggerBake\Lib\OpenApi;
 
 use InvalidArgumentException;
+use JsonSerializable;
 
 /**
  * Class Operation
  * @see https://swagger.io/docs/specification/paths-and-operations/
  */
-class Operation
+class Operation implements JsonSerializable
 {
     /** @var OperationExternalDoc|null */
     private $externalDocs;
@@ -42,7 +43,7 @@ class Operation
         $vars = get_object_vars($this);
         unset($vars['httpMethod']);
 
-        if (in_array($this->httpMethod, ['get', 'delete'])) {
+        if (in_array($this->httpMethod, ['GET', 'DELETE'])) {
             unset($vars['requestBody']);
         }
         if (empty($vars['security'])) {
@@ -55,6 +56,17 @@ class Operation
         return $vars;
     }
 
+    /**
+     * @return array|mixed
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * @return bool
+     */
     public function hasSuccessResponseCode() : bool
     {
         $results = array_filter($this->getResponses(), function ($response) {
