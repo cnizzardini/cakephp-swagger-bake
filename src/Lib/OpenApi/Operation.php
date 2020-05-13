@@ -83,11 +83,12 @@ class Operation implements JsonSerializable
     }
 
     /**
+     * Gets httpMethod as UPPERCASE string
      * @return string
      */
     public function getHttpMethod(): string
     {
-        return $this->httpMethod;
+        return strtoupper($this->httpMethod);
     }
 
     /**
