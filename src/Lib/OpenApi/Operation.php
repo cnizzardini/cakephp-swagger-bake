@@ -11,6 +11,12 @@ use JsonSerializable;
  */
 class Operation implements JsonSerializable
 {
+    /** @var string */
+    private $summary = '';
+
+    /** @var string */
+    private $description = '';
+
     /** @var OperationExternalDoc|null */
     private $externalDocs;
 
@@ -287,6 +293,42 @@ class Operation implements JsonSerializable
     public function setExternalDocs(OperationExternalDoc $externalDoc) : Operation
     {
         $this->externalDocs = $externalDoc;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSummary(): string
+    {
+        return $this->summary;
+    }
+
+    /**
+     * @param string $summary
+     * @return Operation
+     */
+    public function setSummary(string $summary): Operation
+    {
+        $this->summary = $summary;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return Operation
+     */
+    public function setDescription(string $description): Operation
+    {
+        $this->description = $description;
         return $this;
     }
 }

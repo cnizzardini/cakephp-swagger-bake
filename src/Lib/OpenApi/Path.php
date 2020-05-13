@@ -18,18 +18,6 @@ class Path implements JsonSerializable
     private $resource = '';
 
     /**
-     * Short name of the path
-     * @var string
-     */
-    private $summary = '';
-
-    /**
-     * Long description of the path
-     * @var string
-     */
-    private $description = '';
-
-    /**
      * @var Operation[]
      */
     private $operations = [];
