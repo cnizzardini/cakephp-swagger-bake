@@ -40,7 +40,7 @@ class PathFromRouteFactory
         $docBlock = $this->getDocBlock();
 
         $path
-            ->setResource($this->getResourceName())
+            ->setResource($this->route->getTemplate())
             ->setSummary($docBlock ? $docBlock->getSummary() : '')
             ->setDescription($docBlock ? $docBlock->getDescription() : '')
         ;
