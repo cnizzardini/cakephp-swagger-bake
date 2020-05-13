@@ -15,6 +15,10 @@ class OperationDocBlock
      */
     public function getOperationWithDocBlock(Operation $operation, DocBlock $doc) : Operation
     {
+        if ($doc->hasTag('deprecated')) {
+            $operation->setDeprecated(true);
+        }
+
         if (!$doc->hasTag('see')) {
             return $operation;
         }

@@ -15,15 +15,22 @@ class OperationDocBlockTest extends TestCase
      */
     public function testGetOperationWithDocBlock()
     {
+        $block = <<<EOT
+/** 
+ * @see http://www.cakephp.org CakePHP
+ * @deprecated 
+ */
+EOT;
         $operation = (new OperationDocBlock())
             ->getOperationWithDocBlock(
                 new Operation(),
-                DocBlockFactory::createInstance()->create('/** @see http://www.cakephp.org CakePHP */')
+                DocBlockFactory::createInstance()->create($block)
             );
 
         $doc = $operation->getExternalDocs();
 
         $this->assertEquals('CakePHP', $doc->getDescription());
         $this->assertEquals('http://www.cakephp.org', $doc->getUrl());
+        $this->assertTrue($operation->isDeprecated());
     }
 }
