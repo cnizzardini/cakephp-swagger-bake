@@ -2,12 +2,11 @@
 
 namespace SwaggerBake\Lib\Path;
 
-use Exception;
-use phpDocumentor\Reflection\DocBlock;
+use SwaggerBake\Lib\Annotation\SwagPath;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\Path;
-use SwaggerBake\Lib\Utility\DocBlockUtility;
+use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 class PathFromRouteFactory
@@ -31,45 +30,39 @@ class PathFromRouteFactory
      */
     public function create() : ?Path
     {
-        $path = new Path();
-
         if (empty($this->route->getMethods())) {
             return null;
         }
 
-        $docBlock = $this->getDocBlock();
+        $controller = $this->route->getController() . 'Controller';
+        $fullyQualifiedNamespace = NamespaceUtility::getController($controller, $this->config);
 
-        $path
-            ->setResource($this->route->getTemplate())
-            ->setSummary($docBlock ? $docBlock->getSummary() : '')
-            ->setDescription($docBlock ? $docBlock->getDescription() : '')
-        ;
+        if (!$this->isVisible($fullyQualifiedNamespace)) {
+            return null;
+        }
 
-        return $path;
+        return (new Path())->setResource($this->getResourceName());
     }
 
     /**
-     * @return DocBlock|null
+     * @param string $fullyQualifiedNamespace
+     * @return bool
      */
-    private function getDocBlock() : ?DocBlock
+    private function isVisible(string $fullyQualifiedNamespace) : bool
     {
-        if (empty($this->route->getController())) {
-            return null;
+        $annotations = AnnotationUtility::getClassAnnotations($fullyQualifiedNamespace);
+
+        $results = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagPath;
+        });
+
+        if (empty($results)) {
+            return true;
         }
 
-        $className = $this->route->getController() . 'Controller';
-        $methodName = $this->route->getAction();
-        $controller = NamespaceUtility::getController($className, $this->config);
+        $swagPath = reset($results);
 
-        if (!class_exists($controller)) {
-            return null;
-        }
-
-        try {
-            return DocBlockUtility::getMethodDocBlock(new $controller, $methodName);
-        } catch (Exception $e) {
-            return null;
-        }
+        return $swagPath->isVisible;
     }
 
     /**
