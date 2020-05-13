@@ -56,7 +56,7 @@ class OperationFromRouteFactoryTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = reset($routes);
 
-        $operation = (new OperationFromRouteFactory($config))->create($route, 'GET');
+        $operation = (new OperationFromRouteFactory($config))->create($route, 'GET', null);
         $this->assertInstanceOf(Operation::class, $operation);
         $this->assertEquals('GET', $operation->getHttpMethod());
         $this->assertEquals('employees:index', $operation->getOperationId());

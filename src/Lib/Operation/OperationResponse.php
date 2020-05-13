@@ -3,29 +3,64 @@
 
 namespace SwaggerBake\Lib\Operation;
 
+use Cake\Utility\Inflector;
 use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
+use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
+use SwaggerBake\Lib\OpenApi\Schema;
 
 class OperationResponse
 {
-    public function getOperationWithResponses(Operation $operation, DocBlock $doc, array $annotations) : Operation
-    {
-        $operation = $this->withAnnotations($operation, $annotations);
-        $operation = $this->withDocBlockExceptions($operation, $doc);
-        return $operation;
+    /** @var Configuration  */
+    private $config;
+
+    /** @var Operation  */
+    private $operation;
+
+    /** @var DocBlock  */
+    private $doc;
+
+    /** @var ExpressiveRoute  */
+    private $route;
+
+    /** @var array  */
+    private $annotations;
+
+    /** @var Schema|null  */
+    private $schema;
+
+    public function __construct(
+        Configuration $config,
+        Operation $operation,
+        DocBlock $doc,
+        array $annotations,
+        ExpressiveRoute $route,
+        ?Schema $schema
+    ) {
+        $this->config = $config;
+        $this->operation = $operation;
+        $this->doc = $doc;
+        $this->annotations = $annotations;
+        $this->route = $route;
+        $this->schema = $schema;
     }
 
-    /**
-     * @param Operation $operation
-     * @param array $annotations
-     * @return Operation
-     */
-    private function withAnnotations(Operation $operation, array $annotations) : Operation
+    public function getOperationWithResponses() : Operation
     {
-        $swagResponses = array_filter($annotations, function ($annotation) {
+        $this->withAnnotations();
+        $this->withDocBlockExceptions();
+        $this->withSchema();
+
+        return $this->operation;
+    }
+
+    private function withAnnotations() : void
+    {
+        $swagResponses = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagResponseSchema;
         });
 
@@ -35,7 +70,7 @@ class OperationResponse
                 ->setDescription($annotation->description);
 
             if (empty($annotation->schemaFormat) && empty($annotation->mimeType)) {
-                $operation->pushResponse($response);
+                $this->operation->pushResponse($response);
                 continue;
             }
 
@@ -46,32 +81,66 @@ class OperationResponse
                     ->setType($annotation->schemaType)
                     ->setMimeType($annotation->mimeType)
             );
-            $operation->pushResponse($response);
+            $this->operation->pushResponse($response);
         }
-
-        return $operation;
     }
 
-    /**
-     * @param Operation $operation
-     * @param DocBlock $doc
-     * @return Operation
-     */
-    private function withDocBlockExceptions(Operation $operation, DocBlock $doc) : Operation
+    private function withDocBlockExceptions() : void
     {
-        if (!$doc->hasTag('throws')) {
-            return $operation;
+        if (!$this->doc->hasTag('throws')) {
+            return;
         }
 
-        $throws = $doc->getTagsByName('throws');
+        $throws = $this->doc->getTagsByName('throws');
 
         foreach ($throws as $throw) {
             $exception = new ExceptionHandler($throw->getType()->__toString());
-            $operation->pushResponse(
+            $this->operation->pushResponse(
                 (new Response())->setCode($exception->getCode())->setDescription($exception->getMessage())
             );
         }
+    }
 
-        return $operation;
+    private function withSchema() : void
+    {
+        if (!$this->schema) {
+            return;
+        }
+
+        if ($this->operation->getResponseByCode(200)) {
+            return;
+        }
+
+        if (!in_array(strtolower($this->route->getAction()),['index','add','view','edit'])) {
+            return;
+        }
+
+        if (in_array(strtolower($this->route->getAction()),['index'])) {
+            $response = (new Response())->setCode(200);
+
+            foreach ($this->config->getResponseContentTypes() as $mimeType) {
+                $response->pushContent(
+                    (new Content())
+                        ->setSchema($this->schema)
+                        ->setMimeType($mimeType)
+                );
+            }
+            $this->operation->pushResponse($response);
+            return;
+        }
+
+        if (in_array(strtolower($this->route->getAction()),['add','view','edit'])) {
+            $response = (new Response())->setCode(200);
+
+            foreach ($this->config->getResponseContentTypes() as $mimeType) {
+                $response->pushContent(
+                    (new Content())
+                        ->setSchema($this->schema)
+                        ->setMimeType($mimeType)
+                );
+            }
+            $this->operation->pushResponse($response);
+            return;
+        }
     }
 }

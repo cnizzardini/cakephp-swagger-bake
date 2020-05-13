@@ -6,9 +6,11 @@ use Cake\Utility\Inflector;
 use Exception;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
+use SwaggerBake\Lib\Annotation\SwagOperation;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Model\ExpressiveRoute;
 use SwaggerBake\Lib\OpenApi\Operation;
+use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
@@ -28,26 +30,36 @@ class OperationFromRouteFactory
      *
      * @param ExpressiveRoute $route
      * @param string $httpMethod
+     * @param null|Schema $schema
      * @return Operation|null
      */
-    public function create(ExpressiveRoute $route, string $httpMethod) : ?Operation
+    public function create(ExpressiveRoute $route, string $httpMethod, ?Schema $schema) : ?Operation
     {
         if (empty($route->getMethods())) {
             return null;
         }
 
+        $className = $route->getController() . 'Controller';
+        $fullyQualifiedNameSpace = NamespaceUtility::getController($className, $this->config);
+
+        $doc = $this->getDocBlock($fullyQualifiedNameSpace, $route->getAction());
+        $methodAnnotations = AnnotationUtility::getMethodAnnotations($fullyQualifiedNameSpace, $route->getAction());
+
+        if (!$this->isVisible($methodAnnotations)) {
+            return null;
+        }
+
         $operation = (new Operation())
+            ->setSummary($doc->getSummary())
+            ->setDescription($doc->getDescription())
             ->setHttpMethod(strtolower($httpMethod))
             ->setOperationId($route->getName())
             ->setTags([
                 Inflector::humanize(Inflector::underscore($route->getController()))
             ]);
 
-        $className = $route->getController() . 'Controller';
-        $fullyQualifiedNameSpace = NamespaceUtility::getController($className, $this->config);
-
-        $methodAnnotations = AnnotationUtility::getMethodAnnotations($fullyQualifiedNameSpace, $route->getAction());
-        $doc = $this->getDocBlock($fullyQualifiedNameSpace, $route->getAction());
+        $operation = (new OperationDocBlock())
+            ->getOperationWithDocBlock($operation, $doc);
 
         $operation = (new OperationPath())
             ->getOperationWithPathParameters($operation, $route);
@@ -64,13 +76,15 @@ class OperationFromRouteFactory
         $operation = (new OperationForm())
             ->getOperationWithFormProperties($operation, $methodAnnotations);
 
-        $operation = (new OperationResponse())
-            ->getOperationWithResponses($operation, $doc, $methodAnnotations);
+        $operation = (new OperationResponse($this->config, $operation, $doc, $methodAnnotations, $route, $schema))
+            ->getOperationWithResponses();
 
         return $operation;
     }
 
     /**
+     * Gets an instance of DocBlock from the controllers method
+     *
      * @param string $fullyQualifiedNameSpace
      * @param string $methodName
      * @return DocBlock
@@ -86,5 +100,24 @@ class OperationFromRouteFactory
         } catch (Exception $e) {
             return DocBlockFactory::createInstance()->create('');
         }
+    }
+
+    /**
+     * @param array $annotations
+     * @return bool
+     */
+    private function isVisible(array $annotations) : bool
+    {
+        $swagOperations = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagOperation;
+        });
+
+        if (empty($swagOperations)) {
+            return true;
+        }
+
+        $swagOperation = reset($swagOperations);
+
+        return $swagOperation->isVisible === false ? false : true;
     }
 }
