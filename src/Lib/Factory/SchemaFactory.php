@@ -9,7 +9,6 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
-use SwaggerBake\Lib\Annotation\SwagEntityAttributeHandler;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ExpressiveAttribute;
@@ -196,12 +195,20 @@ class SchemaFactory
         $entity = $this->getEntityFromNamespaces($model->getName());
         $annotations = AnnotationUtility::getClassAnnotations($entity);
 
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof SwagEntityAttribute) {
-                $schemaProperty = (new SwagEntityAttributeHandler())->getSchemaProperty($annotation);
-                $return[$schemaProperty->getName()] = $schemaProperty;
-            }
-        }
+       $swagEntityAttributes = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagEntityAttribute;
+        });
+
+       foreach ($swagEntityAttributes as $swagEntityAttribute) {
+           $return[$swagEntityAttribute->name] = (new SchemaProperty())
+               ->setName($swagEntityAttribute->name)
+               ->setDescription($swagEntityAttribute->description)
+               ->setType($swagEntityAttribute->type)
+               ->setReadOnly($swagEntityAttribute->readOnly)
+               ->setWriteOnly($swagEntityAttribute->writeOnly)
+               ->setRequired($swagEntityAttribute->required)
+           ;
+       }
 
         return $return;
     }
