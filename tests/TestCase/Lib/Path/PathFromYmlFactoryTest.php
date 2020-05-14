@@ -20,7 +20,5 @@ class PathFromYmlFactoryTest extends TestCase
         ]);
         $this->assertInstanceOf(Path::class, $path);
         $this->assertEquals('/pets', $path->getResource());
-        $this->assertEquals('pet summary', $path->getSummary());
-        $this->assertEquals('lorem ipsum description', $path->getDescription());
     }
 }

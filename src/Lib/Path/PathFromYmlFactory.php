@@ -16,7 +16,7 @@ class PathFromYmlFactory
      */
     public function create(string $resource, array $vars) : Path
     {
-        $path = (new Path())->setResource($resource);
+        return (new Path())->setResource($resource);
 
         /*
         foreach ($vars as $httpMethod => $var) {
@@ -44,7 +44,5 @@ class PathFromYmlFactory
             }
         }
         */
-
-        return $path;
     }
 }
