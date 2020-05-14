@@ -8,6 +8,7 @@ use ReflectionException;
 use SwaggerBake\Lib\Annotation\SwagForm;
 use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagRequestBody;
+use SwaggerBake\Lib\Annotation\SwagRequestBodyContent;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ExpressiveRoute;
@@ -65,7 +66,8 @@ class OperationRequestBody
             return $this->operation;
         }
 
-        $this->assignAnnotations();
+        $this->assignSwagRequestBodyAnnotation();
+        $this->assignSwagRequestBodyContentAnnotations();
         $this->assignSwagFormAnnotations();
         $this->assignSwagDto();
         $this->assignSchema();
@@ -78,7 +80,7 @@ class OperationRequestBody
      *
      * @return void
      */
-    private function assignAnnotations() : void
+    private function assignSwagRequestBodyAnnotation() : void
     {
         $swagRequestBodies = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagRequestBody;
@@ -96,6 +98,34 @@ class OperationRequestBody
             ->setDescription($swagRequestBody->description)
             ->setRequired($swagRequestBody->required)
         ;
+
+        $this->operation->setRequestBody($requestBody);
+    }
+
+    /**
+     * Assigns @SwagRequestBodyContent annotations
+     *
+     * @return void
+     */
+    private function assignSwagRequestBodyContentAnnotations() : void
+    {
+        $swagRequestBodyContents = array_filter($this->annotations, function ($annotation) {
+            return $annotation instanceof SwagRequestBodyContent;
+        });
+
+        if (empty($swagRequestBodyContents)) {
+            return;
+        }
+
+        $swagRequestBodyContent = reset($swagRequestBodyContents);
+
+        $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
+
+        $requestBody->pushContent(
+            (new Content())
+                ->setMimeType($swagRequestBodyContent->mimeType)
+                ->setSchema($swagRequestBodyContent->refEntity)
+        );
 
         $this->operation->setRequestBody($requestBody);
     }
