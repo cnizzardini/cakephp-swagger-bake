@@ -48,6 +48,10 @@ class OperationResponse
         $this->schema = $schema;
     }
 
+    /**
+     * Gets an Operation with Responses
+     * @return Operation
+     */
     public function getOperationWithResponses() : Operation
     {
         $this->assignAnnotations();
@@ -57,6 +61,10 @@ class OperationResponse
         return $this->operation;
     }
 
+    /**
+     * Set Responses using SwagResponseSchema
+     * @return void
+     */
     private function assignAnnotations() : void
     {
         $swagResponses = array_filter($this->annotations, function ($annotation) {
@@ -84,6 +92,10 @@ class OperationResponse
         }
     }
 
+    /**
+     * Sets error Responses using throw tags from Dock Block
+     * @return void
+     */
     private function assignDocBlockExceptions() : void
     {
         if (!$this->doc->hasTag('throws')) {
@@ -100,6 +112,10 @@ class OperationResponse
         }
     }
 
+    /**
+     * Assigns Cake Models as Swagger Schema if possible
+     * @return void
+     */
     private function assignSchema() : void
     {
         if (!$this->schema) {
