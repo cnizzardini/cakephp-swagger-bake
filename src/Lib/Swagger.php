@@ -194,7 +194,7 @@ class Swagger
                 $path = (new PathFromRouteFactory($route, $this->config))->create();
             }
 
-            if (empty($path)) {
+            if (!$path instanceof Path) {
                 continue;
             }
 
