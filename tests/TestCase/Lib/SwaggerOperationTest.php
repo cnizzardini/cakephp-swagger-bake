@@ -74,6 +74,23 @@ class SwaggerOperationTest extends TestCase
         AnnotationLoader::load();
     }
 
+    public function testCrudOperationsExist()
+    {
+        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $configuration);
+        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $this->assertArrayHasKey('get', $arr['paths']['/employees']);
+        $this->assertArrayHasKey('post', $arr['paths']['/employees']);
+        $this->assertArrayHasKey('get', $arr['paths']['/employees/{id}']);
+        $this->assertArrayHasKey('patch', $arr['paths']['/employees/{id}']);
+        $this->assertArrayHasKey('delete', $arr['paths']['/employees/{id}']);
+
+    }
+
     public function testHiddenOperation()
     {
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);

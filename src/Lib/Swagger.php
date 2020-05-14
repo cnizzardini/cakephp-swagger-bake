@@ -187,7 +187,12 @@ class Swagger
 
         foreach ($routes as $route) {
 
-            $path = (new PathFromRouteFactory($route, $this->config))->create();
+            $resource = $this->convertCakePathToOpenApiResource($route->getTemplate());
+            if ($this->hasPathByResource($resource)) {
+                $path = $this->array['paths'][$resource];
+            } else {
+                $path = (new PathFromRouteFactory($route, $this->config))->create();
+            }
 
             if (empty($path)) {
                 continue;
@@ -361,6 +366,15 @@ class Swagger
             implode('/', $pieces),
             strlen($this->config->getPrefix())
         );
+    }
+
+    /**
+     * @param string $resource
+     * @return Path|null|mixed
+     */
+    private function hasPathByResource(string $resource): bool
+    {
+        return isset($this->array['paths'][$resource]);
     }
 
     public function __toString(): string
