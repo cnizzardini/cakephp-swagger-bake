@@ -75,7 +75,10 @@ class Path implements JsonSerializable
      */
     public function setOperations(array $operations): Path
     {
-        $this->operations = $operations;
+        $this->operations = [];
+        foreach ($operations as $operation) {
+            $this->pushOperation($operation);
+        }
         return $this;
     }
 
