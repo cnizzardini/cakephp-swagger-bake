@@ -156,15 +156,6 @@ class Swagger
     }
 
     /**
-     * @param string $resource
-     * @return Path|null|mixed
-     */
-    private function hasPathByResource(string $resource): bool
-    {
-        return isset($this->array['paths'][$resource]);
-    }
-
-    /**
      * Builds schemas from cake models
      */
     private function buildSchemasFromModels(): void
