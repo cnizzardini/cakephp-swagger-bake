@@ -146,6 +146,11 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Pet"
+    EmployeeSalaries:
+      description: Test YML schema cannot be overwritten
+      type: array
+      items:
+        $ref: "#/components/schemas/EmployeeSalary"
     Error:
       type: object
       required:
