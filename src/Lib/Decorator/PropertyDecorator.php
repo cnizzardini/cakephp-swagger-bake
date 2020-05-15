@@ -1,9 +1,13 @@
 <?php
 
-
 namespace SwaggerBake\Lib\Decorator;
 
-
+/**
+ * Class PropertyDecorator
+ * @package SwaggerBake\Lib\Decorator
+ *
+ * Decorates a table column
+ */
 class PropertyDecorator
 {
     /** @var string  */

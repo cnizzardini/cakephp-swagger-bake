@@ -6,8 +6,8 @@ use JsonSerializable;
 
 /**
  * Class Path
- * @todo implement $ref
- * @see https://swagger.io/specification/
+ * @package SwaggerBake\Lib\OpenApi
+ * @see https://swagger.io/docs/specification/paths-and-operations/
  */
 class Path implements JsonSerializable
 {

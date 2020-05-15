@@ -5,6 +5,10 @@ namespace SwaggerBake\Lib\Path;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Operation;
 
+/**
+ * Class PathFromYmlFactory
+ * @package SwaggerBake\Lib\Path
+ */
 class PathFromYmlFactory
 {
     /**

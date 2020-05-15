@@ -6,6 +6,10 @@ use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\PathSecurity;
 
+/**
+ * Class OperationFromYmlFactory
+ * @package SwaggerBake\Lib\Operation
+ */
 class OperationFromYmlFactory
 {
     /**

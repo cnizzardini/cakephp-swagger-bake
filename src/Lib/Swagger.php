@@ -14,6 +14,10 @@ use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
 use SwaggerBake\Lib\Path\PathFromRouteFactory;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class Swagger
+ * @package SwaggerBake\Lib
+ */
 class Swagger
 {
     /** @var array */

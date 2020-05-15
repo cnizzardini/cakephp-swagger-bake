@@ -1,6 +1,5 @@
 <?php
 
-
 namespace SwaggerBake\Lib\Operation;
 
 use phpDocumentor\Reflection\DocBlock;
@@ -12,6 +11,10 @@ use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 
+/**
+ * Class OperationResponse
+ * @package SwaggerBake\Lib\Operation
+ */
 class OperationResponse
 {
     /** @var Configuration  */

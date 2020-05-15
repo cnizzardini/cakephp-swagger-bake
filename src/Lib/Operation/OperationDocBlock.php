@@ -6,6 +6,10 @@ use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 
+/**
+ * Class OperationDocBlock
+ * @package SwaggerBake\Lib\Operation
+ */
 class OperationDocBlock
 {
     /**

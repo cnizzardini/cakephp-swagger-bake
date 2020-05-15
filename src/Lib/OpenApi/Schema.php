@@ -1,10 +1,14 @@
 <?php
 
-
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
 
+/**
+ * Class Schema
+ * @package SwaggerBake\Lib\OpenApi
+ * @see https://swagger.io/docs/specification/data-models/
+ */
 class Schema implements JsonSerializable
 {
     /** @var string */

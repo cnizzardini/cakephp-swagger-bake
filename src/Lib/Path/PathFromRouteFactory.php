@@ -9,6 +9,10 @@ use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
 
+/**
+ * Class PathFromRouteFactory
+ * @package SwaggerBake\Lib\Path
+ */
 class PathFromRouteFactory
 {
     /** @var RouteDecorator */

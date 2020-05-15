@@ -19,6 +19,10 @@ use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 
+/**
+ * Class OperationRequestBody
+ * @package SwaggerBake\Lib\Operation
+ */
 class OperationRequestBody
 {
     /** @var Configuration  */

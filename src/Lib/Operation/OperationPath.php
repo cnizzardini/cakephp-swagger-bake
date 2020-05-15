@@ -7,6 +7,10 @@ use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
 
+/**
+ * Class OperationPath
+ * @package SwaggerBake\Lib\Operation
+ */
 class OperationPath
 {
     /**

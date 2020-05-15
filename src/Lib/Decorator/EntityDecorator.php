@@ -7,6 +7,12 @@ use ReflectionClass;
 use ReflectionException;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
+/**
+ * Class EntityDecorator
+ * @package SwaggerBake\Lib\Decorator
+ *
+ * Decorates Cake\ORM\Entity
+ */
 class EntityDecorator
 {
     /** @var Entity  */

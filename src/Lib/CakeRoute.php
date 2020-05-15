@@ -9,7 +9,7 @@ use InvalidArgumentException;
 
 /**
  * Class CakeRoute
- * Gets an array of routes matching a given route prefix
+ * @package SwaggerBake\Lib
  */
 class CakeRoute
 {

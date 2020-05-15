@@ -12,6 +12,7 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 /**
  * Class CakeModel
+ * @package SwaggerBake\Lib
  */
 class CakeModel
 {

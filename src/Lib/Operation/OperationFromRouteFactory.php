@@ -15,6 +15,10 @@ use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
 
+/**
+ * Class OperationFromRouteFactory
+ * @package SwaggerBake\Lib\Operation
+ */
 class OperationFromRouteFactory
 {
     /** @var Configuration  */

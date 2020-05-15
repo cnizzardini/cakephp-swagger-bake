@@ -4,6 +4,12 @@ namespace SwaggerBake\Lib\Decorator;
 
 use Cake\Routing\Route\Route;
 
+/**
+ * Class RouteDecorator
+ * @package SwaggerBake\Lib\Decorator
+ *
+ * Decorates a Cake\Routing\Route\Route
+ */
 class RouteDecorator
 {
     /** @var Route */

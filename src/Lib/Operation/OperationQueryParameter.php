@@ -13,6 +13,10 @@ use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 
+/**
+ * Class OperationQueryParameter
+ * @package SwaggerBake\Lib\Operation
+ */
 class OperationQueryParameter
 {
     /**

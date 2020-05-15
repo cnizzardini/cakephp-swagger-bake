@@ -18,6 +18,12 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
 
+/**
+ * Class SchemaFactory
+ * @package SwaggerBake\Lib\Factory
+ *
+ * Creates an instance of SwaggerBake\Lib\OpenApi\Schema per OpenAPI specifications
+ */
 class SchemaFactory
 {
     /** @var string[]  */

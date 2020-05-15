@@ -4,6 +4,10 @@ namespace SwaggerBake\Lib\Operation;
 
 use Exception;
 
+/**
+ * Class ExceptionHandler
+ * @package SwaggerBake\Lib\Operation
+ */
 class ExceptionHandler
 {
     private $message = 'Unknown Error';

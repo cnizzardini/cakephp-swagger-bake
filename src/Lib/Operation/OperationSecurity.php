@@ -6,6 +6,10 @@ use SwaggerBake\Lib\Annotation\SwagSecurity;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\PathSecurity;
 
+/**
+ * Class OperationSecurity
+ * @package SwaggerBake\Lib\Operation
+ */
 class OperationSecurity
 {
     /**
