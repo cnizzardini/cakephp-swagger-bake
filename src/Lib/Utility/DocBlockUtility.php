@@ -12,6 +12,10 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
 
+/**
+ * Class DocBlockUtility
+ * @package SwaggerBake\Lib\Utility
+ */
 class DocBlockUtility
 {
     /**

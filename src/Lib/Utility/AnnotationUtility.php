@@ -6,6 +6,10 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Exception;
 use ReflectionClass;
 
+/**
+ * Class AnnotationUtility
+ * @package SwaggerBake\Lib\Utility
+ */
 class AnnotationUtility
 {
     /**

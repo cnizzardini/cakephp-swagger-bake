@@ -6,6 +6,10 @@ use LogicException;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
+/**
+ * Class ValidateConfiguration
+ * @package SwaggerBake\Lib\Utility\
+ */
 class ValidateConfiguration
 {
     public static function validate() : void

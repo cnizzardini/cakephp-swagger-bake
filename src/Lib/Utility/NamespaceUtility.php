@@ -5,6 +5,10 @@ namespace SwaggerBake\Lib\Utility;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
+/**
+ * Class NamespaceUtility
+ * @package SwaggerBake\Lib\Utility
+ */
 class NamespaceUtility
 {
     /**
