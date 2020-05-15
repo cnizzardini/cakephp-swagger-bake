@@ -50,7 +50,7 @@ class Operation implements JsonSerializable
         $vars = get_object_vars($this);
         unset($vars['httpMethod']);
 
-        if (in_array($this->httpMethod, ['GET', 'DELETE'])) {
+        if (in_array($this->httpMethod, ['GET', 'DELETE']) || empty($vars['requestBody'])) {
             unset($vars['requestBody']);
         }
         if (empty($vars['security'])) {
