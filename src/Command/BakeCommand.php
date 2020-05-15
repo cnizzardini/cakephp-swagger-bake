@@ -9,6 +9,10 @@ use Cake\Console\ConsoleIo;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 
+/**
+ * Class BakeCommand
+ * @package SwaggerBake\Command
+ */
 class BakeCommand extends Command
 {
     /**

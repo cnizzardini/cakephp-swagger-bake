@@ -6,9 +6,11 @@ namespace SwaggerBake\Command;
 use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
-use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
 
+/**
+ * Class InstallCommand
+ * @package SwaggerBake\Command
+ */
 class InstallCommand extends Command
 {
     /**

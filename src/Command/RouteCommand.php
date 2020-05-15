@@ -14,6 +14,10 @@ use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
+/**
+ * Class RouteCommand
+ * @package SwaggerBake\Command
+ */
 class RouteCommand extends Command
 {
     /**
