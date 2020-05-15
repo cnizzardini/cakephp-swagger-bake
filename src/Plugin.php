@@ -8,9 +8,7 @@ use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
 use SwaggerBake\Lib\AnnotationLoader;
-use SwaggerBake\Command\BakeCommand;
-use SwaggerBake\Command\ModelCommand;
-use SwaggerBake\Command\RouteCommand;
+use SwaggerBake\Command as Commands;
 
 /**
  * Class Plugin
@@ -27,9 +25,10 @@ class Plugin extends BasePlugin
 
     public function console(CommandCollection $commands): CommandCollection
     {
-        $commands->add('swagger routes', RouteCommand::class);
-        $commands->add('swagger bake', BakeCommand::class);
-        $commands->add('swagger models', ModelCommand::class);
+        $commands->add('swagger install', Commands\InstallCommand::class);
+        $commands->add('swagger routes', Commands\RouteCommand::class);
+        $commands->add('swagger bake', Commands\BakeCommand::class);
+        $commands->add('swagger models', Commands\ModelCommand::class);
 
         return $commands;
     }
