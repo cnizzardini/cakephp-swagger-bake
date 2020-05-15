@@ -8,7 +8,7 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagOperation;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
@@ -28,19 +28,19 @@ class OperationFromRouteFactory
     /**
      * Creates an instance of Operation
      *
-     * @param ExpressiveRoute $route
+     * @param RouteDecorator $route
      * @param string $httpMethod
      * @param null|Schema $schema
      * @return Operation|null
      */
-    public function create(ExpressiveRoute $route, string $httpMethod, ?Schema $schema) : ?Operation
+    public function create(RouteDecorator $route, string $httpMethod, ?Schema $schema) : ?Operation
     {
         if (empty($route->getMethods())) {
             return null;
         }
 
         $className = $route->getController() . 'Controller';
-        $fullyQualifiedNameSpace = NamespaceUtility::getController($className, $this->config);
+        $fullyQualifiedNameSpace = NamespaceUtility::getControllerFullQualifiedNameSpace($className, $this->config);
 
         $doc = $this->getDocBlock($fullyQualifiedNameSpace, $route->getAction());
         $methodAnnotations = AnnotationUtility::getMethodAnnotations($fullyQualifiedNameSpace, $route->getAction());

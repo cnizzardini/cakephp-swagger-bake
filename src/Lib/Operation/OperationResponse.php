@@ -6,7 +6,7 @@ namespace SwaggerBake\Lib\Operation;
 use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
@@ -23,7 +23,7 @@ class OperationResponse
     /** @var DocBlock  */
     private $doc;
 
-    /** @var ExpressiveRoute  */
+    /** @var RouteDecorator  */
     private $route;
 
     /** @var array  */
@@ -37,7 +37,7 @@ class OperationResponse
         Operation $operation,
         DocBlock $doc,
         array $annotations,
-        ExpressiveRoute $route,
+        RouteDecorator $route,
         ?Schema $schema
     ) {
         $this->config = $config;

@@ -11,7 +11,7 @@ use SwaggerBake\Lib\Annotation\SwagRequestBody;
 use SwaggerBake\Lib\Annotation\SwagRequestBodyContent;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\RequestBody;
@@ -30,7 +30,7 @@ class OperationRequestBody
     /** @var DocBlock  */
     private $doc;
 
-    /** @var ExpressiveRoute  */
+    /** @var RouteDecorator  */
     private $route;
 
     /** @var array  */
@@ -44,7 +44,7 @@ class OperationRequestBody
         Operation $operation,
         DocBlock $doc,
         array $annotations,
-        ExpressiveRoute $route,
+        RouteDecorator $route,
         ?Schema $schema
     ) {
         $this->config = $config;

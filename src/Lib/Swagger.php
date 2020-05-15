@@ -5,7 +5,7 @@ namespace SwaggerBake\Lib;
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory as Factory;
-use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -228,10 +228,10 @@ class Swagger
     }
 
     /**
-     * @param ExpressiveRoute $route
+     * @param RouteDecorator $route
      * @return Schema|null
      */
-    private function getSchemaFromRoute(ExpressiveRoute $route) : ?Schema
+    private function getSchemaFromRoute(RouteDecorator $route) : ?Schema
     {
         $controller = $route->getController();
         $name = preg_replace('/\s+/', '', $controller);

@@ -4,20 +4,20 @@ namespace SwaggerBake\Lib\Path;
 
 use SwaggerBake\Lib\Annotation\SwagPath;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 class PathFromRouteFactory
 {
-    /** @var ExpressiveRoute */
+    /** @var RouteDecorator */
     private $route;
 
     /** @var Configuration */
     private $config;
 
-    public function __construct(ExpressiveRoute $route, Configuration $config)
+    public function __construct(RouteDecorator $route, Configuration $config)
     {
         $this->config = $config;
         $this->route = $route;
@@ -35,7 +35,7 @@ class PathFromRouteFactory
         }
 
         $controller = $this->route->getController() . 'Controller';
-        $fullyQualifiedNamespace = NamespaceUtility::getController($controller, $this->config);
+        $fullyQualifiedNamespace = NamespaceUtility::getControllerFullQualifiedNameSpace($controller, $this->config);
 
         if (!$this->isVisible($fullyQualifiedNamespace)) {
             return null;
@@ -50,7 +50,7 @@ class PathFromRouteFactory
      */
     private function isVisible(string $fullyQualifiedNamespace) : bool
     {
-        $annotations = AnnotationUtility::getClassAnnotations($fullyQualifiedNamespace);
+        $annotations = AnnotationUtility::getClassAnnotationsFromFqns($fullyQualifiedNamespace);
 
         $results = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagPath;

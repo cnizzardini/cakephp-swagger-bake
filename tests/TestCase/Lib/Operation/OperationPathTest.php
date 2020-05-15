@@ -3,7 +3,8 @@
 namespace SwaggerBake\Test\TestCase\Lib\Operation;
 
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\Model\ExpressiveRoute;
+use Cake\Routing\Route\Route;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationPath;
 
@@ -11,18 +12,19 @@ class OperationPathTest extends TestCase
 {
     public function testGetOperationWithHeaders()
     {
-        $route = (new ExpressiveRoute())
-            ->setName('employees:view')
-            ->setController('Employees')
-            ->setAction('view')
-            ->setMethods(['GET'])
-            ->setTemplate('/api/employees/:id')
-        ;
+        $routeDecorator = new RouteDecorator(
+            new Route('/api/employees/:id', [
+                '_method' => ['GET'],
+                'plugin' => '',
+                'controller' => 'Employees',
+                'action' => 'view'
+            ])
+        );
 
         $operation = (new OperationPath())
             ->getOperationWithPathParameters(
                 new Operation(),
-                $route
+                $routeDecorator
             );
 
         $parameters = $operation->getParameters();

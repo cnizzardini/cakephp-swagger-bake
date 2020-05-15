@@ -2,7 +2,7 @@
 
 namespace SwaggerBake\Lib\Operation;
 
-use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -11,10 +11,10 @@ class OperationPath
 {
     /**
      * @param Operation $operation
-     * @param ExpressiveRoute $route
+     * @param RouteDecorator $route
      * @return Operation
      */
-    public function getOperationWithPathParameters(Operation $operation, ExpressiveRoute $route) : Operation
+    public function getOperationWithPathParameters(Operation $operation, RouteDecorator $route) : Operation
     {
         $pieces = explode('/', $route->getTemplate());
         $results = array_filter($pieces, function ($piece) {

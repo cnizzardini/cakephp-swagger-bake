@@ -6,9 +6,9 @@ use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\EntityInterface;
 use Cake\Database\Schema\TableSchema;
 use Cake\Utility\Inflector;
+use SwaggerBake\Lib\Decorator\EntityDecorator;
+use SwaggerBake\Lib\Decorator\PropertyDecorator;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Model\ExpressiveAttribute;
-use SwaggerBake\Lib\Model\ExpressiveModel;
 
 /**
  * Class CakeModel
@@ -32,9 +32,9 @@ class CakeModel
     }
 
     /**
-     * Gets an array of ExpressiveModel
+     * Gets an array of EntityDecorator
      *
-     * @return ExpressiveModel[]
+     * @return EntityDecorator[]
      */
     public function getModels() : array
     {
@@ -55,6 +55,7 @@ class CakeModel
 
             $className = Inflector::classify($tableName);
             $entity = $this->getEntityFromNamespaces($className);
+
             if (empty($entity)) {
                 continue;
             }
@@ -62,12 +63,9 @@ class CakeModel
             $entityInstance = new $entity;
             $schema = $collection->describe($tableName);
 
-            $attributes = $this->getExpressiveAttributes($entityInstance, $schema);
+            $properties = $this->getPropertyDecorators($entityInstance, $schema);
 
-            $expressiveModel = new ExpressiveModel();
-            $expressiveModel->setName($className)->setAttributes($attributes);
-
-            $return[] = $expressiveModel;
+            $return[] = (new EntityDecorator($entityInstance))->setProperties($properties);
         }
 
         return $return;
@@ -140,9 +138,9 @@ class CakeModel
     /**
      * @param EntityInterface $entity
      * @param TableSchema $schema
-     * @return ExpressiveAttribute[]
+     * @return PropertyDecorator[]
      */
-    private function getExpressiveAttributes(EntityInterface $entity, TableSchema $schema) : array
+    private function getPropertyDecorators(EntityInterface $entity, TableSchema $schema) : array
     {
         $return = [];
 
@@ -157,14 +155,14 @@ class CakeModel
             $vars = $schema->__debugInfo();
             $default = isset($vars['columns'][$columnName]['default']) ? $vars['columns'][$columnName]['default'] : '';
 
-            $expressiveAttribute = new ExpressiveAttribute();
-            $expressiveAttribute
+            $PropertyDecorator = new PropertyDecorator();
+            $PropertyDecorator
                 ->setName($columnName)
                 ->setType($schema->getColumnType($columnName))
                 ->setDefault($default)
                 ->setIsPrimaryKey($this->isPrimaryKey($vars, $columnName))
             ;
-            $return[] = $expressiveAttribute;
+            $return[] = $PropertyDecorator;
         }
 
         return $return;

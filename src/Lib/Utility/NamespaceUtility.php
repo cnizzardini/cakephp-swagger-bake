@@ -8,11 +8,13 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 class NamespaceUtility
 {
     /**
+     * Gets a controllers FQNS
+     *
      * @param string $className
      * @param Configuration $config
      * @return string|null
      */
-    public static function getController(string $className, Configuration $config) : ?string
+    public static function getControllerFullQualifiedNameSpace(string $className, Configuration $config) : ?string
     {
         $namespaces = $config->getNamespaces();
 
