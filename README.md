@@ -23,33 +23,15 @@ SwaggerBake requires CakePHP4 and a few dependencies that will be automatically 
 composer require cnizzardini/cakephp-swagger-bake
 ```
 
-Run `bin/cake plugin load SwaggerBake` or manually load the plugin: 
+Add the plugin to `Application.php`:
 
 ```php
-# src/Application.php
-public function bootstrap(): void
-{
-    // other logic...
-    $this->addPlugin('SwaggerBake');
-}
+$this->addPlugin('SwaggerBake');
 ```
 
-## Setup
+## Basic Usage
 
-For standard applications that have not split their API into plugins, the automated setup should work. Otherwise 
-use the manual setup.
-
-### Automated Setup
-
-Run `bin/cake swagger install`
-
-Create a route for the SwaggerUI page in `config/routes.php`, example:
-
-```php
-$builder->connect('/api', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
-```
-
-### Manual Setup
+Get going in just four easy steps:
 
 - Create a base swagger.yml file in `config\swagger.yml`. An example file is provided [here](assets/swagger.yml). 
 
@@ -62,11 +44,19 @@ explanation.
 $builder->connect('/api', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
 ```
 
-## Complete Setup
+- Use the `swagger bake` command to generate your swagger documentation. 
 
-If Hot Reload is enabled ([see config](assets/swagger_bake.php)) then you should be able to browse to the above 
-route. Otherwise you must first run `bin/cake swagger bake` to generate your swagger documentation. 
- 
+```sh
+bin/cake swagger bake
+```
+
+Using the above example you should now see your swagger documentation after browsing to http://your-project/api
+
+### Hot Reload Swagger JSON
+
+You can enable hot reloading. This setting re-generates swagger.json on each reload of Swagger UI. Simply set 
+`hotReload` equal to `true` (using `Configure::read('debug')` is recommended) in your `config/swagger_bake.php` file. 
+
 ## Automatic Documentation
 
 I built this library to reduce the need for annotations to build documentation. SwaggerBake will automatically 

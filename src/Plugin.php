@@ -25,7 +25,6 @@ class Plugin extends BasePlugin
 
     public function console(CommandCollection $commands): CommandCollection
     {
-        $commands->add('swagger install', Commands\InstallCommand::class);
         $commands->add('swagger routes', Commands\RouteCommand::class);
         $commands->add('swagger bake', Commands\BakeCommand::class);
         $commands->add('swagger models', Commands\ModelCommand::class);
