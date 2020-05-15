@@ -41,6 +41,13 @@ class InstallCommand extends Command
             return;
         }
 
+        if (file_exists(CONFIG . 'swagger.yml') || file_exists(CONFIG . 'swagger_bake.php')) {
+            $answer = $io->ask('The installer found existing SwaggerBake config files. Overwrite?', 'Y');
+            if (strtoupper($answer) !== 'Y') {
+                return;
+            }
+        }
+
         if (!copy("$assets/swagger.yml", CONFIG . 'swagger.yml')) {
             $io->error('Unable to copy swagger.yml, check permissions');
             return;
