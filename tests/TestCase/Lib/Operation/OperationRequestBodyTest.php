@@ -128,7 +128,8 @@ class OperationRequestBodyTest extends TestCase
             ->setType('object')
             ->setName('Employee')
             ->setProperties([
-                (new SchemaProperty())->setName('firstName')->setType('string'),
+                (new SchemaProperty())->setName('id')->setType('integer')->setReadOnly(true),
+                (new SchemaProperty())->setName('firstName')->setType('string')->setRequired(true),
                 (new SchemaProperty())->setName('otherField')->setType('string')
             ])
         ;
@@ -153,6 +154,9 @@ class OperationRequestBodyTest extends TestCase
         $this->assertEquals('object', $schema->getType());
 
         $properties = $schema->getProperties();
+        $this->assertEquals('id', $properties['id']->getName());
+        $this->assertTrue($properties['id']->isReadOnly());
+        $this->assertTrue($properties['firstName']->isRequired());
         $this->assertEquals('firstName', $properties['firstName']->getName());
         $this->assertEquals('otherField', $properties['otherField']->getName());
     }
