@@ -300,10 +300,16 @@ class OperationRequestBody
             return $requestBody;
         }
 
+        $schema = clone $this->schema;
+        $properties = array_filter($schema->getProperties(), function ($property) {
+            return $property->isReadOnly() === false;
+        });
+        $schema->setProperties($properties);
+
         $requestBody->pushContent(
             (new Content())
                 ->setMimeType('application/x-www-form-urlencoded')
-                ->setSchema($this->schema)
+                ->setSchema($schema)
         );
 
         return $requestBody;

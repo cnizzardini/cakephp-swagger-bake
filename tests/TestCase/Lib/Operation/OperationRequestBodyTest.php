@@ -154,8 +154,8 @@ class OperationRequestBodyTest extends TestCase
         $this->assertEquals('object', $schema->getType());
 
         $properties = $schema->getProperties();
-        $this->assertEquals('id', $properties['id']->getName());
-        $this->assertTrue($properties['id']->isReadOnly());
+        $this->assertArrayNotHasKey('id', $properties);
+        $this->assertArrayNotHasKey('modified', $properties);
         $this->assertTrue($properties['firstName']->isRequired());
         $this->assertEquals('firstName', $properties['firstName']->getName());
         $this->assertEquals('otherField', $properties['otherField']->getName());
