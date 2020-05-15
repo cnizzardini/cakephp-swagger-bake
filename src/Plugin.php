@@ -19,6 +19,10 @@ class Plugin extends BasePlugin
     public function bootstrap(PluginApplicationInterface $app) : void
     {
         parent::bootstrap($app);
+        if (!file_exists(CONFIG . 'swagger_bake.php')) {
+            triggerWarning('Missing configuration file for config/swagger_bake.php');
+            return;
+        }
         Configure::load('swagger_bake', 'default');
         AnnotationLoader::load();
     }
@@ -28,6 +32,7 @@ class Plugin extends BasePlugin
         $commands->add('swagger routes', Commands\RouteCommand::class);
         $commands->add('swagger bake', Commands\BakeCommand::class);
         $commands->add('swagger models', Commands\ModelCommand::class);
+        $commands->add('swagger install', Commands\InstallCommand::class);
 
         return $commands;
     }
