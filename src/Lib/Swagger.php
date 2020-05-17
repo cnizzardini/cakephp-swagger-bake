@@ -212,6 +212,8 @@ class Swagger
                     continue;
                 }
 
+                $this->addArrayOfObjectsSchema($route);
+
                 $schema = $this->getSchemaFromRoute($route);
 
                 $operation = $operationFactory->create($route, $httpMethod, $schema);
@@ -219,8 +221,6 @@ class Swagger
                 if (!$operation instanceof Operation) {
                     continue;
                 }
-
-                $this->addArrayOfObjectsSchema($operation);
 
                 $path->pushOperation($operation);
             }
@@ -254,34 +254,31 @@ class Swagger
     /**
      * Adds array of objects to #/components/schemas
      *
-     * @param Operation $operation
+     * @param RouteDecorator $route
      */
-    private function addArrayOfObjectsSchema(Operation $operation) : void
+    private function addArrayOfObjectsSchema(RouteDecorator $route) : void
     {
-        if ($operation->getHttpMethod() != 'GET') {
+        if (!in_array('GET', $route->getMethods())) {
             return;
         }
 
-        if (!strstr($operation->getOperationId(),':index')) {
+        if ($route->getAction() !== 'index') {
             return;
         }
 
-        $tags = $operation->getTags();
-        $name = preg_replace('/\s+/', '', reset($tags));
-
-        if ($this->getSchemaByName($name)) {
+        if ($this->getSchemaByName($route->getController())) {
             return;
         }
 
-        if (!$this->getSchemaByName(Inflector::singularize($name))) {
+        if (!$this->getSchemaByName(Inflector::singularize($route->getController()))) {
             return;
         }
 
         $this->pushSchema(
             (new Schema())
-                ->setName($name)
+                ->setName($route->getController())
                 ->setType('array')
-                ->setItems(['$ref' => '#/components/schemas/' . Inflector::classify($name)])
+                ->setItems(['$ref' => '#/components/schemas/' . Inflector::singularize($route->getController())])
         );
     }
 

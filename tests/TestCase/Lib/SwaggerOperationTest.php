@@ -91,6 +91,22 @@ class SwaggerOperationTest extends TestCase
 
     }
 
+    public function testDefaultSchemaOnIndexMethod()
+    {
+        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $configuration);
+        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $employeeIndex = $arr['paths']['/employees']['get'];
+        $schema =  $employeeIndex['responses'][200]['content']['application/json']['schema'];
+
+        $this->assertEquals('array', $schema['type']);
+        $this->assertEquals('#/components/schemas/Employee', $schema['items']['$ref']);
+    }
+
     public function testHiddenOperation()
     {
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);

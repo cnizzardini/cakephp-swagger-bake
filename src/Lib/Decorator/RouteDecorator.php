@@ -158,7 +158,7 @@ class RouteDecorator
      */
     public function setMethods(array $methods): RouteDecorator
     {
-        $this->methods = $methods;
+        $this->methods = array_map('strtoupper', $methods);
         return $this;
     }
 
