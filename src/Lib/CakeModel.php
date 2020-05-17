@@ -6,9 +6,11 @@ use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\EntityInterface;
 use Cake\Database\Schema\TableSchema;
 use Cake\Utility\Inflector;
+use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Decorator\EntityDecorator;
 use SwaggerBake\Lib\Decorator\PropertyDecorator;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
  * Class CakeModel
@@ -50,14 +52,14 @@ class CakeModel
 
         foreach ($tables as $tableName) {
 
-            if (!in_array($tableName, $tabularRoutes)) {
-                continue;
-            }
-
             $className = Inflector::classify($tableName);
             $entity = $this->getEntityFromNamespaces($className);
 
             if (empty($entity)) {
+                continue;
+            }
+
+            if (!in_array($tableName, $tabularRoutes) && !$this->entityHasVisibility($entity)) {
                 continue;
             }
 
@@ -181,5 +183,30 @@ class CakeModel
         }
 
         return in_array($columnName, $schemaDebugInfo['constraints']['primary']['columns']);
+    }
+
+    /**
+     * @param string $fqns
+     * @return bool
+     */
+    private function entityHasVisibility(string $fqns) : bool
+    {
+        if (empty($fqns)) {
+            return false;
+        }
+
+        $annotations = AnnotationUtility::getClassAnnotationsFromFqns($fqns);
+
+        $swagEntities = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagEntity;
+        });
+
+        if (empty($swagEntities)) {
+            return false;
+        }
+
+        $swagEntity = reset($swagEntities);
+
+        return $swagEntity->isVisible;
     }
 }
