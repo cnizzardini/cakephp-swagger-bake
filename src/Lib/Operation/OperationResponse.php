@@ -107,10 +107,21 @@ class OperationResponse
 
         $throws = $this->doc->getTagsByName('throws');
 
+        $mimeTypes = $this->config->getResponseContentTypes();
+        $mimeType = reset($mimeTypes);
+
         foreach ($throws as $throw) {
             $exception = new ExceptionHandler($throw->getType()->__toString());
+
             $this->operation->pushResponse(
-                (new Response())->setCode($exception->getCode())->setDescription($exception->getMessage())
+                (new Response())
+                    ->setCode($exception->getCode())
+                    ->setDescription($exception->getMessage())
+                    ->pushContent(
+                        (new Content())
+                            ->setMimeType($mimeType)
+                            ->setSchema('#/components/schemas/' . $this->config->getExceptionSchema())
+                    )
             );
         }
     }
