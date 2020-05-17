@@ -7,9 +7,6 @@ use SwaggerBake\Lib\Operation\ExceptionHandler;
 
 class ExceptionHandlerTest extends TestCase
 {
-    /**
-     * @throws InternalErrorException
-     */
     public function testConstruct()
     {
         $this->assertEquals(400, (new ExceptionHandler('BadRequestException'))->getCode());
