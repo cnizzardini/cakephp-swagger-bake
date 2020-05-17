@@ -258,13 +258,22 @@ class Swagger
      */
     private function addArrayOfObjectsSchema(Operation $operation) : void
     {
-        if (strtolower($operation->getHttpMethod()) == 'get' && strstr($operation->getOperationId(),':index')) {
+        if ($operation->getHttpMethod() != 'GET') {
             return;
         }
+
+        if (!strstr($operation->getOperationId(),':index')) {
+            return;
+        }
+
         $tags = $operation->getTags();
         $name = preg_replace('/\s+/', '', reset($tags));
 
         if ($this->getSchemaByName($name)) {
+            return;
+        }
+
+        if (!$this->getSchemaByName(Inflector::singularize($name))) {
             return;
         }
 
