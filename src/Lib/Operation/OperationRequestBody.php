@@ -66,7 +66,7 @@ class OperationRequestBody
      */
     public function getOperationWithRequestBody() : Operation
     {
-        if ($this->operation->getHttpMethod() != 'POST') {
+        if (!in_array($this->operation->getHttpMethod(), ['POST','PATCH','PUT'])) {
             return $this->operation;
         }
 
