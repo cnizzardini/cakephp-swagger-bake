@@ -28,6 +28,7 @@ class ExceptionHandler
             $exceptionClass,
             '\\' . $exceptionClass,
             "\Cake\Http\Exception\\" . $exceptionClass,
+            "\Cake\Datasource\Exception\\" . $exceptionClass,
         ];
 
         try {
