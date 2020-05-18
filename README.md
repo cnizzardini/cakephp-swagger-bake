@@ -23,15 +23,33 @@ SwaggerBake requires CakePHP4 and a few dependencies that will be automatically 
 composer require cnizzardini/cakephp-swagger-bake
 ```
 
-Add the plugin to `Application.php`:
+Run `bin/cake plugin load SwaggerBake` or manually load the plugin: 
 
 ```php
-$this->addPlugin('SwaggerBake');
+# src/Application.php
+public function bootstrap(): void
+{
+    // other logic...
+    $this->addPlugin('SwaggerBake');
+}
 ```
 
-## Basic Usage
+## Setup
 
-Get going in just four easy steps:
+For standard applications that have not split their API into plugins, the automated setup should work. Otherwise 
+use the manual setup.
+
+### Automated Setup
+
+Run `bin/cake swagger install`
+
+Create a route for the SwaggerUI page in `config/routes.php`, example:
+
+```php
+$builder->connect('/your-api-path', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
+```
+
+### Manual Setup
 
 - Create a base swagger.yml file in `config\swagger.yml`. An example file is provided [here](assets/swagger.yml). 
 
@@ -41,22 +59,14 @@ explanation.
 - Create a route for the SwaggerUI page in `config/routes.php`. See Extensibility for other ways to diplay Swagger.
 
 ```php
-$builder->connect('/api', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
+$builder->connect('/your-api-path', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
 ```
 
-- Use the `swagger bake` command to generate your swagger documentation. 
+## Complete Setup
 
-```sh
-bin/cake swagger bake
-```
-
-Using the above example you should now see your swagger documentation after browsing to http://your-project/api
-
-### Hot Reload Swagger JSON
-
-You can enable hot reloading. This setting re-generates swagger.json on each reload of Swagger UI. Simply set 
-`hotReload` equal to `true` (using `Configure::read('debug')` is recommended) in your `config/swagger_bake.php` file. 
-
+If Hot Reload is enabled ([see config](assets/swagger_bake.php)) then you should be able to browse to the above 
+route. Otherwise you must first run `bin/cake swagger bake` to generate your swagger documentation. 
+ 
 ## Automatic Documentation
 
 I built this library to reduce the need for annotations to build documentation. SwaggerBake will automatically 
@@ -80,13 +90,14 @@ components > schemas > Exception as your Swagger documentations Exception schema
 ## Doc Blocks
 
 SwaggerBake will parse your [DocBlocks](https://docs.phpdoc.org/latest/guides/docblocks.html) for information. The 
-first line reads as the Path Summary and the second as the Path Description, `@see`, `@deprecated`, and `@throws` are 
-also supported. Throw tags use the Exception classes HTTP status code. For instance, a `MethodNotAllowedException` 
-displays as a 405 response in Swagger UI, while a standard PHP Exception displays as a 500 code.
+first line reads as the Operation Summary and the second as the Operation Description, `@see`, `@deprecated`, and 
+`@throws` are also supported. Throw tags use the Exception classes HTTP status code. For instance, a 
+`MethodNotAllowedException` displays as a 405 response in Swagger UI, while a standard PHP Exception displays as a 500 
+code.
 
 ```php
 /**
- * Swagger Path Summary
+ * Swagger Operation Summary
  * 
  * This displays as the operations long description
  * 

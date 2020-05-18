@@ -2,344 +2,94 @@
 
 namespace SwaggerBake\Lib\OpenApi;
 
-use InvalidArgumentException;
+use JsonSerializable;
 
 /**
  * Class Path
- * @todo implement $ref
- * @see https://swagger.io/specification/
+ * @package SwaggerBake\Lib\OpenApi
+ * @see https://swagger.io/docs/specification/paths-and-operations/
  */
-class Path
+class Path implements JsonSerializable
 {
-    /** @var string  */
-    private $summary = '';
+    /**
+     * The endpoint (resource) for the path
+     * @var string
+     */
+    private $resource = '';
 
-    /** @var string  */
-    private $description = '';
-
-    /** @var OperationExternalDoc|null */
-    private $externalDocs;
-
-    /** @var string  */
-    private $type = '';
-
-    /** @var string  */
-    private $path = '';
-
-    /** @var string[]  */
-    private $tags = [];
-
-    /** @var string  */
-    private $operationId = '';
-
-    /** @var Parameter[]  */
-    private $parameters = [];
-
-    /** @var RequestBody|null */
-    private $requestBody;
-
-    /** @var Response[] */
-    private $responses = [];
-
-    /** @var PathSecurity[]  */
-    private $security = [];
-
-    /** @var bool  */
-    private $deprecated = false;
+    /**
+     * @var Operation[]
+     */
+    private $operations = [];
 
     public function toArray(): array
     {
         $vars = get_object_vars($this);
-        unset($vars['type']);
-        unset($vars['path']);
+        unset($vars['resource']);
+        unset($vars['operations']);
 
-        if (in_array($this->type, ['get', 'delete'])) {
-            unset($vars['requestBody']);
-        }
-        if (empty($vars['security'])) {
-            unset($vars['security']);
-        }
-        if (empty($vars['externalDocs'])) {
-            unset($vars['externalDocs']);
+        foreach ($this->getOperations() as $operation) {
+            $vars[strtolower($operation->getHttpMethod())] = $operation;
         }
 
         return $vars;
     }
 
-    public function hasSuccessResponseCode() : bool
+    /**
+     * @return array|mixed
+     */
+    public function jsonSerialize()
     {
-        $results = array_filter($this->getResponses(), function ($response) {
-            return ($response->getCode() >= 200 && $response->getCode() < 300);
-        });
-
-        return count($results) > 0;
+        return $this->toArray();
     }
 
     /**
      * @return string
      */
-    public function getSummary(): string
+    public function getResource(): string
     {
-        return $this->summary;
+        return $this->resource;
     }
 
     /**
-     * @param string $summary
+     * @param string $resource
      * @return Path
      */
-    public function setSummary(string $summary): Path
+    public function setResource(string $resource): Path
     {
-        $this->summary = $summary;
+        $this->resource = $resource;
         return $this;
     }
 
     /**
-     * @return string
+     * @return Operation[]
      */
-    public function getDescription(): string
+    public function getOperations(): array
     {
-        return $this->description;
+        return $this->operations;
     }
 
     /**
-     * @param string $description
+     * @param Operation[] $operations
      * @return Path
      */
-    public function setDescription(string $description): Path
+    public function setOperations(array $operations): Path
     {
-        $this->description = $description;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     * @return Path
-     */
-    public function setType(string $type): Path
-    {
-        $type = strtolower($type);
-        if (!in_array($type, ['get','put', 'post', 'patch', 'delete'])) {
-            throw new InvalidArgumentException("type must be a valid HTTP METHOD, $type given");
+        $this->operations = [];
+        foreach ($operations as $operation) {
+            $this->pushOperation($operation);
         }
-
-        $this->type = $type;
         return $this;
     }
 
     /**
-     * @return array
-     */
-    public function getTags(): array
-    {
-        return $this->tags;
-    }
-
-    /**
-     * @param array $tags
-     * @return Path
-     */
-    public function setTags(array $tags): Path
-    {
-        $this->tags = $tags;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOperationId(): string
-    {
-        return $this->operationId;
-    }
-
-    /**
-     * @param string $operationId
-     * @return Path
-     */
-    public function setOperationId(string $operationId): Path
-    {
-        $this->operationId = $operationId;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * @param array $parameters
-     * @return Path
-     */
-    public function setParameters(array $parameters): Path
-    {
-        $this->parameters = $parameters;
-        return $this;
-    }
-
-    /**
-     * @param Parameter $parameter
-     * @return Path
-     */
-    public function pushParameter(Parameter $parameter): Path
-    {
-        $this->parameters[] = $parameter;
-        return $this;
-    }
-
-    /**
-     * @return RequestBody|null
-     */
-    public function getRequestBody() : ?RequestBody
-    {
-        return $this->requestBody;
-    }
-
-    /**
-     * @param RequestBody $requestBody
-     * @return Path
-     */
-    public function setRequestBody(RequestBody $requestBody) : Path
-    {
-        $this->requestBody = $requestBody;
-        return $this;
-    }
-
-    /**
-     * @return Response[]
-     */
-    public function getResponses(): array
-    {
-        return $this->responses;
-    }
-
-    /**
-     * @param int $code
-     * @return Response|null
-     */
-    public function getResponseByCode(int $code) : ?Response
-    {
-        return isset($this->responses[$code]) ? $this->responses[$code] : null;
-    }
-
-    /**
-     * @param array $array
-     * @return Path
-     */
-    public function setResponses(array $array) : Path
-    {
-        $this->responses = $array;
-        return $this;
-    }
-
-    /**
-     * @param Response $response
-     * @return Path
-     */
-    public function pushResponse(Response $response): Path
-    {
-        $code = $response->getCode();
-        $existingResponse = $this->getResponseByCode($response->getCode());
-        if ($this->getResponseByCode($response->getCode())) {
-            $content = $existingResponse->getContent() + $response->getContent();
-            $existingResponse->setContent($content);
-            $this->responses[$code] = $existingResponse;
-            return $this;
-        }
-        $this->responses[$code] = $response;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getSecurity(): array
-    {
-        return $this->security;
-    }
-
-    /**
-     * @param array $security
-     * @return Path
-     */
-    public function setSecurity(array $security): Path
-    {
-        $this->security = $security;
-        return $this;
-    }
-
-    /**
-     * @param PathSecurity $security
+     * @param Operation $operation
      * @return $this
      */
-    public function pushSecurity(PathSecurity $security): Path
+    public function pushOperation(Operation $operation) : Path
     {
-        $this->security[] = $security;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDeprecated(): bool
-    {
-        return $this->deprecated;
-    }
-
-    /**
-     * @param bool $deprecated
-     * @return Path
-     */
-    public function setDeprecated(bool $deprecated): Path
-    {
-        $this->deprecated = $deprecated;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath(): string
-    {
-        return $this->path;
-    }
-
-    /**
-     * @param string $path
-     * @return Path
-     */
-    public function setPath(string $path): Path
-    {
-        $this->path = $path;
-        return $this;
-    }
-
-    /**
-     * @return OperationExternalDoc
-     */
-    public function getExternalDocs() : OperationExternalDoc
-    {
-        return $this->externalDocs;
-    }
-
-    /**
-     * @param OperationExternalDoc $externalDoc
-     * @return Path
-     */
-    public function setExternalDocs(OperationExternalDoc $externalDoc) : Path
-    {
-        $this->externalDocs = $externalDoc;
+        $httpMethod = strtolower($operation->getHttpMethod());
+        $this->operations[$httpMethod] = $operation;
         return $this;
     }
 }

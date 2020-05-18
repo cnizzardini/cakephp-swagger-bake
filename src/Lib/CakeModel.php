@@ -6,12 +6,15 @@ use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\EntityInterface;
 use Cake\Database\Schema\TableSchema;
 use Cake\Utility\Inflector;
+use SwaggerBake\Lib\Annotation\SwagEntity;
+use SwaggerBake\Lib\Decorator\EntityDecorator;
+use SwaggerBake\Lib\Decorator\PropertyDecorator;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Model\ExpressiveAttribute;
-use SwaggerBake\Lib\Model\ExpressiveModel;
+use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
  * Class CakeModel
+ * @package SwaggerBake\Lib
  */
 class CakeModel
 {
@@ -32,9 +35,9 @@ class CakeModel
     }
 
     /**
-     * Gets an array of ExpressiveModel
+     * Gets an array of EntityDecorator
      *
-     * @return ExpressiveModel[]
+     * @return EntityDecorator[]
      */
     public function getModels() : array
     {
@@ -49,25 +52,23 @@ class CakeModel
 
         foreach ($tables as $tableName) {
 
-            if (!in_array($tableName, $tabularRoutes)) {
+            $className = Inflector::classify($tableName);
+            $entity = $this->getEntityFromNamespaces($className);
+
+            if (empty($entity)) {
                 continue;
             }
 
-            $className = Inflector::classify($tableName);
-            $entity = $this->getEntityFromNamespaces($className);
-            if (empty($entity)) {
+            if (!in_array($tableName, $tabularRoutes) && !$this->entityHasVisibility($entity)) {
                 continue;
             }
 
             $entityInstance = new $entity;
             $schema = $collection->describe($tableName);
 
-            $attributes = $this->getExpressiveAttributes($entityInstance, $schema);
+            $properties = $this->getPropertyDecorators($entityInstance, $schema);
 
-            $expressiveModel = new ExpressiveModel();
-            $expressiveModel->setName($className)->setAttributes($attributes);
-
-            $return[] = $expressiveModel;
+            $return[] = (new EntityDecorator($entityInstance))->setProperties($properties);
         }
 
         return $return;
@@ -140,9 +141,9 @@ class CakeModel
     /**
      * @param EntityInterface $entity
      * @param TableSchema $schema
-     * @return ExpressiveAttribute[]
+     * @return PropertyDecorator[]
      */
-    private function getExpressiveAttributes(EntityInterface $entity, TableSchema $schema) : array
+    private function getPropertyDecorators(EntityInterface $entity, TableSchema $schema) : array
     {
         $return = [];
 
@@ -157,14 +158,14 @@ class CakeModel
             $vars = $schema->__debugInfo();
             $default = isset($vars['columns'][$columnName]['default']) ? $vars['columns'][$columnName]['default'] : '';
 
-            $expressiveAttribute = new ExpressiveAttribute();
-            $expressiveAttribute
+            $PropertyDecorator = new PropertyDecorator();
+            $PropertyDecorator
                 ->setName($columnName)
                 ->setType($schema->getColumnType($columnName))
                 ->setDefault($default)
                 ->setIsPrimaryKey($this->isPrimaryKey($vars, $columnName))
             ;
-            $return[] = $expressiveAttribute;
+            $return[] = $PropertyDecorator;
         }
 
         return $return;
@@ -182,5 +183,30 @@ class CakeModel
         }
 
         return in_array($columnName, $schemaDebugInfo['constraints']['primary']['columns']);
+    }
+
+    /**
+     * @param string $fqns
+     * @return bool
+     */
+    private function entityHasVisibility(string $fqns) : bool
+    {
+        if (empty($fqns)) {
+            return false;
+        }
+
+        $annotations = AnnotationUtility::getClassAnnotationsFromFqns($fqns);
+
+        $swagEntities = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagEntity;
+        });
+
+        if (empty($swagEntities)) {
+            return false;
+        }
+
+        $swagEntity = reset($swagEntities);
+
+        return $swagEntity->isVisible;
     }
 }

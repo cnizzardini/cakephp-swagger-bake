@@ -5,6 +5,10 @@ namespace SwaggerBake\Lib;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
 
+/**
+ * Class AnnotationLoader
+ * @package SwaggerBake\Lib
+ */
 class AnnotationLoader
 {
     public static function load() : void

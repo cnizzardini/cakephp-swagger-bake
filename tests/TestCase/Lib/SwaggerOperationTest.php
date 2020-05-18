@@ -74,6 +74,103 @@ class SwaggerOperationTest extends TestCase
         AnnotationLoader::load();
     }
 
+    public function testCrudOperationsExist()
+    {
+        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $configuration);
+        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $this->assertArrayHasKey('get', $arr['paths']['/employees']);
+        $this->assertArrayHasKey('post', $arr['paths']['/employees']);
+        $this->assertArrayHasKey('get', $arr['paths']['/employees/{id}']);
+        $this->assertArrayHasKey('patch', $arr['paths']['/employees/{id}']);
+        $this->assertArrayHasKey('delete', $arr['paths']['/employees/{id}']);
+
+    }
+
+    public function testDefaultResponseSchemaOnIndexMethod()
+    {
+        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $configuration);
+        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $employee = $arr['paths']['/employees']['get'];
+        $schema =  $employee['responses'][200]['content']['application/json']['schema'];
+
+        $this->assertEquals('array', $schema['type']);
+        $this->assertEquals('#/components/schemas/Employee', $schema['items']['$ref']);
+    }
+
+    public function testDefaultRequestSchemaOnAddMethod()
+    {
+        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $configuration);
+        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $employee = $arr['paths']['/employees']['post'];
+        $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
+
+        $this->assertEquals('object', $schema['type']);
+        $this->assertCount(4, $schema['properties']);
+    }
+
+    public function testDefaultResponseSchemaOnAddMethod()
+    {
+        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $configuration);
+        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $employee = $arr['paths']['/employees']['post'];
+        $schema =  $employee['responses'][200]['content']['application/json']['schema'];
+
+        $this->assertEquals('object', $schema['type']);
+        $this->assertCount(6, $schema['properties']);
+    }
+
+    public function testDefaultRequestSchemaOnEditMethod()
+    {
+        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $configuration);
+        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $employee = $arr['paths']['/employees/{id}']['patch'];
+        $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
+
+        $this->assertEquals('object', $schema['type']);
+        $this->assertCount(4, $schema['properties']);
+    }
+
+    public function testDefaultResponseSchemaOnEditMethod()
+    {
+        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $configuration);
+        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $employee = $arr['paths']['/employees/{id}']['patch'];
+        $schema =  $employee['responses'][200]['content']['application/json']['schema'];
+
+        $this->assertEquals('object', $schema['type']);
+        $this->assertCount(6, $schema['properties']);
+    }
+
     public function testHiddenOperation()
     {
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);

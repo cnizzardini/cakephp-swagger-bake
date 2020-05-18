@@ -1,9 +1,11 @@
 <?php
 
-
 namespace SwaggerBake\Lib\Utility;
 
-
+/**
+ * Class DataTypeConversion
+ * @package SwaggerBake\Lib\Utility
+ */
 class DataTypeConversion
 {
     public static function convert(string $type) : string

@@ -14,6 +14,10 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
+/**
+ * Class ModelCommand
+ * @package SwaggerBake\Command
+ */
 class ModelCommand extends Command
 {
     /**

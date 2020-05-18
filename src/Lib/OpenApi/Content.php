@@ -1,10 +1,14 @@
 <?php
 
-
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
 
+/**
+ * Class Content
+ * @package SwaggerBake\Lib\OpenApi
+ * @see https://swagger.io/docs/specification/describing-request-body/
+ */
 class Content implements JsonSerializable
 {
     /** @var string[]  */

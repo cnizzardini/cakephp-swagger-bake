@@ -6,9 +6,13 @@ namespace SwaggerBake\Controller;
 use Cake\Event\EventInterface;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
+use SwaggerBake\Lib\Swagger;
 
 class SwaggerController extends AppController
 {
+    /** @var Swagger */
+    private $swagger;
+
     /**
      * @see https://book.cakephp.org/4/en/controllers.html#controller-callback-methods
      * @param EventInterface $event
@@ -20,8 +24,8 @@ class SwaggerController extends AppController
 
         if ($config->getHotReload()) {
             $output = $config->getJson();
-            $swagger = (new SwaggerFactory())->create();
-            $swagger->writeFile($output);
+            $this->swagger = (new SwaggerFactory())->create();
+            $this->swagger->writeFile($output);
         }
     }
 
@@ -32,6 +36,14 @@ class SwaggerController extends AppController
      */
     public function index()
     {
+        foreach ($this->swagger->getOperationsWithNoHttp20x() as $operation) {
+            if (!isset($this->Flash)) {
+                triggerWarning('Operation ' . $operation->getOperationId() . ' does not have a HTTP 20x response');
+                continue;
+            }
+            $this->Flash->error('Operation ' . $operation->getOperationId() . ' does not have a HTTP 20x response');
+        }
+
         $config = new Configuration();
         $title = $config->getTitleFromYml();
         $url = $config->getWebPath();

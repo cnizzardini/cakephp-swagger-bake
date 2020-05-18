@@ -31,11 +31,25 @@ $this->assign('title', $title);
             margin:0;
             background: #fafafa;
         }
+        /* Flash messages */
+        .message,.alert {
+            padding: 1rem;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+        .message.error, .alert.alert-danger {
+            background: #fcebea;
+            color: #cc1f1a;
+            border-color: #ef5753;
+        }
     </style>
 </head>
 
 <body>
 <?php
+echo $this->Flash->render();
 echo $this->fetch('content');
 ?>
 </body>

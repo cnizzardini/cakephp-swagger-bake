@@ -6,20 +6,51 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Exception;
 use ReflectionClass;
 
+/**
+ * Class AnnotationUtility
+ * @package SwaggerBake\Lib\Utility
+ */
 class AnnotationUtility
 {
     /**
-     * Gets class annotations from full namespace argument
+     * Gets class annotations from namespace argument
      *
      * @uses AnnotationReader
      * @uses ReflectionClass
      * @param string $namespace
      * @return array
      */
-    public static function getClassAnnotations(string $namespace) : array
+    public static function getClassAnnotationsFromFqns(string $namespace) : array
     {
         try {
             $instance = new $namespace;
+            $reflectionClass = new ReflectionClass(get_class($instance));
+        } catch (Exception $e) {
+            return [];
+        }
+
+        $reader = new AnnotationReader();
+
+        $annotations = $reader->getClassAnnotations($reflectionClass);
+
+        if (!is_array($annotations)) {
+            return [];
+        }
+
+        return $annotations;
+    }
+
+    /**
+     * Gets class annotations from instance
+     *
+     * @uses AnnotationReader
+     * @uses ReflectionClass
+     * @param object $instance
+     * @return array
+     */
+    public static function getClassAnnotationsFromInstance(object $instance) : array
+    {
+        try {
             $reflectionClass = new ReflectionClass(get_class($instance));
         } catch (Exception $e) {
             return [];

@@ -1,10 +1,14 @@
 <?php
 
-
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
 
+/**
+ * Class Schema
+ * @package SwaggerBake\Lib\OpenApi
+ * @see https://swagger.io/docs/specification/data-models/
+ */
 class Schema implements JsonSerializable
 {
     /** @var string */
@@ -35,7 +39,7 @@ class Schema implements JsonSerializable
         if (empty($vars['required'])) {
             unset($vars['required']);
         } else {
-            $vars['required'] = array_values($vars['required']);
+            $vars['required'] = array_unique(array_values($vars['required']));
         }
         if (empty($vars['properties'])) {
             unset($vars['properties']);
@@ -127,12 +131,16 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param array $properties
+     * @param SchemaProperty[] $properties
      * @return Schema
      */
     public function setProperties(array $properties): Schema
     {
-        $this->properties = $properties;
+        $this->properties = [];
+        foreach ($properties as $property) {
+            $this->pushProperty($property);
+        }
+
         return $this;
     }
 

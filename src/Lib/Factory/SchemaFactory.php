@@ -9,16 +9,21 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
-use SwaggerBake\Lib\Annotation\SwagEntityAttributeHandler;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Model\ExpressiveAttribute;
-use SwaggerBake\Lib\Model\ExpressiveModel;
+use SwaggerBake\Lib\Decorator\PropertyDecorator;
+use SwaggerBake\Lib\Decorator\EntityDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
 
+/**
+ * Class SchemaFactory
+ * @package SwaggerBake\Lib\Factory
+ *
+ * Creates an instance of SwaggerBake\Lib\OpenApi\Schema per OpenAPI specifications
+ */
 class SchemaFactory
 {
     /** @var string[]  */
@@ -36,24 +41,24 @@ class SchemaFactory
     }
 
     /**
-     * @param ExpressiveModel $model
+     * @param EntityDecorator $entity
      * @return Schema|null
      */
-    public function create(ExpressiveModel $model) : ?Schema
+    public function create(EntityDecorator $entity) : ?Schema
     {
-        if (!$this->isSwaggable($model)) {
+        if (!$this->isSwaggable($entity)) {
             return null;
         }
 
-        $this->validator = $this->getValidator($model->getName());
+        $this->validator = $this->getValidator($entity->getName());
 
-        $docBlock = $this->getDocBlock($model);
+        $docBlock = $this->getDocBlock($entity);
 
-        $properties = $this->getProperties($model);
+        $properties = $this->getProperties($entity);
 
         $schema = new Schema();
         $schema
-            ->setName($model->getName())
+            ->setName($entity->getName())
             ->setDescription($docBlock ? $docBlock->getSummary() : '')
             ->setType('object')
             ->setProperties($properties)
@@ -71,14 +76,14 @@ class SchemaFactory
     }
 
     /**
-     * @param ExpressiveModel $model
+     * @param EntityDecorator $entity
      * @return array
      */
-    private function getProperties(ExpressiveModel $model) : array
+    private function getProperties(EntityDecorator $entity) : array
     {
-        $return = $this->getSwagPropertyAnnotations($model);
+        $return = $this->getSwagPropertyAnnotations($entity);
 
-        foreach ($model->getAttributes() as $attribute) {
+        foreach ($entity->getProperties() as $attribute) {
             $name = $attribute->getName();
             if (isset($return[$name])) {
                 continue;
@@ -91,15 +96,13 @@ class SchemaFactory
     }
 
     /**
-     * @param ExpressiveModel $model
+     * @param EntityDecorator $entity
      * @return DocBlock|null
      */
-    private function getDocBlock(ExpressiveModel $model) : ?DocBlock
+    private function getDocBlock(EntityDecorator $entity) : ?DocBlock
     {
-        $entity = $this->getEntityFromNamespaces($model->getName());
-
         try {
-            $instance = new $entity;
+            $instance = $entity->getEntity();
             $reflectionClass = new ReflectionClass(get_class($instance));
         } catch (\Exception $e) {
             return null;
@@ -113,30 +116,6 @@ class SchemaFactory
 
         $docFactory = DocBlockFactory::createInstance();
         return $docFactory->create($comments);
-    }
-
-    /**
-     * @param string $className
-     * @return string|null
-     */
-    private function getEntityFromNamespaces(string $className) : ?string
-    {
-        $namespaces = $this->config->getNamespaces();
-
-        if (!isset($namespaces['entities']) || !is_array($namespaces['entities'])) {
-            throw new SwaggerBakeRunTimeException(
-                'Invalid configuration, missing SwaggerBake.namespaces.entities'
-            );
-        }
-
-        foreach ($namespaces['entities'] as $namespace) {
-            $entity = $namespace . 'Model\Entity\\' . $className;
-            if (class_exists($entity, true)) {
-                return $entity;
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -164,56 +143,62 @@ class SchemaFactory
     }
 
     /**
-     * @param ExpressiveAttribute $attribute
+     * @param PropertyDecorator $property
      * @return SchemaProperty
      */
-    private function getSchemaProperty(ExpressiveAttribute $attribute) : SchemaProperty
+    private function getSchemaProperty(PropertyDecorator $property) : SchemaProperty
     {
-        $isReadOnlyField = in_array($attribute->getName(), self::READ_ONLY_FIELDS);
-        $isDateTimeField = in_array($attribute->getType(), self::DATETIME_TYPES);
+        $isReadOnlyField = in_array($property->getName(), self::READ_ONLY_FIELDS);
+        $isDateTimeField = in_array($property->getType(), self::DATETIME_TYPES);
 
-        $property = new SchemaProperty();
-        $property
-            ->setName($attribute->getName())
-            ->setType(DataTypeConversion::convert($attribute->getType()))
-            ->setReadOnly(($attribute->isPrimaryKey() || ($isReadOnlyField && $isDateTimeField)))
-            ->setRequired($this->isAttributeRequired($attribute))
+        $schemaProperty = new SchemaProperty();
+        $schemaProperty
+            ->setName($property->getName())
+            ->setType(DataTypeConversion::convert($property->getType()))
+            ->setReadOnly(($property->isPrimaryKey() || ($isReadOnlyField && $isDateTimeField)))
+            ->setRequired($this->isAttributeRequired($property))
         ;
 
-        return $property;
+        return $schemaProperty;
     }
 
     /**
      * Returns key-value pair of property name => SchemaProperty
      *
-     * @param ExpressiveModel $model
+     * @param EntityDecorator $entity
      * @return SchemaProperty[]
      */
-    private function getSwagPropertyAnnotations(ExpressiveModel $model) : array
+    private function getSwagPropertyAnnotations(EntityDecorator $entity) : array
     {
         $return = [];
 
-        $entity = $this->getEntityFromNamespaces($model->getName());
-        $annotations = AnnotationUtility::getClassAnnotations($entity);
+        $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity->getEntity());
 
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof SwagEntityAttribute) {
-                $schemaProperty = (new SwagEntityAttributeHandler())->getSchemaProperty($annotation);
-                $return[$schemaProperty->getName()] = $schemaProperty;
-            }
-        }
+       $swagEntityAttributes = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagEntityAttribute;
+        });
+
+       foreach ($swagEntityAttributes as $swagEntityAttribute) {
+           $return[$swagEntityAttribute->name] = (new SchemaProperty())
+               ->setName($swagEntityAttribute->name)
+               ->setDescription($swagEntityAttribute->description)
+               ->setType($swagEntityAttribute->type)
+               ->setReadOnly($swagEntityAttribute->readOnly)
+               ->setWriteOnly($swagEntityAttribute->writeOnly)
+               ->setRequired($swagEntityAttribute->required)
+           ;
+       }
 
         return $return;
     }
 
     /**
-     * @param ExpressiveModel $model
+     * @param EntityDecorator $entity
      * @return bool
      */
-    private function isSwaggable(ExpressiveModel $model) : bool
+    private function isSwaggable(EntityDecorator $entity) : bool
     {
-        $entity = $this->getEntityFromNamespaces($model->getName());
-        $annotations = AnnotationUtility::getClassAnnotations($entity);
+        $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity->getEntity());
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagEntity) {
@@ -225,16 +210,16 @@ class SchemaFactory
     }
 
     /**
-     * @param ExpressiveAttribute $attribute
+     * @param PropertyDecorator $property
      * @return bool
      */
-    private function isAttributeRequired(ExpressiveAttribute $attribute) : bool
+    private function isAttributeRequired(PropertyDecorator $property) : bool
     {
         if (!$this->validator) {
             return false;
         }
 
-        $validationSet = $this->validator->field($attribute->getName());
+        $validationSet = $this->validator->field($property->getName());
         if (!$validationSet->isEmptyAllowed()) {
             return true;
         }

@@ -5,16 +5,19 @@ namespace SwaggerBake\Lib;
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory as Factory;
-use SwaggerBake\Lib\Model\ExpressiveRoute;
-use SwaggerBake\Lib\OpenApi\Content;
-use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
+use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Path;
-use SwaggerBake\Lib\OpenApi\PathSecurity;
-use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
+use SwaggerBake\Lib\Path\PathFromRouteFactory;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class Swagger
+ * @package SwaggerBake\Lib
+ */
 class Swagger
 {
     /** @var array */
@@ -34,7 +37,9 @@ class Swagger
         $this->cakeModel = $cakeModel;
         $this->cakeRoute = $cakeModel->getCakeRoute();
         $this->config = $cakeModel->getConfig();
-        $this->buildFromDefaults();
+        $this->buildFromYml();
+        $this->buildSchemasFromModels();
+        $this->buildPathsFromRoutes();
     }
 
     /**
@@ -44,12 +49,9 @@ class Swagger
      */
     public function getArray(): array
     {
-        $this->buildSchemas();
-        $this->buildPaths();
-
         foreach ($this->array['paths'] as $method => $paths) {
             foreach ($paths as $pathId => $path) {
-                if (!is_array($path)) {
+                if ($path instanceof Path) {
                     $this->array['paths'][$method][$pathId] = $path->toArray();
                 }
             }
@@ -94,7 +96,7 @@ class Swagger
      *
      * @param string $output
      */
-    public function writeFile(string $output) : void
+    public function writeFile(string $output): void
     {
         if (!is_writable($output)) {
             throw new SwaggerBakeRunTimeException("Output file is not writable, given $output");
@@ -141,11 +143,8 @@ class Swagger
      */
     public function pushPath(Path $path): Swagger
     {
-        $route = $path->getPath();
-        $methodType = $path->getType();
-        if (!$this->hasPathByRouteAndMethodType($route, $methodType)) {
-            $this->array['paths'][$route][$methodType] = $path;
-        }
+        $resource = $path->getResource();
+        $this->array['paths'][$resource] = $path;
         return $this;
     }
 
@@ -154,25 +153,15 @@ class Swagger
      *
      * @return Configuration
      */
-    public function getConfig() : Configuration
+    public function getConfig(): Configuration
     {
         return $this->config;
     }
 
     /**
-     * @param string $route
-     * @param string $methodType
-     * @return Path|null|mixed
-     */
-    private function hasPathByRouteAndMethodType(string $route, string $methodType): bool
-    {
-        return isset($this->array['paths'][$route][$methodType]);
-    }
-
-    /**
      * Builds schemas from cake models
      */
-    private function buildSchemas(): void
+    private function buildSchemasFromModels(): void
     {
         $schemaFactory = new Factory\SchemaFactory($this->config);
         $models = $this->cakeModel->getModels();
@@ -192,158 +181,115 @@ class Swagger
     /**
      * Builds paths from cake routes
      */
-    private function buildPaths(): void
+    private function buildPathsFromRoutes(): void
     {
         $routes = $this->cakeRoute->getRoutes();
+        $operationFactory = new OperationFromRouteFactory($this->config);
+
+        $ignorePaths = array_keys($this->array['paths']);
+
         foreach ($routes as $route) {
 
-            $path = (new Factory\PathFactory($route, $this->config))->create();
-            if (is_null($path)) {
+            $resource = $this->convertCakePathToOpenApiResource($route->getTemplate());
+            if ($this->hasPathByResource($resource)) {
+                $path = $this->array['paths'][$resource];
+            } else {
+                $path = (new PathFromRouteFactory($route, $this->config))->create();
+            }
+
+            if (!$path instanceof Path) {
                 continue;
             }
 
-            if ($this->hasPathByRouteAndMethodType($path->getPath(), $path->getType())) {
+            if (in_array($path->getResource(), $ignorePaths)) {
                 continue;
             }
 
-            $path = $this->pathWithResponses($path);
-            $path = $this->pathWithSecurity($path, $route);
-            $path = $this->pathWithParameters($path, $route);
-            $path = $this->pathWithRequestBody($path, $route);
+            foreach ($route->getMethods() as $httpMethod) {
 
-            $this->pushPath($path);
+                if (strtolower($httpMethod) == 'put') {
+                    continue;
+                }
+
+                $this->addArrayOfObjectsSchema($route);
+
+                $schema = $this->getSchemaFromRoute($route);
+
+                $operation = $operationFactory->create($route, $httpMethod, $schema);
+
+                if (!$operation instanceof Operation) {
+                    continue;
+                }
+
+                $path->pushOperation($operation);
+            }
+
+            if (!empty($path->getOperations())) {
+                $this->pushPath($path);
+            }
         }
     }
 
     /**
-     * Sets security on a path
+     * @param RouteDecorator $route
+     * @return Schema|null
+     */
+    private function getSchemaFromRoute(RouteDecorator $route) : ?Schema
+    {
+        $controller = $route->getController();
+        $name = preg_replace('/\s+/', '', $controller);
+
+        if (in_array(strtolower($route->getAction()),['index']) && $this->getSchemaByName($name)) {
+            return $this->getSchemaByName($name);
+        }
+
+        if (in_array(strtolower($route->getAction()),['add','view','edit'])) {
+            return $this->getSchemaByName(Inflector::singularize($name));
+        }
+
+        return null;
+    }
+
+    /**
+     * Adds array of objects to #/components/schemas
      *
-     * @param Path $path
-     * @param ExpressiveRoute $route
-     * @return Path
+     * @param RouteDecorator $route
      */
-    private function pathWithSecurity(Path $path, ExpressiveRoute $route) : Path
+    private function addArrayOfObjectsSchema(RouteDecorator $route) : void
     {
-        $path->setSecurity((new Security($route, $this->config))->getPathSecurity());
-        return $path;
-    }
-
-    /**
-     * Sets header parameters on a path
-     *
-     * @param Path $path
-     * @param ExpressiveRoute $route
-     * @return Path
-     */
-    private function pathWithParameters(Path $path, ExpressiveRoute $route) : Path
-    {
-        $headers = (new HeaderParameter($route, $this->config))->getHeaderParameters();
-        foreach ($headers as $parameter) {
-            $path->pushParameter($parameter);
+        if (!in_array('GET', $route->getMethods())) {
+            return;
         }
 
-        $queries = (new QueryParameter($route, $this->config))->getQueryParameters();
-        foreach ($queries as $parameter) {
-            $path->pushParameter($parameter);
-        }
-        return $path;
-    }
-
-    /**
-     * Sets responses on a path
-     *
-     * @param Path $path
-     * @return Path
-     */
-    private function pathWithResponses(Path $path) : Path
-    {
-        foreach ($path->getTags() as $tag) {
-            $className = Inflector::classify($tag);
-
-            if ($path->hasSuccessResponseCode() || !$this->getSchemaByName($className)) {
-                continue;
-            }
-
-            if ($path->getType() == 'get' && strstr($path->getOperationId(),':index')) {
-                $tags = $path->getTags();
-                $tag = preg_replace('/\s+/', '', reset($tags));
-                $schema = (new Schema())
-                    ->setName($tag)
-                    ->setType('array')
-                    ->setItems(['$ref' => '#/components/schemas/' . $className])
-                ;
-                $this->pushSchema($schema);
-
-                $response = (new Response())->setCode(200);
-                $response = $this->responseWithContent($response, '#/components/schemas/' . $tag);
-                $path->pushResponse($response);
-                continue;
-            }
-
-            $response = (new Response())->setCode(200);
-            $response = $this->responseWithContent($response, '#/components/schemas/' . $className);
-            $path->pushResponse($response);
+        if ($route->getAction() !== 'index') {
+            return;
         }
 
-        if (!$path->hasSuccessResponseCode()) {
-            $path->pushResponse((new Response())->setCode(200));
+        if ($this->getSchemaByName($route->getController())) {
+            return;
         }
 
-        $exceptionSchema = $this->getSchemaByName($this->getConfig()->getExceptionSchema());
-        if (!$exceptionSchema) {
-            return $path;
+        if (!$this->getSchemaByName(Inflector::singularize($route->getController()))) {
+            return;
         }
 
-        foreach ($path->getResponses() as $response) {
-            if ($response->getCode() < 400) {
-                continue;
-            }
-            $path->pushResponse(
-                $this->responseWithContent($response, '#/components/schemas/' . $exceptionSchema->getName())
-            );
-        }
-
-        return $path;
-    }
-
-    /**
-     * @param Response $response
-     * @param string $schema
-     * @return Response
-     */
-    private function responseWithContent(Response $response, string $schema) : Response
-    {
-        foreach ($this->config->getResponseContentTypes() as $mimeType) {
-            $response->pushContent((new Content())->setMimeType($mimeType)->setSchema($schema));
-        }
-        return $response;
-    }
-
-    /**
-     * Sets a request body on a path
-     *
-     * @param Path $path
-     * @param ExpressiveRoute $route
-     * @return Path
-     */
-    private function pathWithRequestBody(Path $path, ExpressiveRoute $route) : Path
-    {
-        $requestBody = (new RequestBodyBuilder($path, $this, $route))->build();
-        if ($requestBody) {
-            $path->setRequestBody($requestBody);
-        }
-        return $path;
+        $this->pushSchema(
+            (new Schema())
+                ->setName($route->getController())
+                ->setType('array')
+                ->setItems(['$ref' => '#/components/schemas/' . Inflector::singularize($route->getController())])
+        );
     }
 
     /**
      * Constructs the primary array used in this class from pre-defined swagger.yml
      */
-    private function buildFromDefaults() : void
+    private function buildFromYml() : void
     {
         $array = Yaml::parseFile($this->config->getYml());
 
-        $array = $this->buildFromDefaultPaths($array);
-        $array = $this->buildFromDefaultSchemas($array);
+        $array = $this->buildPathsFromYml($array);
+        $array = $this->buildSchemaFromYml($array);
 
         $this->array = $array;
     }
@@ -355,42 +301,13 @@ class Swagger
      * @param $array
      * @return array
      */
-    private function buildFromDefaultPaths($array) : array
+    private function buildPathsFromYml($array) : array
     {
         if (!isset($array['paths'])) {
             $array['paths'] = [];
         }
 
         return $array;
-
-        /*
-        foreach ($array['paths'] as $path => $operations) {
-
-            foreach ($operations as $httpMethod => $vars) {
-                $path = (new Path())
-                    ->setType($httpMethod)
-                    ->setSummary(isset($var['summary']) ? $var['summary'] : '')
-                    ->setDescription(isset($var['description']) ? $var['description'] : '')
-                    ->setTags(isset($var['tags']) ? $var['tags'] : [])
-                    ->setOperationId(isset($var['operationId']) ? $var['operationId'] : '')
-                    ->setDeprecated((bool) isset($var['deprecated']) ? $var['deprecated'] : false)
-
-                if (isset($vars['externalDocs'])) {
-                    $path->setExternalDocs(
-                        (new OperationExternalDoc())
-                            ->setDescription($vars['externalDocs']['description'])
-                            ->setUrl($vars['externalDocs']['url'])
-                    );
-                }
-
-                if (isset($vars['security']) && is_array($vars['security'])) {
-                    foreach ($vars['security'] as $key => $scopes) {
-                        $path->pushSecurity((new PathSecurity())->setName($key)->setScopes($scopes));
-                    }
-                }
-            }
-        }
-        */
     }
 
     /**
@@ -399,7 +316,7 @@ class Swagger
      * @param $array
      * @return array
      */
-    private function buildFromDefaultSchemas($array) : array
+    private function buildSchemaFromYml($array) : array
     {
         if (!isset($array['components']['schemas'])) {
             $array['components']['schemas'] = [];
@@ -429,6 +346,67 @@ class Swagger
         }
 
         return $array;
+    }
+
+    /**
+     * Converts Cake path parameters to OpenApi Spec
+     *
+     * @example /actor/:id to /actor/{id}
+     * @param string $resource
+     * @return string
+     */
+    private function convertCakePathToOpenApiResource(string $resource) : string
+    {
+        $pieces = array_map(
+            function ($piece) {
+                if (substr($piece, 0, 1) == ':') {
+                    return '{' . str_replace(':', '', $piece) . '}';
+                }
+                return $piece;
+            },
+            explode('/', $resource)
+        );
+
+        if ($this->config->getPrefix() == '/') {
+            return implode('/', $pieces);
+        }
+
+        return substr(
+            implode('/', $pieces),
+            strlen($this->config->getPrefix())
+        );
+    }
+
+    /**
+     * @return Operation[]
+     */
+    public function getOperationsWithNoHttp20x() : array
+    {
+        $operations = [];
+
+        foreach ($this->array['paths'] as $path) {
+
+            if (!$path instanceof Path) {
+                continue;
+            }
+
+            $operations = array_merge(
+                $operations,
+                array_filter($path->getOperations(), function ($operation) {
+                    return !$operation->hasSuccessResponseCode();
+                })
+            );
+        }
+        return $operations;
+    }
+
+    /**
+     * @param string $resource
+     * @return Path|null|mixed
+     */
+    private function hasPathByResource(string $resource): bool
+    {
+        return isset($this->array['paths'][$resource]);
     }
 
     public function __toString(): string

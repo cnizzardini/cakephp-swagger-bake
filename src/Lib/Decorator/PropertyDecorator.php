@@ -1,10 +1,14 @@
 <?php
 
+namespace SwaggerBake\Lib\Decorator;
 
-namespace SwaggerBake\Lib\Model;
-
-
-class ExpressiveAttribute
+/**
+ * Class PropertyDecorator
+ * @package SwaggerBake\Lib\Decorator
+ *
+ * Decorates a table column
+ */
+class PropertyDecorator
 {
     /** @var string  */
     private $name = '';
@@ -28,9 +32,9 @@ class ExpressiveAttribute
 
     /**
      * @param string $name
-     * @return ExpressiveAttribute
+     * @return PropertyDecorator
      */
-    public function setName(string $name): ExpressiveAttribute
+    public function setName(string $name): PropertyDecorator
     {
         $this->name = $name;
         return $this;
@@ -46,9 +50,9 @@ class ExpressiveAttribute
 
     /**
      * @param string $type
-     * @return ExpressiveAttribute
+     * @return PropertyDecorator
      */
-    public function setType(string $type): ExpressiveAttribute
+    public function setType(string $type): PropertyDecorator
     {
         $this->type = $type;
         return $this;
@@ -64,9 +68,9 @@ class ExpressiveAttribute
 
     /**
      * @param string $default
-     * @return ExpressiveAttribute
+     * @return PropertyDecorator
      */
-    public function setDefault(string $default): ExpressiveAttribute
+    public function setDefault(string $default): PropertyDecorator
     {
         $this->default = $default;
         return $this;
@@ -82,9 +86,9 @@ class ExpressiveAttribute
 
     /**
      * @param bool $isPrimaryKey
-     * @return ExpressiveAttribute
+     * @return PropertyDecorator
      */
-    public function setIsPrimaryKey(bool $isPrimaryKey): ExpressiveAttribute
+    public function setIsPrimaryKey(bool $isPrimaryKey): PropertyDecorator
     {
         $this->isPrimaryKey = $isPrimaryKey;
         return $this;

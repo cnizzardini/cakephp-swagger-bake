@@ -26,6 +26,7 @@ class SwaggerSchemaTest extends TestCase
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees');
+            $builder->resources('EmployeeSalaries');
         });
         $this->router = $router;
 
@@ -62,5 +63,22 @@ class SwaggerSchemaTest extends TestCase
         $this->assertCount(4, $employee['required']);
         $this->assertEquals('birth_date', $employee['required'][0]);
         $this->assertArrayHasKey('birth_date', $employee['properties']);
+
+        $this->assertTrue($employee['properties']['id']['readOnly']);
+        $this->assertEquals('integer', $employee['properties']['id']['type']);
+    }
+
+    public function testYmlSchemaTakesPrecedence()
+    {
+        $cakeRoute = new CakeRoute($this->router, $this->config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $this->assertArrayHasKey('EmployeeSalaries', $arr['components']['schemas']);
+        $employee = $arr['components']['schemas']['EmployeeSalaries'];
+
+        $this->assertEquals('Test YML schema cannot be overwritten', $employee['description']);
     }
 }

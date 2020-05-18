@@ -1,9 +1,13 @@
 <?php
 
-namespace SwaggerBake\Lib;
+namespace SwaggerBake\Lib\Operation;
 
 use Exception;
 
+/**
+ * Class ExceptionHandler
+ * @package SwaggerBake\Lib\Operation
+ */
 class ExceptionHandler
 {
     private $message = 'Unknown Error';
@@ -24,6 +28,7 @@ class ExceptionHandler
             $exceptionClass,
             '\\' . $exceptionClass,
             "\Cake\Http\Exception\\" . $exceptionClass,
+            "\Cake\Datasource\Exception\\" . $exceptionClass,
         ];
 
         try {

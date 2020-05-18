@@ -4,6 +4,11 @@ namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
 
+/**
+ * Class PathSecurity
+ * @package SwaggerBake\Lib\OpenApi
+ * @see https://swagger.io/docs/specification/authentication/
+ */
 class PathSecurity implements JsonSerializable
 {
     /** @var string  */

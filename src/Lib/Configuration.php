@@ -6,6 +6,10 @@ use Cake\Core\Configure;
 use LogicException;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class Configuration
+ * @package SwaggerBake\Lib
+ */
 class Configuration
 {
     /** @var array  */

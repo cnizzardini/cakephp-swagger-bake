@@ -1,11 +1,20 @@
 <?php
 
-namespace SwaggerBake\Lib\Model;
+namespace SwaggerBake\Lib\Decorator;
 
 use Cake\Routing\Route\Route;
 
-class ExpressiveRoute
+/**
+ * Class RouteDecorator
+ * @package SwaggerBake\Lib\Decorator
+ *
+ * Decorates a Cake\Routing\Route\Route
+ */
+class RouteDecorator
 {
+    /** @var Route */
+    private $route;
+
     /** @var string|null */
     private $name;
 
@@ -24,6 +33,45 @@ class ExpressiveRoute
     /** @var string|null */
     private $template;
 
+    public function __construct(Route $route)
+    {
+        $this->route;
+
+        $defaults = (array) $route->defaults;
+
+        $methods = $defaults['_method'];
+        if (!is_array($defaults['_method'])) {
+            $methods = explode(', ', $defaults['_method']);
+        }
+
+        $this
+            ->setTemplate($route->template)
+            ->setName($route->getName())
+            ->setPlugin($defaults['plugin'])
+            ->setController($defaults['controller'])
+            ->setAction($defaults['action'])
+            ->setMethods($methods)
+        ;
+    }
+
+    /**
+     * @return Route
+     */
+    public function getRoute(): Route
+    {
+        return $this->route;
+    }
+
+    /**
+     * @param Route $route
+     * @return RouteDecorator
+     */
+    public function setRoute(Route $route): RouteDecorator
+    {
+        $this->route = $route;
+        return $this;
+    }
+
     /**
      * @return string
      */
@@ -36,7 +84,7 @@ class ExpressiveRoute
      * @param $name
      * @return $this
      */
-    public function setName(string $name): ExpressiveRoute
+    public function setName(string $name): RouteDecorator
     {
         $this->name = $name;
         return $this;
@@ -54,7 +102,7 @@ class ExpressiveRoute
      * @param string|null $plugin
      * @return $this
      */
-    public function setPlugin(?string $plugin): ExpressiveRoute
+    public function setPlugin(?string $plugin): RouteDecorator
     {
         $this->plugin = $plugin;
         return $this;
@@ -90,7 +138,7 @@ class ExpressiveRoute
      * @param $action
      * @return $this
      */
-    public function setAction($action): ExpressiveRoute
+    public function setAction($action): RouteDecorator
     {
         $this->action = $action;
         return $this;
@@ -108,9 +156,9 @@ class ExpressiveRoute
      * @param array $methods
      * @return $this
      */
-    public function setMethods(array $methods): ExpressiveRoute
+    public function setMethods(array $methods): RouteDecorator
     {
-        $this->methods = $methods;
+        $this->methods = array_map('strtoupper', $methods);
         return $this;
     }
 
@@ -126,7 +174,7 @@ class ExpressiveRoute
      * @param $template
      * @return $this
      */
-    public function setTemplate(string $template): ExpressiveRoute
+    public function setTemplate(string $template): RouteDecorator
     {
         $this->template = $template;
         return $this;

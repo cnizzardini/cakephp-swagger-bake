@@ -4,6 +4,11 @@ namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
 
+/**
+ * Class OperationExternalDoc
+ * @package SwaggerBake\Lib\OpenApi
+ * @see https://swagger.io/docs/specification/paths-and-operations/
+ */
 class OperationExternalDoc implements JsonSerializable
 {
     /** @var string  */

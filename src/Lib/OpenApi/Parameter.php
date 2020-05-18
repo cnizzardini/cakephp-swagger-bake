@@ -9,7 +9,8 @@ use JsonSerializable;
 
 /**
  * Class Parameter
- * @see https://swagger.io/specification/
+ * @package SwaggerBake\Lib\OpenApi
+ * @see https://swagger.io/docs/specification/describing-parameters/
  */
 class Parameter implements JsonSerializable
 {

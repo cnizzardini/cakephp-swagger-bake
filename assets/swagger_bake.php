@@ -43,7 +43,7 @@
  */
 return [
     'SwaggerBake' => [
-        'prefix' => '/api',
+        'prefix' => '/your-relative-api-url',
         'yml' => '/config/swagger.yml',
         'json' => '/webroot/swagger.json',
         'webPath' => '/swagger.json',

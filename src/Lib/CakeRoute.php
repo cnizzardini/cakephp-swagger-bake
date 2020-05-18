@@ -2,14 +2,14 @@
 
 namespace SwaggerBake\Lib;
 
-use SwaggerBake\Lib\Model\ExpressiveRoute;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
 use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
 use InvalidArgumentException;
 
 /**
  * Class CakeRoute
- * Gets an array of routes matching a given route prefix
+ * @package SwaggerBake\Lib
  */
 class CakeRoute
 {
@@ -37,7 +37,7 @@ class CakeRoute
     /**
      * Gets an array of Route
      *
-     * @return ExpressiveRoute[]
+     * @return RouteDecorator[]
      */
     public function getRoutes() : array
     {
@@ -52,35 +52,12 @@ class CakeRoute
         $routes = [];
 
         foreach ($filteredRoutes as $route) {
-            $routes[$route->getName()] = $this->createExpressiveRouteFromRoute($route);
+            $routes[$route->getName()] = new RouteDecorator($route);
         }
 
         ksort($routes);
 
         return $routes;
-    }
-
-    /**
-     * @param Route $route
-     * @return ExpressiveRoute
-     */
-    private function createExpressiveRouteFromRoute(Route $route) : ExpressiveRoute
-    {
-        $defaults = (array) $route->defaults;
-
-        $methods = $defaults['_method'];
-        if (!is_array($defaults['_method'])) {
-            $methods = explode(', ', $defaults['_method']);
-        }
-
-        return (new ExpressiveRoute())
-            ->setPlugin($defaults['plugin'])
-            ->setController($defaults['controller'])
-            ->setName($route->getName())
-            ->setAction($defaults['action'])
-            ->setMethods($methods)
-            ->setTemplate($route->template)
-        ;
     }
 
     /**
