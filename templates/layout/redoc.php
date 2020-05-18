@@ -40,7 +40,7 @@ $this->assign('title', $title);
 <body>
 <?php
 if (isset($this->Flash)) {
-    echo $this->Flash->render(); die;
+    echo $this->Flash->render();
 }
 echo $this->fetch('content');
 ?>
