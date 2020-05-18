@@ -296,14 +296,21 @@ class OperationRequestBody
             return $requestBody;
         }
 
+        $properties = [];
         if ($requestBody->getContentByType('application/x-www-form-urlencoded')) {
-            return $requestBody;
+            $properties = $requestBody
+                ->getContentByType('application/x-www-form-urlencoded')
+                ->getSchema()
+                ->getProperties();
         }
 
         $schema = clone $this->schema;
-        $properties = array_filter($schema->getProperties(), function ($property) {
+        $schemaProperties = array_filter($schema->getProperties(), function ($property) {
             return $property->isReadOnly() === false;
         });
+
+        $properties = array_merge($schemaProperties, $properties);
+
         $schema->setProperties($properties);
 
         $requestBody->pushContent(
