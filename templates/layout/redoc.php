@@ -19,10 +19,29 @@ $this->assign('title', $title);
             margin: 0;
             padding: 0;
         }
+        /* Flash messages */
+        .alert {
+            padding: 1rem;
+            background: #eff8ff;
+            color: #2779bd;
+            border-color: #6cb2eb;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+        .alert-error {
+            background: #fcebea;
+            color: #cc1f1a;
+            border-color: #ef5753;
+        }
     </style>
 </head>
 <body>
 <?php
+if (isset($this->Flash)) {
+    echo $this->Flash->render(); die;
+}
 echo $this->fetch('content');
 ?>
 </body>

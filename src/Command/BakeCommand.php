@@ -30,6 +30,10 @@ class BakeCommand extends Command
         $output = $config->getJson();
 
         $swagger = (new SwaggerFactory())->create();
+        foreach ($swagger->getOperationsWithNoHttp20x() as $operation) {
+            triggerWarning('Operation ' . $operation->getOperationId() . ' does not have a HTTP 20x response');
+        }
+
         $swagger->writeFile($output);
 
         $io->out("<success>Swagger File Created: $output</success>");

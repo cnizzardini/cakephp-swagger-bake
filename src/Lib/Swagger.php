@@ -38,6 +38,8 @@ class Swagger
         $this->cakeRoute = $cakeModel->getCakeRoute();
         $this->config = $cakeModel->getConfig();
         $this->buildFromYml();
+        $this->buildSchemasFromModels();
+        $this->buildPathsFromRoutes();
     }
 
     /**
@@ -47,9 +49,6 @@ class Swagger
      */
     public function getArray(): array
     {
-        $this->buildSchemasFromModels();
-        $this->buildPathsFromRoutes();
-
         foreach ($this->array['paths'] as $method => $paths) {
             foreach ($paths as $pathId => $path) {
                 if ($path instanceof Path) {
@@ -376,6 +375,29 @@ class Swagger
             implode('/', $pieces),
             strlen($this->config->getPrefix())
         );
+    }
+
+    /**
+     * @return Operation[]
+     */
+    public function getOperationsWithNoHttp20x() : array
+    {
+        $operations = [];
+
+        foreach ($this->array['paths'] as $path) {
+
+            if (!$path instanceof Path) {
+                continue;
+            }
+
+            $operations = array_merge(
+                $operations,
+                array_filter($path->getOperations(), function ($operation) {
+                    return !$operation->hasSuccessResponseCode();
+                })
+            );
+        }
+        return $operations;
     }
 
     /**
