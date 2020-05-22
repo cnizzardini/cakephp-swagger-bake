@@ -164,7 +164,7 @@ class Swagger
     private function buildSchemasFromModels(): void
     {
         $schemaFactory = new Factory\SchemaFactory($this->config);
-        $models = $this->cakeModel->getModels();
+        $models = $this->cakeModel->getEntityDecorators();
 
         foreach ($models as $model) {
             if ($this->getSchemaByName($model->getName())) {

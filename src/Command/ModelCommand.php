@@ -39,7 +39,7 @@ class ModelCommand extends Command
 
         $cakeRoute = new CakeRoute(new Router(), $config);
         $cakeModel = new CakeModel($cakeRoute, $config);
-        $models = $cakeModel->getModels();
+        $models = $cakeModel->getEntityDecorators();
 
         if (empty($models)) {
             $io->out();

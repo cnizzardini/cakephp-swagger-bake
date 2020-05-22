@@ -40,7 +40,7 @@ class CakeModel
      *
      * @return EntityDecorator[]
      */
-    public function getModels() : array
+    public function getEntityDecorators() : array
     {
         $return = [];
 
@@ -54,7 +54,6 @@ class CakeModel
         foreach ($tables as $tableName) {
 
             $classShortName = Inflector::classify($tableName);
-            $TableShortName = Inflector::pluralize($classShortName) . 'Table';
             $entityFqns = NamespaceUtility::getEntityFullyQualifiedNameSpace($classShortName, $this->config);
 
             if (empty($entityFqns)) {
