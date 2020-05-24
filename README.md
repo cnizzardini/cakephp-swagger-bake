@@ -261,6 +261,19 @@ Class level annotation for customizing Schema Attributes with @SwagEntityAttribu
 class Employee extends Entity {
 ```
 
+#### `@SwagSearch`
+Method level annotation for documenting search parameters using the popular 
+[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin. Note, you must import `@SwagSearch` from a 
+different namespace.
+
+```php
+use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
+/**
+ * @SwagSearch(tableClass="App\Model\Table\ActorsTable", collection="default")
+ */
+public function index() {}
+```
+
 ### Extending SwaggerBake
 
 There are several options to extend functionality.

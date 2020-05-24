@@ -39,7 +39,8 @@ class Schema implements JsonSerializable
         if (empty($vars['required'])) {
             unset($vars['required']);
         } else {
-            $vars['required'] = array_unique(array_values($vars['required']));
+            // must stay in this order to prevent https://github.com/cnizzardini/cakephp-swagger-bake/issues/30
+            $vars['required'] = array_values(array_unique($vars['required']));
         }
         if (empty($vars['properties'])) {
             unset($vars['properties']);

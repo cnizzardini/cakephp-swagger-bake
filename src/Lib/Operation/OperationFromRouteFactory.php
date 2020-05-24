@@ -2,6 +2,8 @@
 
 namespace SwaggerBake\Lib\Operation;
 
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Utility\Inflector;
 use Exception;
 use phpDocumentor\Reflection\DocBlock;
@@ -46,7 +48,7 @@ class OperationFromRouteFactory
         $className = $route->getController() . 'Controller';
         $fullyQualifiedNameSpace = NamespaceUtility::getControllerFullQualifiedNameSpace($className, $this->config);
 
-        $doc = $this->getDocBlock($fullyQualifiedNameSpace, $route->getAction());
+        $docBlock = $this->getDocBlock($fullyQualifiedNameSpace, $route->getAction());
         $methodAnnotations = AnnotationUtility::getMethodAnnotations($fullyQualifiedNameSpace, $route->getAction());
 
         if (!$this->isVisible($methodAnnotations)) {
@@ -54,8 +56,8 @@ class OperationFromRouteFactory
         }
 
         $operation = (new Operation())
-            ->setSummary($doc->getSummary())
-            ->setDescription($doc->getDescription())
+            ->setSummary($docBlock->getSummary())
+            ->setDescription($docBlock->getDescription())
             ->setHttpMethod(strtolower($httpMethod))
             ->setOperationId($route->getName())
             ->setTags([
@@ -63,7 +65,7 @@ class OperationFromRouteFactory
             ]);
 
         $operation = (new OperationDocBlock())
-            ->getOperationWithDocBlock($operation, $doc);
+            ->getOperationWithDocBlock($operation, $docBlock);
 
         $operation = (new OperationPath())
             ->getOperationWithPathParameters($operation, $route);
@@ -77,11 +79,21 @@ class OperationFromRouteFactory
         $operation = (new OperationQueryParameter())
             ->getOperationWithQueryParameters($operation, $methodAnnotations);
 
-        $operation = (new OperationRequestBody($this->config, $operation, $doc, $methodAnnotations, $route, $schema))
+        $operation = (new OperationRequestBody($this->config, $operation, $docBlock, $methodAnnotations, $route, $schema))
             ->getOperationWithRequestBody();
 
-        $operation = (new OperationResponse($this->config, $operation, $doc, $methodAnnotations, $route, $schema))
+        $operation = (new OperationResponse($this->config, $operation, $docBlock, $methodAnnotations, $route, $schema))
             ->getOperationWithResponses();
+
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.Operation.created', $operation, [
+                'config' => $this->config,
+                'docBlock' => $docBlock,
+                'methodAnnotations' => $methodAnnotations,
+                'route' => $route,
+                'schema' => $schema,
+            ])
+        );
 
         return $operation;
     }

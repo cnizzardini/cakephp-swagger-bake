@@ -20,17 +20,14 @@ $this->assign('title', $title);
             padding: 0;
         }
         /* Flash messages */
-        .alert {
+        .message, .alert {
             padding: 1rem;
-            background: #eff8ff;
-            color: #2779bd;
-            border-color: #6cb2eb;
             border-width: 1px;
             border-style: solid;
             border-radius: 4px;
             margin-bottom: 2rem;
         }
-        .alert-error {
+        .message.error, .alert.alert-danger {
             background: #fcebea;
             color: #cc1f1a;
             border-color: #ef5753;
