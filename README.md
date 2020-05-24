@@ -269,7 +269,7 @@ different namespace.
 ```php
 use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 /**
- * @SwagSearch(tableClass="App\Model\Table\ActorsTable", collection="default")
+ * @SwagSearch(tableClass="\App\Model\Table\ActorsTable", collection="default")
  */
 public function index() {}
 ```
