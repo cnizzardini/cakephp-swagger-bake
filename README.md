@@ -296,6 +296,12 @@ $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 
 
 Use beforeFilter() and index() methods from [SwaggerController](src/Controller/SwaggerController.php)
 
+#### Events
+
+SwaggerBake will dispatch a `SwaggerBake.Operation.created` event after an Operation is created. You may 
+[register a listener](https://book.cakephp.org/4/en/core-libraries/events.html#registering-listeners) and interact 
+with the Operation instance. See [src/Lib/Extension](src/Lib/Extension) for examples.
+
 #### Generate Swagger On Your Terms
 
 There a three options for generating swagger.json:
