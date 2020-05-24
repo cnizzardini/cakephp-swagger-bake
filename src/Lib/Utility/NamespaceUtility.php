@@ -13,7 +13,7 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 class NamespaceUtility
 {
     /**
-     * Gets a controllers FQNS
+     * Gets a controllers FQNS using the controllers short name
      *
      * @param string $className
      * @param Configuration $config
@@ -40,7 +40,7 @@ class NamespaceUtility
     }
 
     /**
-     * Gets a FQNS of an Entity
+     * Gets a FQNS of an Entity using the entities short name
      *
      * @param string $className
      * @param Configuration $config

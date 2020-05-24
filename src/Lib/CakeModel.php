@@ -11,6 +11,7 @@ use SwaggerBake\Lib\Decorator\EntityDecorator;
 use SwaggerBake\Lib\Decorator\PropertyDecorator;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
+use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
  * Class CakeModel
@@ -39,7 +40,7 @@ class CakeModel
      *
      * @return EntityDecorator[]
      */
-    public function getModels() : array
+    public function getEntityDecorators() : array
     {
         $return = [];
 
@@ -52,18 +53,18 @@ class CakeModel
 
         foreach ($tables as $tableName) {
 
-            $className = Inflector::classify($tableName);
-            $entity = $this->getEntityFromNamespaces($className);
+            $classShortName = Inflector::classify($tableName);
+            $entityFqns = NamespaceUtility::getEntityFullyQualifiedNameSpace($classShortName, $this->config);
 
-            if (empty($entity)) {
+            if (empty($entityFqns)) {
                 continue;
             }
 
-            if (!in_array($tableName, $tabularRoutes) && !$this->entityHasVisibility($entity)) {
+            if (!in_array($tableName, $tabularRoutes) && !$this->entityHasVisibility($entityFqns)) {
                 continue;
             }
 
-            $entityInstance = new $entity;
+            $entityInstance = new $entityFqns;
             $schema = $collection->describe($tableName);
 
             $properties = $this->getPropertyDecorators($entityInstance, $schema);
@@ -96,30 +97,6 @@ class CakeModel
     public function getConfig() : Configuration
     {
         return $this->config;
-    }
-
-    /**
-     * @param string $className
-     * @return string|null
-     */
-    private function getEntityFromNamespaces(string $className) : ?string
-    {
-        $namespaces = $this->config->getNamespaces();
-
-        if (!isset($namespaces['entities']) || !is_array($namespaces['entities'])) {
-            throw new SwaggerBakeRunTimeException(
-                'Invalid configuration, missing SwaggerBake.namespaces.entities'
-            );
-        }
-
-        foreach ($namespaces['entities'] as $namespace) {
-            $entity = $namespace . 'Model\Entity\\' . $className;
-            if (class_exists($entity, true)) {
-                return $entity;
-            }
-        }
-
-        return null;
     }
 
     /**

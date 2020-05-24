@@ -39,9 +39,9 @@ class ModelCommand extends Command
 
         $cakeRoute = new CakeRoute(new Router(), $config);
         $cakeModel = new CakeModel($cakeRoute, $config);
-        $models = $cakeModel->getModels();
+        $entities = $cakeModel->getEntityDecorators();
 
-        if (empty($models)) {
+        if (empty($entities)) {
             $io->out();
             $io->warning('No models were found that are associated with: ' . $config->getPrefix());
             $io->out("Have you added RESTful routes? Do you have models associated with those routes?");
@@ -51,10 +51,10 @@ class ModelCommand extends Command
 
         $header = ['Attribute','Data Type', 'Swagger Type','Default','Primary Key'];
 
-        foreach ($models as $model) {
-            $io->out('- ' . $model->getName());
+        foreach ($entities as $entity) {
+            $io->out('- ' . $entity->getName());
             $output = [$header];
-            foreach ($model->getAttributes() as $attribute) {
+            foreach ($entity->getAttributes() as $attribute) {
                 $output[] = [
                     $attribute->getName(),
                     $attribute->getType(),

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBakeTest\App\Controller;
 
 use SwaggerBake\Lib\Annotation as Swag;
+use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 
 /**
  * Employees Controller
@@ -14,6 +15,15 @@ use SwaggerBake\Lib\Annotation as Swag;
  */
 class EmployeesController extends AppController
 {
+    public function initialize() : void
+    {
+        parent::initialize();
+
+        $this->loadComponent('Search.Search', [
+            'actions' => ['swagSearch'],
+        ]);
+    }
+
     /**
      * Gets Employees
      *
@@ -174,5 +184,21 @@ class EmployeesController extends AppController
         $hello = 'world';
         $this->set(compact('hello'));
         $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
+
+    /**
+     * @SwagSearch(tableClass="\SwaggerBakeTest\App\Model\Table\EmployeesTable")
+     */
+    public function swagSearch()
+    {
+        $query = $this->Employees
+            ->find('search', [
+                'search' => $this->request->getQueryParams(),
+                'collection' => 'default'
+            ]);
+        $employees = $this->paginate($query);
+
+        $this->set(compact('employees'));
+        $this->viewBuilder()->setOption('serialize', ['employees']);
     }
 }
