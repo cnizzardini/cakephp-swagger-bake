@@ -22,7 +22,6 @@ class ExtensionLoader
             }
 
             if (!$instance->isSupported()) {
-                triggerWarning("$extension failed to load");
                 continue;
             }
 

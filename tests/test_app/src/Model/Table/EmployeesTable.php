@@ -27,6 +27,17 @@ class EmployeesTable extends Table
         $this->setTable('employees');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+        $this->addBehavior('Search.Search');
+        $this->searchManager()
+            ->add('first_name', 'Search.Like', [
+                'before' => true,
+                'after' => true,
+                'mode' => 'or',
+                'comparison' => 'LIKE',
+                'wildcardAny' => '*',
+                'wildcardOne' => '?',
+                'fields' => ['first_name'],
+            ]);
 
         $this->hasMany('DepartmentEmployees', [
             'foreignKey' => 'employee_id',

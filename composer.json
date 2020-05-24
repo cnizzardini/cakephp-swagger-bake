@@ -13,7 +13,8 @@
         "doctrine/annotations": "1.10"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0"
+        "phpunit/phpunit": "^8.0",
+        "friendsofcake/search": "^6.0"
     },
     "autoload": {
         "psr-4": {
