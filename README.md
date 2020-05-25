@@ -73,10 +73,9 @@ I built this library to reduce the need for annotations to build documentation. 
 build the following from your existing routes and models without additional effort:
 
 - Paths
-    - Path Summary
-    - Route
-    - Path Parameters
+    - Resource (route)
 - Operations
+    - Summary and description
     - GET, POST, PATCH, DELETE
     - Form fields using your Cake models
     - Responses
@@ -134,16 +133,15 @@ public function index() {
 }
 ```
 
-#### `@SwagDto`
-Method level annotation for building query or form parameters from a DataTransferObject. DTOs are more than just a 
-best practice. Using them with SwaggerBake greatly reduces the amount of annotations you need to write. Consider 
-using a DTO in place of SwagQuery or SwagForm. SwagDto parses property doc blocks to build swagger query and 
-post parameters and should work with any DTO library. This has been tested with 
-[spatie/data-transfer-object](https://github.com/spatie/data-transfer-object).
+#### `@SwagSearch`
+Method level annotation for documenting search parameters using the popular 
+[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin. Note, you must import `@SwagSearch` from a 
+different namespace.
 
 ```php
+use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 /**
- * @Swag\SwagDto(class="\App\My\Dto")
+ * @SwagSearch(tableClass="\App\Model\Table\ActorsTable", collection="default")
  */
 public function index() {}
 ```
@@ -164,6 +162,19 @@ Method level annotation for adding form data fields.
 ```php
 /**
  * @Swag\SwagForm(name="fieldName", type="string", description="string", required=false)
+ */
+public function index() {}
+```
+
+#### `@SwagDto`
+Method level annotation for building query or form parameters from a DataTransferObject. DTOs are more than just a 
+best practice. Using them with SwaggerBake greatly reduces the amount of annotations you need to write. Consider 
+using a DTO in place of SwagQuery or SwagForm. SwagDto parses property doc blocks to build swagger query and 
+post parameters.
+
+```php
+/**
+ * @Swag\SwagDto(class="\App\My\Dto")
  */
 public function index() {}
 ```
@@ -261,19 +272,6 @@ Class level annotation for customizing Schema Attributes with @SwagEntityAttribu
 class Employee extends Entity {
 ```
 
-#### `@SwagSearch`
-Method level annotation for documenting search parameters using the popular 
-[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin. Note, you must import `@SwagSearch` from a 
-different namespace.
-
-```php
-use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
-/**
- * @SwagSearch(tableClass="\App\Model\Table\ActorsTable", collection="default")
- */
-public function index() {}
-```
-
 ### Extending SwaggerBake
 
 There are several options to extend functionality.
@@ -329,6 +327,16 @@ Displays a list of models that can be viewed in Swagger.
 
 ```sh
 bin/cake swagger models
+```
+
+## Bake Theme
+
+SwaggerBake comes with a Bake template for scaffolding RESTful controllers compatible with SwaggerBake and 
+OpenAPI 3.0 schema. Using the bake theme is completely optional, but will save you some time since the default 
+bake theme is not specifically designed for RESTful APIs.
+
+```
+bin/cake bake controller {ControllerName} --theme SwaggerBake
 ```
 
 ## Details
@@ -393,6 +401,10 @@ add, remove, modify, and alter routes.
 
 Either disable CSRF protection on your main route in `config/routes.php` or enable CSRF protection in Swagger 
 UI. The library does not currently support adding this in for you.
+
+#### My route isn't displaying in Swagger UI
+
+Make sure the route is properly defined in your `config/routes.php` file.
 
 ## Reporting Issues
 
