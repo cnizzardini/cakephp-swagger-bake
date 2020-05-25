@@ -253,7 +253,8 @@ class UsersController extends AppController {
 ```
 
 #### `@SwagEntity`
-Class level annotation for exposing entities to Swagger UI.  You can hide entities with this annotation.
+Class level annotation for exposing entities to Swagger UI. By default all entities with routes will display as Swagger 
+schema. You can hide a schema or display a schema that does not have an associated route.
 
 ```php
 /**
