@@ -326,9 +326,13 @@ class Swagger
 
             $schema = (new Schema())
                 ->setName($schemaName)
-                ->setType($schemaVar['type'])
+                ->setType($schemaVar['type'] ?? '')
                 ->setDescription($schemaVar['description'] ?? '')
-                ->setItems($schemaVar['items'] ?? []);
+                ->setItems($schemaVar['items'] ?? [])
+                ->setAllOf($schemaVar['allOf'] ?? [])
+                ->setAnyOf($schemaVar['anyOf'] ?? [])
+                ->setOneOf($schemaVar['oneOf'] ?? [])
+            ;
 
             $schemaVar['properties'] = $schemaVar['properties'] ?? [];
 
