@@ -74,7 +74,15 @@ class OperationResponse
             return $annotation instanceof SwagResponseSchema;
         });
 
+        $mimeTypes = $this->config->getResponseContentTypes();
+        $defaultMimeType = reset($mimeTypes);
+
         foreach ($swagResponses as $annotation) {
+
+            if (empty($annotation->mimeType) && !empty($annotation->refEntity)) {
+                $annotation->mimeType = $defaultMimeType;
+            }
+
             $response = (new Response())
                 ->setCode(intval($annotation->httpCode))
                 ->setDescription($annotation->description);
