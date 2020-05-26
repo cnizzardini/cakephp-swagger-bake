@@ -15,6 +15,13 @@ use SwaggerBake\Lib\Annotation\SwagPaginator;
  */
 class DepartmentsController extends AppController
 {
+    public function initialize() : void
+    {
+        parent::initialize();
+
+        $this->loadComponent('Authentication.Authentication');
+    }
+
     /**
      * Gets Departments
      *

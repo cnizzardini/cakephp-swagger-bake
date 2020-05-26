@@ -18,6 +18,20 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class SwaggerFactory
 {
+    /** @var Configuration  */
+    private $config;
+
+    /** @var CakeRoute  */
+    private $cakeRoute;
+
+    public function __construct(?Configuration $config = null, ?CakeRoute $cakeRoute = null)
+    {
+        $this->config = $config ?? new Configuration();
+        ValidateConfiguration::validate($this->config);
+
+        $this->cakeRoute = $cakeRoute ?? new CakeRoute(new Router(), $this->config);
+    }
+
     /**
      * Factory for Swagger objects
      *
@@ -25,20 +39,12 @@ class SwaggerFactory
      */
     public function create() : Swagger
     {
-        ValidateConfiguration::validate();
-
-        $config = new Configuration();
-        $prefix = $config->getPrefix();
-
-        $cakeRoute = new CakeRoute(new Router(), $config);
-        $routes = $cakeRoute->getRoutes();
+        $routes = $this->cakeRoute->getRoutes();
 
         if (empty($routes)) {
-            throw new LogicException("No routes were found for: $prefix");
+            throw new LogicException("No routes were found for: " . $this->config->getPrefix());
         }
 
-        return new Swagger(
-            new CakeModel($cakeRoute, $config)
-        );
+        return new Swagger(new CakeModel($this->cakeRoute, $this->config));
     }
 }

@@ -80,7 +80,10 @@ build the following from your existing routes and models without additional effo
     - Form fields using your Cake models
     - Responses
     - Sub resources
+    - Security/Authentication
 - Schema
+
+[See details](#details) for how CakePHP conventions are interpreted into OpenAPI 3.0 schema.
 
 SwaggerBake works with your existing YML definitions and will not overwrite anything. By default, it uses 
 components > schemas > Exception as your Swagger documentations Exception schema. See the default 
@@ -354,6 +357,10 @@ bin/cake bake controller {ControllerName} --theme SwaggerBake
   - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention. 
 - Table Validators:
   - Fields set to not allow empty will be marked as required in Swagger.  
+- Security Scheme 
+  - Leverages the [CakePHP AuthenticationComponent](https://book.cakephp.org/authentication/2/en/index.html)
+  - Will automatically set security on opeations if a single [securityScheme](https://swagger.io/docs/specification/authentication/) 
+  is defined in your swagger.yaml. If you more than one security schema in place you will need to use `@SwagSecurity`.
 - SwaggerBake has been developed primarily for application/json and application/x-www-form-urlencoded, but does have 
 some support for application/xml and *should* work with application/vnd.api+json.
 

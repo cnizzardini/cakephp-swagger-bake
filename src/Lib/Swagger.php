@@ -184,7 +184,7 @@ class Swagger
     private function buildPathsFromRoutes(): void
     {
         $routes = $this->cakeRoute->getRoutes();
-        $operationFactory = new OperationFromRouteFactory($this->config);
+        $operationFactory = new OperationFromRouteFactory($this);
 
         $ignorePaths = array_keys($this->array['paths']);
 

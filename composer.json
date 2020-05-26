@@ -12,9 +12,14 @@
         "phpdocumentor/reflection-docblock": "^5.1",
         "doctrine/annotations": "1.10"
     },
+    "suggest": {
+        "friendsofcake/search": "Easy model searching with @SwagSearch",
+        "cakephp/authentication": "Automates OpenApi security schemes"
+    },
     "require-dev": {
         "phpunit/phpunit": "^8.0",
-        "friendsofcake/search": "^6.0"
+        "friendsofcake/search": "^6.0",
+        "cakephp/authentication": "^2.0"
     },
     "autoload": {
         "psr-4": {

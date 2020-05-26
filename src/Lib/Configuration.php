@@ -51,7 +51,7 @@ class Configuration
     public function get(string $var)
     {
         if (!isset($this->configs[$var])) {
-            throw new LogicException("Configuration does not exist, given $var");
+            throw new LogicException("Configuration does not exist for `$var` in Configuration::configs");
         }
 
         return $this->configs[$var];
