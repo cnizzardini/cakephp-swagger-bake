@@ -340,7 +340,7 @@ OpenAPI 3.0 schema. Using the bake theme is completely optional, but will save y
 bake theme is not specifically designed for RESTful APIs.
 
 ```
-bin/cake bake controller {ControllerName} --theme SwaggerBake
+bin/cake bake controller {Name} --theme SwaggerBake
 ```
 
 ## Details
