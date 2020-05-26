@@ -378,7 +378,8 @@ bin/cake bake controller {Name} --theme SwaggerBake
 - Security Scheme 
   - Leverages the [CakePHP AuthenticationComponent](https://book.cakephp.org/authentication/2/en/index.html)
   - Will automatically set security on operations if a single [securityScheme](https://swagger.io/docs/specification/authentication/) 
-  is defined in your swagger.yaml. If you more than one security schema in place you will need to use `@SwagSecurity`.
+  is defined in your swagger.yaml. If more than one security schema in place you will need to use `@SwagSecurity`.
+  - `@SwagSecurity` takes precedence.
 - SwaggerBake has been developed primarily for application/json and application/x-www-form-urlencoded, but does have 
 some support for application/xml and *should* work with application/vnd.api+json.
 
