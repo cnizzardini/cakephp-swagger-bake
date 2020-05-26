@@ -6,14 +6,30 @@
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
 builds your Swagger UI and ReDoc from your existing cake models and routes.
 
-- Creates paths from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes.
+- Creates paths and operations from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes.
 - Creates schema from your Entities and Tables.
 - Provides additional functionality through Annotations and Doc Blocks.
+- Provides a bake theme for auto-generating RESTful controller methods.
 
 [Demo Site](http://cakephpswaggerbake.cnizz.com/) | 
 [Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo) | 
 [Screenshot](assets/screenshot.png) |
 [Console Demo](assets/console-demo.svg) 
+
+## Table of Contents
+- [Installation](#installation)
+- [Setup](#setup)
+- [Automatic Documentation](#automatic-documentation)
+- [Doc Blocks](#doc-blocks)
+- [Annotations for Extended Functionality](#annotations-for-extended-functionality)
+- [Extending SwaggerBake](#extending-swaggerbake)
+- [Console Commands](#console-commands)
+- [Bake Theme](#bake-theme)
+- [Details](#details)
+- [Common Issues](#common-issues)
+- [Reporting Issues](#reporting-issues)
+- [Contribute](#contribute)
+- [Unit Tests](#unit-tests)
 
 ## Installation
 
@@ -62,7 +78,7 @@ explanation.
 $builder->connect('/your-api-path', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
 ```
 
-## Complete Setup
+### Complete Setup
 
 If Hot Reload is enabled ([see config](assets/swagger_bake.php)) then you should be able to browse to the above 
 route. Otherwise you must first run `bin/cake swagger bake` to generate your swagger documentation. 
@@ -294,7 +310,7 @@ Class level annotation for customizing Schema Attributes with @SwagEntityAttribu
 class Employee extends Entity {
 ```
 
-### Extending SwaggerBake
+## Extending SwaggerBake
 
 There are several options to extend functionality.
 
