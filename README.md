@@ -26,6 +26,7 @@ builds your Swagger UI and ReDoc from your existing cake models and routes.
 - [Console Commands](#console-commands)
 - [Bake Theme](#bake-theme)
 - [Details](#details)
+- [Supported Versions](#supported-versions)
 - [Common Issues](#common-issues)
 - [Reporting Issues](#reporting-issues)
 - [Contribute](#contribute)
