@@ -177,9 +177,26 @@ post parameters.
 
 ```php
 /**
- * @Swag\SwagDto(class="\App\My\Dto")
+ * @Swag\SwagDto(class="\App\Dto\ActorDto")
  */
 public function index() {}
+```
+
+Example DTO:
+
+```php
+namespace App\Dto;
+
+class Actor {
+    /**
+     * Last name required
+     * @var string
+     * @required
+     */
+    private $lastName;
+
+    /** @var string */
+    private $firstName;
 ```
 
 #### `@SwagHeader`
