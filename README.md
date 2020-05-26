@@ -405,8 +405,7 @@ This is built for CakePHP 4.x only. A cake-3.8 option is available, but not supp
 
 | Version | Cake Version  | Supported | Unit Tests | Notes | 
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
-| 1.1 | 4.* | Yes  | Yes | Currently supported, backwards compatible with 1.0 | 
-| 1.0 | 4.0 | No  | Yes | Upgrade to 1.1 for support | 
+| 1.* | 4.* | Yes  | Yes | Currently supported |
 | cake-3.8 | 3.8.* | No  | Yes | See branch cake-3.8. Completely untested and unsupported | 
 
 ## Common Issues
