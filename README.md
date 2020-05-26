@@ -210,7 +210,8 @@ public function index() {}
 ```
 
 #### `@SwagSecurity`
-Method level annotation for adding authentication requirements.
+Method level annotation for adding authentication requirements. This annotation takes precedence over settings that 
+SwaggerBake gathers from AuthenticationComponent. Read [details](#details) below.
 
 ```php
 /**
@@ -376,7 +377,7 @@ bin/cake bake controller {Name} --theme SwaggerBake
   - Fields set to not allow empty will be marked as required in Swagger.  
 - Security Scheme 
   - Leverages the [CakePHP AuthenticationComponent](https://book.cakephp.org/authentication/2/en/index.html)
-  - Will automatically set security on opeations if a single [securityScheme](https://swagger.io/docs/specification/authentication/) 
+  - Will automatically set security on operations if a single [securityScheme](https://swagger.io/docs/specification/authentication/) 
   is defined in your swagger.yaml. If you more than one security schema in place you will need to use `@SwagSecurity`.
 - SwaggerBake has been developed primarily for application/json and application/x-www-form-urlencoded, but does have 
 some support for application/xml and *should* work with application/vnd.api+json.

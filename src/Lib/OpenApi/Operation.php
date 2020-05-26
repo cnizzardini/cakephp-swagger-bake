@@ -55,6 +55,8 @@ class Operation implements JsonSerializable
         }
         if (empty($vars['security'])) {
             unset($vars['security']);
+        } else {
+            $vars['security'] = array_values(array_unique($vars['security']));
         }
         if (empty($vars['externalDocs'])) {
             unset($vars['externalDocs']);
@@ -243,12 +245,15 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param array $security
+     * @param PathSecurity[] $pathSecurities
      * @return Operation
      */
-    public function setSecurity(array $security): Operation
+    public function setSecurity(array $pathSecurities): Operation
     {
-        $this->security = $security;
+        $this->security = [];
+        foreach ($pathSecurities as $security) {
+            $this->pushSecurity($security);
+        }
         return $this;
     }
 
@@ -258,7 +263,7 @@ class Operation implements JsonSerializable
      */
     public function pushSecurity(PathSecurity $security): Operation
     {
-        $this->security[] = $security;
+        $this->security[$security->getName()] = $security;
         return $this;
     }
 
