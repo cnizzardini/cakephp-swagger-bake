@@ -26,12 +26,7 @@ controllers.
 - [Extending SwaggerBake](#extending-swaggerbake)
 - [Console Commands](#console-commands)
 - [Bake Theme](#bake-theme)
-- [Details](#details)
-- [Supported Versions](#supported-versions)
-- [Common Issues](#common-issues)
-- [Reporting Issues](#reporting-issues)
-- [Contribute](#contribute)
-- [Unit Tests](#unit-tests)
+- [...](#details)
 
 ## Installation
 
