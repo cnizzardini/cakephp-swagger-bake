@@ -32,7 +32,11 @@ class OperationHeader
                 ->setDeprecated(false)
                 ->setRequired($annotation->required)
                 ->setIn('header')
-                ->setSchema((new Schema())->setType($annotation->type))
+                ->setSchema(
+                    (new Schema())
+                        ->setType($annotation->type)
+                        ->setEnum($annotation->enum)
+                )
             ;
 
             $operation->pushParameter($parameter);

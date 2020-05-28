@@ -158,6 +158,7 @@ class OperationRequestBody
                     ->setName($annotation->name)
                     ->setType($annotation->type)
                     ->setRequired($annotation->required)
+                    ->setEnum($annotation->enum)
             );
         }
 

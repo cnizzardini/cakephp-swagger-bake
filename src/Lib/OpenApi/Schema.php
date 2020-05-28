@@ -38,6 +38,9 @@ class Schema implements JsonSerializable
     /** @var array  */
     private $allOf = [];
 
+    /** @var array  */
+    private $enum = [];
+
     /**
      * @return array
      */
@@ -52,7 +55,7 @@ class Schema implements JsonSerializable
             $vars['required'] = array_values(array_unique($vars['required']));
         }
 
-        foreach (['properties', 'items', 'oneOf', 'anyOf', 'allOf'] as $v) {
+        foreach (['properties', 'items', 'oneOf', 'anyOf', 'allOf', 'enum'] as $v) {
             if (empty($vars[$v])) {
                 unset($vars[$v]);
             }
@@ -259,6 +262,24 @@ class Schema implements JsonSerializable
     public function setAllOf(array $allOf): Schema
     {
         $this->allOf = $allOf;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEnum(): array
+    {
+        return $this->enum;
+    }
+
+    /**
+     * @param array $enum
+     * @return Schema
+     */
+    public function setEnum(array $enum): Schema
+    {
+        $this->enum = $enum;
         return $this;
     }
 }
