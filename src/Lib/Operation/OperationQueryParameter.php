@@ -91,7 +91,11 @@ class OperationQueryParameter
                 ->setDeprecated(false)
                 ->setRequired($annotation->required)
                 ->setIn('query')
-                ->setSchema((new Schema())->setType($annotation->type))
+                ->setSchema(
+                    (new Schema())
+                        ->setType($annotation->type)
+                        ->setEnum($annotation->enum)
+                )
             ;
 
             $operation->pushParameter($parameter);
