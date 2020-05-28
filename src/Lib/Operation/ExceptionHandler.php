@@ -3,6 +3,7 @@
 namespace SwaggerBake\Lib\Operation;
 
 use Exception;
+use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 
 /**
  * Class ExceptionHandler
@@ -11,13 +12,16 @@ use Exception;
 class ExceptionHandler
 {
     /** @var string  */
-    private $message = 'Unknown Error';
+    private $message;
 
     /** @var string */
     private $code = '500';
 
-    public function __construct(string $exceptionClass)
+    public function __construct(Throws $throw)
     {
+        $exceptionClass = $throw->getType()->__toString();
+        $this->message = trim($throw->getDescription()->getBodyTemplate());
+
         if (substr($exceptionClass, 0 , 1) == '\\') {
             $exceptionClass = substr($exceptionClass, 1);
         }
@@ -58,6 +62,10 @@ class ExceptionHandler
      */
     private function assignMessage($instance) : void
     {
+        if (!empty($this->message)) {
+            return;
+        }
+
         $this->message = trim($instance->getMessage());
         if (!empty($this->message)) {
             return;
