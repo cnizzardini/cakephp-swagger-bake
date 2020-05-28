@@ -29,6 +29,8 @@ require_once $root . '/vendor/autoload.php';
 define('SWAGGER_BAKE_TEST_ROOT', dirname(__DIR__));
 define('SWAGGER_BAKE_TEST_APP', SWAGGER_BAKE_TEST_ROOT . DS . 'tests' . DS . 'test_app');
 
+ini_set('error_reporting', 'E_ALL ^ E_DEPRECATED');
+
 /**
  * Define fallback values for required constants and configuration.
  * To customize constants and configuration remove this require

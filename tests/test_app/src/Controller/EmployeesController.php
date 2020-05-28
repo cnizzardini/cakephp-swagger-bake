@@ -157,7 +157,9 @@ class EmployeesController extends AppController
 
     /**
      * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Pet", mimeType="application/json")
-     * @Swag\SwagResponseSchema(refEntity="", description="fatal error", httpCode=500)
+     * @Swag\SwagResponseSchema(refEntity="", description="deprecated httpCode still works", httpCode=400)
+     * @Swag\SwagResponseSchema(refEntity="", description="new statusCode", statusCode="404")
+     * @Swag\SwagResponseSchema(refEntity="", description="status code range", statusCode="5XX")
      */
     public function customResponseSchema()
     {
