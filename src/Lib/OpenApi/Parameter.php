@@ -88,6 +88,7 @@ class Parameter implements JsonSerializable
      */
     public function setIn(string $in): Parameter
     {
+        $in = strtolower($in);
         if (!in_array($in, ['query','cookie','header','path','body'])) {
             throw new InvalidArgumentException("Invalid type for in. Given $in");
         }
