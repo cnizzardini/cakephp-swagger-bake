@@ -27,6 +27,7 @@ class EmployeesController extends AppController
     /**
      * Gets Employees
      *
+     * @Swag\SwagOperation(tagNames={"Employees","CustomTag"})
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()

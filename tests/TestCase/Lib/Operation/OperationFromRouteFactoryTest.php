@@ -59,8 +59,10 @@ class OperationFromRouteFactoryTest extends TestCase
         $route = reset($routes);
 
         $operation = (new OperationFromRouteFactory($swagger))->create($route, 'GET', null);
+
         $this->assertInstanceOf(Operation::class, $operation);
         $this->assertEquals('GET', $operation->getHttpMethod());
         $this->assertEquals('employees:index', $operation->getOperationId());
+        $this->assertEquals('CustomTag', $operation->getTags()[1]);
     }
 }
