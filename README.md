@@ -6,11 +6,16 @@
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
 builds your Swagger UI and ReDoc from your existing cake models and routes.
 
-- Creates paths and operations from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes and 
-controllers.
-- Creates schema from your Entities and Tables.
+- Creates OpenApi paths and operations from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes 
+and controllers.
+- Creates OpenAPI Schema from your Entities and Tables.
 - Provides additional functionality through Annotations and Doc Blocks.
-- Provides a bake theme for auto-generating RESTful controller methods.
+- Integrates with: 
+[Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html), 
+[friendsofcake/search](https://github.com/FriendsOfCake/search), 
+[Authentication](https://book.cakephp.org/authentication/2/en/index.html), and 
+[Bake](#bake-theme).
+
 
 [Demo Site](http://cakephpswaggerbake.cnizz.com/) | 
 [Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo) | 
@@ -130,12 +135,8 @@ SwaggerBake provides some optional Annotations for enhanced functionality. These
 `SwaggerBake\Lib\Annotation` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Annotation as Swag`.
 
 #### `@SwagPaginator`
-Method level annotation for adding  [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
-query parameters. This will add the following query params to Swagger:
-- page
-- limit
-- sort
-- direction
+Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
+query parameters: page, limit, sort, and direction.
 
 ```php
 use SwaggerBake\Lib\Annotation as Swag;
@@ -233,7 +234,7 @@ SwaggerBake gathers from AuthenticationComponent. Read [details](#details) below
 public function index() {}
 ```
 
-#### `@Swag\SwagOperation`
+#### `@SwagOperation`
 Method level annotation for OpenApi Operations. Toggle visibility with isVisible and customize tag names which default 
 to the controllers name.
 
@@ -329,7 +330,7 @@ This is easy to do. Just create your own route and controller, then reference th
 $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 'index']);
 ```
 
-Use beforeFilter() and index() methods from [SwaggerController](src/Controller/SwaggerController.php)
+Use [SwaggerController](src/Controller/SwaggerController.php) as your base.
 
 #### Generate Swagger On Your Terms
 
@@ -368,8 +369,8 @@ bin/cake swagger models
 
 ## Bake Theme
 
-SwaggerBake comes with a Bake template for scaffolding RESTful controllers compatible with SwaggerBake and 
-OpenAPI 3.0 schema. Using the bake theme is completely optional, but will save you some time since the default 
+SwaggerBake comes with [Bake templates](templates/bake) for scaffolding RESTful controllers compatible with SwaggerBake 
+and OpenAPI 3.0 schema. Using the bake theme is completely optional, but will save you some time since the default 
 bake theme is not specifically designed for RESTful APIs.
 
 ```

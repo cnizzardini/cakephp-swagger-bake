@@ -5,6 +5,7 @@ namespace SwaggerBake\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Event\Event;
+use Cake\Http\ServerRequest;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\Swagger;
@@ -54,5 +55,15 @@ class SwaggerUiComponent extends Component
     public function getSwaggerBakeConfiguration() : Configuration
     {
         return $this->config;
+    }
+
+    /**
+     * @param ServerRequest $request
+     * @return string
+     */
+    public function getDocType(ServerRequest $request) : string
+    {
+        $docType = h(strtolower($request->getQuery('doctype')));
+        return in_array(strtolower($docType), ['swagger','redoc']) ? $docType : 'swagger';
     }
 }
