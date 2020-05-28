@@ -33,9 +33,8 @@ class ModelCommand extends Command
         $io->out("| SwaggerBake is checking your models...");
         $io->hr();
 
-        ValidateConfiguration::validate();
-
         $config = new Configuration();
+        ValidateConfiguration::validate($config);
 
         $cakeRoute = new CakeRoute(new Router(), $config);
         $cakeModel = new CakeModel($cakeRoute, $config);
