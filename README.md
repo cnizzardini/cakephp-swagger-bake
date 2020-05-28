@@ -264,12 +264,13 @@ public function index() {}
 ```
 
 #### `@SwagResponseSchema`
-Method level annotation for defining custom response schema. Leave refEntity empty to define no schema.
+Method level annotation for defining custom response schema. Leave refEntity empty to define no schema. Note, as of  
+`v1.3`, please use `statusCode` instead of `httpCode` as it will be removed in a future version. See 1.3 release notes.
 
 ```php
 /**
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="summary", httpCode=200)
- * @Swag\SwagResponseSchema(refEntity="", description="fatal error", httpCode=500)
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="summary", statusCode="200")
+ * @Swag\SwagResponseSchema(refEntity="", description="Support range status codes", statusCode="5XX")
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", mimeType="application/xml")
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", mimeType="application/json")
  */

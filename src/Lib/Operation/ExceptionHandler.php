@@ -10,8 +10,11 @@ use Exception;
  */
 class ExceptionHandler
 {
+    /** @var string  */
     private $message = 'Unknown Error';
-    private $code = 500;
+
+    /** @var string */
+    private $code = '500';
 
     public function __construct(string $exceptionClass)
     {
@@ -44,6 +47,7 @@ class ExceptionHandler
         }
 
         $this->message = empty($this->message) ? 'Unknown Error' : $this->message;
+
         $this->code = $this->code < 400 ? 500 : $this->code;
     }
 
@@ -70,9 +74,9 @@ class ExceptionHandler
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getCode() : int
+    public function getCode() : string
     {
         return $this->code;
     }

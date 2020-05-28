@@ -84,7 +84,7 @@ class OperationResponse
             }
 
             $response = (new Response())
-                ->setCode(intval($annotation->httpCode))
+                ->setCode($annotation->httpCode)
                 ->setDescription($annotation->description);
 
             if (empty($annotation->schemaFormat) && empty($annotation->mimeType)) {
@@ -144,7 +144,7 @@ class OperationResponse
             return;
         }
 
-        if ($this->operation->getResponseByCode(200)) {
+        if ($this->operation->getResponseByCode('200')) {
             return;
         }
 
@@ -153,7 +153,7 @@ class OperationResponse
         }
 
         if (in_array(strtolower($this->route->getAction()),['index'])) {
-            $response = (new Response())->setCode(200);
+            $response = (new Response())->setCode('200');
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
                 $response->pushContent(
@@ -167,7 +167,7 @@ class OperationResponse
         }
 
         if (in_array(strtolower($this->route->getAction()),['add','view','edit'])) {
-            $response = (new Response())->setCode(200);
+            $response = (new Response())->setCode('200');
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
                 $response->pushContent(
