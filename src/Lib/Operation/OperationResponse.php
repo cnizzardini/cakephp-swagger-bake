@@ -119,7 +119,7 @@ class OperationResponse
         $mimeType = reset($mimeTypes);
 
         foreach ($throws as $throw) {
-            $exception = new ExceptionHandler($throw->getType()->__toString());
+            $exception = new ExceptionHandler($throw);
 
             $this->operation->pushResponse(
                 (new Response())
