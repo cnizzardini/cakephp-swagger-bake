@@ -167,7 +167,7 @@ Method level annotation for adding query parameters.
 
 ```php
 /**
- * @Swag\SwagQuery(name="queryParamName", type="string", description="string", required=false)
+ * @Swag\SwagQuery(name="queryParamName", type="string", description="string", required=false, enum={"a","b"})
  */
 public function index() {}
 ```
@@ -177,7 +177,7 @@ Method level annotation for adding form data fields.
 
 ```php
 /**
- * @Swag\SwagForm(name="fieldName", type="string", description="string", required=false)
+ * @Swag\SwagForm(name="fieldName", type="string", description="string", required=false, enum={"a","b"})
  */
 public function index() {}
 ```
@@ -217,7 +217,7 @@ Method level annotation for adding header parameters.
 
 ```php
 /**
- * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="string", required=false)
+ * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="string", required=false, enum={"a","b"})
  */
 public function index() {}
 ```
