@@ -62,10 +62,9 @@ class OperationFromRouteFactory
             ->setSummary($docBlock->getSummary())
             ->setDescription($docBlock->getDescription())
             ->setHttpMethod(strtolower($httpMethod))
-            ->setOperationId($route->getName())
-            ->setTags([
-                Inflector::humanize(Inflector::underscore($route->getController()))
-            ]);
+            ->setOperationId($route->getName());
+
+        $operation = $this->getOperationWithTags($operation, $route, $annotations);
 
         $args = [$config, $operation, $docBlock, $annotations, $route, $schema];
 
@@ -141,5 +140,28 @@ class OperationFromRouteFactory
         $swagOperation = reset($swagOperations);
 
         return $swagOperation->isVisible === false ? false : true;
+    }
+
+    /**
+     * @param Operation $operation
+     * @param RouteDecorator $route
+     * @param array $annotations
+     * @return Operation]
+     */
+    private function getOperationWithTags(Operation $operation, RouteDecorator $route, array $annotations) : Operation
+    {
+        $swagOperations = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagOperation;
+        });
+
+        $swagOperation = reset($swagOperations);
+
+        if (empty($swagOperation->tagNames)) {
+            return $operation->setTags([
+                Inflector::humanize(Inflector::underscore($route->getController()))
+            ]);
+        }
+
+        return $operation->setTags($swagOperation->tagNames);
     }
 }
