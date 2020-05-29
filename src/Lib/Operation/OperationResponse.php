@@ -62,7 +62,9 @@ class OperationResponse
         $this->assignSchema();
 
         if (!$this->operation->hasSuccessResponseCode() && strtolower($this->route->getAction()) == 'delete') {
-            $this->operation->pushResponse((new Response())->setCode('204'));
+            $this->operation->pushResponse(
+                (new Response())->setCode('204')->setDescription('Resource deleted')
+            );
         }
 
         return $this->operation;
