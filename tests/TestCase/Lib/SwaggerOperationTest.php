@@ -231,4 +231,21 @@ class SwaggerOperationTest extends TestCase
         $security = reset($securities);
         $this->assertEquals('BearerAuth', array_keys($security)[0]);
     }
+
+    public function testSecuritySchemeMultipleSwagSecurity()
+    {
+        $config = $this->config;
+        $config['yml'] = '/config/swagger-with-existing.yml';
+        $configuration = new Configuration($config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $configuration);
+        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+
+        $arr = json_decode($swagger->toString(), true);
+        $securities = $arr['paths']['/departments/{id}']['get']['security'];
+
+        $this->assertArrayHasKey('BearerAuth', $securities[0]);
+        $this->assertArrayHasKey('ApiKey', $securities[1]);
+        $this->assertCount(2, $securities[0]['BearerAuth']);
+    }
 }

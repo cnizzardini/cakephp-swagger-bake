@@ -56,7 +56,7 @@ class Operation implements JsonSerializable
         if (empty($vars['security'])) {
             unset($vars['security']);
         } else {
-            $vars['security'] = array_values(array_unique($vars['security']));
+            $vars['security'] = array_values($vars['security']);
         }
         if (empty($vars['externalDocs'])) {
             unset($vars['externalDocs']);
