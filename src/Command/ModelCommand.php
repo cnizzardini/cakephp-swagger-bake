@@ -53,13 +53,13 @@ class ModelCommand extends Command
         foreach ($entities as $entity) {
             $io->out('- ' . $entity->getName());
             $output = [$header];
-            foreach ($entity->getAttributes() as $attribute) {
+            foreach ($entity->getProperties() as $property) {
                 $output[] = [
-                    $attribute->getName(),
-                    $attribute->getType(),
-                    DataTypeConversion::convert($attribute->getType()),
-                    $attribute->getDefault(),
-                    $attribute->isPrimaryKey() ? 'Y' : '',
+                    $property->getName(),
+                    $property->getType(),
+                    DataTypeConversion::convert($property->getType()),
+                    $property->getDefault(),
+                    $property->isPrimaryKey() ? 'Y' : '',
                 ];
             }
             $io->helper('table')->output($output);
