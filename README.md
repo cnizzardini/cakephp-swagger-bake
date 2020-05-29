@@ -388,7 +388,10 @@ bin/cake bake controller {Name} --theme SwaggerBake
 - Entity Attributes: 
   - Hidden attributes will not be visible
   - Primary Keys will be set to read only by default.
-  - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention. 
+  - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention.
+- CRUD Responses
+  - Index, Edit, Add, and View methods default to an HTTP 200 with the Controllers related Cake Entity schema.
+  - Delete defaults to HTTP 204 (no content). 
 - Table Validators:
   - Fields set to not allow empty will be marked as required in Swagger.  
 - Security Scheme 
