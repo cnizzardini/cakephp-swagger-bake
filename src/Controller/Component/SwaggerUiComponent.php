@@ -41,7 +41,7 @@ class SwaggerUiComponent extends Component
 
         foreach ($this->swagger->getOperationsWithNoHttp20x() as $operation) {
             $errorMsg = 'Operation ' . $operation->getOperationId() . ' does not have a HTTP 20x response';
-            if (!isset($this->Flash)) {
+            if (!$this->_registry->has('Flash')) {
                 triggerWarning($errorMsg);
                 continue;
             }
