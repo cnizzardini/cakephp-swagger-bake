@@ -61,6 +61,10 @@ class OperationResponse
         $this->assignDocBlockExceptions();
         $this->assignSchema();
 
+        if (!$this->operation->hasSuccessResponseCode() && strtolower($this->route->getAction()) == 'delete') {
+            $this->operation->pushResponse((new Response())->setCode('204'));
+        }
+
         return $this->operation;
     }
 
@@ -144,7 +148,7 @@ class OperationResponse
             return;
         }
 
-        if ($this->operation->getResponseByCode('200')) {
+        if ($this->operation->hasSuccessResponseCode()) {
             return;
         }
 

@@ -117,6 +117,27 @@ class OperationResponseTest extends TestCase
         $cakeRoute = new CakeRoute($this->router, $config);
 
         $routes = $cakeRoute->getRoutes();
+        $route = $routes['employees:add'];
+
+        $operationResponse = new OperationResponse(
+            $config,
+            new Operation(),
+            DocBlockFactory::createInstance()->create('/**  */'),
+            [],
+            $route,
+            null
+        );
+
+        $operation = $operationResponse->getOperationWithResponses();
+        $this->assertEmpty($operation->getResponses());
+    }
+
+    public function testDeleteActionResponseWithHttp204()
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:delete'];
 
         $operationResponse = new OperationResponse(
@@ -129,7 +150,6 @@ class OperationResponseTest extends TestCase
         );
 
         $operation = $operationResponse->getOperationWithResponses();
-
-        $this->assertEmpty($operation->getResponses());
+        $this->assertNotEmpty($operation->getResponseByCode(204));
     }
 }
