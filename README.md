@@ -349,6 +349,12 @@ $swagger->toString(); # returns swagger json
 $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
 ```
 
+#### Events
+
+SwaggerBake will dispatch a `SwaggerBake.Operation.created` event after an Operation is created. You may 
+[register a listener](https://book.cakephp.org/4/en/core-libraries/events.html#registering-listeners) and interact 
+with the Operation instance. See [src/Lib/Extension](src/Lib/Extension) for examples.
+
 ## Console Commands
 
 In addition to `swagger bake` these console helpers provide insight into how your Swagger documentation is generated.
