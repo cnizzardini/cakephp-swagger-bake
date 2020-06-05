@@ -61,11 +61,7 @@ use the manual setup.
 
 Run `bin/cake swagger install`
 
-Create a route for the SwaggerUI page in `config/routes.php`, example:
-
-```php
-$builder->connect('/your-api-path', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
-```
+Then just [add a route](#last-step).
 
 ### Manual Setup
 
@@ -74,16 +70,20 @@ $builder->connect('/your-api-path', ['controller' => 'Swagger', 'action' => 'ind
 - Create a `config/swagger_bake.php` file. See the example file [here](assets/swagger_bake.php) for further 
 explanation.
 
-- Create a route for the SwaggerUI page in `config/routes.php`. See Extensibility for other ways to diplay Swagger.
+- Create a route for the SwaggerUI page in `config/routes.php`. 
+
+### Last Step
+
+Create a route for the SwaggerUI page in `config/routes.php`, example:
 
 ```php
-$builder->connect('/your-api-path', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
-```
-
-### Complete Setup
+$builder->connect('/my-swagger-ui', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
+``` 
 
 If Hot Reload is enabled ([see config](assets/swagger_bake.php)) then you should be able to browse to the above 
 route. Otherwise you must first run `bin/cake swagger bake` to generate your swagger documentation. 
+ 
+
  
 ## Automatic Documentation
 
@@ -95,7 +95,7 @@ build the following from your existing routes and models without additional effo
 - Operations
     - Summary and description
     - GET, POST, PATCH, DELETE
-    - Form fields using your Cake models
+    - Form fields and JSON using your Cake models
     - Responses
     - Sub resources
     - Security/Authentication
@@ -201,7 +201,7 @@ Example DTO:
 ```php
 namespace App\Dto;
 
-class Actor {
+class ActorDto {
     /**
      * Last name required
      * @var string
@@ -229,7 +229,7 @@ SwaggerBake gathers from AuthenticationComponent. Read [details](#details) below
 
 ```php
 /**
- * @Swag\SwagSecurity(name="BearerAuth", scopes="")
+ * @Swag\SwagSecurity(name="BearerAuth", scopes={"Read","Write"})
  */
 public function index() {}
 ```
