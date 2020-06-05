@@ -2,9 +2,12 @@
 
 namespace SwaggerBake\Lib\Operation;
 
+use Cake\Controller\Controller;
 use SwaggerBake\Lib\Annotation\SwagSecurity;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\PathSecurity;
+use SwaggerBake\Lib\Swagger;
 
 /**
  * Class OperationSecurity
@@ -12,25 +15,100 @@ use SwaggerBake\Lib\OpenApi\PathSecurity;
  */
 class OperationSecurity
 {
+    /** @var Operation  */
+    private $operation;
+
+    /** @var array  */
+    private $annotations;
+
+    /** @var RouteDecorator  */
+    private $route;
+
+    /** @var Controller  */
+    private $controller;
+
+    /** @var Swagger  */
+    private $swagger;
+
+    public function __construct(
+        Operation $operation,
+        array $annotations,
+        RouteDecorator $route,
+        Controller $controller,
+        Swagger $swagger
+    ) {
+        $this->operation = $operation;
+        $this->annotations = $annotations;
+        $this->route = $route;
+        $this->controller = $controller;
+        $this->swagger = $swagger;
+    }
+
+
     /**
-     * @param Operation $operation
-     * @param array $annotations
+     * Gets an Operation instance after applying security
+     *
      * @return Operation
      */
-    public function getOperationWithSecurity(Operation $operation, array $annotations) : Operation
+    public function getOperationWithSecurity() : Operation
     {
-        $swagSecurities = array_filter($annotations, function ($annotation) {
+        $this->assignSwagSecurityAnnotations();
+        $this->assignAuthenticationComponent();
+
+        return $this->operation;
+    }
+
+    /**
+     * Assigns @SwagSecurity annotations
+     *
+     * @return void
+     */
+    private function assignSwagSecurityAnnotations() : void
+    {
+        $swagSecurities = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagSecurity;
         });
 
         foreach ($swagSecurities as $annotation) {
-            $operation->pushSecurity(
+            $this->operation->pushSecurity(
                 (new PathSecurity())
                     ->setName($annotation->name)
                     ->setScopes($annotation->scopes)
             );
         }
+    }
 
-        return $operation;
+    /**
+     * Assign by AuthenticationComponent
+     *
+     * @return void
+     */
+    private function assignAuthenticationComponent() : void
+    {
+        if (!isset($this->controller->Authentication)) {
+            return;
+        }
+
+        if (in_array($this->route->getAction(), $this->controller->Authentication->getUnauthenticatedActions())) {
+            return;
+        }
+
+        $array = $this->swagger->getArray();
+        if (count($array['components']['securitySchemes']) !== 1) {
+            return;
+        }
+
+        $scheme = array_keys($array['components']['securitySchemes'])[0];
+
+        $securities = $this->operation->getSecurity();
+        if (array_key_exists($scheme, $securities)) {
+            return;
+        }
+
+        $this->operation->pushSecurity(
+            (new PathSecurity())
+                ->setName($scheme)
+                ->setScopes([])
+        );
     }
 }

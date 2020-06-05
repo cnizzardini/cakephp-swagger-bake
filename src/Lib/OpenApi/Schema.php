@@ -29,6 +29,18 @@ class Schema implements JsonSerializable
     /** @var string[] */
     private $items = [];
 
+    /** @var array  */
+    private $oneOf = [];
+
+    /** @var array  */
+    private $anyOf = [];
+
+    /** @var array  */
+    private $allOf = [];
+
+    /** @var array  */
+    private $enum = [];
+
     /**
      * @return array
      */
@@ -42,12 +54,13 @@ class Schema implements JsonSerializable
             // must stay in this order to prevent https://github.com/cnizzardini/cakephp-swagger-bake/issues/30
             $vars['required'] = array_values(array_unique($vars['required']));
         }
-        if (empty($vars['properties'])) {
-            unset($vars['properties']);
+
+        foreach (['properties', 'items', 'oneOf', 'anyOf', 'allOf', 'enum'] as $v) {
+            if (empty($vars[$v])) {
+                unset($vars[$v]);
+            }
         }
-        if (empty($vars['items'])) {
-            unset($vars['items']);
-        }
+
         return $vars;
     }
 
@@ -198,5 +211,75 @@ class Schema implements JsonSerializable
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function getOneOf(): array
+    {
+        return $this->oneOf;
+    }
 
+    /**
+     * @param array $oneOf
+     * @return Schema
+     */
+    public function setOneOf(array $oneOf): Schema
+    {
+        $this->oneOf = $oneOf;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAnyOf(): array
+    {
+        return $this->anyOf;
+    }
+
+    /**
+     * @param array $anyOf
+     * @return Schema
+     */
+    public function setAnyOf(array $anyOf): Schema
+    {
+        $this->anyOf = $anyOf;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllOf(): array
+    {
+        return $this->allOf;
+    }
+
+    /**
+     * @param array $allOf
+     * @return Schema
+     */
+    public function setAllOf(array $allOf): Schema
+    {
+        $this->allOf = $allOf;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEnum(): array
+    {
+        return $this->enum;
+    }
+
+    /**
+     * @param array $enum
+     * @return Schema
+     */
+    public function setEnum(array $enum): Schema
+    {
+        $this->enum = $enum;
+        return $this;
+    }
 }

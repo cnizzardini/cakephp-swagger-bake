@@ -16,6 +16,7 @@ use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
+use SwaggerBake\Lib\Swagger;
 
 /**
  * Class OperationFromRouteFactory
@@ -23,12 +24,12 @@ use SwaggerBake\Lib\Utility\NamespaceUtility;
  */
 class OperationFromRouteFactory
 {
-    /** @var Configuration  */
-    private $config;
+    /** @var Swagger  */
+    private $swagger;
 
-    public function __construct(Configuration $config)
+    public function __construct(Swagger $swagger)
     {
-        $this->config = $config;
+        $this->swagger = $swagger;
     }
 
     /**
@@ -45,13 +46,15 @@ class OperationFromRouteFactory
             return null;
         }
 
+        $config = $this->swagger->getConfig();
+
         $className = $route->getController() . 'Controller';
-        $fullyQualifiedNameSpace = NamespaceUtility::getControllerFullQualifiedNameSpace($className, $this->config);
+        $fqns = NamespaceUtility::getControllerFullQualifiedNameSpace($className, $config);
 
-        $docBlock = $this->getDocBlock($fullyQualifiedNameSpace, $route->getAction());
-        $methodAnnotations = AnnotationUtility::getMethodAnnotations($fullyQualifiedNameSpace, $route->getAction());
+        $docBlock = $this->getDocBlock($fqns, $route->getAction());
+        $annotations = AnnotationUtility::getMethodAnnotations($fqns, $route->getAction());
 
-        if (!$this->isVisible($methodAnnotations)) {
+        if (!$this->isVisible($annotations)) {
             return null;
         }
 
@@ -59,10 +62,11 @@ class OperationFromRouteFactory
             ->setSummary($docBlock->getSummary())
             ->setDescription($docBlock->getDescription())
             ->setHttpMethod(strtolower($httpMethod))
-            ->setOperationId($route->getName())
-            ->setTags([
-                Inflector::humanize(Inflector::underscore($route->getController()))
-            ]);
+            ->setOperationId($route->getName());
+
+        $operation = $this->getOperationWithTags($operation, $route, $annotations);
+
+        $args = [$config, $operation, $docBlock, $annotations, $route, $schema];
 
         $operation = (new OperationDocBlock())
             ->getOperationWithDocBlock($operation, $docBlock);
@@ -71,25 +75,24 @@ class OperationFromRouteFactory
             ->getOperationWithPathParameters($operation, $route);
 
         $operation = (new OperationHeader())
-            ->getOperationWithHeaders($operation, $methodAnnotations);
+            ->getOperationWithHeaders($operation, $annotations);
 
-        $operation = (new OperationSecurity())
-            ->getOperationWithSecurity($operation, $methodAnnotations);
+        $operation = (new OperationSecurity($operation, $annotations, $route, new $fqns(), $this->swagger))
+            ->getOperationWithSecurity();
 
         $operation = (new OperationQueryParameter())
-            ->getOperationWithQueryParameters($operation, $methodAnnotations);
+            ->getOperationWithQueryParameters($operation, $annotations);
 
-        $operation = (new OperationRequestBody($this->config, $operation, $docBlock, $methodAnnotations, $route, $schema))
-            ->getOperationWithRequestBody();
+        $operation = (new OperationRequestBody(...$args))->getOperationWithRequestBody();
 
-        $operation = (new OperationResponse($this->config, $operation, $docBlock, $methodAnnotations, $route, $schema))
+        $operation = (new OperationResponse(...$args))
             ->getOperationWithResponses();
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Operation.created', $operation, [
-                'config' => $this->config,
+                'config' => $config,
                 'docBlock' => $docBlock,
-                'methodAnnotations' => $methodAnnotations,
+                'methodAnnotations' => $annotations,
                 'route' => $route,
                 'schema' => $schema,
             ])
@@ -137,5 +140,28 @@ class OperationFromRouteFactory
         $swagOperation = reset($swagOperations);
 
         return $swagOperation->isVisible === false ? false : true;
+    }
+
+    /**
+     * @param Operation $operation
+     * @param RouteDecorator $route
+     * @param array $annotations
+     * @return Operation]
+     */
+    private function getOperationWithTags(Operation $operation, RouteDecorator $route, array $annotations) : Operation
+    {
+        $swagOperations = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagOperation;
+        });
+
+        $swagOperation = reset($swagOperations);
+
+        if (empty($swagOperation->tagNames)) {
+            return $operation->setTags([
+                Inflector::humanize(Inflector::underscore($route->getController()))
+            ]);
+        }
+
+        return $operation->setTags($swagOperation->tagNames);
     }
 }

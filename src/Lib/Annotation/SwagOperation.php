@@ -9,6 +9,7 @@ use InvalidArgumentException;
  * @Target({"METHOD"})
  * @Attributes({
  *   @Attribute("isVisible", type="bool"),
+ *   @Attribute("tagNames", type="array"),
  * })
  */
 class SwagOperation
@@ -16,9 +17,13 @@ class SwagOperation
     /** @var bool */
     public $isVisible;
 
+    /** @var string[] */
+    public $tagNames;
+
     public function __construct(array $values)
     {
-        $values = array_merge(['isVisible' => true], $values);
+        $values = array_merge(['isVisible' => true, 'tagNames' => []], $values);
         $this->isVisible = (bool) $values['isVisible'];
+        $this->tagNames = $values['tagNames'];
     }
 }

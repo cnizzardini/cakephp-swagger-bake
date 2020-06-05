@@ -33,13 +33,12 @@ class RouteCommand extends Command
         $io->out("| SwaggerBake is checking your routes...");
         $io->hr();
 
-        ValidateConfiguration::validate();
-
         $output = [
             ['Route name', 'URI template', 'Method(s)', 'Controller', 'Action', 'Plugin'],
         ];
 
         $config = new Configuration();
+        ValidateConfiguration::validate($config);
         $prefix = $config->getPrefix();
         $cakeRoute = new CakeRoute(new Router(), $config);
         $routes = $cakeRoute->getRoutes();

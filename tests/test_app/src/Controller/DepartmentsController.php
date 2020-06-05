@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBakeTest\App\Controller;
 
-use SwaggerBake\Lib\Annotation\SwagQuery;
-use SwaggerBake\Lib\Annotation\SwagPaginator;
+use SwaggerBake\Lib\Annotation as Swag;
 
 /**
  * Departments Controller
@@ -15,11 +14,18 @@ use SwaggerBake\Lib\Annotation\SwagPaginator;
  */
 class DepartmentsController extends AppController
 {
+    public function initialize() : void
+    {
+        parent::initialize();
+
+        $this->loadComponent('Authentication.Authentication');
+    }
+
     /**
      * Gets Departments
      *
-     * @SwagPaginator
-     * @SwagQuery(name="random", type="boolean", required=true)
+     * @Swag\SwagPaginator
+     * @Swag\SwagQuery(name="random", type="boolean", required=true)
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
@@ -33,6 +39,8 @@ class DepartmentsController extends AppController
     /**
      * View method
      *
+     * @Swag\SwagSecurity(name="BearerAuth", scopes={"read","write"})
+     * @Swag\SwagSecurity(name="ApiKey")
      * @param string|null $id Department id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.

@@ -11,8 +11,8 @@ use JsonSerializable;
  */
 class Response implements JsonSerializable
 {
-    /** @var int  */
-    private $code = 0;
+    /** @var string  */
+    private $code;
 
     /** @var string  */
     private $description = '';
@@ -42,18 +42,18 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getCode(): int
+    public function getCode(): string
     {
         return $this->code;
     }
 
     /**
-     * @param int $code
+     * @param string $code
      * @return Response
      */
-    public function setCode(int $code): Response
+    public function setCode(string $code): Response
     {
         $this->code = $code;
         return $this;

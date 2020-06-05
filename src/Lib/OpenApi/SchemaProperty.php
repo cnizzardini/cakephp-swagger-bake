@@ -35,17 +35,19 @@ class SchemaProperty implements JsonSerializable
     /** @var bool  */
     private $required = false;
 
+    /** @var array */
+    private $enum = [];
+
     public function toArray() : array
     {
         $vars = get_object_vars($this);
         unset($vars['name']);
         unset($vars['required']);
 
-        if (empty($vars['example'])) {
-            unset($vars['example']);
-        }
-        if (empty($vars['description'])) {
-            unset($vars['description']);
+        foreach (['example','description','enum'] as $v) {
+            if (empty($vars[$v])) {
+                unset($vars[$v]);
+            }
         }
 
         return $vars;
@@ -197,6 +199,24 @@ class SchemaProperty implements JsonSerializable
     public function setDescription(string $description): SchemaProperty
     {
         $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEnum(): array
+    {
+        return $this->enum;
+    }
+
+    /**
+     * @param array $enum
+     * @return SchemaProperty
+     */
+    public function setEnum(array $enum): SchemaProperty
+    {
+        $this->enum = $enum;
         return $this;
     }
 }

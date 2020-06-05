@@ -12,17 +12,17 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
  */
 class ValidateConfiguration
 {
-    public static function validate() : void
+    public static function validate(?Configuration $config) : void
     {
-        $config = new Configuration();
+        $config = $config ?? new Configuration();
         $ymlFile = $config->getYml();
 
         if (empty($ymlFile) || !strstr($ymlFile, '.yml')) {
-            throw new LogicException('Yml file is required');
+            throw new LogicException('YML file is required, given ' . $ymlFile);
         }
 
         if (!file_exists($ymlFile)) {
-            throw new LogicException('Yml file not found, try specifying full path to file');
+            throw new LogicException('YML file not found, try specifying full path, given ' . $ymlFile);
         }
 
         $prefix = $config->getPrefix();

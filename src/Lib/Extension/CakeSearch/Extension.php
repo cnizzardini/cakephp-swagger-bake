@@ -73,7 +73,7 @@ class Extension implements ExtensionInterface
 
         $swagSearch = reset($results);
 
-        $this->getOperationWithQueryParameters($operation, $swagSearch);
+        $operation = $this->getOperationWithQueryParameters($operation, $swagSearch);
 
         return $operation;
     }

@@ -41,7 +41,7 @@ class PathFromRouteFactory
         $controller = $this->route->getController() . 'Controller';
         $fullyQualifiedNamespace = NamespaceUtility::getControllerFullQualifiedNameSpace($controller, $this->config);
 
-        if (!$this->isVisible($fullyQualifiedNamespace)) {
+        if (is_null($fullyQualifiedNamespace) || !$this->isVisible($fullyQualifiedNamespace)) {
             return null;
         }
 
