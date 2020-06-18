@@ -7,8 +7,8 @@ return [
         'webPath' => '/swagger.json',
         'hotReload' => false,
         'namespaces' => [
-            'controllers' => ['\App\\'],
-            'entities' => ['\App\\'],
+            'controllers' => ['\SwaggerBakeTest\App\\'],
+            'entities' => ['\SwaggerBakeTest\App\\'],
         ]
     ]
 ];
