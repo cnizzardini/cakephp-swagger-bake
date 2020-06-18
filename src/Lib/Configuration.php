@@ -18,7 +18,7 @@ class Configuration
     /** @var string  */
     private $root = '';
 
-    public function __construct($config = [], $root = APP)
+    public function __construct($config = [], $root = ROOT)
     {
         $this->root = $root;
 
