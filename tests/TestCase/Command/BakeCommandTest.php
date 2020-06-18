@@ -22,9 +22,10 @@ class BakeCommandTest extends TestCase
 
     public function testExecute()
     {
-        unlink(WWW_ROOT . DS . 'swagger.json');
+        $path = WWW_ROOT . DS . 'swagger.json';
+        unlink($path);
         $this->exec('swagger bake');
         $this->assertOutputContains('Running...');
-        $this->assertOutputContains('Swagger File Created:');
+        $this->assertOutputContains("Swagger File Created: $path");
     }
 }
