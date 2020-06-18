@@ -26,8 +26,23 @@ chdir($root);
 
 require_once $root . '/vendor/autoload.php';
 
+if (!defined('DS')) {
+    define('DS', DIRECTORY_SEPARATOR);
+}
+
+//define('ROOT', dirname(__DIR__));
+define('APP_DIR', 'test_app');
+
+define('TMP', sys_get_temp_dir() . DS);
+define('LOGS', TMP . 'logs' . DS);
+define('CACHE', TMP . 'cache' . DS);
+define('SESSIONS', TMP . 'sessions' . DS);
+
 define('SWAGGER_BAKE_TEST_ROOT', dirname(__DIR__));
 define('SWAGGER_BAKE_TEST_APP', SWAGGER_BAKE_TEST_ROOT . DS . 'tests' . DS . 'test_app');
+define('CONFIG', SWAGGER_BAKE_TEST_APP . DS . 'config' . DS);
+define('WWW_ROOT', SWAGGER_BAKE_TEST_APP . DS . 'webroot');
+define('APP', SWAGGER_BAKE_TEST_APP);
 
 ini_set('error_reporting', 'E_ALL ^ E_DEPRECATED');
 
