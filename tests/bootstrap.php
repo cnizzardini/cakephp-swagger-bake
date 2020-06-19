@@ -31,6 +31,11 @@ define('SWAGGER_BAKE_TEST_APP', SWAGGER_BAKE_TEST_ROOT . DS . 'tests' . DS . 'te
 
 ini_set('error_reporting', 'E_ALL ^ E_DEPRECATED');
 
+$swaggerJsonFile = SWAGGER_BAKE_TEST_APP . DS . 'webroot' . DS . 'swagger.json';
+if (!file_exists($swaggerJsonFile)) {
+    touch($swaggerJsonFile);
+}
+
 /**
  * Define fallback values for required constants and configuration.
  * To customize constants and configuration remove this require
@@ -40,6 +45,6 @@ require_once $root . '/vendor/cakephp/cakephp/tests/bootstrap.php';
 
 if (file_exists($root . '/config/bootstrap.php')) {
     require $root . '/config/bootstrap.php';
-
     return;
 }
+
