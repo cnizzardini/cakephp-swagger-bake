@@ -31,7 +31,11 @@ define('SWAGGER_BAKE_TEST_APP', SWAGGER_BAKE_TEST_ROOT . DS . 'tests' . DS . 'te
 
 ini_set('error_reporting', 'E_ALL ^ E_DEPRECATED');
 
-$swaggerJsonFile = SWAGGER_BAKE_TEST_APP . DS . 'webroot' . DS . 'swagger.json';
+$webRoot = SWAGGER_BAKE_TEST_APP . DS . 'webroot';
+if (!directoryExists($webRoot)) {
+    mkdir($webRoot);
+}
+$swaggerJsonFile = $webRoot . DS . 'swagger.json';
 if (!file_exists($swaggerJsonFile)) {
     touch($swaggerJsonFile);
 }

@@ -1,7 +1,6 @@
 # SwaggerBake sspecific files #
 ##########################
-!.keepdir
-/tests/test_app/webroot/swagger.json
+/tests/test_app/webroot/*
 
 # CakePHP specific files #
 ##########################
