@@ -1,6 +1,7 @@
 # SwaggerBake plugin for CakePHP4
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
+[![Build Status](https://travis-ci.org/cnizzardini/cakephp-swagger-bake.svg?branch=master)](https://travis-ci.org/cnizzardini/cakephp-swagger-bake)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 

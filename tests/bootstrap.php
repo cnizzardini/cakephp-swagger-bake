@@ -73,6 +73,15 @@ define('CONFIG', SWAGGER_BAKE_TEST_APP . DS . 'config' . DS);
 
 ini_set('error_reporting', 'E_ALL ^ E_DEPRECATED');
 
+$webRoot = SWAGGER_BAKE_TEST_APP . DS . 'webroot';
+if (!file_exists($webRoot)) {
+    mkdir($webRoot);
+}
+$swaggerJsonFile = $webRoot . DS . 'swagger.json';
+if (!file_exists($swaggerJsonFile)) {
+    touch($swaggerJsonFile);
+}
+
 require_once CORE_PATH . 'config/bootstrap.php';
 
 date_default_timezone_set('UTC');
