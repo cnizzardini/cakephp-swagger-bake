@@ -1,3 +1,7 @@
+# SwaggerBake sspecific files #
+##########################
+/tests/test_app/webroot/*
+
 # CakePHP specific files #
 ##########################
 /config/app_local.php
@@ -42,4 +46,3 @@ nbproject/*
 # Sass preprocessor
 .sass-cache/
 /composer.lock
-/tests/test_app/webroot/swagger.json
