@@ -38,6 +38,11 @@ class BakeCommand extends Command
 
         $swagger->writeFile($output);
 
+        if (!file_exists($output)) {
+            $io->out("<error>Error Creating File: $output</error>");
+            return;
+        }
+
         $io->out("<success>Swagger File Created: $output</success>");
     }
 }
