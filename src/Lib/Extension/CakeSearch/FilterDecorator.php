@@ -18,7 +18,11 @@ class FilterDecorator
 
     private $filter;
 
-    public function __construct($filter)
+    /**
+     * @param \Search\Model\Filter\Base $filter
+     * @throws \ReflectionException
+     */
+    public function __construct(\Search\Model\Filter\Base $filter)
     {
         $reflection = new ReflectionClass($filter);
         $property = $reflection->getProperty('_defaultConfig');
