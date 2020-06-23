@@ -41,6 +41,9 @@ class Schema implements JsonSerializable
     /** @var array  */
     private $enum = [];
 
+    /** @var string */
+    private $format;
+
     /**
      * @return array
      */
@@ -280,6 +283,24 @@ class Schema implements JsonSerializable
     public function setEnum(array $enum): Schema
     {
         $this->enum = $enum;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormat(): string
+    {
+        return $this->format;
+    }
+
+    /**
+     * @param string $format
+     * @return Schema
+     */
+    public function setFormat(string $format): Schema
+    {
+        $this->format = $format;
         return $this;
     }
 }

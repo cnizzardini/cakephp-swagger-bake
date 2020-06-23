@@ -159,6 +159,7 @@ class OperationRequestBody
                     ->setType($annotation->type)
                     ->setRequired($annotation->required)
                     ->setEnum($annotation->enum)
+                    ->setDeprecated($annotation->deprecated)
             );
         }
 

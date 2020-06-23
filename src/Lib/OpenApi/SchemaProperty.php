@@ -38,6 +38,9 @@ class SchemaProperty implements JsonSerializable
     /** @var array */
     private $enum = [];
 
+    /** @var bool */
+    private $deprecated = false;
+
     public function toArray() : array
     {
         $vars = get_object_vars($this);
@@ -217,6 +220,24 @@ class SchemaProperty implements JsonSerializable
     public function setEnum(array $enum): SchemaProperty
     {
         $this->enum = $enum;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeprecated(): bool
+    {
+        return $this->deprecated;
+    }
+
+    /**
+     * @param bool $deprecated
+     * @return SchemaProperty
+     */
+    public function setDeprecated(bool $deprecated): SchemaProperty
+    {
+        $this->deprecated = $deprecated;
         return $this;
     }
 }

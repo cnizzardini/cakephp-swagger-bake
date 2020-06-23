@@ -164,18 +164,20 @@ use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 public function index() {}
 ```
 
-#### `@SwagQuery`
-Method level annotation for adding query parameters.
+#### `@SwagQuery` 
+Method level annotation for adding query parameters. Read the [full documentation](src/Lib/Annotation/SwagQuery.php) 
+for which OpenAPI Parameter Object properties are supported.
 
 ```php
 /**
- * @Swag\SwagQuery(name="queryParamName", type="string", description="string", required=false, enum={"a","b"})
+ * @Swag\SwagQuery(name="queryParamName", type="string", description="string")
  */
 public function index() {}
 ```
 
 #### `@SwagForm`
-Method level annotation for adding form data fields.
+Method level annotation for adding form data fields. Read the [full documentation](src/Lib/Annotation/SwagQuery.php) 
+for which OpenAPI Parameter Object properties are supported.
 
 ```php
 /**
@@ -215,11 +217,12 @@ class ActorDto {
 ```
 
 #### `@SwagHeader`
-Method level annotation for adding header parameters.
+Method level annotation for adding header parameters. Read the [full documentation](src/Lib/Annotation/SwagQuery.php) 
+for which OpenAPI Parameter Object properties are supported.
 
 ```php
 /**
- * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="string", required=false, enum={"a","b"})
+ * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="string")
  */
 public function index() {}
 ```

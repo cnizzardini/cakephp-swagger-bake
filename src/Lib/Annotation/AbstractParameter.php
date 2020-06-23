@@ -12,16 +12,37 @@ abstract class AbstractParameter
     public $name;
 
     /** @var string */
-    public $type;
+    public $type = 'string';
 
     /** @var string */
-    public $description;
+    public $description = '';
 
     /** @var bool */
-    public $required;
+    public $required = false;
 
     /** @var array  */
-    public $enum;
+    public $enum = [];
+
+    /** @var bool */
+    public $deprecated = false;
+
+    /** @var bool */
+    public $allowEmptyValue = false;
+
+    /** @var bool */
+    public $explode = false;
+
+    /** @var string  */
+    public $style = '';
+
+    /** @var bool */
+    public $allowReserved = false;
+
+    /** @var string  */
+    public $format = '';
+
+    /** @var array  */
+    public $example = [];
 
     public function __construct(array $values)
     {
@@ -29,26 +50,24 @@ abstract class AbstractParameter
             throw new InvalidArgumentException('Name parameter is required');
         }
 
-        $values = array_merge(
-            [
-                'type' => 'string', 'description' => '', 'required' => false, 'enum' => []
-            ],
-            $values
-        );
+        $name = $values['name'];
 
-        if (!in_array($values['type'], OpenApiDataType::TYPES)) {
+        if (isset($values['type']) && !in_array($values['type'], OpenApiDataType::TYPES)) {
             $type = $values['type'];
-            $name = $values['name'];
             throw new SwaggerBakeRunTimeException(
                 "Invalid Data Type, given [$type] for [$name] but must be one of: " .
                 implode(',', OpenApiDataType::TYPES)
             );
         }
 
-        $this->name = $values['name'];
-        $this->type = $values['type'];
-        $this->description = $values['description'];
-        $this->required = (bool) $values['required'];
-        $this->enum = (array) $values['enum'];
+        if (isset($values['example']) && !is_string($values['example'])) {
+            throw new SwaggerBakeRunTimeException(
+                "Example must be a string for [$name], support for complex types may be added at a later date"
+            );
+        }
+
+        foreach ($values as $attribute => $value) {
+            $this->{$attribute} = $value;
+        }
     }
 }

@@ -8,9 +8,10 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attributes({
  *   @Attribute("name", type = "string"),
  *   @Attribute("type",  type = "string"),
- *   @Attribute("description",  type="string"),
- *   @Attribute("required",  type="boolean"),
+ *   @Attribute("description",  type = "string"),
+ *   @Attribute("required",  type = "bool"),
  *   @Attribute("enum",  type = "array"),
+ *   @Attribute("deprecated",  type = "bool")
  * })
  */
 class SwagForm extends AbstractParameter
