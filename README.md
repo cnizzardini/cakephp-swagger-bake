@@ -380,6 +380,8 @@ bin/cake bake controller {Name} --theme SwaggerBake
 
 ## Details
 
+[OpenAPI Schema Support Roadmap](https://docs.google.com/spreadsheets/d/e/2PACX-1vRTWE7nsTouFdHZsG6OKlZ-1lHeJGI0wqNlRVEgiG4eCFY0dMxkBLaw313mU_a73U7emoRdFcGPUq94/pubhtml)
+
 - Swagger uses your existing swagger.yml as a base for adding additional paths and schema.
 - Generates JSON based on the OpenAPI 3 specification. I am still working on implementing the full spec.
 - All Schemas and Paths generated must have the following in your CakePHP Application:
