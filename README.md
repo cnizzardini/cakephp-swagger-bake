@@ -401,9 +401,8 @@ bin/cake bake controller {Name} --theme SwaggerBake
   - Index, Edit, Add, and View methods default to an HTTP 200 with the Controllers related Cake Entity schema.
   - Delete defaults to HTTP 204 (no content). 
 - Table Validators:
-  - Fields set to not allow empty will be marked as required in Swagger.  
-  - Reads in [Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html) rules such as minLength, 
-  maxLength, basic math comparison operators, regex, inList, hasAtLeast, and hasAtMost.
+  - Reads in [Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html) rules such as 
+  requirePresence, minLength, maxLength, basic math comparison operators, regex, inList, hasAtLeast, and hasAtMost.
 - Security Scheme 
   - Leverages the [CakePHP AuthenticationComponent](https://book.cakephp.org/authentication/2/en/index.html)
   - Will automatically set security on operations if a single [securityScheme](https://swagger.io/docs/specification/authentication/) 

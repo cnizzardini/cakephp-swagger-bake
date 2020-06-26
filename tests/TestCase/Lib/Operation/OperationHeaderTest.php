@@ -35,7 +35,6 @@ class OperationHeaderTest extends TestCase
         $this->assertEquals('test desc', $param->getDescription());
         $this->assertTrue($param->isRequired());
         $this->assertTrue($param->isExplode());
-        $this->assertTrue($param->isAllowEmptyValue());
         $this->assertTrue($param->isDeprecated());
         $this->assertEquals('test example', $param->getExample());
         $schema = $param->getSchema();
