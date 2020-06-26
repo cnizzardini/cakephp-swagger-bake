@@ -11,7 +11,7 @@ trait JsonSchemaTrait
     protected $default;
 
     /** @var bool */
-    protected $nullable = false;
+    protected $nullable;
 
     /** @var float|null */
     protected $multipleOf;

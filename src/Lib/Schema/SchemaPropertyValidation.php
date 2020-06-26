@@ -62,18 +62,8 @@ class SchemaPropertyValidation
     }
 
     /**
-     * @return SchemaPropertyValidation
-     */
-    private function defineRequired() : SchemaPropertyValidation
-    {
-        $validationSet = $this->validator->field($this->propertyName);
-        if (!$validationSet->isEmptyAllowed()) {
-            $this->schemaProperty->setRequired(true);
-        }
-        return $this;
-    }
-
-    /**
+     * Returns an instance of ValidationRule for the given $ruleName if it exists, null otherwise
+     *
      * @param string $ruleName
      * @return ValidationRule|null
      */
@@ -84,7 +74,7 @@ class SchemaPropertyValidation
     }
 
     /**
-     * Returns null if no validation rule is found, mixed otherwise
+     * Returns a mixed variable for the validation rules condition if the rule exists, null otherwise
      *
      * @param string $ruleName
      * @return array|mixed|null
@@ -106,6 +96,9 @@ class SchemaPropertyValidation
     }
 
     /**
+     * Returns a mixed variable for the validation rules condition if the rule exists, null otherwise. This is for
+     * ValidationRule's which use closures.
+     *
      * @param string $rule
      * @return $this
      */
@@ -139,6 +132,31 @@ class SchemaPropertyValidation
         if (!empty($result)) {
             $this->schemaProperty->setMaxLength(intval(reset($result)));
         }
+        return $this;
+    }
+
+    /**
+     * @return SchemaPropertyValidation
+     */
+    private function defineRequired() : SchemaPropertyValidation
+    {
+        $validationSet = $this->validator->field($this->propertyName);
+        $isPresenceRequired = $validationSet->isPresenceRequired();
+
+        if ($isPresenceRequired === true) {
+            $this->schemaProperty->setRequired(true);
+        } else if (is_string($isPresenceRequired)) {
+            switch (strtoupper($isPresenceRequired))
+            {
+                case 'UPDATE':
+                    $this->schemaProperty->setRequirePresenceOnUpdate(true);
+                    break;
+                case 'CREATE':
+                    $this->schemaProperty->setRequirePresenceOnCreate(true);
+                    break;
+            }
+        }
+
         return $this;
     }
 

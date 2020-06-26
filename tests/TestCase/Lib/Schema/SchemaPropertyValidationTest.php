@@ -13,9 +13,11 @@ class SchemaPropertyValidationTest extends TestCase
     public function testWithValidations()
     {
         $validator = (new Validator())
+            ->requirePresence('test_field', true)
             ->regex('test_field', '/\D/')
             ->minLength('test_field',5)
-            ->maxLength('test_field',10);
+            ->maxLength('test_field',10)
+        ;
 
         $propertyDecorator = (new PropertyDecorator())->setName('test_field')->setType('integer');
         $schemaProperty = (new SchemaPropertyFactory($validator))->create($propertyDecorator);
@@ -28,6 +30,9 @@ class SchemaPropertyValidationTest extends TestCase
 
         $schemaProperty = $schemaPropertyValidation->withValidations();
 
+        $this->assertTrue($schemaProperty->isRequired());
+        $this->assertFalse($schemaProperty->isRequirePresenceOnCreate());
+        $this->assertFalse($schemaProperty->isRequirePresenceOnUpdate());
         $this->assertEquals('/\D/', $schemaProperty->getPattern());
         $this->assertEquals(5, $schemaProperty->getMinLength());
         $this->assertEquals(10, $schemaProperty->getMaxLength());
@@ -98,5 +103,47 @@ class SchemaPropertyValidationTest extends TestCase
         $this->assertEquals(2, $schemaProperty->getMinItems());
         $this->assertEquals(4, $schemaProperty->getMaxItems());
         $this->assertCount(3, $schemaProperty->getEnum());
+    }
+
+    public function testWithValidationsRequirePresenceCreate()
+    {
+        $validator = (new Validator())
+            ->requirePresence('test_field', 'create');
+
+        $propertyDecorator = (new PropertyDecorator())->setName('test_field');
+        $schemaProperty = (new SchemaPropertyFactory($validator))->create($propertyDecorator);
+
+        $schemaPropertyValidation = new SchemaPropertyValidation(
+            $validator,
+            $schemaProperty,
+            $propertyDecorator
+        );
+
+        $schemaProperty = $schemaPropertyValidation->withValidations();
+
+        $this->assertTrue($schemaProperty->isRequirePresenceOnCreate());
+        $this->assertFalse($schemaProperty->isRequired());
+        $this->assertFalse($schemaProperty->isRequirePresenceOnUpdate());
+    }
+
+    public function testWithValidationsRequirePresenceUpdate()
+    {
+        $validator = (new Validator())
+            ->requirePresence('test_field', 'update');
+
+        $propertyDecorator = (new PropertyDecorator())->setName('test_field');
+        $schemaProperty = (new SchemaPropertyFactory($validator))->create($propertyDecorator);
+
+        $schemaPropertyValidation = new SchemaPropertyValidation(
+            $validator,
+            $schemaProperty,
+            $propertyDecorator
+        );
+
+        $schemaProperty = $schemaPropertyValidation->withValidations();
+
+        $this->assertTrue($schemaProperty->isRequirePresenceOnUpdate());
+        $this->assertFalse($schemaProperty->isRequired());
+        $this->assertFalse($schemaProperty->isRequirePresenceOnCreate());
     }
 }
