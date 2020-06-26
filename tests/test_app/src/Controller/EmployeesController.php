@@ -169,7 +169,7 @@ class EmployeesController extends AppController
     }
 
     /**
-     * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Pet", mimeType="application/json")
+     * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Pet")
      * @Swag\SwagResponseSchema(refEntity="", description="deprecated httpCode still works", httpCode=400)
      * @Swag\SwagResponseSchema(refEntity="", description="new statusCode", statusCode="404")
      * @Swag\SwagResponseSchema(refEntity="", description="status code range", statusCode="5XX")
@@ -215,5 +215,12 @@ class EmployeesController extends AppController
 
         $this->set(compact('employees'));
         $this->viewBuilder()->setOption('serialize', ['employees']);
+    }
+
+    public function noResponsesDefined()
+    {
+        $response = 'nokay';
+        $this->set(compact('response'));
+        $this->viewBuilder()->setOption('serialize', ['response']);
     }
 }

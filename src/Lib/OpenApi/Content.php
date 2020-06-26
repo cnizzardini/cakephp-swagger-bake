@@ -35,7 +35,10 @@ class Content implements JsonSerializable
     {
         $vars = get_object_vars($this);
         unset($vars['mimeType']);
-        if (is_string($this->schema)) {
+        if (is_null($this->schema)) {
+            unset($vars['schema']);
+            $vars['schema'] = '';
+        } else if (is_string($this->schema)) {
             unset($vars['schema']);
             $vars['schema']['$ref'] = $this->schema;
         }
@@ -74,7 +77,7 @@ class Content implements JsonSerializable
     /**
      * @return mixed
      */
-    public function getSchema() : Schema
+    public function getSchema()
     {
         return $this->schema;
     }

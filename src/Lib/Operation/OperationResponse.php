@@ -60,12 +60,7 @@ class OperationResponse
         $this->assignAnnotations();
         $this->assignDocBlockExceptions();
         $this->assignSchema();
-
-        if (!$this->operation->hasSuccessResponseCode() && strtolower($this->route->getAction()) == 'delete') {
-            $this->operation->pushResponse(
-                (new Response())->setCode('204')->setDescription('Resource deleted')
-            );
-        }
+        $this->assignDefaultResponses();
 
         return $this->operation;
     }
@@ -185,5 +180,43 @@ class OperationResponse
             $this->operation->pushResponse($response);
             return;
         }
+    }
+
+    /**
+     * Assigns a default responses
+     *
+     * delete: 204 with empty response body
+     * default: 200 with empty response body and first element from responseContentTypes config as mimeType
+     *
+     * @response void
+     */
+    private function assignDefaultResponses() : void
+    {
+        if ($this->operation->hasSuccessResponseCode()) {
+            return;
+        }
+
+        if (strtolower($this->route->getAction()) == 'delete') {
+            $this->operation->pushResponse(
+                (new Response())
+                    ->setCode('204')
+                    ->setDescription('Resource deleted')
+            );
+            return;
+        }
+
+        $types = $this->config->getResponseContentTypes();
+
+        $this->operation->pushResponse(
+            (new Response())
+                ->setCode('200')
+                ->pushContent(
+                    (new Content())
+                        ->setMimeType(reset($types))
+                        ->setSchema(new Schema())
+                )
+        );
+
+        return;
     }
 }
