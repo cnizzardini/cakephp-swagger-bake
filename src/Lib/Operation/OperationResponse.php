@@ -61,6 +61,12 @@ class OperationResponse
         $this->assignDocBlockExceptions();
         $this->assignSchema();
 
+        if (!$this->operation->hasSuccessResponseCode() && strtolower($this->route->getAction()) == 'delete') {
+            $this->operation->pushResponse(
+                (new Response())->setCode('204')->setDescription('Resource deleted')
+            );
+        }
+
         return $this->operation;
     }
 
@@ -84,7 +90,7 @@ class OperationResponse
             }
 
             $response = (new Response())
-                ->setCode(intval($annotation->httpCode))
+                ->setCode($annotation->httpCode)
                 ->setDescription($annotation->description);
 
             if (empty($annotation->schemaFormat) && empty($annotation->mimeType)) {
@@ -119,7 +125,7 @@ class OperationResponse
         $mimeType = reset($mimeTypes);
 
         foreach ($throws as $throw) {
-            $exception = new ExceptionHandler($throw->getType()->__toString());
+            $exception = new ExceptionHandler($throw);
 
             $this->operation->pushResponse(
                 (new Response())
@@ -144,7 +150,7 @@ class OperationResponse
             return;
         }
 
-        if ($this->operation->getResponseByCode(200)) {
+        if ($this->operation->hasSuccessResponseCode()) {
             return;
         }
 
@@ -153,7 +159,7 @@ class OperationResponse
         }
 
         if (in_array(strtolower($this->route->getAction()),['index'])) {
-            $response = (new Response())->setCode(200);
+            $response = (new Response())->setCode('200');
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
                 $response->pushContent(
@@ -167,7 +173,7 @@ class OperationResponse
         }
 
         if (in_array(strtolower($this->route->getAction()),['add','view','edit'])) {
-            $response = (new Response())->setCode(200);
+            $response = (new Response())->setCode('200');
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
                 $response->pushContent(

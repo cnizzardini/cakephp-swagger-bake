@@ -17,8 +17,7 @@ use SwaggerBake\Lib\Swagger;
 class SwagEntityAttributeTest extends TestCase
 {
     public $fixtures = [
-        'plugin.SwaggerBake.Employees',
-        'plugin.SwaggerBake.EmployeeSalaries',
+        'plugin.SwaggerBake.Employees'
     ];
 
     private $router;
@@ -29,9 +28,7 @@ class SwagEntityAttributeTest extends TestCase
         $router = new Router();
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Employees', function (RouteBuilder $routes) {
-                $routes->resources('EmployeeSalaries');
-            });
+            $builder->resources('Employees');
         });
         $this->router = $router;
 
@@ -64,6 +61,9 @@ class SwagEntityAttributeTest extends TestCase
 
         $employee = $arr['components']['schemas']['Employee'];
 
-        $this->assertTrue($employee['properties']['gender']['readOnly']);
+        $this->assertNotEmpty($employee['properties']['gender']['enum']);
+        $this->assertEquals(3, $employee['properties']['last_name']['minLength']);
+        $this->assertEquals(59, $employee['properties']['last_name']['maxLength']);
+        $this->assertEquals('/\W/', $employee['properties']['last_name']['pattern']);
     }
 }

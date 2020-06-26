@@ -1,16 +1,23 @@
 # SwaggerBake plugin for CakePHP4
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
+[![Build Status](https://travis-ci.org/cnizzardini/cakephp-swagger-bake.svg?branch=master)](https://travis-ci.org/cnizzardini/cakephp-swagger-bake)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
 builds your Swagger UI and ReDoc from your existing cake models and routes.
 
-- Creates paths and operations from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes and 
-controllers.
-- Creates schema from your Entities and Tables.
+- Creates OpenApi paths and operations from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes 
+and controllers.
+- Creates OpenAPI Schema from your Entities and Tables.
+- Integrates with: 
+[Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html), 
+[friendsofcake/search](https://github.com/FriendsOfCake/search), 
+[Authentication](https://book.cakephp.org/authentication/2/en/index.html), 
+[Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html), and 
+[Bake](#bake-theme).
 - Provides additional functionality through Annotations and Doc Blocks.
-- Provides a bake theme for auto-generating RESTful controller methods.
+
 
 [Demo Site](http://cakephpswaggerbake.cnizz.com/) | 
 [Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo) | 
@@ -26,12 +33,7 @@ controllers.
 - [Extending SwaggerBake](#extending-swaggerbake)
 - [Console Commands](#console-commands)
 - [Bake Theme](#bake-theme)
-- [Details](#details)
-- [Supported Versions](#supported-versions)
-- [Common Issues](#common-issues)
-- [Reporting Issues](#reporting-issues)
-- [Contribute](#contribute)
-- [Unit Tests](#unit-tests)
+- [...](#details)
 
 ## Installation
 
@@ -61,11 +63,7 @@ use the manual setup.
 
 Run `bin/cake swagger install`
 
-Create a route for the SwaggerUI page in `config/routes.php`, example:
-
-```php
-$builder->connect('/your-api-path', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
-```
+Then just [add a route](#last-step).
 
 ### Manual Setup
 
@@ -74,16 +72,20 @@ $builder->connect('/your-api-path', ['controller' => 'Swagger', 'action' => 'ind
 - Create a `config/swagger_bake.php` file. See the example file [here](assets/swagger_bake.php) for further 
 explanation.
 
-- Create a route for the SwaggerUI page in `config/routes.php`. See Extensibility for other ways to diplay Swagger.
+- Create a route for the SwaggerUI page in `config/routes.php`. 
+
+### Last Step
+
+Create a route for the SwaggerUI page in `config/routes.php`, example:
 
 ```php
-$builder->connect('/your-api-path', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
-```
-
-### Complete Setup
+$builder->connect('/my-swagger-ui', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
+``` 
 
 If Hot Reload is enabled ([see config](assets/swagger_bake.php)) then you should be able to browse to the above 
 route. Otherwise you must first run `bin/cake swagger bake` to generate your swagger documentation. 
+ 
+
  
 ## Automatic Documentation
 
@@ -95,7 +97,7 @@ build the following from your existing routes and models without additional effo
 - Operations
     - Summary and description
     - GET, POST, PATCH, DELETE
-    - Form fields using your Cake models
+    - Form fields and JSON using your Cake models
     - Responses
     - Sub resources
     - Security/Authentication
@@ -135,12 +137,8 @@ SwaggerBake provides some optional Annotations for enhanced functionality. These
 `SwaggerBake\Lib\Annotation` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Annotation as Swag`.
 
 #### `@SwagPaginator`
-Method level annotation for adding  [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
-query parameters. This will add the following query params to Swagger:
-- page
-- limit
-- sort
-- direction
+Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
+query parameters: page, limit, sort, and direction.
 
 ```php
 use SwaggerBake\Lib\Annotation as Swag;
@@ -167,22 +165,24 @@ use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 public function index() {}
 ```
 
-#### `@SwagQuery`
-Method level annotation for adding query parameters.
+#### `@SwagQuery` 
+Method level annotation for adding query parameters. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
+to see all supported OpenAPI properties.
 
 ```php
 /**
- * @Swag\SwagQuery(name="queryParamName", type="string", description="string", required=false)
+ * @Swag\SwagQuery(name="queryParamName", type="string", description="string")
  */
 public function index() {}
 ```
 
 #### `@SwagForm`
-Method level annotation for adding form data fields.
+Method level annotation for adding form data fields. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
+to see all supported OpenAPI properties.
 
 ```php
 /**
- * @Swag\SwagForm(name="fieldName", type="string", description="string", required=false)
+ * @Swag\SwagForm(name="fieldName", type="string", description="string", required=false, enum={"a","b"})
  */
 public function index() {}
 ```
@@ -205,7 +205,7 @@ Example DTO:
 ```php
 namespace App\Dto;
 
-class Actor {
+class ActorDto {
     /**
      * Last name required
      * @var string
@@ -218,11 +218,12 @@ class Actor {
 ```
 
 #### `@SwagHeader`
-Method level annotation for adding header parameters.
+Method level annotation for adding header parameters. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
+to see all supported OpenAPI properties.
 
 ```php
 /**
- * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="string", required=false)
+ * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="string")
  */
 public function index() {}
 ```
@@ -233,17 +234,18 @@ SwaggerBake gathers from AuthenticationComponent. Read [details](#details) below
 
 ```php
 /**
- * @Swag\SwagSecurity(name="BearerAuth", scopes="")
+ * @Swag\SwagSecurity(name="BearerAuth", scopes={"Read","Write"})
  */
 public function index() {}
 ```
 
-#### `@Swag\SwagOperation`
-Method level annotation for hiding a controller action from swagger.
+#### `@SwagOperation`
+Method level annotation for OpenApi Operations. Toggle visibility with isVisible and customize tag names which default 
+to the controllers name.
 
 ```php
 /**
- * @SwagOperation(isVisible=false)
+ * @SwagOperation(isVisible=false, tagNames={"MyTag","AnotherTag"})
  */
 public function index() {}
 ```
@@ -269,12 +271,13 @@ public function index() {}
 ```
 
 #### `@SwagResponseSchema`
-Method level annotation for defining custom response schema. Leave refEntity empty to define no schema.
+Method level annotation for defining custom response schema. Leave refEntity empty to define no schema. Note, as of  
+`v1.3`, please use `statusCode` instead of `httpCode` as it will be removed in a future version. See 1.3 release notes.
 
 ```php
 /**
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="summary", httpCode=200)
- * @Swag\SwagResponseSchema(refEntity="", description="fatal error", httpCode=500)
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="summary", statusCode="200")
+ * @Swag\SwagResponseSchema(refEntity="", description="Support range status codes", statusCode="5XX")
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", mimeType="application/xml")
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", mimeType="application/json")
  */
@@ -303,11 +306,12 @@ class Employee extends Entity {
 ```
 
 #### `@SwagEntityAttribute`
-Class level annotation for customizing Schema Attributes with @SwagEntityAttribute
+Class level annotation for customizing Schema Attributes. [Read the comments](src/Lib/Annotation/SwagEntityAttribute.php) 
+to see all supported OpenAPI properties.
 
 ```php
 /**
- * @Swag\SwagEntityAttribute(name="modified", type="string", description="string", readOnly=true, required=false)
+ * @Swag\SwagEntityAttribute(name="modified", type="string", description="string")
  */
 class Employee extends Entity {
 ```
@@ -332,7 +336,7 @@ This is easy to do. Just create your own route and controller, then reference th
 $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 'index']);
 ```
 
-Use beforeFilter() and index() methods from [SwaggerController](src/Controller/SwaggerController.php)
+Use [SwaggerController](src/Controller/SwaggerController.php) as your base.
 
 #### Generate Swagger On Your Terms
 
@@ -371,8 +375,8 @@ bin/cake swagger models
 
 ## Bake Theme
 
-SwaggerBake comes with a Bake template for scaffolding RESTful controllers compatible with SwaggerBake and 
-OpenAPI 3.0 schema. Using the bake theme is completely optional, but will save you some time since the default 
+SwaggerBake comes with [Bake templates](templates/bake) for scaffolding RESTful controllers compatible with SwaggerBake 
+and OpenAPI 3.0 schema. Using the bake theme is completely optional, but will save you some time since the default 
 bake theme is not specifically designed for RESTful APIs.
 
 ```
@@ -380,6 +384,8 @@ bin/cake bake controller {Name} --theme SwaggerBake
 ```
 
 ## Details
+
+[OpenAPI Schema Support Roadmap](https://docs.google.com/spreadsheets/d/e/2PACX-1vRTWE7nsTouFdHZsG6OKlZ-1lHeJGI0wqNlRVEgiG4eCFY0dMxkBLaw313mU_a73U7emoRdFcGPUq94/pubhtml)
 
 - Swagger uses your existing swagger.yml as a base for adding additional paths and schema.
 - Generates JSON based on the OpenAPI 3 specification. I am still working on implementing the full spec.
@@ -390,9 +396,13 @@ bin/cake bake controller {Name} --theme SwaggerBake
 - Entity Attributes: 
   - Hidden attributes will not be visible
   - Primary Keys will be set to read only by default.
-  - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention. 
+  - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention.
+- CRUD Responses
+  - Index, Edit, Add, and View methods default to an HTTP 200 with the Controllers related Cake Entity schema.
+  - Delete defaults to HTTP 204 (no content). 
 - Table Validators:
-  - Fields set to not allow empty will be marked as required in Swagger.  
+  - Reads in [Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html) rules such as 
+  requirePresence, minLength, maxLength, basic math comparison operators, regex, inList, hasAtLeast, and hasAtMost.
 - Security Scheme 
   - Leverages the [CakePHP AuthenticationComponent](https://book.cakephp.org/authentication/2/en/index.html)
   - Will automatically set security on operations if a single [securityScheme](https://swagger.io/docs/specification/authentication/) 

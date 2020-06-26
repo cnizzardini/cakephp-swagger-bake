@@ -11,6 +11,8 @@ use JsonSerializable;
  */
 class SchemaProperty implements JsonSerializable
 {
+    use JsonSchemaTrait;
+
     /** @var string  */
     private $name = '';
 
@@ -35,20 +37,41 @@ class SchemaProperty implements JsonSerializable
     /** @var bool  */
     private $required = false;
 
+    /** @var array */
+    private $enum = [];
+
+    /** @var bool */
+    private $deprecated = false;
+
+    /** @var bool  */
+    private $requirePresenceOnCreate = false;
+
+    /** @var bool  */
+    private $requirePresenceOnUpdate = false;
+
     public function toArray() : array
     {
         $vars = get_object_vars($this);
-        unset($vars['name']);
-        unset($vars['required']);
-
-        if (empty($vars['example'])) {
-            unset($vars['example']);
-        }
-        if (empty($vars['description'])) {
-            unset($vars['description']);
+        // allows remove this items from JSON
+        foreach(['name','required','requirePresenceOnCreate','requirePresenceOnUpdate'] as $v) {
+            unset($vars[$v]);
         }
 
-        return $vars;
+        // reduce JSON clutter by removing empty values
+        foreach (['example','description','enum'] as $v) {
+            if (empty($vars[$v])) {
+                unset($vars[$v]);
+            }
+        }
+
+        // reduce JSON clutter if these values are equal to their defaults
+        foreach (['readOnly', 'writeOnly', 'deprecated'] as $name) {
+            if ($vars[$name] === false) {
+                unset($vars[$name]);
+            }
+        }
+
+        return $this->removeEmptyVars($vars);
     }
 
     public function jsonSerialize()
@@ -197,6 +220,78 @@ class SchemaProperty implements JsonSerializable
     public function setDescription(string $description): SchemaProperty
     {
         $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEnum(): array
+    {
+        return $this->enum;
+    }
+
+    /**
+     * @param array $enum
+     * @return SchemaProperty
+     */
+    public function setEnum(array $enum): SchemaProperty
+    {
+        $this->enum = $enum;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeprecated(): bool
+    {
+        return $this->deprecated;
+    }
+
+    /**
+     * @param bool $deprecated
+     * @return SchemaProperty
+     */
+    public function setDeprecated(bool $deprecated): SchemaProperty
+    {
+        $this->deprecated = $deprecated;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequirePresenceOnCreate(): bool
+    {
+        return $this->requirePresenceOnCreate;
+    }
+
+    /**
+     * @param bool $requirePresenceOnCreate
+     * @return SchemaProperty
+     */
+    public function setRequirePresenceOnCreate(bool $requirePresenceOnCreate): SchemaProperty
+    {
+        $this->requirePresenceOnCreate = $requirePresenceOnCreate;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequirePresenceOnUpdate(): bool
+    {
+        return $this->requirePresenceOnUpdate;
+    }
+
+    /**
+     * @param bool $requirePresenceOnUpdate
+     * @return SchemaProperty
+     */
+    public function setRequirePresenceOnUpdate(bool $requirePresenceOnUpdate): SchemaProperty
+    {
+        $this->requirePresenceOnUpdate = $requirePresenceOnUpdate;
         return $this;
     }
 }

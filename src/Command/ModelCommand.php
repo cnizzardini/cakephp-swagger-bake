@@ -33,9 +33,8 @@ class ModelCommand extends Command
         $io->out("| SwaggerBake is checking your models...");
         $io->hr();
 
-        ValidateConfiguration::validate();
-
         $config = new Configuration();
+        ValidateConfiguration::validate($config);
 
         $cakeRoute = new CakeRoute(new Router(), $config);
         $cakeModel = new CakeModel($cakeRoute, $config);
@@ -54,13 +53,13 @@ class ModelCommand extends Command
         foreach ($entities as $entity) {
             $io->out('- ' . $entity->getName());
             $output = [$header];
-            foreach ($entity->getAttributes() as $attribute) {
+            foreach ($entity->getProperties() as $property) {
                 $output[] = [
-                    $attribute->getName(),
-                    $attribute->getType(),
-                    DataTypeConversion::convert($attribute->getType()),
-                    $attribute->getDefault(),
-                    $attribute->isPrimaryKey() ? 'Y' : '',
+                    $property->getName(),
+                    $property->getType(),
+                    DataTypeConversion::toType($property->getType()),
+                    $property->getDefault(),
+                    $property->isPrimaryKey() ? 'Y' : '',
                 ];
             }
             $io->helper('table')->output($output);

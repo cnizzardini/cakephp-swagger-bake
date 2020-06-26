@@ -33,7 +33,19 @@ class Parameter implements JsonSerializable
     private $deprecated = false;
 
     /** @var bool **/
-    private $allowEmptyValue = true;
+    private $allowEmptyValue = false;
+
+    /** @var bool **/
+    private $explode = false;
+
+    /** @var string **/
+    private $style = '';
+
+    /** @var bool **/
+    private $allowReserved = false;
+
+    /** @var mixed **/
+    private $example = '';
 
     public function toArray() : array
     {
@@ -47,12 +59,17 @@ class Parameter implements JsonSerializable
     public function jsonSerialize()
     {
         $vars = $this->toArray();
-        if (empty($vars['description'])) {
-            unset($vars['description']);
+
+        if ($vars['in'] !== 'query') {
+            unset($vars['allowReserved']);
         }
-        if (empty($vars['schema'])) {
-            unset($vars['schema']);
+
+        foreach (['style','description','schema','example'] as $property) {
+            if (empty($vars[$property])) {
+                unset($vars[$property]);
+            }
         }
+
         return $vars;
     }
 
@@ -88,6 +105,7 @@ class Parameter implements JsonSerializable
      */
     public function setIn(string $in): Parameter
     {
+        $in = strtolower($in);
         if (!in_array($in, ['query','cookie','header','path','body'])) {
             throw new InvalidArgumentException("Invalid type for in. Given $in");
         }
@@ -182,6 +200,78 @@ class Parameter implements JsonSerializable
     public function setSchema(Schema $schema) : Parameter
     {
         $this->schema = $schema;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExplode(): bool
+    {
+        return $this->explode;
+    }
+
+    /**
+     * @param bool $explode
+     * @return Parameter
+     */
+    public function setExplode(bool $explode): Parameter
+    {
+        $this->explode = $explode;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStyle(): string
+    {
+        return $this->style;
+    }
+
+    /**
+     * @param string $style
+     * @return Parameter
+     */
+    public function setStyle(string $style): Parameter
+    {
+        $this->style = $style;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowReserved(): bool
+    {
+        return $this->allowReserved;
+    }
+
+    /**
+     * @param bool $allowReserved
+     * @return Parameter
+     */
+    public function setAllowReserved(bool $allowReserved): Parameter
+    {
+        $this->allowReserved = $allowReserved;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExample()
+    {
+        return $this->example;
+    }
+
+    /**
+     * @param mixed $example
+     * @return Parameter
+     */
+    public function setExample($example): Parameter
+    {
+        $this->example = $example;
         return $this;
     }
 }

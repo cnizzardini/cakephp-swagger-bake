@@ -8,7 +8,12 @@ use SwaggerBake\Lib\Annotation as SwagAnnotation;
 
 /**
  * Employee Entity
- * @SwagAnnotation\SwagEntityAttribute(name="gender", type="string", readOnly=true, required=false)
+ * @SwagAnnotation\SwagEntityAttribute(
+ *     name="gender", type="string", required=false, enum={"male","female","other"},
+ * )
+ * @SwagAnnotation\SwagEntityAttribute(
+ *     name="last_name", type="string", minLength=3, maxLength=59, pattern="/\W/"
+ * )
  */
 class Employee extends Entity
 {

@@ -8,6 +8,7 @@ use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagPaginator;
 use SwaggerBake\Lib\Annotation\SwagQuery;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -83,18 +84,9 @@ class OperationQueryParameter
             return $annotation instanceof SwagQuery;
         });
 
+        $factory = new ParameterFromAnnotationFactory();
         foreach ($swagQueries as $annotation) {
-            $parameter = (new Parameter())
-                ->setName($annotation->name)
-                ->setDescription($annotation->description)
-                ->setAllowEmptyValue(false)
-                ->setDeprecated(false)
-                ->setRequired($annotation->required)
-                ->setIn('query')
-                ->setSchema((new Schema())->setType($annotation->type))
-            ;
-
-            $operation->pushParameter($parameter);
+            $operation->pushParameter($factory->create($annotation));
         }
 
         return $operation;

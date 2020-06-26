@@ -2,9 +2,15 @@
 
 namespace SwaggerBake\Lib\Annotation;
 
-use InvalidArgumentException;
-
 /**
+ * Annotation for describing Header Parameter Objects.
+ *
+ * Read OpenAPI specification for exact usage of the attributes:
+ * @see https://swagger.io/specification/ search for "Parameter Object"
+ *
+ * For `format` read OpenAPI specification on data formats:
+ * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format
+ *
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
@@ -12,33 +18,15 @@ use InvalidArgumentException;
  *   @Attribute("type",  type = "string"),
  *   @Attribute("description",  type = "string"),
  *   @Attribute("required",  type = "bool"),
+ *   @Attribute("enum",  type = "array"),
+ *   @Attribute("deprecated",  type = "bool"),
+ *   @Attribute("explode",  type = "bool"),
+ *   @Attribute("style",  type = "string"),
+ *   @Attribute("format",  type = "string"),
+ *   @Attribute("example",  type = "mixed"),
  * })
  */
-class SwagHeader
+class SwagHeader extends AbstractParameter
 {
-    /** @var string */
-    public $name;
 
-    /** @var string */
-    public $type;
-
-    /** @var string */
-    public $description;
-
-    /** @var bool */
-    public $required;
-
-    public function __construct(array $values)
-    {
-        if (!isset($values['name'])) {
-            throw new InvalidArgumentException('Name parameter is required');
-        }
-
-        $values = array_merge(['type' => 'string', 'description' => '', 'required' => false], $values);
-
-        $this->name = $values['name'];
-        $this->type = $values['type'];
-        $this->description = $values['description'];
-        $this->required = (bool) $values['required'];
-    }
 }

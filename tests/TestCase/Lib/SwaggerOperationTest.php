@@ -120,7 +120,7 @@ class SwaggerOperationTest extends TestCase
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
 
         $this->assertEquals('object', $schema['type']);
-        $this->assertCount(4, $schema['properties']);
+        $this->assertCount(5, $schema['properties']);
     }
 
     public function testDefaultResponseSchemaOnAddMethod()
@@ -152,7 +152,7 @@ class SwaggerOperationTest extends TestCase
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
 
         $this->assertEquals('object', $schema['type']);
-        $this->assertCount(4, $schema['properties']);
+        $this->assertCount(5, $schema['properties']);
     }
 
     public function testDefaultResponseSchemaOnEditMethod()
@@ -230,5 +230,22 @@ class SwaggerOperationTest extends TestCase
         $securities = $arr['paths']['/departments']['get']['security'];
         $security = reset($securities);
         $this->assertEquals('BearerAuth', array_keys($security)[0]);
+    }
+
+    public function testSecuritySchemeMultipleSwagSecurity()
+    {
+        $config = $this->config;
+        $config['yml'] = '/config/swagger-with-existing.yml';
+        $configuration = new Configuration($config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $configuration);
+        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+
+        $arr = json_decode($swagger->toString(), true);
+        $securities = $arr['paths']['/departments/{id}']['get']['security'];
+
+        $this->assertArrayHasKey('BearerAuth', $securities[0]);
+        $this->assertArrayHasKey('ApiKey', $securities[1]);
+        $this->assertCount(2, $securities[0]['BearerAuth']);
     }
 }

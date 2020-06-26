@@ -158,6 +158,8 @@ class OperationRequestBody
                     ->setName($annotation->name)
                     ->setType($annotation->type)
                     ->setRequired($annotation->required)
+                    ->setEnum($annotation->enum)
+                    ->setDeprecated($annotation->deprecated)
             );
         }
 
@@ -270,10 +272,24 @@ class OperationRequestBody
                 continue;
             }
 
+            $schema = clone $this->schema;
+            $schemaProperties = array_filter($schema->getProperties(), function ($property) {
+                return $property->isReadOnly() === false;
+            });
+
+            foreach ($schemaProperties as $schemaProperty) {
+                if ($this->route->getAction() == 'edit' && $schemaProperty->isRequirePresenceOnUpdate()) {
+                    $schemaProperty->setRequired(true);
+                } elseif ($this->route->getAction() == 'add' && $schemaProperty->isRequirePresenceOnCreate()) {
+                    $schemaProperty->setRequired(true);
+                }
+                $schema->pushProperty($schemaProperty);
+            }
+
             $requestBody->pushContent(
                 (new Content())
                     ->setMimeType($mimeType)
-                    ->setSchema($this->schema)
+                    ->setSchema($schema)
             );
         }
 
@@ -308,6 +324,14 @@ class OperationRequestBody
         $schemaProperties = array_filter($schema->getProperties(), function ($property) {
             return $property->isReadOnly() === false;
         });
+
+        foreach ($schemaProperties as $schemaProperty) {
+            if ($this->route->getAction() == 'edit' && $schemaProperty->isRequirePresenceOnUpdate()) {
+                $schemaProperty->setRequired(true);
+            } elseif ($this->route->getAction() == 'add' && $schemaProperty->isRequirePresenceOnCreate()) {
+                $schemaProperty->setRequired(true);
+            }
+        }
 
         $properties = array_merge($schemaProperties, $properties);
 

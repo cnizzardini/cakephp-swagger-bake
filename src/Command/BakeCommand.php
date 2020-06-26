@@ -8,6 +8,7 @@ use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
+use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**
  * Class BakeCommand
@@ -27,6 +28,7 @@ class BakeCommand extends Command
         $io->out("Running...");
 
         $config = new Configuration();
+        ValidateConfiguration::validate($config);
         $output = $config->getJson();
 
         $swagger = (new SwaggerFactory())->create();
@@ -35,6 +37,11 @@ class BakeCommand extends Command
         }
 
         $swagger->writeFile($output);
+
+        if (!file_exists($output)) {
+            $io->out("<error>Error Creating File: $output</error>");
+            return;
+        }
 
         $io->out("<success>Swagger File Created: $output</success>");
     }

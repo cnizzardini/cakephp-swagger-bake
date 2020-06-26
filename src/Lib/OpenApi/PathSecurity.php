@@ -23,7 +23,7 @@ class PathSecurity implements JsonSerializable
     public function toArray() : array
     {
         return [
-            $this->name => (array) $this->scopes
+            $this->name => array_values($this->scopes)
         ];
     }
 

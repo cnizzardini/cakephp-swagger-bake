@@ -56,7 +56,7 @@ class Operation implements JsonSerializable
         if (empty($vars['security'])) {
             unset($vars['security']);
         } else {
-            $vars['security'] = array_values(array_unique($vars['security']));
+            $vars['security'] = array_values($vars['security']);
         }
         if (empty($vars['externalDocs'])) {
             unset($vars['externalDocs']);
@@ -79,7 +79,14 @@ class Operation implements JsonSerializable
     public function hasSuccessResponseCode() : bool
     {
         $results = array_filter($this->getResponses(), function ($response) {
-            return ($response->getCode() >= 200 && $response->getCode() < 300);
+
+            $code = $response->getCode();
+
+            if (!is_numeric($code) && in_array($code, ['2XX', '20X'])) {
+                return true;
+            }
+
+            return ($code >= 200 && $code < 300);
         });
 
         return count($results) > 0;
@@ -200,10 +207,10 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param int $code
+     * @param string $code
      * @return Response|null
      */
-    public function getResponseByCode(int $code) : ?Response
+    public function getResponseByCode(string $code) : ?Response
     {
         return isset($this->responses[$code]) ? $this->responses[$code] : null;
     }
