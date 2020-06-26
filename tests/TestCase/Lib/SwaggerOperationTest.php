@@ -120,7 +120,7 @@ class SwaggerOperationTest extends TestCase
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
 
         $this->assertEquals('object', $schema['type']);
-        $this->assertCount(4, $schema['properties']);
+        $this->assertCount(5, $schema['properties']);
     }
 
     public function testDefaultResponseSchemaOnAddMethod()
@@ -152,7 +152,7 @@ class SwaggerOperationTest extends TestCase
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
 
         $this->assertEquals('object', $schema['type']);
-        $this->assertCount(4, $schema['properties']);
+        $this->assertCount(5, $schema['properties']);
     }
 
     public function testDefaultResponseSchemaOnEditMethod()

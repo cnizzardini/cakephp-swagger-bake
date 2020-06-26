@@ -4,7 +4,7 @@ namespace SwaggerBake\Lib;
 
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Factory as Factory;
+use SwaggerBake\Lib\Schema\SchemaFactory;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Path;
@@ -163,7 +163,7 @@ class Swagger
      */
     private function buildSchemasFromModels(): void
     {
-        $schemaFactory = new Factory\SchemaFactory($this->config);
+        $schemaFactory = new SchemaFactory($this->config);
         $entities = $this->cakeModel->getEntityDecorators();
 
         foreach ($entities as $entity) {
