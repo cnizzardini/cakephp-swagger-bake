@@ -20,7 +20,6 @@ namespace SwaggerBake\Lib\Annotation;
  *   @Attribute("required",  type = "bool"),
  *   @Attribute("enum",  type = "array"),
  *   @Attribute("deprecated",  type = "bool"),
- *   @Attribute("allowEmptyValue",  type = "bool"),
  *   @Attribute("explode",  type = "bool"),
  *   @Attribute("style",  type = "string"),
  *   @Attribute("format",  type = "string"),

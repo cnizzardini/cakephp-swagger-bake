@@ -16,7 +16,6 @@ class ParameterFromAnnotationFactory
             ->setName($annotation->name)
             ->setDescription($annotation->description)
             ->setRequired($annotation->required)
-            ->setAllowEmptyValue($annotation->allowEmptyValue)
             ->setDeprecated($annotation->deprecated)
             ->setStyle($annotation->style)
             ->setExplode($annotation->explode)
@@ -30,8 +29,11 @@ class ParameterFromAnnotationFactory
         ;
 
         if ($annotation instanceof SwagQuery) {
-            $parameter->setAllowReserved($annotation->allowReserved);
-            $parameter->setIn('query');
+            $parameter
+                ->setIn('query')
+                ->setAllowReserved($annotation->allowReserved)
+                ->setAllowEmptyValue($annotation->allowEmptyValue)
+            ;
         } else if ($annotation instanceof SwagHeader) {
             $parameter->setIn('header');
         }
