@@ -86,6 +86,6 @@ class SwagEntityTest extends TestCase
 
         $employee = $arr['components']['schemas']['Employee'];
 
-        $this->assertTrue($employee['properties']['gender']['readOnly']);
+        $this->assertEquals('string', $employee['properties']['gender']['type']);
     }
 }

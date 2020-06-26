@@ -1,6 +1,6 @@
 <?php
 
-namespace SwaggerBake\Lib\Factory;
+namespace SwaggerBake\Lib\Schema;
 
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
@@ -26,12 +26,6 @@ use SwaggerBake\Lib\Utility\DataTypeConversion;
  */
 class SchemaFactory
 {
-    /** @var string[]  */
-    private const READ_ONLY_FIELDS = ['created','modified'];
-
-    /** @var string[]  */
-    private const DATETIME_TYPES = ['date','datetime','timestamp'];
-
     /** @var Validator */
     private $validator;
 
@@ -83,13 +77,17 @@ class SchemaFactory
     {
         $return = $this->getSwagPropertyAnnotations($entity);
 
+        $factory = new SchemaPropertyFactory($this->validator);
+
         foreach ($entity->getProperties() as $attribute) {
             $name = $attribute->getName();
+
+            // skip if this property has been defined by SwagEntityAttribute annotation
             if (isset($return[$name])) {
                 continue;
             }
 
-            $return[$name] = $this->getSchemaProperty($attribute);
+            $return[$name] = $factory->create($attribute);
         }
 
         return $return;
@@ -143,26 +141,6 @@ class SchemaFactory
     }
 
     /**
-     * @param PropertyDecorator $property
-     * @return SchemaProperty
-     */
-    private function getSchemaProperty(PropertyDecorator $property) : SchemaProperty
-    {
-        $isReadOnlyField = in_array($property->getName(), self::READ_ONLY_FIELDS);
-        $isDateTimeField = in_array($property->getType(), self::DATETIME_TYPES);
-
-        $schemaProperty = new SchemaProperty();
-        $schemaProperty
-            ->setName($property->getName())
-            ->setType(DataTypeConversion::convert($property->getType()))
-            ->setReadOnly(($property->isPrimaryKey() || ($isReadOnlyField && $isDateTimeField)))
-            ->setRequired($this->isAttributeRequired($property))
-        ;
-
-        return $schemaProperty;
-    }
-
-    /**
      * Returns key-value pair of property name => SchemaProperty
      *
      * @param EntityDecorator $entity
@@ -174,20 +152,15 @@ class SchemaFactory
 
         $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity->getEntity());
 
-       $swagEntityAttributes = array_filter($annotations, function ($annotation) {
+        $swagEntityAttributes = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagEntityAttribute;
         });
 
-       foreach ($swagEntityAttributes as $swagEntityAttribute) {
-           $return[$swagEntityAttribute->name] = (new SchemaProperty())
-               ->setName($swagEntityAttribute->name)
-               ->setDescription($swagEntityAttribute->description)
-               ->setType($swagEntityAttribute->type)
-               ->setReadOnly($swagEntityAttribute->readOnly)
-               ->setWriteOnly($swagEntityAttribute->writeOnly)
-               ->setRequired($swagEntityAttribute->required)
-           ;
-       }
+        $factory = new SchemaPropertyFromAnnotationFactory();
+
+        foreach ($swagEntityAttributes as $swagEntityAttribute) {
+            $return[$swagEntityAttribute->name] = $factory->create($swagEntityAttribute);
+        }
 
         return $return;
     }
@@ -210,24 +183,6 @@ class SchemaFactory
     }
 
     /**
-     * @param PropertyDecorator $property
-     * @return bool
-     */
-    private function isAttributeRequired(PropertyDecorator $property) : bool
-    {
-        if (!$this->validator) {
-            return false;
-        }
-
-        $validationSet = $this->validator->field($property->getName());
-        if (!$validationSet->isEmptyAllowed()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * @param string $className
      * @return Validator|null
      */
@@ -238,7 +193,7 @@ class SchemaFactory
             $instance = new $table;
             $validator = $instance->validationDefault(new Validator());
         } catch (\Exception $e) {
-            return null;
+            return new Validator();
         }
 
         return $validator;

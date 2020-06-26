@@ -58,7 +58,8 @@ class Schema implements JsonSerializable
             $vars['required'] = array_values(array_unique($vars['required']));
         }
 
-        foreach (['properties', 'items', 'oneOf', 'anyOf', 'allOf', 'enum'] as $v) {
+        // remove unset items to avoid swagger.json clutter
+        foreach (['properties', 'items', 'oneOf', 'anyOf', 'allOf', 'enum', 'format'] as $v) {
             if (empty($vars[$v])) {
                 unset($vars[$v]);
             }

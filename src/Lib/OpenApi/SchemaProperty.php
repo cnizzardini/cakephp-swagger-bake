@@ -11,6 +11,8 @@ use JsonSerializable;
  */
 class SchemaProperty implements JsonSerializable
 {
+    use JsonSchemaTrait;
+
     /** @var string  */
     private $name = '';
 
@@ -47,13 +49,21 @@ class SchemaProperty implements JsonSerializable
         unset($vars['name']);
         unset($vars['required']);
 
+        // reduce JSON clutter by removing empty values
         foreach (['example','description','enum'] as $v) {
             if (empty($vars[$v])) {
                 unset($vars[$v]);
             }
         }
 
-        return $vars;
+        // reduce JSON clutter if these values are equal to their defaults
+        foreach (['readOnly', 'writeOnly', 'deprecated'] as $name) {
+            if ($vars[$name] === false) {
+                unset($vars[$name]);
+            }
+        }
+
+        return $this->removeEmptyVars($vars);
     }
 
     public function jsonSerialize()

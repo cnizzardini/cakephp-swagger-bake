@@ -10,12 +10,13 @@ builds your Swagger UI and ReDoc from your existing cake models and routes.
 - Creates OpenApi paths and operations from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes 
 and controllers.
 - Creates OpenAPI Schema from your Entities and Tables.
-- Provides additional functionality through Annotations and Doc Blocks.
 - Integrates with: 
 [Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html), 
 [friendsofcake/search](https://github.com/FriendsOfCake/search), 
-[Authentication](https://book.cakephp.org/authentication/2/en/index.html), and 
+[Authentication](https://book.cakephp.org/authentication/2/en/index.html), 
+[Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html), and 
 [Bake](#bake-theme).
+- Provides additional functionality through Annotations and Doc Blocks.
 
 
 [Demo Site](http://cakephpswaggerbake.cnizz.com/) | 
@@ -165,8 +166,8 @@ public function index() {}
 ```
 
 #### `@SwagQuery` 
-Method level annotation for adding query parameters. Read the [full documentation](src/Lib/Annotation/SwagQuery.php) 
-for which OpenAPI Parameter Object properties are supported.
+Method level annotation for adding query parameters. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
+to see all supported OpenAPI properties.
 
 ```php
 /**
@@ -176,8 +177,8 @@ public function index() {}
 ```
 
 #### `@SwagForm`
-Method level annotation for adding form data fields. Read the [full documentation](src/Lib/Annotation/SwagQuery.php) 
-for which OpenAPI Parameter Object properties are supported.
+Method level annotation for adding form data fields. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
+to see all supported OpenAPI properties.
 
 ```php
 /**
@@ -217,8 +218,8 @@ class ActorDto {
 ```
 
 #### `@SwagHeader`
-Method level annotation for adding header parameters. Read the [full documentation](src/Lib/Annotation/SwagQuery.php) 
-for which OpenAPI Parameter Object properties are supported.
+Method level annotation for adding header parameters. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
+to see all supported OpenAPI properties.
 
 ```php
 /**
@@ -305,11 +306,12 @@ class Employee extends Entity {
 ```
 
 #### `@SwagEntityAttribute`
-Class level annotation for customizing Schema Attributes with @SwagEntityAttribute
+Class level annotation for customizing Schema Attributes. [Read the comments](src/Lib/Annotation/SwagEntityAttribute.php) 
+to see all supported OpenAPI properties.
 
 ```php
 /**
- * @Swag\SwagEntityAttribute(name="modified", type="string", description="string", readOnly=true, required=false)
+ * @Swag\SwagEntityAttribute(name="modified", type="string", description="string")
  */
 class Employee extends Entity {
 ```
@@ -400,6 +402,8 @@ bin/cake bake controller {Name} --theme SwaggerBake
   - Delete defaults to HTTP 204 (no content). 
 - Table Validators:
   - Fields set to not allow empty will be marked as required in Swagger.  
+  - Reads in [Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html) rules such as minLength, 
+  maxLength, basic math comparison operators, regex, inList, hasAtLeast, and hasAtMost.
 - Security Scheme 
   - Leverages the [CakePHP AuthenticationComponent](https://book.cakephp.org/authentication/2/en/index.html)
   - Will automatically set security on operations if a single [securityScheme](https://swagger.io/docs/specification/authentication/) 

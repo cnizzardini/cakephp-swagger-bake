@@ -6,6 +6,10 @@ use InvalidArgumentException;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Utility\OpenApiDataType;
 
+/**
+ * Class AbstractParameter
+ * @package SwaggerBake\Lib\Annotation
+ */
 abstract class AbstractParameter
 {
     /** @var string */
@@ -67,7 +71,9 @@ abstract class AbstractParameter
         }
 
         foreach ($values as $attribute => $value) {
-            $this->{$attribute} = $value;
+            if (property_exists($this, $attribute)) {
+                $this->{$attribute} = $value;
+            }
         }
     }
 }

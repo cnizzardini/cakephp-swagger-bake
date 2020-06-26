@@ -60,7 +60,7 @@ class SwaggerSchemaTest extends TestCase
         $this->assertArrayHasKey('Employee', $arr['components']['schemas']);
         $employee = $arr['components']['schemas']['Employee'];
 
-        $this->assertCount(4, $employee['required']);
+        $this->assertCount(3, $employee['required']);
         $this->assertEquals('birth_date', $employee['required'][0]);
         $this->assertArrayHasKey('birth_date', $employee['properties']);
 

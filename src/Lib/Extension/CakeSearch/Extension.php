@@ -142,20 +142,14 @@ class Extension implements ExtensionInterface
 
         $collections = $this->getCollections($manager);
 
-        $filters = [];
-
-
-        foreach ($collections as $collection) {
-
-            if (!isset($collections[$swagSearch->collection])) {
-                continue;
-            }
-
-            $reflection = new ReflectionClass($collections[$swagSearch->collection]);
-            $property = $reflection->getProperty('_filters');
-            $property->setAccessible(true);
-            $filters = array_merge($filters, $property->getValue($collections[$swagSearch->collection]));
+        if (!isset($collections[$swagSearch->collection])) {
+            return [];
         }
+
+        $reflection = new ReflectionClass($collections[$swagSearch->collection]);
+        $property = $reflection->getProperty('_filters');
+        $property->setAccessible(true);
+        $filters = $property->getValue($collections[$swagSearch->collection]);
 
         $decoratedFilters = [];
 
@@ -168,6 +162,7 @@ class Extension implements ExtensionInterface
 
     /**
      * @param Table $table
+     * @param SwagSearch $swagSearch
      * @return \Search\Manager
      * @throws \ReflectionException
      */
@@ -196,6 +191,7 @@ class Extension implements ExtensionInterface
         $reflection = new ReflectionClass($manager);
         $property = $reflection->getProperty('_collections');
         $property->setAccessible(true);
+
         return $property->getValue($manager);
     }
 }
