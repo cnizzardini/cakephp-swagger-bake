@@ -60,7 +60,7 @@ trait JsonSchemaTrait
     {
         $empties = [
             'title','default','multipleOf','minimum','maximum','exclusiveMinimum','exclusiveMaximum','minLength',
-            'maxLength','pattern','minItems','maxItems','uniqueItems','minProperties','maxProperties'
+            'maxLength','pattern','minItems','maxItems','uniqueItems','minProperties','maxProperties','nullable'
         ];
 
         foreach ($vars as $name => $value) {

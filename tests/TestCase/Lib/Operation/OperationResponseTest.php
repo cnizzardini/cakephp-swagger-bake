@@ -30,7 +30,14 @@ class OperationResponseTest extends TestCase
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => ['index','create','delete']
+                'only' => ['index','create','delete','noResponsesDefined'],
+                'map' => [
+                    'noResponsesDefined'  => [
+                        'method' => 'get',
+                        'action' => 'noResponseDefined',
+                        'path' => 'no-responses-defined'
+                    ],
+                ]
             ]);
         });
         $this->router = $router;
@@ -111,7 +118,7 @@ class OperationResponseTest extends TestCase
         $this->assertInstanceOf(Response::class, $operation->getResponseByCode(200));
     }
 
-    public function testGetOperationWithNoResponse()
+    public function testAddOperationWithNoResponseDefined()
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new CakeRoute($this->router, $config);
@@ -129,7 +136,13 @@ class OperationResponseTest extends TestCase
         );
 
         $operation = $operationResponse->getOperationWithResponses();
-        $this->assertEmpty($operation->getResponses());
+        $response = $operation->getResponseByCode(200);
+        $this->assertNotEmpty($response);
+
+        $content = $response->getContentByMimeType('application/json');
+        $this->assertNotEmpty($content);
+        $this->assertNotEmpty($content->getSchema());
+        $this->assertCount(1, $content->getSchema()->toArray());
     }
 
     public function testDeleteActionResponseWithHttp204()
@@ -151,5 +164,33 @@ class OperationResponseTest extends TestCase
 
         $operation = $operationResponse->getOperationWithResponses();
         $this->assertNotEmpty($operation->getResponseByCode(204));
+    }
+
+
+    public function testNoResponseDefined()
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $routes = $cakeRoute->getRoutes();
+        $route = $routes['employees:noresponsedefined'];
+
+        $operationResponse = new OperationResponse(
+            $config,
+            new Operation(),
+            DocBlockFactory::createInstance()->create('/**  */'),
+            [],
+            $route,
+            null
+        );
+
+        $operation = $operationResponse->getOperationWithResponses();
+        $response = $operation->getResponseByCode(200);
+        $this->assertNotEmpty($response);
+
+        $content = $response->getContentByMimeType('application/json');
+        $this->assertNotEmpty($content);
+        $this->assertNotEmpty($content->getSchema());
+        $this->assertCount(1, $content->getSchema()->toArray());
     }
 }

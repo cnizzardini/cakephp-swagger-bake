@@ -86,6 +86,15 @@ class Response implements JsonSerializable
     }
 
     /**
+     * @param $mimeType
+     * @return Content|null
+     */
+    public function getContentByMimeType($mimeType): ?Content
+    {
+        return $this->content[$mimeType] ?? null;
+    }
+
+    /**
      * Sets the array of Content[]
      *
      * @param Content[] $contents
