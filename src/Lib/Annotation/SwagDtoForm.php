@@ -4,7 +4,7 @@ namespace SwaggerBake\Lib\Annotation;
 
 /**
  * @Annotation
- * @Target({"METHOD"})
+ * @Target({"PROPERTY"})
  * @Attributes({
  *   @Attribute("name", type = "string"),
  *   @Attribute("type",  type = "string"),
@@ -30,7 +30,7 @@ namespace SwaggerBake\Lib\Annotation;
  * })
  * @see AbstractSchemaProperty
  */
-class SwagForm extends AbstractSchemaProperty
+class SwagDtoForm extends AbstractSchemaProperty
 {
 
 }

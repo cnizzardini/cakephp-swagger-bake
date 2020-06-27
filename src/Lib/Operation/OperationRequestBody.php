@@ -154,7 +154,7 @@ class OperationRequestBody
         foreach ($swagForms as $annotation) {
             $schema->pushProperty(
                 (new SchemaProperty())
-                    ->setDescription($annotation->description)
+                    ->setDescription($annotation->description ?? '')
                     ->setName($annotation->name)
                     ->setType($annotation->type)
                     ->setRequired($annotation->required)

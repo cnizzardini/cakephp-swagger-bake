@@ -19,11 +19,8 @@ namespace SwaggerBake\Lib\Annotation;
  *   @Attribute("format",  type = "string"),
  *   @Attribute("example",  type = "mixed"),
  * })
- *
- * @see DtoParser::getSchemaProperties() for items supported by body requests
- * @see DtoParser::getParameters() for items supported by query requests
  */
-class SwagDtoProperty extends AbstractParameter
+class SwagDtoQuery extends AbstractParameter
 {
 
 }
