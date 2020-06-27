@@ -14,6 +14,7 @@ class AnnotationLoader
     public static function load() : void
     {
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagDto::class);
+        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagDtoProperty::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagEntity::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagEntityAttribute::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagForm::class);
