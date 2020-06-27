@@ -2,7 +2,7 @@
 
 namespace SwaggerBake\Lib\Schema;
 
-use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
+use SwaggerBake\Lib\Annotation\AbstractSchemaProperty;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 /**
@@ -14,10 +14,10 @@ class SchemaPropertyFromAnnotationFactory
     /**
      * Creates an instance of SchemaProperty from SwagEntityAttribute annotation
      *
-     * @param SwagEntityAttribute $attribute
+     * @param AbstractSchemaProperty $attribute
      * @return SchemaProperty
      */
-    public function create(SwagEntityAttribute $attribute) : SchemaProperty
+    public function create(AbstractSchemaProperty $attribute) : SchemaProperty
     {
         $schemaProperty = (new SchemaProperty())
             ->setName($attribute->name)

@@ -6,12 +6,14 @@ use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
 use ReflectionProperty;
-use SwaggerBake\Lib\Annotation\SwagDtoProperty;
+use SwaggerBake\Lib\Annotation\SwagDtoQuery;
+use SwaggerBake\Lib\Annotation\SwagDtoForm;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\Schema\SchemaPropertyFromAnnotationFactory;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 
 class DtoParser
@@ -48,9 +50,9 @@ class DtoParser
 
         foreach ($properties as $reflectionProperty) {
 
-            $swagDtoProperty = $this->getSwagDtoProperty($reflectionProperty);
-            if ($swagDtoProperty instanceof SwagDtoProperty) {
-                $parameters[] = $factory->create($swagDtoProperty)->setIn('query');
+            $swagDtoQuery = $this->getSwagDtoProperty($reflectionProperty);
+            if ($swagDtoQuery instanceof SwagDtoQuery) {
+                $parameters[] = $factory->create($swagDtoQuery)->setIn('query');
                 continue;
             }
 
@@ -84,20 +86,13 @@ class DtoParser
 
         $properties = $this->getClassProperties();
 
+        $factory = new SchemaPropertyFromAnnotationFactory();
+
         foreach ($properties as $name => $reflectionProperty) {
 
-            $swagDtoProperty = $this->getSwagDtoProperty($reflectionProperty);
-            if ($swagDtoProperty instanceof SwagDtoProperty) {
-                $schemaProperties[] = (new SchemaProperty())
-                    ->setDescription($swagDtoProperty->description ?? '')
-                    ->setName($swagDtoProperty->name)
-                    ->setType($swagDtoProperty->type ?? 'string')
-                    ->setRequired($swagDtoProperty->required)
-                    ->setEnum($swagDtoProperty->enum)
-                    ->setDeprecated($swagDtoProperty->deprecated)
-                    ->setFormat($swagDtoProperty->format ?? '')
-                    ->setExample($swagDtoProperty->example ?? '')
-                ;
+            $swagDtoForm = $this->getSwagDtoProperty($reflectionProperty);
+            if ($swagDtoForm instanceof SwagDtoForm) {
+                $schemaProperties[] = $factory->create($swagDtoForm);
                 continue;
             }
 
@@ -123,13 +118,15 @@ class DtoParser
      * Gets an instance of SwagDtoProperty, null otherwise
      *
      * @param ReflectionProperty $reflectionProperty
-     * @return Parameter|null
+     * @return SwagDtoQuery|SwagDtoFrom|null
      */
-    private function getSwagDtoProperty(ReflectionProperty $reflectionProperty) : ?SwagDtoProperty
+    private function getSwagDtoProperty(ReflectionProperty $reflectionProperty)
     {
         try {
-            $annotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, SwagDtoProperty::class);
-            if ($annotation instanceof SwagDtoProperty && !empty($annotation->name)) {
+            $annotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, SwagDtoQuery::class);
+            if ($annotation instanceof SwagDtoQuery && !empty($annotation->name)) {
+                return $annotation;
+            } else if ($annotation instanceof SwagDtoForm && !empty($annotation->name)) {
                 return $annotation;
             }
         } catch (AnnotationException $e) {

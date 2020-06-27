@@ -217,22 +217,38 @@ class ActorDto {
     private $firstName;
 ```
 
-#### `@SwagDtoProperty`
-Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoProperty.php) to 
-see all supported properties. Note, there are minor differences in what properties are included depending on whether 
-the DTO is for a query or body requests. 
+#### `@SwagDtoQuery`
+Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoQuery.php) to 
+see all supported properties.
 
 ```php
 class ActorDto {
     /**
-     * @SwagDtoProperty(name="firstName", type="string", required=true)
+     * @SwagDtoQuery(name="firstName", type="string", required=true)
      */
     private $firstName;
 
     /**
-     * @SwagDtoProperty(name="gender", type="string", enum="{"male","female","other"}")
+     * @SwagDtoQuery(name="gender", type="string", enum="{"male","female","other"}")
      */
     private $gender;
+```
+
+#### `@SwagDtoForm`
+Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoForm.php) to 
+see all supported properties.
+
+```php
+class ActorDto {
+    /**
+     * @SwagDtoForm(name="title", type="string", required=true)
+     */
+    private $title;
+
+    /**
+     * @SwagDtoForm(name="age", type="integer", format="int32")
+     */
+    private $age;
 ```
 
 #### `@SwagHeader`

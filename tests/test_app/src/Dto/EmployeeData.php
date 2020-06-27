@@ -17,19 +17,19 @@ class EmployeeData
     private $lastName;
 
     /**
-     * @Swag\SwagDtoProperty(name="title", type="string", description="testing")
+     * @Swag\SwagDtoForm(name="title", type="string", description="testing")
      * @var string
      */
     private $title;
 
     /**
-     * @Swag\SwagDtoProperty(name="age", type="integer", format="int32" description="testing")
+     * @Swag\SwagDtoForm(name="age", type="integer", format="int32" description="testing")
      * @var integer
      */
     private $age;
 
     /**
-     * @Swag\SwagDtoProperty(name="date", type="string", format="date", description="testing")
+     * @Swag\SwagDtoForm(name="date", type="string", format="date", description="testing")
      * @var string
      */
     private $date;
