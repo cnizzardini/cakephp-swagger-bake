@@ -140,9 +140,9 @@ class OperationResponseTest extends TestCase
         $this->assertNotEmpty($response);
 
         $content = $response->getContentByMimeType('application/json');
+
         $this->assertNotEmpty($content);
         $this->assertNotEmpty($content->getSchema());
-        $this->assertCount(1, $content->getSchema()->toArray());
     }
 
     public function testDeleteActionResponseWithHttp204()
@@ -191,6 +191,5 @@ class OperationResponseTest extends TestCase
         $content = $response->getContentByMimeType('application/json');
         $this->assertNotEmpty($content);
         $this->assertNotEmpty($content->getSchema());
-        $this->assertCount(1, $content->getSchema()->toArray());
     }
 }

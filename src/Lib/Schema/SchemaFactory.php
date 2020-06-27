@@ -40,7 +40,9 @@ class SchemaFactory
      */
     public function create(EntityDecorator $entity) : ?Schema
     {
-        if (!$this->isSwaggable($entity)) {
+        $swagEntity = $this->getSwagEntityAnnotation($entity);
+
+        if ($swagEntity !== null && $swagEntity->isVisible === false) {
             return null;
         }
 
@@ -50,13 +52,18 @@ class SchemaFactory
 
         $properties = $this->getProperties($entity);
 
-        $schema = new Schema();
-        $schema
+        $schema = (new Schema())
             ->setName($entity->getName())
-            ->setDescription($docBlock ? $docBlock->getSummary() : '')
+            ->setTitle($swagEntity !== null ? $swagEntity->description : null)
             ->setType('object')
             ->setProperties($properties)
         ;
+
+        if ($swagEntity !== null && isset($swagEntity->description)) {
+            $schema->setDescription($swagEntity->description);
+        } else {
+            $schema->setDescription($docBlock ? $docBlock->getSummary() : null);
+        }
 
         $requiredProperties = array_filter($properties, function ($property) {
             return $property->isRequired();
@@ -166,20 +173,22 @@ class SchemaFactory
     }
 
     /**
+     * Returns instance of SwagEntity annotation, otherwise null
+     *
      * @param EntityDecorator $entity
-     * @return bool
+     * @return SwagEntity|null
      */
-    private function isSwaggable(EntityDecorator $entity) : bool
+    private function getSwagEntityAnnotation(EntityDecorator $entity) : ?SwagEntity
     {
         $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity->getEntity());
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagEntity) {
-                return $annotation->isVisible;
+                return $annotation;
             }
         }
 
-        return true;
+        return null;
     }
 
     /**
