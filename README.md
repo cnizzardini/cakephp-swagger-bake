@@ -445,6 +445,46 @@ bin/cake bake controller {Name} --theme SwaggerBake
 - SwaggerBake has been developed primarily for application/json and application/x-www-form-urlencoded, but does have 
 some support for application/xml and *should* work with application/vnd.api+json.
 
+SwaggerBake does not document schema associations. If your application includes associations on things like 
+GET requests, you can easily add them into your swagger documentation through the OpenAPI `allOf` property. Since 
+SwaggerBake works in conjunction with OpenAPI YAML you can easily add a new schema with this association. Below is an 
+example of extending an existing City schema to include a Country association.
+
+```yaml
+# in your swagger.yml
+components:
+  schemas:
+    CityExtended:
+      description: 'City with extended information including Country'
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/City'
+        - type: object
+          properties:
+            country:
+              $ref: '#/components/schemas/Country'
+
+```
+
+Then in your controller action you'd specify the Schema: 
+
+```php
+/**
+ * View method
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/CityExtended")
+ */
+public function view($id)
+{
+    $this->request->allowMethod('get');
+    $city = $this->Cities->get($id, ['contain' => ['Countries']]);
+    $this->set(compact('cities'));
+    $this->viewBuilder()->setOption('serialize', 'cities');
+}
+```
+
+The demo application includes this and many other examples of usage. Read more about `oneOf`, `anyOf`, `allOf`, and 
+`not` in the [OpenAPI 3 documentation](https://swagger.io/docs/specification/data-models/oneof-anyof-allof-not/).
+
 ## Supported Versions
 
 This is built for CakePHP 4.x only. A cake-3.8 option is available, but not supported.
