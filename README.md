@@ -323,7 +323,7 @@ Class level annotation for exposing controllers to Swagger UI. You can hide enti
 
 ```php
 /**
- * @Swag\SwagPath(isVisible=false)
+ * @Swag\SwagPath(isVisible=false, description="optional description", summary="operational summary")
  */
 class UsersController extends AppController {
 ```

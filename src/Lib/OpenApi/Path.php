@@ -22,14 +22,35 @@ class Path implements JsonSerializable
      */
     private $operations = [];
 
+    /** @var string|null */
+    private $ref;
+
+    /** @var string|null */
+    private $summary;
+
+    /** @var string|null */
+    private $description;
+
     public function toArray(): array
     {
         $vars = get_object_vars($this);
         unset($vars['resource']);
         unset($vars['operations']);
+        unset($vars['ref']);
+
+        // remove items if null to reduce JSON clutter
+        foreach(['summary', 'description'] as $v) {
+            if (is_null($vars[$v])) {
+                unset($vars[$v]);
+            }
+        }
 
         foreach ($this->getOperations() as $operation) {
             $vars[strtolower($operation->getHttpMethod())] = $operation;
+        }
+
+        if ($this->ref !== null) {
+            $vars['$ref'] = $this->ref;
         }
 
         return $vars;
@@ -90,6 +111,60 @@ class Path implements JsonSerializable
     {
         $httpMethod = strtolower($operation->getHttpMethod());
         $this->operations[$httpMethod] = $operation;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRef(): ?string
+    {
+        return $this->ref;
+    }
+
+    /**
+     * @param string|null $ref
+     * @return Path
+     */
+    public function setRef(?string $ref): Path
+    {
+        $this->ref = $ref;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSummary(): ?string
+    {
+        return $this->summary;
+    }
+
+    /**
+     * @param string|null $summary
+     * @return Path
+     */
+    public function setSummary(?string $summary): Path
+    {
+        $this->summary = $summary;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     * @return Path
+     */
+    public function setDescription(?string $description): Path
+    {
+        $this->description = $description;
         return $this;
     }
 }
