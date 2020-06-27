@@ -3,6 +3,7 @@
 namespace SwaggerBake\Lib\Schema;
 
 use Cake\Validation\ValidationRule;
+use Cake\Validation\ValidationSet;
 use Cake\Validation\Validator;
 use ReflectionFunction;
 use SwaggerBake\Lib\Decorator\PropertyDecorator;
@@ -56,33 +57,27 @@ class SchemaPropertyValidation
             ->defineEnum()
             ->defineMinItems()
             ->defineMaxItems()
+            ->assignMinLength()
         ;
 
         return $this->schemaProperty;
     }
 
     /**
-     * Returns an instance of ValidationRule for the given $ruleName if it exists, null otherwise
+     * Returns a mixed variable for the validation rules condition if the rule exists, null otherwise. This method
+     * only rules a rule value of the validation is applied to both creates and update.
      *
-     * @param string $ruleName
-     * @return ValidationRule|null
-     */
-    private function getValidationRule(string $ruleName): ?ValidationRule
-    {
-        $validationSet = $this->validator->field($this->propertyName);
-        return $validationSet->rule($ruleName);
-    }
-
-    /**
-     * Returns a mixed variable for the validation rules condition if the rule exists, null otherwise
-     *
-     * @param string $ruleName
+     * @param string $rule
      * @return array|mixed|null
      */
-    private function getValidationRuleValue(string $ruleName)
+    private function getValidationRuleValue(string $rule)
     {
-        $validationRule = $this->getValidationRule($ruleName);
-        if (is_null($validationRule)) {
+        $validationRule = $this->validator->field($this->propertyName)->rule($rule);
+        if (!$validationRule instanceof ValidationRule) {
+            return null;
+        }
+
+        if (!empty($validationRule->get('on'))) {
             return null;
         }
 
@@ -100,11 +95,11 @@ class SchemaPropertyValidation
      * ValidationRule's which use closures.
      *
      * @param string $rule
-     * @return $this
+     * @return mixed
      */
     private function getValidationRuleValueFromClosure(string $rule)
     {
-        $validationRule = $this->getValidationRule($rule);
+        $validationRule = $this->validator->field($this->propertyName)->rule($rule);
         if (!$validationRule instanceof ValidationRule) {
             return null;
         }
@@ -124,6 +119,7 @@ class SchemaPropertyValidation
     }
 
     /**
+     * @see Validator::maxLength()
      * @return SchemaPropertyValidation
      */
     private function defineMaxLength() : SchemaPropertyValidation
@@ -136,6 +132,7 @@ class SchemaPropertyValidation
     }
 
     /**
+     * @see Validator::isPresenceRequired()
      * @return SchemaPropertyValidation
      */
     private function defineRequired() : SchemaPropertyValidation
@@ -161,6 +158,7 @@ class SchemaPropertyValidation
     }
 
     /**
+     * @see Validator::minLength()
      * @return SchemaPropertyValidation
      */
     private function defineMinLength() : SchemaPropertyValidation
@@ -173,6 +171,7 @@ class SchemaPropertyValidation
     }
 
     /**
+     * @see Validator::greaterThanOrEqual()
      * @return SchemaPropertyValidation
      */
     private function defineMinimum() : SchemaPropertyValidation
@@ -185,6 +184,8 @@ class SchemaPropertyValidation
     }
 
     /**
+     * Sets minimum and exclusiveMinimum
+     * @see Validator::greaterThan()
      * @return SchemaPropertyValidation
      */
     private function defineExclusiveMinimum() : SchemaPropertyValidation
@@ -199,6 +200,7 @@ class SchemaPropertyValidation
     }
 
     /**
+     * @see Validator::lessThanOrEqual()
      * @return SchemaPropertyValidation
      */
     private function defineMaximum() : SchemaPropertyValidation
@@ -211,6 +213,8 @@ class SchemaPropertyValidation
     }
 
     /**
+     * Sets maximum and exclusiveMaximum
+     * @see Validator::lessThan()
      * @return SchemaPropertyValidation
      */
     private function defineExclusiveMaximum() : SchemaPropertyValidation
@@ -225,6 +229,7 @@ class SchemaPropertyValidation
     }
 
     /**
+     * @see Validator::regex()
      * @return SchemaPropertyValidation
      */
     private function definePattern() : SchemaPropertyValidation
@@ -237,6 +242,7 @@ class SchemaPropertyValidation
     }
 
     /**
+     * @see Validator::inList()
      * @return SchemaPropertyValidation
      */
     private function defineEnum() : SchemaPropertyValidation
@@ -258,6 +264,7 @@ class SchemaPropertyValidation
     }
 
     /**
+     * @see Validator::hasAtLeast()
      * @return SchemaPropertyValidation
      */
     private function defineMinItems() : SchemaPropertyValidation
@@ -270,6 +277,7 @@ class SchemaPropertyValidation
     }
 
     /**
+     * @see Validator::hasAtMost()
      * @return SchemaPropertyValidation
      */
     private function defineMaxItems() : SchemaPropertyValidation
@@ -278,6 +286,28 @@ class SchemaPropertyValidation
         if (is_numeric($result)) {
             $this->schemaProperty->setMaxItems($result);
         }
+        return $this;
+    }
+
+    /**
+     * Assigns a minLength of 1 to scalar types which have no min length defined and do not allow empty
+     * @see ValidationSet::isEmptyAllowed()
+     * @return SchemaPropertyValidation
+     */
+    private function assignMinLength() : SchemaPropertyValidation
+    {
+        if ($this->schemaProperty->isTypeScalar() === false) {
+            return $this;
+        }
+
+        if ($this->schemaProperty->getMinLength() > 0) {
+            return $this;
+        }
+
+        if ($this->validator->field($this->propertyName)->isEmptyAllowed() === false) {
+            $this->schemaProperty->setMinLength(1);
+        }
+
         return $this;
     }
 }

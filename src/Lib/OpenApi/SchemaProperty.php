@@ -294,4 +294,12 @@ class SchemaProperty implements JsonSerializable
         $this->requirePresenceOnUpdate = $requirePresenceOnUpdate;
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function isTypeScalar() : bool
+    {
+        return in_array($this->type, ['integer','string','float','boolean','bool','int']);
+    }
 }
