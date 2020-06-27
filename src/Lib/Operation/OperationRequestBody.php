@@ -176,8 +176,8 @@ class OperationRequestBody
 
     /**
      * Adds @SwagDto annotations to the Operations Request Body
-     *
      * @return void
+     * @throws ReflectionException
      */
     private function assignSwagDto() : void
     {
@@ -190,53 +190,18 @@ class OperationRequestBody
         }
 
         $dto = reset($swagDtos);
-        $class = $dto->class;
+        $fqns = $dto->class;
 
-        if (!class_exists($class)) {
-            return;
-        }
-
-        try {
-            $instance = (new ReflectionClass($class))->newInstanceWithoutConstructor();
-            $properties = DocBlockUtility::getProperties($instance);
-        } catch (ReflectionException $e) {
-            throw new SwaggerBakeRunTimeException('ReflectionException: ' . $e->getMessage());
-        }
-
-        if (empty($properties)) {
-            return;
-        }
-
-        $filteredProperties = array_filter($properties, function ($property) use ($instance) {
-            if (!isset($property->class) || $property->class != get_class($instance)) {
-                return null;
-            }
-            return true;
-        });
-
-        if (empty($filteredProperties)) {
+        if (!class_exists($fqns)) {
             return;
         }
 
         $requestBody = new RequestBody();
         $schema = (new Schema())->setType('object');
 
-        foreach ($filteredProperties as $name => $reflectionProperty) {
-            $docBlock = DocBlockUtility::getPropertyDocBlock($reflectionProperty);
-            $vars = $docBlock->getTagsByName('var');
-            if (empty($vars)) {
-                throw new SwaggerBakeRunTimeException('@var must be set for ' . $class . '::' . $name);
-            }
-            $var = reset($vars);
-            $dataType = DocBlockUtility::getDocBlockConvertedVar($var);
-
-            $schema->pushProperty(
-                (new SchemaProperty())
-                    ->setDescription($docBlock->getSummary())
-                    ->setName($name)
-                    ->setType($dataType)
-                    ->setRequired(!empty($docBlock->getTagsByName('required')))
-            );
+        $properties = (new DtoParser($fqns))->getSchemaProperties();
+        foreach ($properties as $property) {
+            $schema->pushProperty($property);
         }
 
         $this->operation->setRequestBody(

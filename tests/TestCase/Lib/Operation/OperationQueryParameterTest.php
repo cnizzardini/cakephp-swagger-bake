@@ -64,7 +64,7 @@ class OperationQueryParameterTest extends TestCase
             );
 
         $parameters = $operation->getParameters();
-        $this->assertCount(7, $parameters);
+        $this->assertCount(10, $parameters);
 
         $param = reset($parameters);
         $this->assertEquals('page', $param->getName());
@@ -75,7 +75,7 @@ class OperationQueryParameterTest extends TestCase
         $this->assertEquals('query', $param->getIn());
 
         $param = end($parameters);
-        $this->assertEquals('firstName', $param->getName());
+        $this->assertEquals('date', $param->getName());
         $this->assertEquals('query', $param->getIn());
     }
 }

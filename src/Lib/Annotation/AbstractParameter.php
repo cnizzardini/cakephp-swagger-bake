@@ -45,8 +45,8 @@ abstract class AbstractParameter
     /** @var string  */
     public $format = '';
 
-    /** @var array  */
-    public $example = [];
+    /** @var mixed  */
+    public $example;
 
     public function __construct(array $values)
     {
