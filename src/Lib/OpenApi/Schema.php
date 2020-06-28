@@ -17,8 +17,8 @@ class Schema implements JsonSerializable
     /** @var string|null */
     private $title;
 
-    /** @var string|null */
-    private $description;
+    /** @var string */
+    private $description = '';
 
     /** @var string */
     private $type = '';
@@ -50,6 +50,9 @@ class Schema implements JsonSerializable
     /** @var string */
     private $format;
 
+    /** @var Xml|null */
+    private $xml;
+
     /**
      * @return array
      */
@@ -66,8 +69,8 @@ class Schema implements JsonSerializable
         }
 
         // remove empty properties to avoid swagger.json clutter
-        foreach (['title','description','properties','items','oneOf','anyOf','allOf','not','enum','format','type'] as $v) {
-            if (empty($vars[$v]) || is_null($vars[$v])) {
+        foreach (['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type', 'xml'] as $v) {
+            if (array_key_exists($v, $vars) && (empty($vars[$v]) || is_null($vars[$v]))) {
                 unset($vars[$v]);
             }
         }
@@ -213,10 +216,10 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param string|null $description
+     * @param string $description
      * @return Schema
      */
-    public function setDescription(?string $description): Schema
+    public function setDescription(string $description): Schema
     {
         $this->description = $description;
         return $this;
@@ -345,6 +348,24 @@ class Schema implements JsonSerializable
     public function setFormat(string $format): Schema
     {
         $this->format = $format;
+        return $this;
+    }
+
+    /**
+     * @return Xml|null
+     */
+    public function getXml(): ?Xml
+    {
+        return $this->xml;
+    }
+
+    /**
+     * @param Xml|null $xml
+     * @return Schema
+     */
+    public function setXml(?Xml $xml): Schema
+    {
+        $this->xml = $xml;
         return $this;
     }
 }

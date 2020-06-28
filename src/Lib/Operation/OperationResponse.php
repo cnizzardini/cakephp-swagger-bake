@@ -10,6 +10,7 @@ use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\Xml;
 
 /**
  * Class OperationResponse
@@ -116,22 +117,20 @@ class OperationResponse
 
         $throws = $this->doc->getTagsByName('throws');
 
-        $mimeTypes = $this->config->getResponseContentTypes();
-        $mimeType = reset($mimeTypes);
-
         foreach ($throws as $throw) {
             $exception = new ExceptionHandler($throw);
 
-            $this->operation->pushResponse(
-                (new Response())
-                    ->setCode($exception->getCode())
-                    ->setDescription($exception->getMessage())
-                    ->pushContent(
-                        (new Content())
-                            ->setMimeType($mimeType)
-                            ->setSchema('#/components/schemas/' . $this->config->getExceptionSchema())
-                    )
-            );
+            $response = (new Response())->setCode($exception->getCode())->setDescription($exception->getMessage());
+
+            foreach ($this->config->getResponseContentTypes() as $mimeType) {
+                $response->pushContent(
+                    (new Content())
+                        ->setMimeType($mimeType)
+                        ->setSchema('#/components/schemas/' . $this->config->getExceptionSchema())
+                );
+            }
+
+            $this->operation->pushResponse($response);
         }
     }
 
@@ -153,13 +152,20 @@ class OperationResponse
             return;
         }
 
+        $schema = clone $this->schema;
+
         if (in_array(strtolower($this->route->getAction()),['index'])) {
             $response = (new Response())->setCode('200');
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
+
+                if ($mimeType == 'application/xml') {
+                    $schema->setXml((new Xml())->setName('response'));
+                }
+
                 $response->pushContent(
                     (new Content())
-                        ->setSchema($this->schema)
+                        ->setSchema($schema)
                         ->setMimeType($mimeType)
                 );
             }
@@ -171,9 +177,14 @@ class OperationResponse
             $response = (new Response())->setCode('200');
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
+
+                if ($mimeType == 'application/xml') {
+                    $schema->setXml((new Xml())->setName('response'));
+                }
+
                 $response->pushContent(
                     (new Content())
-                        ->setSchema($this->schema)
+                        ->setSchema($schema)
                         ->setMimeType($mimeType)
                 );
             }
@@ -205,17 +216,22 @@ class OperationResponse
             return;
         }
 
-        $types = $this->config->getResponseContentTypes();
+        $response = (new Response())->setCode('200');
 
-        $this->operation->pushResponse(
-            (new Response())
-                ->setCode('200')
-                ->pushContent(
-                    (new Content())
-                        ->setMimeType(reset($types))
-                        ->setSchema(new Schema())
-                )
-        );
+        foreach ($this->config->getResponseContentTypes() as $mimeType) {
+
+            $schema = (new Schema())->setDescription('');
+
+            if ($mimeType == 'application/xml') {
+                $schema->setXml((new Xml())->setName('response'));
+            }
+
+            $response->pushContent(
+                (new Content())->setMimeType($mimeType)->setSchema($schema)
+            );
+        }
+
+        $this->operation->pushResponse($response);
 
         return;
     }
