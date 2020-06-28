@@ -3,6 +3,8 @@
 namespace SwaggerBake\Lib\Annotation;
 
 /**
+ * Annotation for creating application/x-www-form-urlencoded DTO request bodies
+ *
  * Read OpenAPI specification for exact usage of the attributes:
  * @see https://swagger.io/specification/ search for "Schema Object"
  *

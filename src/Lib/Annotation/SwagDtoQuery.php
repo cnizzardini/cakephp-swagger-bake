@@ -3,6 +3,8 @@
 namespace SwaggerBake\Lib\Annotation;
 
 /**
+ * Annotation for creating DTO query parameters
+ *
  * Read OpenAPI specification for exact usage of the attributes:
  * @see https://swagger.io/specification/ search for "Parameter Object"
  *

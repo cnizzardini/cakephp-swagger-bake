@@ -5,6 +5,8 @@ namespace SwaggerBake\Lib\Annotation;
 use InvalidArgumentException;
 
 /**
+ * Annotation for specifying a DTO class
+ *
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({

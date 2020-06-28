@@ -27,6 +27,7 @@ namespace SwaggerBake\Lib\Annotation;
  *   @Attribute("format",  type = "string"),
  *   @Attribute("example",  type = "mixed"),
  * })
+ * @see AbstractParameter
  */
 class SwagQuery extends AbstractParameter
 {
