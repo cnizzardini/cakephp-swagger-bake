@@ -3,6 +3,9 @@
 namespace SwaggerBake\Lib\Annotation;
 
 /**
+ * Read OpenAPI specification for exact usage of the attributes:
+ * @see https://swagger.io/specification/ search for "Schema Object"
+ *
  * @Annotation
  * @Target({"PROPERTY"})
  * @Attributes({

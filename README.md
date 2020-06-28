@@ -177,7 +177,7 @@ public function index() {}
 ```
 
 #### `@SwagForm`
-Method level annotation for adding form data fields. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
+Method level annotation for adding form data fields. [Read the comments](src/Lib/Annotation/SwagForm.php) 
 to see all supported OpenAPI properties.
 
 ```php
@@ -357,8 +357,8 @@ There are several options to extend functionality.
 #### Using Your Own SwaggerUI
 
 You may use your own swagger install in lieu of the version that comes with SwaggerBake. Simply don't add a custom 
-route as indicated in step 3 of Basic Usage. In this case just reference the generated swagger.json with your own 
-Swagger UI install.
+route as indicated in the installation steps. In this case just reference the generated swagger.json within your 
+userland Swagger UI install.
 
 #### Using Your Own Controller
 

@@ -3,6 +3,9 @@
 namespace SwaggerBake\Lib\Annotation;
 
 /**
+ * Read OpenAPI specification for exact usage of the attributes:
+ * @see https://swagger.io/specification/ search for "Parameter Object"
+ *
  * @Annotation
  * @Target({"PROPERTY"})
  * @Attributes({
@@ -19,6 +22,7 @@ namespace SwaggerBake\Lib\Annotation;
  *   @Attribute("format",  type = "string"),
  *   @Attribute("example",  type = "mixed"),
  * })
+ * @see AbstractParameter
  */
 class SwagDtoQuery extends AbstractParameter
 {
