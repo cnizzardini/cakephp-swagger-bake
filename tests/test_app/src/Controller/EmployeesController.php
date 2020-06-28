@@ -9,6 +9,7 @@ use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 /**
  * Employees Controller
  *
+ * @Swag\SwagPath(description="description here", summary="summary here")
  * @property \App\Model\Table\EmployeesTable $Employees
  *
  * @method \App\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
