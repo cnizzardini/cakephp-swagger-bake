@@ -17,6 +17,7 @@ use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\OpenApi\Xml;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 
 /**
@@ -249,6 +250,12 @@ class OperationRequestBody
                     $schemaProperty->setRequired(true);
                 }
                 $schema->pushProperty($schemaProperty);
+            }
+
+            if ($mimeType == 'application/xml') {
+                $schema->setXml(
+                    (new Xml())->setName(strtolower($this->schema->getName()))
+                );
             }
 
             $requestBody->pushContent(

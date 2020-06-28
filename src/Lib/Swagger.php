@@ -12,6 +12,7 @@ use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
 use SwaggerBake\Lib\Path\PathFromRouteFactory;
+use SwaggerBake\Lib\Schema\SchemaFromYamlFactory;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -322,31 +323,10 @@ class Swagger
             $array['components']['schemas'] = [];
         }
 
+        $factory = new SchemaFromYamlFactory();
+
         foreach ($array['components']['schemas'] as $schemaName => $schemaVar) {
-
-            $schema = (new Schema())
-                ->setName($schemaName)
-                ->setType($schemaVar['type'] ?? '')
-                ->setDescription($schemaVar['description'] ?? '')
-                ->setItems($schemaVar['items'] ?? [])
-                ->setAllOf($schemaVar['allOf'] ?? [])
-                ->setAnyOf($schemaVar['anyOf'] ?? [])
-                ->setOneOf($schemaVar['oneOf'] ?? [])
-            ;
-
-            $schemaVar['properties'] = $schemaVar['properties'] ?? [];
-
-            foreach ($schemaVar['properties'] as $propertyName => $propertyVar) {
-                $property = (new SchemaProperty())
-                    ->setType($propertyVar['type'])
-                    ->setName($propertyName)
-                    ->setFormat($propertyVar['type'] ?? '')
-                    ->setExample($propertyVar['example'] ?? '')
-                ;
-                $schema->pushProperty($property);
-            }
-
-            $array['components']['schemas'][$schemaName] = $schema;
+            $array['components']['schemas'][$schemaName] = $factory->create($schemaName, $schemaVar);
         }
 
         return $array;
@@ -413,6 +393,9 @@ class Swagger
         return isset($this->array['paths'][$resource]);
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         return $this->toString();
