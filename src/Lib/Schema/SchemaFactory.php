@@ -82,20 +82,14 @@ class SchemaFactory
      */
     private function getProperties(EntityDecorator $entity) : array
     {
-        $return = $this->getSwagPropertyAnnotations($entity);
-
+        $return = [];
         $factory = new SchemaPropertyFactory($this->validator);
 
         foreach ($entity->getProperties() as $attribute) {
-            $name = $attribute->getName();
-
-            // skip if this property has been defined by SwagEntityAttribute annotation
-            if (isset($return[$name])) {
-                continue;
-            }
-
-            $return[$name] = $factory->create($attribute);
+            $return[$attribute->getName()] = $factory->create($attribute);
         }
+
+        $return = array_merge($return, $this->getSwagPropertyAnnotations($entity));
 
         return $return;
     }
