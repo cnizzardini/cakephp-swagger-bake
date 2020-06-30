@@ -39,10 +39,10 @@ class DataTypeConversion
         {
             case 'int':
             case 'biginteger':
-                return 'int32';
+                return 'int64';
             case 'smallinteger':
             case 'mediuminteger':
-                return 'int64';
+                return 'int32';
             case 'decimal':
             case 'float':
                 return 'float';
@@ -60,6 +60,6 @@ class DataTypeConversion
                 return 'date-time';
         }
 
-        return $type;
+        return '';
     }
 }
