@@ -8,6 +8,9 @@ namespace SwaggerBake\Lib\Annotation;
  * Read OpenAPI specification for exact usage of the attributes:
  * @see https://swagger.io/specification/ search for "Schema Object"
  *
+ * For `format` read OpenAPI specification on data formats:
+ * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format
+ *
  * @Annotation
  * @Target({"PROPERTY"})
  * @Attributes({
