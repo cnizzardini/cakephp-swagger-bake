@@ -5,53 +5,42 @@ namespace SwaggerBake\Lib\Annotation;
 use InvalidArgumentException;
 
 /**
+ * Annotation for describing Entity properties.
+ *
+ * Read OpenAPI specification for exact usage of the attributes:
+ * @see https://swagger.io/specification/ search for "Schema Object"
+ *
+ * For `format` read OpenAPI specification on data formats:
+ * @see https://swagger.io/docs/specification/data-models/data-types
+ *
  * @Annotation
  * @Target({"CLASS"})
  * @Attributes({
  *   @Attribute("name", type = "string"),
  *   @Attribute("type",  type = "string"),
+ *   @Attribute("format",  type = "string"),
  *   @Attribute("description",  type = "string"),
  *   @Attribute("readOnly",  type = "bool"),
  *   @Attribute("writeOnly",  type = "bool"),
  *   @Attribute("required",  type = "bool"),
+ *   @Attribute("multipleOf", type = "float"),
+ *   @Attribute("maximum",  type = "float"),
+ *   @Attribute("exclusiveMaximum",  type = "bool"),
+ *   @Attribute("minimum",  type = "float"),
+ *   @Attribute("exclusiveMinimum",  type = "bool"),
+ *   @Attribute("maxLength",  type = "integer"),
+ *   @Attribute("minLength", type = "integer"),
+ *   @Attribute("pattern",  type = "string"),
+ *   @Attribute("maxItems",  type = "integer"),
+ *   @Attribute("minItems",  type = "integer"),
+ *   @Attribute("uniqueItems",  type = "bool"),
+ *   @Attribute("maxProperties",  type = "integer"),
+ *   @Attribute("minProperties", type = "integer"),
+ *   @Attribute("enum", type = "array"),
  * })
+ * @see AbstractSchemaProperty
  */
-class SwagEntityAttribute
+class SwagEntityAttribute extends AbstractSchemaProperty
 {
-    /** @var string */
-    public $name;
 
-    /** @var string */
-    public $type;
-
-    /** @var string */
-    public $description;
-
-    /** @var bool */
-    public $readOnly;
-
-    /** @var bool */
-    public $writeOnly;
-
-    /** @var bool */
-    public $required;
-
-    public function __construct(array $values)
-    {
-        if (!isset($values['name'])) {
-            throw new InvalidArgumentException('Name parameter is required');
-        }
-
-        $values = array_merge(
-            ['type' => 'string', 'description' => '', 'readOnly' => false, 'writeOnly' => false, 'required' => false],
-            $values
-        );
-
-        $this->name = $values['name'];
-        $this->type = $values['type'];
-        $this->description = $values['description'];
-        $this->readOnly = $values['readOnly'];
-        $this->writeOnly = $values['writeOnly'];
-        $this->required = $values['required'];
-    }
 }

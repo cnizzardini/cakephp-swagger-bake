@@ -8,7 +8,7 @@ namespace SwaggerBake\Lib\Utility;
  */
 class DataTypeConversion
 {
-    public static function convert(string $type) : string
+    public static function toType(string $type) : string
     {
         switch ($type)
         {
@@ -31,5 +31,35 @@ class DataTypeConversion
         }
 
         return $type;
+    }
+
+    public static function toFormat(string $type) : string
+    {
+        switch ($type)
+        {
+            case 'int':
+            case 'biginteger':
+                return 'int64';
+            case 'smallinteger':
+            case 'mediuminteger':
+                return 'int32';
+            case 'decimal':
+            case 'float':
+                return 'float';
+            case 'uuid':
+                return 'uuid';
+            case 'text':
+            case 'varchar':
+            case 'char':
+                return 'string';
+            case 'date':
+                return 'date';
+            case 'time':
+                return 'time';
+            case 'datetime':
+                return 'date-time';
+        }
+
+        return '';
     }
 }

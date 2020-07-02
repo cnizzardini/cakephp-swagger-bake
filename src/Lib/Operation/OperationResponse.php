@@ -10,6 +10,7 @@ use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\Xml;
 
 /**
  * Class OperationResponse
@@ -60,12 +61,7 @@ class OperationResponse
         $this->assignAnnotations();
         $this->assignDocBlockExceptions();
         $this->assignSchema();
-
-        if (!$this->operation->hasSuccessResponseCode() && strtolower($this->route->getAction()) == 'delete') {
-            $this->operation->pushResponse(
-                (new Response())->setCode('204')->setDescription('Resource deleted')
-            );
-        }
+        $this->assignDefaultResponses();
 
         return $this->operation;
     }
@@ -121,22 +117,20 @@ class OperationResponse
 
         $throws = $this->doc->getTagsByName('throws');
 
-        $mimeTypes = $this->config->getResponseContentTypes();
-        $mimeType = reset($mimeTypes);
-
         foreach ($throws as $throw) {
             $exception = new ExceptionHandler($throw);
 
-            $this->operation->pushResponse(
-                (new Response())
-                    ->setCode($exception->getCode())
-                    ->setDescription($exception->getMessage())
-                    ->pushContent(
-                        (new Content())
-                            ->setMimeType($mimeType)
-                            ->setSchema('#/components/schemas/' . $this->config->getExceptionSchema())
-                    )
-            );
+            $response = (new Response())->setCode($exception->getCode())->setDescription($exception->getMessage());
+
+            foreach ($this->config->getResponseContentTypes() as $mimeType) {
+                $response->pushContent(
+                    (new Content())
+                        ->setMimeType($mimeType)
+                        ->setSchema('#/components/schemas/' . $this->config->getExceptionSchema())
+                );
+            }
+
+            $this->operation->pushResponse($response);
         }
     }
 
@@ -158,13 +152,20 @@ class OperationResponse
             return;
         }
 
+        $schema = clone $this->schema;
+
         if (in_array(strtolower($this->route->getAction()),['index'])) {
             $response = (new Response())->setCode('200');
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
+
+                if ($mimeType == 'application/xml') {
+                    $schema->setXml((new Xml())->setName('response'));
+                }
+
                 $response->pushContent(
                     (new Content())
-                        ->setSchema($this->schema)
+                        ->setSchema($schema)
                         ->setMimeType($mimeType)
                 );
             }
@@ -176,14 +177,62 @@ class OperationResponse
             $response = (new Response())->setCode('200');
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
+
+                if ($mimeType == 'application/xml') {
+                    $schema->setXml((new Xml())->setName('response'));
+                }
+
                 $response->pushContent(
                     (new Content())
-                        ->setSchema($this->schema)
+                        ->setSchema($schema)
                         ->setMimeType($mimeType)
                 );
             }
             $this->operation->pushResponse($response);
             return;
         }
+    }
+
+    /**
+     * Assigns a default responses
+     *
+     * delete: 204 with empty response body
+     * default: 200 with empty response body and first element from responseContentTypes config as mimeType
+     *
+     * @response void
+     */
+    private function assignDefaultResponses() : void
+    {
+        if ($this->operation->hasSuccessResponseCode()) {
+            return;
+        }
+
+        if (strtolower($this->route->getAction()) == 'delete') {
+            $this->operation->pushResponse(
+                (new Response())
+                    ->setCode('204')
+                    ->setDescription('Resource deleted')
+            );
+            return;
+        }
+
+        $response = (new Response())->setCode('200');
+
+        foreach ($this->config->getResponseContentTypes() as $mimeType) {
+
+            $schema = (new Schema())->setDescription('');
+
+            if ($mimeType == 'application/xml') {
+                $schema->setXml((new Xml())->setName('response'));
+            }
+
+            $response->pushContent(
+                (new Content())->setMimeType($mimeType)->setSchema($schema)
+            );
+        }
+
+        $this->operation->pushResponse($response);
+
+        return;
     }
 }

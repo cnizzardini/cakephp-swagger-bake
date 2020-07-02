@@ -160,7 +160,11 @@ components:
         code:
           type: integer
           format: int32
+          example: 400
         message:
           type: string
+          example: error message here
+      xml:
+        name: response
 security:
   - BearerAuth: []

@@ -1,6 +1,6 @@
 <?php
 
-namespace SwaggerBake\Lib\Factory;
+namespace SwaggerBake\Lib\Schema;
 
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
@@ -26,12 +26,6 @@ use SwaggerBake\Lib\Utility\DataTypeConversion;
  */
 class SchemaFactory
 {
-    /** @var string[]  */
-    private const READ_ONLY_FIELDS = ['created','modified'];
-
-    /** @var string[]  */
-    private const DATETIME_TYPES = ['date','datetime','timestamp'];
-
     /** @var Validator */
     private $validator;
 
@@ -46,7 +40,9 @@ class SchemaFactory
      */
     public function create(EntityDecorator $entity) : ?Schema
     {
-        if (!$this->isSwaggable($entity)) {
+        $swagEntity = $this->getSwagEntityAnnotation($entity);
+
+        if ($swagEntity !== null && $swagEntity->isVisible === false) {
             return null;
         }
 
@@ -56,13 +52,18 @@ class SchemaFactory
 
         $properties = $this->getProperties($entity);
 
-        $schema = new Schema();
-        $schema
+        $schema = (new Schema())
             ->setName($entity->getName())
-            ->setDescription($docBlock ? $docBlock->getSummary() : '')
+            ->setTitle($swagEntity !== null ? $swagEntity->description : null)
             ->setType('object')
             ->setProperties($properties)
         ;
+
+        if ($swagEntity !== null && isset($swagEntity->description)) {
+            $schema->setDescription($swagEntity->description);
+        } else {
+            $schema->setDescription($docBlock ? $docBlock->getSummary() : null);
+        }
 
         $requiredProperties = array_filter($properties, function ($property) {
             return $property->isRequired();
@@ -81,16 +82,14 @@ class SchemaFactory
      */
     private function getProperties(EntityDecorator $entity) : array
     {
-        $return = $this->getSwagPropertyAnnotations($entity);
+        $return = [];
+        $factory = new SchemaPropertyFactory($this->validator);
 
         foreach ($entity->getProperties() as $attribute) {
-            $name = $attribute->getName();
-            if (isset($return[$name])) {
-                continue;
-            }
-
-            $return[$name] = $this->getSchemaProperty($attribute);
+            $return[$attribute->getName()] = $factory->create($attribute);
         }
+
+        $return = array_merge($return, $this->getSwagPropertyAnnotations($entity));
 
         return $return;
     }
@@ -143,26 +142,6 @@ class SchemaFactory
     }
 
     /**
-     * @param PropertyDecorator $property
-     * @return SchemaProperty
-     */
-    private function getSchemaProperty(PropertyDecorator $property) : SchemaProperty
-    {
-        $isReadOnlyField = in_array($property->getName(), self::READ_ONLY_FIELDS);
-        $isDateTimeField = in_array($property->getType(), self::DATETIME_TYPES);
-
-        $schemaProperty = new SchemaProperty();
-        $schemaProperty
-            ->setName($property->getName())
-            ->setType(DataTypeConversion::convert($property->getType()))
-            ->setReadOnly(($property->isPrimaryKey() || ($isReadOnlyField && $isDateTimeField)))
-            ->setRequired($this->isAttributeRequired($property))
-        ;
-
-        return $schemaProperty;
-    }
-
-    /**
      * Returns key-value pair of property name => SchemaProperty
      *
      * @param EntityDecorator $entity
@@ -174,57 +153,36 @@ class SchemaFactory
 
         $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity->getEntity());
 
-       $swagEntityAttributes = array_filter($annotations, function ($annotation) {
+        $swagEntityAttributes = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagEntityAttribute;
         });
 
-       foreach ($swagEntityAttributes as $swagEntityAttribute) {
-           $return[$swagEntityAttribute->name] = (new SchemaProperty())
-               ->setName($swagEntityAttribute->name)
-               ->setDescription($swagEntityAttribute->description)
-               ->setType($swagEntityAttribute->type)
-               ->setReadOnly($swagEntityAttribute->readOnly)
-               ->setWriteOnly($swagEntityAttribute->writeOnly)
-               ->setRequired($swagEntityAttribute->required)
-           ;
-       }
+        $factory = new SchemaPropertyFromAnnotationFactory();
+
+        foreach ($swagEntityAttributes as $swagEntityAttribute) {
+            $return[$swagEntityAttribute->name] = $factory->create($swagEntityAttribute);
+        }
 
         return $return;
     }
 
     /**
+     * Returns instance of SwagEntity annotation, otherwise null
+     *
      * @param EntityDecorator $entity
-     * @return bool
+     * @return SwagEntity|null
      */
-    private function isSwaggable(EntityDecorator $entity) : bool
+    private function getSwagEntityAnnotation(EntityDecorator $entity) : ?SwagEntity
     {
         $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity->getEntity());
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagEntity) {
-                return $annotation->isVisible;
+                return $annotation;
             }
         }
 
-        return true;
-    }
-
-    /**
-     * @param PropertyDecorator $property
-     * @return bool
-     */
-    private function isAttributeRequired(PropertyDecorator $property) : bool
-    {
-        if (!$this->validator) {
-            return false;
-        }
-
-        $validationSet = $this->validator->field($property->getName());
-        if (!$validationSet->isEmptyAllowed()) {
-            return true;
-        }
-
-        return false;
+        return null;
     }
 
     /**
@@ -238,7 +196,7 @@ class SchemaFactory
             $instance = new $table;
             $validator = $instance->validationDefault(new Validator());
         } catch (\Exception $e) {
-            return null;
+            return new Validator();
         }
 
         return $validator;

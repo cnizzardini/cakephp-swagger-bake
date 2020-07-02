@@ -57,7 +57,7 @@ class ModelCommand extends Command
                 $output[] = [
                     $property->getName(),
                     $property->getType(),
-                    DataTypeConversion::convert($property->getType()),
+                    DataTypeConversion::toType($property->getType()),
                     $property->getDefault(),
                     $property->isPrimaryKey() ? 'Y' : '',
                 ];

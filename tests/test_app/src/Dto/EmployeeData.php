@@ -2,8 +2,13 @@
 
 namespace SwaggerBakeTest\App\Dto;
 
+use SwaggerBake\Lib\Annotation as Swag;
+
 class EmployeeData
 {
+    /** @var string */
+    private $firstName;
+
     /**
      * Last name required
      * @var string
@@ -11,8 +16,23 @@ class EmployeeData
      */
     private $lastName;
 
-    /** @var string */
-    private $firstName;
+    /**
+     * @Swag\SwagDtoForm(name="title", type="string", description="testing")
+     * @var string
+     */
+    private $title;
+
+    /**
+     * @Swag\SwagDtoForm(name="age", type="integer", format="int32" description="testing")
+     * @var integer
+     */
+    private $age;
+
+    /**
+     * @Swag\SwagDtoForm(name="date", type="string", format="date", description="testing")
+     * @var string
+     */
+    private $date;
 
     /**
      * @return string
@@ -47,6 +67,60 @@ class EmployeeData
     public function setLastName(string $lastName): EmployeeData
     {
         $this->lastName = $lastName;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param mixed $title
+     * @return EmployeeData
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAge()
+    {
+        return $this->age;
+    }
+
+    /**
+     * @param mixed $age
+     * @return EmployeeData
+     */
+    public function setAge($age)
+    {
+        $this->age = $age;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param mixed $date
+     * @return EmployeeData
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
         return $this;
     }
 }

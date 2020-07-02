@@ -1,0 +1,20 @@
+language: php
+
+php:
+  - 7.2
+  - 7.3
+  - 7.4
+
+dist: xenial
+
+matrix:
+  fast_finish: true
+
+install:
+  - composer install --prefer-dist --no-interaction
+
+script:
+  - vendor/bin/phpunit
+
+notifications:
+  email: false

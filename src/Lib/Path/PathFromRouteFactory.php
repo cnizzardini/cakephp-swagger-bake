@@ -39,34 +39,49 @@ class PathFromRouteFactory
         }
 
         $controller = $this->route->getController() . 'Controller';
-        $fullyQualifiedNamespace = NamespaceUtility::getControllerFullQualifiedNameSpace($controller, $this->config);
+        $fqns = NamespaceUtility::getControllerFullQualifiedNameSpace($controller, $this->config);
 
-        if (is_null($fullyQualifiedNamespace) || !$this->isVisible($fullyQualifiedNamespace)) {
+        if (is_null($fqns)) {
             return null;
         }
 
-        return (new Path())->setResource($this->getResourceName());
+        $path = (new Path())->setResource($this->getResourceName());
+
+        $swagPath = $this->getSwagPathAnnotation($fqns);
+
+        if (is_null($swagPath)) {
+            return $path;
+        }
+
+        if ($swagPath->isVisible === false) {
+            return null;
+        }
+
+        return $path
+            ->setRef($swagPath->ref ?? null)
+            ->setDescription($swagPath->description ?? null)
+            ->setSummary($swagPath->summary ?? null);
     }
 
     /**
-     * @param string $fullyQualifiedNamespace
-     * @return bool
+     * Returns an instance of SwagPath if it exists, otherwise null
+     *
+     * @param string $fqns
+     * @return SwagPath|null
      */
-    private function isVisible(string $fullyQualifiedNamespace) : bool
+    private function getSwagPathAnnotation(string $fqns) : ?SwagPath
     {
-        $annotations = AnnotationUtility::getClassAnnotationsFromFqns($fullyQualifiedNamespace);
+        $annotations = AnnotationUtility::getClassAnnotationsFromFqns($fqns);
 
         $results = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagPath;
         });
 
         if (empty($results)) {
-            return true;
+            return null;
         }
 
-        $swagPath = reset($results);
-
-        return $swagPath->isVisible;
+        return reset($results);
     }
 
     /**

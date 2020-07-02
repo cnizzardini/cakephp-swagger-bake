@@ -1,14 +1,14 @@
 <?php
 return [
     'SwaggerBake' => [
-        'prefix' => '/api',
+        'prefix' => '/',
         'yml' => '/config/swagger.yml',
         'json' => '/webroot/swagger.json',
         'webPath' => '/swagger.json',
         'hotReload' => false,
         'namespaces' => [
-            'controllers' => ['\App\\'],
-            'entities' => ['\App\\'],
+            'controllers' => ['\SwaggerBakeTest\App\\'],
+            'entities' => ['\SwaggerBakeTest\App\\'],
         ]
     ]
 ];

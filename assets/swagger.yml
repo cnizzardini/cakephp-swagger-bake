@@ -24,8 +24,12 @@ components:
         message:
           type: string
           example: Internal Error
+      xml:
+        name: response
     OperationResult:
       type: object
       properties:
         result:
           type: boolean
+      xml:
+        name: response
