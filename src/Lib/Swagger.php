@@ -411,7 +411,7 @@ class Swagger
 
     /**
      * @param string $resource Resource name
-     * @return \SwaggerBake\Lib\OpenApi\Path|null|mixed
+     * @return bool
      */
     private function hasPathByResource(string $resource): bool
     {

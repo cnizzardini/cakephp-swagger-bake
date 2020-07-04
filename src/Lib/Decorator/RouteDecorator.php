@@ -54,8 +54,6 @@ class RouteDecorator
      */
     public function __construct(Route $route)
     {
-        $this->route;
-
         $defaults = (array)$route->defaults;
 
         $methods = $defaults['_method'];

@@ -31,6 +31,11 @@ class SchemaFactory
     private $validator;
 
     /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
+    private $config;
+
+    /**
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
     public function __construct(Configuration $config)

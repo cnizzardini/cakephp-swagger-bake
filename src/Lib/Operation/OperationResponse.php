@@ -139,7 +139,9 @@ class OperationResponse
             return;
         }
 
-        $throws = $this->doc->getTagsByName('throws');
+        $throws = array_filter($this->doc->getTagsByName('throws'), function ($tag) {
+            return $tag instanceof DocBlock\Tags\Throws;
+        });
 
         foreach ($throws as $throw) {
             $exception = new ExceptionHandler($throw);

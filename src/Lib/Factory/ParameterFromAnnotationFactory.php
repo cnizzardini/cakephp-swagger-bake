@@ -15,7 +15,7 @@ class ParameterFromAnnotationFactory
      * Creates an instance of Parameter from an AbstractParameter annotation
      *
      * @param \SwaggerBake\Lib\Annotation\AbstractParameter $annotation Class extending AbstractParameter
-     * @return \SwaggerBake\Lib\Annotation\AbstractParameter
+     * @return \SwaggerBake\Lib\OpenApi\Parameter
      */
     public function create(AbstractParameter $annotation): Parameter
     {

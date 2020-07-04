@@ -59,7 +59,7 @@ class SwaggerUiComponent extends Component
                 triggerWarning($errorMsg);
                 continue;
             }
-            $this->Flash->error($errorMsg);
+            $this->_registry->getController()->Flash->error($errorMsg);
         }
     }
 
@@ -77,7 +77,10 @@ class SwaggerUiComponent extends Component
      */
     public function getDocType(ServerRequest $request): string
     {
-        $docType = h(strtolower($request->getQuery('doctype')));
+        $docType = 'swagger';
+        if (!empty($request->getQuery('doctype'))) {
+            $docType = h(strtolower($request->getQuery('doctype')));
+        }
 
         return in_array(strtolower($docType), ['swagger','redoc']) ? $docType : 'swagger';
     }

@@ -5,11 +5,12 @@ namespace SwaggerBake\Lib\Operation;
 
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use ReflectionClass;
 use ReflectionProperty;
 use SwaggerBake\Lib\Annotation\SwagDtoForm;
 use SwaggerBake\Lib\Annotation\SwagDtoQuery;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -67,11 +68,8 @@ class DtoParser
             }
 
             $docBlock = DocBlockUtility::getPropertyDocBlock($reflectionProperty);
-            $vars = $docBlock->getTagsByName('var');
-            if (!empty($vars)) {
-                $var = reset($vars);
-                $dataType = DocBlockUtility::getDocBlockConvertedVar($var);
-            }
+            $var = $this->getDocBlockVarTag($docBlock);
+            $dataType = $var !== null ? DocBlockUtility::getDocBlockConvertedVar($var) : null;
 
             $parameters[] = (new Parameter())
                 ->setName($reflectionProperty->getName())
@@ -106,12 +104,8 @@ class DtoParser
             }
 
             $docBlock = DocBlockUtility::getPropertyDocBlock($reflectionProperty);
-            $vars = $docBlock->getTagsByName('var');
-            if (empty($vars)) {
-                throw new SwaggerBakeRunTimeException('@var must be set for ' . $class . '::' . $name);
-            }
-            $var = reset($vars);
-            $dataType = DocBlockUtility::getDocBlockConvertedVar($var);
+            $var = $this->getDocBlockVarTag($docBlock);
+            $dataType = $var !== null ? DocBlockUtility::getDocBlockConvertedVar($var) : null;
 
             $schemaProperties[] = (new SchemaProperty())
                 ->setDescription($docBlock->getSummary())
@@ -127,7 +121,7 @@ class DtoParser
      * Gets an instance of SwagDtoProperty, null otherwise
      *
      * @param \ReflectionProperty $reflectionProperty ReflectionProperty
-     * @return \SwaggerBake\Lib\Annotation\SwagDtoQuery|\SwaggerBake\Lib\Operation\SwagDtoFrom|null
+     * @return \SwaggerBake\Lib\Annotation\SwagDtoQuery|\SwaggerBake\Lib\Annotation\SwagDtoForm|null
      */
     private function getSwagDtoProperty(ReflectionProperty $reflectionProperty)
     {
@@ -164,5 +158,24 @@ class DtoParser
 
             return true;
         });
+    }
+
+    /**
+     * Returns `@var` tag as Var_ instance or null
+     *
+     * @param \phpDocumentor\Reflection\DocBlock $docBlock DocBlock
+     * @return \phpDocumentor\Reflection\DocBlock\Tags\Var_|null
+     */
+    private function getDocBlockVarTag(DocBlock $docBlock): ?Var_
+    {
+        $vars = array_filter($docBlock->getTagsByName('var'), function ($var) {
+            return $var instanceof Var_;
+        });
+
+        if (empty($vars)) {
+            return null;
+        }
+
+        return reset($vars);
     }
 }
