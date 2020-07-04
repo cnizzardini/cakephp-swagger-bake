@@ -22,6 +22,9 @@ class FilterDecorator
      */
     private $comparison;
 
+    /**
+     * @var \Search\Model\Filter\Base
+     */
     private $filter;
 
     /**

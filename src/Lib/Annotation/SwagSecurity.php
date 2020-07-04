@@ -21,7 +21,7 @@ class SwagSecurity
     public $name;
 
     /**
-     * @var string
+     * @var array
      */
     public $scopes;
 

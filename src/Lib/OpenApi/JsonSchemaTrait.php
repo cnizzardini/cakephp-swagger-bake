@@ -97,7 +97,7 @@ trait JsonSchemaTrait
         ];
 
         foreach ($vars as $name => $value) {
-            if (in_array($name, $empties) && (empty($value) || is_null($value) || $value == null)) {
+            if (in_array($name, $empties) && (empty($value) || $value == null)) {
                 unset($vars[$name]);
             }
         }

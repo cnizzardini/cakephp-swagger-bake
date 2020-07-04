@@ -20,7 +20,8 @@
         "phpunit/phpunit": "^8.0",
         "friendsofcake/search": "^6.0",
         "cakephp/authentication": "^2.0",
-        "cakephp/cakephp-codesniffer": "^4.2"
+        "cakephp/cakephp-codesniffer": "^4.2",
+        "phpstan/phpstan": "^0.12.32"
     },
     "autoload": {
         "psr-4": {
@@ -33,6 +34,19 @@
             "SwaggerBakeTest\\App\\": "tests/test_app/src/",
             "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
         }
+    },
+    "scripts": {
+        "post-install-cmd": "App\\Console\\Installer::postInstall",
+        "post-create-project-cmd": "App\\Console\\Installer::postInstall",
+        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump",
+        "check": [
+            "@test",
+            "@cs-check"
+        ],
+        "cs-check": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/",
+        "cs-fix": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/",
+        "stan": "phpstan analyse src/",
+        "test": "phpunit --colors=always"
     },
     "support": {
         "issues": "https://github.com/cnizzardini/cakephp-swagger-bake/issues",

@@ -17,6 +17,7 @@ use Cake\Log\Log;
  * @Attribute("schemaType", type = "string"),
  * @Attribute("schemaFormat", type = "string"),
  * })
+ * @todo remove httpCode in future version
  */
 class SwagResponseSchema
 {
@@ -37,14 +38,9 @@ class SwagResponseSchema
     public $refEntity;
 
     /**
-     * @var int
-     */
-    public $httpCode = 200;
-
-    /**
      * @var string
      */
-    public $statusCode = '200';
+    public $httpCode = '200';
 
     /**
      * @var string

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
+use Cake\Database\Connection;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\EntityInterface;
@@ -10,6 +11,7 @@ use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Decorator\EntityDecorator;
 use SwaggerBake\Lib\Decorator\PropertyDecorator;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
 
@@ -56,6 +58,11 @@ class CakeModel
         $return = [];
 
         $connection = ConnectionManager::get('default');
+
+        if (!$connection instanceof Connection) {
+            throw new SwaggerBakeRunTimeException('Unable to get Database Connection instance');
+        }
+
         $scanner = new TableScanner($connection);
         $tables = $scanner->listUnskipped();
         $collection = $connection->getSchemaCollection();
@@ -76,6 +83,10 @@ class CakeModel
 
             $entityInstance = new $entityFqns();
             $schema = $collection->describe($tableName);
+
+            if (!$schema instanceof TableSchema) {
+                throw new SwaggerBakeRunTimeException('Unable to get TableSchema instance');
+            }
 
             $properties = $this->getPropertyDecorators($entityInstance, $schema);
 
