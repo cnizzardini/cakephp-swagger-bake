@@ -16,6 +16,7 @@ install:
 script:
   - vendor/bin/phpunit
   - vendor/bin/phpcs --report=summary src
+  - vendor/bin/phpstan analyse -n --no-progress src
 
 notifications:
   email: false
