@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Schema;
 
@@ -9,33 +10,40 @@ use SwaggerBake\Lib\Utility\DataTypeConversion;
 
 /**
  * Class SchemaPropertyFactory
+ *
  * @package SwaggerBake\Lib\Schema
  *
  * Creates an instance of SchemaProperty using your Cake projects Schema and Validation Rules
  */
 class SchemaPropertyFactory
 {
-    /** @var Validator  */
+    /**
+     * @var \Cake\Validation\Validator
+     */
     private $validator;
 
+    /**
+     * @param \Cake\Validation\Validator $validator Validator
+     */
     public function __construct(Validator $validator)
     {
         $this->validator = $validator;
     }
 
     /**
-     * @param PropertyDecorator $property
-     * @return SchemaProperty
+     * Creates an instance of SchemaProperty
+     *
+     * @param \SwaggerBake\Lib\Decorator\PropertyDecorator $property PropertyDecorator
+     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty
      */
-    public function create(PropertyDecorator $property) : SchemaProperty
+    public function create(PropertyDecorator $property): SchemaProperty
     {
         $schemaProperty = new SchemaProperty();
         $schemaProperty
             ->setName($property->getName())
             ->setType(DataTypeConversion::toType($property->getType()))
             ->setFormat(DataTypeConversion::toFormat($property->getType()))
-            ->setReadOnly($this->isReadOnly($property))
-        ;
+            ->setReadOnly($this->isReadOnly($property));
 
         if (!$this->validator) {
             return $schemaProperty;
@@ -45,10 +53,10 @@ class SchemaPropertyFactory
     }
 
     /**
-     * @param PropertyDecorator $property
+     * @param \SwaggerBake\Lib\Decorator\PropertyDecorator $property PropertyDecorator
      * @return bool
      */
-    private function isReadOnly(PropertyDecorator $property) : bool
+    private function isReadOnly(PropertyDecorator $property): bool
     {
         if ($property->isPrimaryKey()) {
             return true;

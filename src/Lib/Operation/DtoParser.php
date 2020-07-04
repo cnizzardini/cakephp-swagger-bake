@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
@@ -6,8 +7,8 @@ use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
 use ReflectionProperty;
-use SwaggerBake\Lib\Annotation\SwagDtoQuery;
 use SwaggerBake\Lib\Annotation\SwagDtoForm;
+use SwaggerBake\Lib\Annotation\SwagDtoQuery;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory;
 use SwaggerBake\Lib\OpenApi\Parameter;
@@ -18,15 +19,25 @@ use SwaggerBake\Lib\Utility\DocBlockUtility;
 
 class DtoParser
 {
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $fqns;
 
-    /** @var object  */
+    /**
+     * @var object
+     */
     private $instance;
 
-    /** @var AnnotationReader  */
+    /**
+     * @var \Doctrine\Common\Annotations\AnnotationReader
+     */
     private $annotationReader;
 
+    /**
+     * @param string $fqns Fully qualified namespace of the DTO
+     * @throws \ReflectionException
+     */
     public function __construct(string $fqns)
     {
         $this->fqns = $fqns;
@@ -37,10 +48,10 @@ class DtoParser
     /**
      * Returns an array of Parameter instances for use in Query Parameters
      *
-     * @return Parameter[]
+     * @return \SwaggerBake\Lib\OpenApi\Parameter[]
      * @throws \ReflectionException
      */
-    public function getParameters() : array
+    public function getParameters(): array
     {
         $parameters = [];
 
@@ -49,7 +60,6 @@ class DtoParser
         $factory = new ParameterFromAnnotationFactory();
 
         foreach ($properties as $reflectionProperty) {
-
             $swagDtoQuery = $this->getSwagDtoProperty($reflectionProperty);
             if ($swagDtoQuery instanceof SwagDtoQuery) {
                 $parameters[] = $factory->create($swagDtoQuery)->setIn('query');
@@ -77,10 +87,10 @@ class DtoParser
     /**
      * Returns an array of SchemaProperty instances for use in Body Requests
      *
-     * @return SchemaProperty[]
+     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
      * @throws \ReflectionException
      */
-    public function getSchemaProperties() : array
+    public function getSchemaProperties(): array
     {
         $schemaProperties = [];
 
@@ -89,7 +99,6 @@ class DtoParser
         $factory = new SchemaPropertyFromAnnotationFactory();
 
         foreach ($properties as $name => $reflectionProperty) {
-
             $swagDtoForm = $this->getSwagDtoProperty($reflectionProperty);
             if ($swagDtoForm instanceof SwagDtoForm) {
                 $schemaProperties[] = $factory->create($swagDtoForm);
@@ -117,8 +126,8 @@ class DtoParser
     /**
      * Gets an instance of SwagDtoProperty, null otherwise
      *
-     * @param ReflectionProperty $reflectionProperty
-     * @return SwagDtoQuery|SwagDtoFrom|null
+     * @param \ReflectionProperty $reflectionProperty ReflectionProperty
+     * @return \SwaggerBake\Lib\Annotation\SwagDtoQuery|\SwaggerBake\Lib\Operation\SwagDtoFrom|null
      */
     private function getSwagDtoProperty(ReflectionProperty $reflectionProperty)
     {
@@ -126,11 +135,10 @@ class DtoParser
             $annotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, SwagDtoQuery::class);
             if ($annotation instanceof SwagDtoQuery && !empty($annotation->name)) {
                 return $annotation;
-            } else if ($annotation instanceof SwagDtoForm && !empty($annotation->name)) {
+            } elseif ($annotation instanceof SwagDtoForm && !empty($annotation->name)) {
                 return $annotation;
             }
         } catch (AnnotationException $e) {
-
         }
 
         return null;
@@ -141,7 +149,7 @@ class DtoParser
      *
      * @return array
      */
-    private function getClassProperties() : array
+    private function getClassProperties(): array
     {
         $properties = DocBlockUtility::getProperties($this->instance);
 
@@ -153,6 +161,7 @@ class DtoParser
             if (!isset($property->class) || $property->class != get_class($this->instance)) {
                 return null;
             }
+
             return true;
         });
     }

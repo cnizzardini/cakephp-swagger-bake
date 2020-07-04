@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Extension\CakeSearch;
 
@@ -6,20 +7,25 @@ use ReflectionClass;
 
 /**
  * Class FilterDecorator
+ *
  * @package SwaggerBake\Lib\Extension\CakeSearch
  */
 class FilterDecorator
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $name;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $comparison;
 
     private $filter;
 
     /**
-     * @param \Search\Model\Filter\Base $filter
+     * @param \Search\Model\Filter\Base $filter Filter\Base
      * @throws \ReflectionException
      */
     public function __construct(\Search\Model\Filter\Base $filter)

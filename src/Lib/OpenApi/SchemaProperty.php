@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
@@ -6,6 +7,7 @@ use JsonSerializable;
 
 /**
  * Class SchemaProperty
+ *
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/data-models/
  */
@@ -13,47 +15,74 @@ class SchemaProperty implements JsonSerializable
 {
     use JsonSchemaTrait;
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $name = '';
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $type = '';
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $format = '';
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $example = '';
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $description = '';
 
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     private $readOnly = false;
 
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     private $writeOnly = false;
 
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     private $required = false;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $enum = [];
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $deprecated = false;
 
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     private $requirePresenceOnCreate = false;
 
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     private $requirePresenceOnUpdate = false;
 
-    public function toArray() : array
+    /**
+     * @return array
+     */
+    public function toArray(): array
     {
         $vars = get_object_vars($this);
         // allows remove this items from JSON
-        foreach(['name','required','requirePresenceOnCreate','requirePresenceOnUpdate'] as $v) {
+        foreach (['name','required','requirePresenceOnCreate','requirePresenceOnUpdate'] as $v) {
             unset($vars[$v]);
         }
 
@@ -74,6 +103,9 @@ class SchemaProperty implements JsonSerializable
         return $this->removeEmptyVars($vars);
     }
 
+    /**
+     * @return array|mixed
+     */
     public function jsonSerialize()
     {
         return $this->toArray();
@@ -88,12 +120,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param string $name
-     * @return SchemaProperty
+     * @param string $name Name
+     * @return $this
      */
-    public function setName(string $name): SchemaProperty
+    public function setName(string $name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -106,12 +139,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param string $type
-     * @return SchemaProperty
+     * @param string $type Type
+     * @return $this
      */
-    public function setType(string $type): SchemaProperty
+    public function setType(string $type)
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -124,12 +158,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param string $format
-     * @return SchemaProperty
+     * @param string $format Format
+     * @return $this
      */
-    public function setFormat(string $format): SchemaProperty
+    public function setFormat(string $format)
     {
         $this->format = $format;
+
         return $this;
     }
 
@@ -142,12 +177,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param bool $readOnly
-     * @return SchemaProperty
+     * @param bool $readOnly Read Only
+     * @return $this
      */
-    public function setReadOnly(bool $readOnly): SchemaProperty
+    public function setReadOnly(bool $readOnly)
     {
         $this->readOnly = $readOnly;
+
         return $this;
     }
 
@@ -160,12 +196,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param bool $writeOnly
-     * @return SchemaProperty
+     * @param bool $writeOnly Write Only
+     * @return $this
      */
-    public function setWriteOnly(bool $writeOnly): SchemaProperty
+    public function setWriteOnly(bool $writeOnly)
     {
         $this->writeOnly = $writeOnly;
+
         return $this;
     }
 
@@ -178,12 +215,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param bool $required
-     * @return SchemaProperty
+     * @param bool $required Required
+     * @return $this
      */
-    public function setRequired(bool $required): SchemaProperty
+    public function setRequired(bool $required)
     {
         $this->required = $required;
+
         return $this;
     }
 
@@ -196,12 +234,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param string $example
-     * @return SchemaProperty
+     * @param string|int $example Example
+     * @return $this
      */
-    public function setExample(string $example): SchemaProperty
+    public function setExample($example)
     {
-        $this->example = $example;
+        $this->example = (string)$example;
+
         return $this;
     }
 
@@ -214,12 +253,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param string $description
-     * @return SchemaProperty
+     * @param string $description Description
+     * @return $this
      */
-    public function setDescription(string $description): SchemaProperty
+    public function setDescription(string $description)
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -232,12 +272,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param array $enum
-     * @return SchemaProperty
+     * @param array $enum Enumerated values
+     * @return $this
      */
-    public function setEnum(array $enum): SchemaProperty
+    public function setEnum(array $enum)
     {
         $this->enum = $enum;
+
         return $this;
     }
 
@@ -250,12 +291,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param bool $deprecated
-     * @return SchemaProperty
+     * @param bool $deprecated Deprecated
+     * @return $this
      */
-    public function setDeprecated(bool $deprecated): SchemaProperty
+    public function setDeprecated(bool $deprecated)
     {
         $this->deprecated = $deprecated;
+
         return $this;
     }
 
@@ -268,12 +310,13 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param bool $requirePresenceOnCreate
-     * @return SchemaProperty
+     * @param bool $requirePresenceOnCreate Require presence on create
+     * @return $this
      */
-    public function setRequirePresenceOnCreate(bool $requirePresenceOnCreate): SchemaProperty
+    public function setRequirePresenceOnCreate(bool $requirePresenceOnCreate)
     {
         $this->requirePresenceOnCreate = $requirePresenceOnCreate;
+
         return $this;
     }
 
@@ -286,19 +329,20 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @param bool $requirePresenceOnUpdate
-     * @return SchemaProperty
+     * @param bool $requirePresenceOnUpdate Require presence on update
+     * @return $this
      */
-    public function setRequirePresenceOnUpdate(bool $requirePresenceOnUpdate): SchemaProperty
+    public function setRequirePresenceOnUpdate(bool $requirePresenceOnUpdate)
     {
         $this->requirePresenceOnUpdate = $requirePresenceOnUpdate;
+
         return $this;
     }
 
     /**
      * @return bool
      */
-    public function isTypeScalar() : bool
+    public function isTypeScalar(): bool
     {
         return in_array($this->type, ['integer','string','float','boolean','bool','int']);
     }

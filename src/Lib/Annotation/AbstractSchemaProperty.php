@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Annotation;
 
@@ -6,6 +7,7 @@ use InvalidArgumentException;
 
 /**
  * Class AbstractSchemaProperty
+ *
  * @package SwaggerBake\Lib\Annotation
  *
  * Read OpenAPI specification for exact usage of the attributes:
@@ -16,81 +18,134 @@ use InvalidArgumentException;
  */
 abstract class AbstractSchemaProperty
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public $name;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $type = 'string';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $format;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $description;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $readOnly = false;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $writeOnly = false;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $required = false;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $title;
 
-    /** @var mixed */
+    /**
+     * @var mixed
+     */
     public $default;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $nullable = false;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $deprecated = false;
 
-    /** @var float|null */
+    /**
+     * @var float|null
+     */
     public $multipleOf;
 
-    /** @var float|null */
+    /**
+     * @var float|null
+     */
     public $maximum;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $exclusiveMaximum = false;
 
-    /** @var float|null */
+    /**
+     * @var float|null
+     */
     public $minimum;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $exclusiveMinimum = false;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     public $maxLength;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     public $minLength;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     public $pattern;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     public $maxItems;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     public $minItems;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $uniqueItems = false;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     public $maxProperties;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     public $minProperties;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     public $enum = [];
 
+    /**
+     * @param array $values Annotation attributes as key-value pair
+     */
     public function __construct(array $values)
     {
         if (!isset($values['name'])) {

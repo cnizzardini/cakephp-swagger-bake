@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Decorator;
 
@@ -6,38 +7,56 @@ use Cake\Routing\Route\Route;
 
 /**
  * Class RouteDecorator
+ *
  * @package SwaggerBake\Lib\Decorator
  *
  * Decorates a Cake\Routing\Route\Route
  */
 class RouteDecorator
 {
-    /** @var Route */
+    /**
+     * @var \Cake\Routing\Route\Route
+     */
     private $route;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     private $name;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     private $plugin;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     private $controller;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     private $action;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $methods = [];
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     private $template;
 
+    /**
+     * @param \Cake\Routing\Route\Route $route Route
+     */
     public function __construct(Route $route)
     {
         $this->route;
 
-        $defaults = (array) $route->defaults;
+        $defaults = (array)$route->defaults;
 
         $methods = $defaults['_method'];
         if (!is_array($defaults['_method'])) {
@@ -50,12 +69,11 @@ class RouteDecorator
             ->setPlugin($defaults['plugin'])
             ->setController($defaults['controller'])
             ->setAction($defaults['action'])
-            ->setMethods($methods)
-        ;
+            ->setMethods($methods);
     }
 
     /**
-     * @return Route
+     * @return \Cake\Routing\Route\Route
      */
     public function getRoute(): Route
     {
@@ -63,12 +81,13 @@ class RouteDecorator
     }
 
     /**
-     * @param Route $route
-     * @return RouteDecorator
+     * @param \Cake\Routing\Route\Route $route Route
+     * @return $this
      */
-    public function setRoute(Route $route): RouteDecorator
+    public function setRoute(Route $route)
     {
         $this->route = $route;
+
         return $this;
     }
 
@@ -81,12 +100,13 @@ class RouteDecorator
     }
 
     /**
-     * @param $name
+     * @param string $name Name of the route
      * @return $this
      */
-    public function setName(string $name): RouteDecorator
+    public function setName(string $name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -99,12 +119,13 @@ class RouteDecorator
     }
 
     /**
-     * @param string|null $plugin
+     * @param string|null $plugin Name of the plugin this route is associated with
      * @return $this
      */
-    public function setPlugin(?string $plugin): RouteDecorator
+    public function setPlugin(?string $plugin)
     {
         $this->plugin = $plugin;
+
         return $this;
     }
 
@@ -117,12 +138,13 @@ class RouteDecorator
     }
 
     /**
-     * @param $controller
+     * @param string $controller Name of the Controller this route is associated with
      * @return $this
      */
     public function setController(string $controller)
     {
         $this->controller = $controller;
+
         return $this;
     }
 
@@ -135,12 +157,13 @@ class RouteDecorator
     }
 
     /**
-     * @param $action
+     * @param string|null $action The controller method
      * @return $this
      */
-    public function setAction($action): RouteDecorator
+    public function setAction($action)
     {
         $this->action = $action;
+
         return $this;
     }
 
@@ -153,30 +176,32 @@ class RouteDecorator
     }
 
     /**
-     * @param array $methods
+     * @param array $methods HTTP methods
      * @return $this
      */
-    public function setMethods(array $methods): RouteDecorator
+    public function setMethods(array $methods)
     {
         $this->methods = array_map('strtoupper', $methods);
+
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getTemplate() : ?string
+    public function getTemplate(): ?string
     {
         return $this->template;
     }
 
     /**
-     * @param $template
+     * @param string $template The templated route
      * @return $this
      */
-    public function setTemplate(string $template): RouteDecorator
+    public function setTemplate(string $template)
     {
         $this->template = $template;
+
         return $this;
     }
 }

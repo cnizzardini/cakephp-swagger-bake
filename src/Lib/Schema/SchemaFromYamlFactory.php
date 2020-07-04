@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Schema;
 
@@ -7,6 +8,7 @@ use SwaggerBake\Lib\OpenApi\Xml;
 
 /**
  * Class SchemaFromYamlFactory
+ *
  * @package SwaggerBake\Lib\Schema
  */
 class SchemaFromYamlFactory
@@ -14,11 +16,11 @@ class SchemaFromYamlFactory
     /**
      * Create an instance of Schema from YAML
      *
-     * @param string $name
-     * @param array $yml
-     * @return Schema
+     * @param string $name Name of the Schema (i.e. cake entity name)
+     * @param array $yml OpenApi YAML as an array
+     * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    public function create(string $name, array $yml) : Schema
+    public function create(string $name, array $yml): Schema
     {
         $schema = (new Schema())
             ->setName($name)
@@ -29,8 +31,7 @@ class SchemaFromYamlFactory
             ->setAllOf($yml['allOf'] ?? [])
             ->setAnyOf($yml['anyOf'] ?? [])
             ->setOneOf($yml['oneOf'] ?? [])
-            ->setNot($yml['oneOf'] ?? [])
-        ;
+            ->setNot($yml['oneOf'] ?? []);
 
         if (isset($yml['xml'])) {
             $schema->setXml(

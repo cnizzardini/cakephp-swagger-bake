@@ -1,33 +1,43 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Annotation;
-
-use InvalidArgumentException;
 
 /**
  * @Annotation
  * @Target({"CLASS"})
  * @Attributes({
- *   @Attribute("isVisible", type="bool"),
- *   @Attribute("ref", type="string"),
- *   @Attribute("description", type="string"),
- *   @Attribute("summary", type="string"),
+ * @Attribute("isVisible", type="bool"),
+ * @Attribute("ref", type="string"),
+ * @Attribute("description", type="string"),
+ * @Attribute("summary", type="string"),
  * })
  */
 class SwagPath
 {
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $isVisible = true;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     public $ref;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     public $description;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     public $summary;
 
+    /**
+     * @param array $values Annotation attributes as key-value pair
+     */
     public function __construct(array $values)
     {
         foreach ($values as $attribute => $value) {

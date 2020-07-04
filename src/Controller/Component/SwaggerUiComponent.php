@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Controller\Component;
 
@@ -8,31 +9,44 @@ use Cake\Event\Event;
 use Cake\Http\ServerRequest;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
-use SwaggerBake\Lib\Swagger;
 
 /**
  * Class SwaggerUiComponent
+ *
  * @package SwaggerBake\Controller\Component
  */
 class SwaggerUiComponent extends Component
 {
     public $components = ['Flash'];
 
-    /** @var Configuration */
+    /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
     public $config;
 
-    /** @var Swagger */
+    /**
+     * @var \SwaggerBake\Lib\Swagger
+     */
     public $swagger;
 
+    /**
+     * SwaggerUiComponent constructor.
+     *
+     * @param \Cake\Controller\ComponentRegistry $registry ComponentRegistry
+     * @param array $config configurations
+     */
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
         parent::__construct($registry, $config);
         $this->config = new Configuration();
         $this->swagger = (new SwaggerFactory())->create();
-
     }
 
-    public function beforeFilter(Event $event) : void
+    /**
+     * @param \Cake\Event\Event $event Event
+     * @return void
+     */
+    public function beforeFilter(Event $event): void
     {
         if ($this->config->getHotReload()) {
             $output = $this->config->getJson();
@@ -50,20 +64,21 @@ class SwaggerUiComponent extends Component
     }
 
     /**
-     * @return Configuration
+     * @return \SwaggerBake\Lib\Configuration
      */
-    public function getSwaggerBakeConfiguration() : Configuration
+    public function getSwaggerBakeConfiguration(): Configuration
     {
         return $this->config;
     }
 
     /**
-     * @param ServerRequest $request
+     * @param \Cake\Http\ServerRequest $request ServerRequest
      * @return string
      */
-    public function getDocType(ServerRequest $request) : string
+    public function getDocType(ServerRequest $request): string
     {
         $docType = h(strtolower($request->getQuery('doctype')));
+
         return in_array(strtolower($docType), ['swagger','redoc']) ? $docType : 'swagger';
     }
 }

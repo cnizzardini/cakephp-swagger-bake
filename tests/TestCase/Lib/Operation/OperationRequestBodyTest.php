@@ -64,7 +64,6 @@ class OperationRequestBodyTest extends TestCase
         $operationRequestBody = new OperationRequestBody(
             $config,
             (new Operation())->setHttpMethod('POST'),
-            DocBlockFactory::createInstance()->create('/** @throws Exception */'),
             [
                 new SwagForm(['name' => 'test', 'type' => 'string', 'description' => '', 'required' => false])
             ],
@@ -95,7 +94,6 @@ class OperationRequestBodyTest extends TestCase
         $operationRequestBody = new OperationRequestBody(
             $config,
             (new Operation())->setHttpMethod('POST'),
-            DocBlockFactory::createInstance()->create('/** @throws Exception */'),
             [
                 new SwagDto(['class' => '\SwaggerBakeTest\App\Dto\EmployeeData'])
             ],
@@ -137,7 +135,6 @@ class OperationRequestBodyTest extends TestCase
         $operationRequestBody = new OperationRequestBody(
             $config,
             (new Operation())->setHttpMethod('POST'),
-            DocBlockFactory::createInstance()->create('/** */'),
             [],
             $route,
             $schema

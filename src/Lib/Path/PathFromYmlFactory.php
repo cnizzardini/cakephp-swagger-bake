@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Path;
 
 use SwaggerBake\Lib\OpenApi\Path;
-use SwaggerBake\Lib\OpenApi\Operation;
 
 /**
  * Class PathFromYmlFactory
+ *
  * @package SwaggerBake\Lib\Path
  */
 class PathFromYmlFactory
@@ -14,11 +15,11 @@ class PathFromYmlFactory
     /**
      * Creates a Path from Yml definitions that have been converted into an array
      *
-     * @param string $resource
-     * @param array $vars
-     * @return Path
+     * @param string $resource Resource name
+     * @param array $yaml OpenApi YAML as an array
+     * @return \SwaggerBake\Lib\OpenApi\Path
      */
-    public function create(string $resource, array $vars) : Path
+    public function create(string $resource, array $yaml): Path
     {
         return (new Path())->setResource($resource);
 

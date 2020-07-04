@@ -1,32 +1,44 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
-use SwaggerBake\Lib\Decorator\RouteDecorator;
 use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
 use InvalidArgumentException;
+use SwaggerBake\Lib\Decorator\RouteDecorator;
 
 /**
  * Class CakeRoute
+ *
  * @package SwaggerBake\Lib
  */
 class CakeRoute
 {
     /** @var string[]  */
     private const EXCLUDED_PLUGINS = [
-        'DebugKit'
+        'DebugKit',
     ];
 
-    /** @var Router  */
+    /**
+     * @var \Cake\Routing\Router
+     */
     private $router;
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $prefix;
 
-    /** @var int  */
+    /**
+     * @var int
+     */
     private $prefixLength = 0;
 
+    /**
+     * @param \Cake\Routing\Router $router Router
+     * @param \SwaggerBake\Lib\Configuration $config Configuration
+     */
     public function __construct(Router $router, Configuration $config)
     {
         $this->router = $router;
@@ -35,11 +47,11 @@ class CakeRoute
     }
 
     /**
-     * Gets an array of Route
+     * Gets an array of RouteDecorator objects
      *
-     * @return RouteDecorator[]
+     * @return \SwaggerBake\Lib\Decorator\RouteDecorator[]
      */
-    public function getRoutes() : array
+    public function getRoutes(): array
     {
         if (empty($this->prefix) || !filter_var('http://foo.com' . $this->prefix, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException('route prefix is invalid');
@@ -61,10 +73,10 @@ class CakeRoute
     }
 
     /**
-     * @param Route $route
+     * @param \Cake\Routing\Route\Route $route Route
      * @return bool
      */
-    private function isRouteAllowed(Route $route) : bool
+    private function isRouteAllowed(Route $route): bool
     {
         if (substr($route->template, 0, $this->prefixLength) != $this->prefix) {
             return false;
@@ -73,7 +85,7 @@ class CakeRoute
             return false;
         }
 
-        $defaults = (array) $route->defaults;
+        $defaults = (array)$route->defaults;
 
         if (!isset($defaults['_method']) || empty($defaults['_method'])) {
             return false;
