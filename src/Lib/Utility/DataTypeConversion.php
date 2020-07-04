@@ -1,17 +1,24 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
 /**
  * Class DataTypeConversion
+ *
  * @package SwaggerBake\Lib\Utility
  */
 class DataTypeConversion
 {
-    public static function toType(string $type) : string
+    /**
+     * Returns the OpenApi data type from the CakePHP data type
+     *
+     * @param string $type Data type
+     * @return string
+     */
+    public static function toType(string $type): string
     {
-        switch ($type)
-        {
+        switch ($type) {
             case 'int':
             case 'smallinteger':
             case 'biginteger':
@@ -33,10 +40,15 @@ class DataTypeConversion
         return $type;
     }
 
-    public static function toFormat(string $type) : string
+    /**
+     * Returns a data format from CakePHP data type
+     *
+     * @param string $type Data type
+     * @return string
+     */
+    public static function toFormat(string $type): string
     {
-        switch ($type)
-        {
+        switch ($type) {
             case 'int':
             case 'biginteger':
                 return 'int64';

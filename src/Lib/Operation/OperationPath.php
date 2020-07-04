@@ -1,24 +1,28 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
 use SwaggerBake\Lib\Decorator\RouteDecorator;
-use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Operation;
+use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
 
 /**
  * Class OperationPath
+ *
  * @package SwaggerBake\Lib\Operation
  */
 class OperationPath
 {
     /**
-     * @param Operation $operation
-     * @param RouteDecorator $route
-     * @return Operation
+     * Adds Path parameters to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    public function getOperationWithPathParameters(Operation $operation, RouteDecorator $route) : Operation
+    public function getOperationWithPathParameters(Operation $operation, RouteDecorator $route): Operation
     {
         $pieces = explode('/', $route->getTemplate());
         $results = array_filter($pieces, function ($piece) {
@@ -26,7 +30,6 @@ class OperationPath
         });
 
         foreach ($results as $result) {
-
             $name = strtolower($result);
 
             if (substr($name, 0, 1) == ':') {

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Path;
 
@@ -11,16 +12,25 @@ use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
  * Class PathFromRouteFactory
+ *
  * @package SwaggerBake\Lib\Path
  */
 class PathFromRouteFactory
 {
-    /** @var RouteDecorator */
+    /**
+     * @var \SwaggerBake\Lib\Decorator\RouteDecorator
+     */
     private $route;
 
-    /** @var Configuration */
+    /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
     private $config;
 
+    /**
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\Configuration $config Configuration
+     */
     public function __construct(RouteDecorator $route, Configuration $config)
     {
         $this->config = $config;
@@ -28,11 +38,11 @@ class PathFromRouteFactory
     }
 
     /**
-     * Creates a Path if possible, otherwise returns null
+     * Creates an instance of Path if possible, otherwise returns null
      *
-     * @return Path|null
+     * @return \SwaggerBake\Lib\OpenApi\Path|null
      */
-    public function create() : ?Path
+    public function create(): ?Path
     {
         if (empty($this->route->getMethods())) {
             return null;
@@ -64,12 +74,12 @@ class PathFromRouteFactory
     }
 
     /**
-     * Returns an instance of SwagPath if it exists, otherwise null
+     * Returns SwagPath if the controller has the annotation, otherwise null
      *
-     * @param string $fqns
-     * @return SwagPath|null
+     * @param string $fqns Full qualified namespace of the Controller
+     * @return \SwaggerBake\Lib\Annotation\SwagPath|null
      */
-    private function getSwagPathAnnotation(string $fqns) : ?SwagPath
+    private function getSwagPathAnnotation(string $fqns): ?SwagPath
     {
         $annotations = AnnotationUtility::getClassAnnotationsFromFqns($fqns);
 
@@ -89,7 +99,7 @@ class PathFromRouteFactory
      *
      * @return string
      */
-    private function getResourceName() : string
+    private function getResourceName(): string
     {
         $pieces = $this->getRoutablePieces();
 
@@ -108,13 +118,14 @@ class PathFromRouteFactory
      *
      * @return string[]
      */
-    private function getRoutablePieces() : array
+    private function getRoutablePieces(): array
     {
         return array_map(
             function ($piece) {
                 if (substr($piece, 0, 1) == ':') {
                     return '{' . str_replace(':', '', $piece) . '}';
                 }
+
                 return $piece;
             },
             explode('/', $this->route->getTemplate())

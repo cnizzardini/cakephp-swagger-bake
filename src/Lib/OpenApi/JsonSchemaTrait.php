@@ -1,70 +1,103 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
 trait JsonSchemaTrait
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $title;
 
-    /** @var mixed */
+    /**
+     * @var mixed
+     */
     protected $default;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $nullable;
 
-    /** @var float|null */
+    /**
+     * @var float|null
+     */
     protected $multipleOf;
 
-    /** @var float|null */
+    /**
+     * @var float|null
+     */
     protected $minimum;
 
-    /** @var float|null */
+    /**
+     * @var float|null
+     */
     protected $maximum;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $exclusiveMinimum;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $exclusiveMaximum;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     protected $minLength;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     protected $maxLength;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $pattern;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     protected $minItems;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     protected $maxItems;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $uniqueItems;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     protected $minProperties;
 
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     protected $maxProperties;
 
     /**
-     * @param $vars
+     * @param array $vars Object properties as a key-value pair
      * @return array
      */
-    public function removeEmptyVars($vars) : array
+    public function removeEmptyVars(array $vars): array
     {
         $empties = [
             'title','default','multipleOf','minimum','maximum','exclusiveMinimum','exclusiveMaximum','minLength',
-            'maxLength','pattern','minItems','maxItems','uniqueItems','minProperties','maxProperties','nullable'
+            'maxLength','pattern','minItems','maxItems','uniqueItems','minProperties','maxProperties','nullable',
         ];
 
         foreach ($vars as $name => $value) {
-            if (in_array($name, $empties) && (empty($value) || is_null($value) || $value == NULL)) {
+            if (in_array($name, $empties) && (empty($value) || is_null($value) || $value == null)) {
                 unset($vars[$name]);
             }
         }
@@ -81,12 +114,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param string $title
-     * @return JsonSchemaTrait
+     * @param string $title Title
+     * @return $this
      */
-    public function setTitle(string $title): self
+    public function setTitle(string $title)
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -99,12 +133,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param mixed $default
-     * @return JsonSchemaTrait
+     * @param mixed $default Default
+     * @return $this
      */
     public function setDefault($default)
     {
         $this->default = $default;
+
         return $this;
     }
 
@@ -117,12 +152,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param bool $nullable
-     * @return JsonSchemaTrait
+     * @param bool $nullable Nullable
+     * @return $this
      */
-    public function setNullable(bool $nullable): self
+    public function setNullable(bool $nullable)
     {
         $this->nullable = $nullable;
+
         return $this;
     }
 
@@ -135,12 +171,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param bool $deprecated
-     * @return JsonSchemaTrait
+     * @param bool $deprecated Deprecated
+     * @return $this
      */
-    public function setDeprecated(bool $deprecated): self
+    public function setDeprecated(bool $deprecated)
     {
         $this->deprecated = $deprecated;
+
         return $this;
     }
 
@@ -153,12 +190,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param float $multipleOf
-     * @return JsonSchemaTrait
+     * @param float $multipleOf multipleOf
+     * @return $this
      */
-    public function setMultipleOf(float $multipleOf): self
+    public function setMultipleOf(float $multipleOf)
     {
         $this->multipleOf = $multipleOf;
+
         return $this;
     }
 
@@ -171,12 +209,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param float $maximum
-     * @return JsonSchemaTrait
+     * @param float $maximum Maximum
+     * @return $this
      */
-    public function setMaximum(float $maximum): self
+    public function setMaximum(float $maximum)
     {
         $this->maximum = $maximum;
+
         return $this;
     }
 
@@ -189,12 +228,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param bool $exclusiveMaximum
-     * @return JsonSchemaTrait
+     * @param bool $exclusiveMaximum ExclusiveMaximum
+     * @return $this
      */
-    public function setExclusiveMaximum(bool $exclusiveMaximum): self
+    public function setExclusiveMaximum(bool $exclusiveMaximum)
     {
         $this->exclusiveMaximum = $exclusiveMaximum;
+
         return $this;
     }
 
@@ -207,12 +247,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param float $minimum
-     * @return JsonSchemaTrait
+     * @param float $minimum Minimum
+     * @return $this
      */
-    public function setMinimum(float $minimum): self
+    public function setMinimum(float $minimum)
     {
         $this->minimum = $minimum;
+
         return $this;
     }
 
@@ -225,12 +266,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param bool $exclusiveMinimum
-     * @return JsonSchemaTrait
+     * @param bool $exclusiveMinimum Exclusive Minimum
+     * @return $this
      */
-    public function setExclusiveMinimum(bool $exclusiveMinimum): self
+    public function setExclusiveMinimum(bool $exclusiveMinimum)
     {
         $this->exclusiveMinimum = $exclusiveMinimum;
+
         return $this;
     }
 
@@ -243,12 +285,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param int $maxLength
-     * @return JsonSchemaTrait
+     * @param int $maxLength MaxLength
+     * @return $this
      */
-    public function setMaxLength(int $maxLength): self
+    public function setMaxLength(int $maxLength)
     {
         $this->maxLength = $maxLength;
+
         return $this;
     }
 
@@ -261,12 +304,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param int $minLength
-     * @return JsonSchemaTrait
+     * @param int $minLength MinLength
+     * @return $this
      */
-    public function setMinLength(int $minLength): self
+    public function setMinLength(int $minLength)
     {
         $this->minLength = $minLength;
+
         return $this;
     }
 
@@ -279,12 +323,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param string $pattern
-     * @return JsonSchemaTrait
+     * @param string $pattern Pattern
+     * @return $this
      */
-    public function setPattern(string $pattern): self
+    public function setPattern(string $pattern)
     {
         $this->pattern = $pattern;
+
         return $this;
     }
 
@@ -297,12 +342,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param int $maxItems
-     * @return JsonSchemaTrait
+     * @param int $maxItems MaxItems
+     * @return $this
      */
-    public function setMaxItems(int $maxItems): self
+    public function setMaxItems(int $maxItems)
     {
         $this->maxItems = $maxItems;
+
         return $this;
     }
 
@@ -315,12 +361,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param int $minItems
-     * @return JsonSchemaTrait
+     * @param int $minItems MinItems
+     * @return $this
      */
-    public function setMinItems(int $minItems): self
+    public function setMinItems(int $minItems)
     {
         $this->minItems = $minItems;
+
         return $this;
     }
 
@@ -333,12 +380,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param bool $uniqueItems
-     * @return JsonSchemaTrait
+     * @param bool $uniqueItems UniqueItems
+     * @return $this
      */
-    public function setUniqueItems(bool $uniqueItems): self
+    public function setUniqueItems(bool $uniqueItems)
     {
         $this->uniqueItems = $uniqueItems;
+
         return $this;
     }
 
@@ -351,12 +399,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param int $maxProperties
-     * @return JsonSchemaTrait
+     * @param int $maxProperties MaxProperties
+     * @return $this
      */
-    public function setMaxProperties(int $maxProperties): self
+    public function setMaxProperties(int $maxProperties)
     {
         $this->maxProperties = $maxProperties;
+
         return $this;
     }
 
@@ -369,12 +418,13 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @param int $minProperties
-     * @return JsonSchemaTrait
+     * @param int $minProperties MinProperties
+     * @return $this
      */
-    public function setMinProperties(int $minProperties): self
+    public function setMinProperties(int $minProperties)
     {
         $this->minProperties = $minProperties;
+
         return $this;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Annotation;
 
@@ -10,14 +11,19 @@ use InvalidArgumentException;
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
- *   @Attribute("class", type = "string")
+ * @Attribute("class", type = "string")
  * })
  */
 class SwagDto
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public $class;
 
+    /**
+     * @param array $values Annotation attributes as key-value pair
+     */
     public function __construct(array $values)
     {
         if (!isset($values['class'])) {

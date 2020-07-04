@@ -6,7 +6,6 @@ namespace SwaggerBake\Command;
 use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
-use Cake\Core\Configure;
 use Cake\Routing\Router;
 use SwaggerBake\Lib\CakeModel;
 use SwaggerBake\Lib\CakeRoute;
@@ -16,6 +15,7 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**
  * Class ModelCommand
+ *
  * @package SwaggerBake\Command
  */
 class ModelCommand extends Command
@@ -23,14 +23,14 @@ class ModelCommand extends Command
     /**
      * List Cake Entities that can be added to Swagger. Prints to console.
      *
-     * @param Arguments $args
-     * @param ConsoleIo $io
+     * @param \Cake\Console\Arguments $args Arguments
+     * @param \Cake\Console\ConsoleIo $io ConsoleIo
      * @return int|void|null
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $io->hr();
-        $io->out("| SwaggerBake is checking your models...");
+        $io->out('| SwaggerBake is checking your models...');
         $io->hr();
 
         $config = new Configuration();
@@ -43,8 +43,9 @@ class ModelCommand extends Command
         if (empty($entities)) {
             $io->out();
             $io->warning('No models were found that are associated with: ' . $config->getPrefix());
-            $io->out("Have you added RESTful routes? Do you have models associated with those routes?");
+            $io->out('Have you added RESTful routes? Do you have models associated with those routes?');
             $io->out();
+
             return;
         }
 

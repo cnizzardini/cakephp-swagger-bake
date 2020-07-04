@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
@@ -7,22 +8,30 @@ use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 
 /**
  * Class ExceptionHandler
+ *
  * @package SwaggerBake\Lib\Operation
  */
 class ExceptionHandler
 {
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $message;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $code = '500';
 
+    /**
+     * @param \phpDocumentor\Reflection\DocBlock\Tags\Throws $throw Throws
+     */
     public function __construct(Throws $throw)
     {
         $exceptionClass = $throw->getType()->__toString();
         $this->message = trim($throw->getDescription()->getBodyTemplate());
 
-        if (substr($exceptionClass, 0 , 1) == '\\') {
+        if (substr($exceptionClass, 0, 1) == '\\') {
             $exceptionClass = substr($exceptionClass, 1);
         }
 
@@ -46,8 +55,7 @@ class ExceptionHandler
                     $this->assignMessage($instance);
                 }
             }
-        } catch(Exception $e) {
-
+        } catch (Exception $e) {
         }
 
         $this->message = empty($this->message) ? 'Unknown Error' : $this->message;
@@ -58,9 +66,10 @@ class ExceptionHandler
     /**
      * Assigns ExceptionHandler::message using the Exception $instance argument
      *
-     * @param $instance
+     * @param \Exception $instance Exception
+     * @return void
      */
-    private function assignMessage($instance) : void
+    private function assignMessage(Exception $instance): void
     {
         if (!empty($this->message)) {
             return;
@@ -75,6 +84,7 @@ class ExceptionHandler
         $pieces = explode('\\', $class);
         if (!empty($pieces)) {
             $this->message = end($pieces);
+
             return;
         }
 
@@ -82,9 +92,9 @@ class ExceptionHandler
     }
 
     /**
-     * @return string
+     * @return string|int
      */
-    public function getCode() : string
+    public function getCode()
     {
         return $this->code;
     }
@@ -92,7 +102,7 @@ class ExceptionHandler
     /**
      * @return string
      */
-    public function getMessage() : string
+    public function getMessage(): string
     {
         return $this->message;
     }

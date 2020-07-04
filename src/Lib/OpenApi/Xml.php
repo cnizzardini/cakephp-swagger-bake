@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
@@ -6,29 +7,40 @@ use JsonSerializable;
 
 /**
  * Class Xml
+ *
  * @package SwaggerBake\Lib\OpenApi
  */
 class Xml implements JsonSerializable
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $name;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     private $namespace;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     private $prefix;
 
-    /** @var bool|null */
+    /**
+     * @var bool|null
+     */
     private $attribute;
 
-    /** @var bool|null */
+    /**
+     * @var bool|null
+     */
     private $wrapped;
 
     /**
      * @return array
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         $vars = get_object_vars($this);
 
@@ -66,12 +78,13 @@ class Xml implements JsonSerializable
     }
 
     /**
-     * @param string $name
-     * @return Xml
+     * @param string $name Name
+     * @return $this
      */
-    public function setName(string $name): Xml
+    public function setName(string $name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -84,12 +97,13 @@ class Xml implements JsonSerializable
     }
 
     /**
-     * @param string|null $namespace
-     * @return Xml
+     * @param string|null $namespace XML namespace
+     * @return $this
      */
-    public function setNamespace(?string $namespace): Xml
+    public function setNamespace(?string $namespace)
     {
         $this->namespace = $namespace;
+
         return $this;
     }
 
@@ -102,12 +116,13 @@ class Xml implements JsonSerializable
     }
 
     /**
-     * @param string|null $prefix
-     * @return Xml
+     * @param string|null $prefix Prefix
+     * @return $this
      */
-    public function setPrefix(?string $prefix): Xml
+    public function setPrefix(?string $prefix)
     {
         $this->prefix = $prefix;
+
         return $this;
     }
 
@@ -120,12 +135,13 @@ class Xml implements JsonSerializable
     }
 
     /**
-     * @param bool|null $attribute
-     * @return Xml
+     * @param bool|null $attribute Attribute
+     * @return $this
      */
-    public function setAttribute(?bool $attribute): Xml
+    public function setAttribute(?bool $attribute)
     {
         $this->attribute = $attribute;
+
         return $this;
     }
 
@@ -138,12 +154,13 @@ class Xml implements JsonSerializable
     }
 
     /**
-     * @param bool|null $wrapped
-     * @return Xml
+     * @param bool|null $wrapped Wrapped
+     * @return $this
      */
-    public function setWrapped(?bool $wrapped): Xml
+    public function setWrapped(?bool $wrapped)
     {
         $this->wrapped = $wrapped;
+
         return $this;
     }
 }

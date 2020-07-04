@@ -9,6 +9,7 @@ use Cake\Console\ConsoleIo;
 
 /**
  * Class InstallCommand
+ *
  * @package SwaggerBake\Command
  */
 class InstallCommand extends Command
@@ -16,14 +17,14 @@ class InstallCommand extends Command
     /**
      * Writes a swagger.json file
      *
-     * @param Arguments $args
-     * @param ConsoleIo $io
+     * @param \Cake\Console\Arguments $args Arguments
+     * @param \Cake\Console\ConsoleIo $io ConsoleIo
      * @return int|void|null
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $io->hr();
-        $io->out("| SwaggerBake Install");
+        $io->out('| SwaggerBake Install');
         $io->hr();
 
         $io->info('This will create, but not overwrite config/swagger.yml and config/swagger_bake.php');
@@ -37,9 +38,10 @@ class InstallCommand extends Command
             return;
         }
 
-        $assets = __DIR__ . DS . '..' . DS . '..' . DS  . 'assets';
+        $assets = __DIR__ . DS . '..' . DS . '..' . DS . 'assets';
         if (!dir($assets)) {
             $io->error('Unable to locate assets directory, please install manually');
+
             return;
         }
 
@@ -52,11 +54,13 @@ class InstallCommand extends Command
 
         if (!copy("$assets/swagger.yml", CONFIG . 'swagger.yml')) {
             $io->error('Unable to copy swagger.yml, check permissions');
+
             return;
         }
 
         if (!copy("$assets/swagger_bake.php", CONFIG . 'swagger_bake.php')) {
             $io->error('Unable to copy swagger_bake.php, check permissions');
+
             return;
         }
 

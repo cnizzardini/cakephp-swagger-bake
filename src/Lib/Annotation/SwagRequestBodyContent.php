@@ -1,25 +1,31 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Annotation;
-
-use InvalidArgumentException;
 
 /**
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
- *   @Attribute("refEntity", type = "string"),
- *   @Attribute("mimeType", type = "string")
+ * @Attribute("refEntity", type = "string"),
+ * @Attribute("mimeType", type = "string")
  * })
  */
 class SwagRequestBodyContent
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public $refEntity;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $mimeType;
 
+    /**
+     * @param array $values Annotation attributes as key-value pair
+     */
     public function __construct(array $values)
     {
         $this->refEntity = $values['refEntity'];

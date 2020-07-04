@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
@@ -14,28 +15,49 @@ use SwaggerBake\Lib\OpenApi\Xml;
 
 /**
  * Class OperationResponse
+ *
  * @package SwaggerBake\Lib\Operation
  */
 class OperationResponse
 {
-    /** @var Configuration  */
+    /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
     private $config;
 
-    /** @var Operation  */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Operation
+     */
     private $operation;
 
-    /** @var DocBlock  */
+    /**
+     * @var \phpDocumentor\Reflection\DocBlock
+     */
     private $doc;
 
-    /** @var RouteDecorator  */
+    /**
+     * @var \SwaggerBake\Lib\Decorator\RouteDecorator
+     */
     private $route;
 
-    /** @var array  */
+    /**
+     * @var array
+     */
     private $annotations;
 
-    /** @var Schema|null  */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Schema|null
+     */
     private $schema;
 
+    /**
+     * @param \SwaggerBake\Lib\Configuration $config Configuration
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param \phpDocumentor\Reflection\DocBlock $doc DocBlock
+     * @param array $annotations An array of annotation objects
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema
+     */
     public function __construct(
         Configuration $config,
         Operation $operation,
@@ -54,9 +76,10 @@ class OperationResponse
 
     /**
      * Gets an Operation with Responses
-     * @return Operation
+     *
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    public function getOperationWithResponses() : Operation
+    public function getOperationWithResponses(): Operation
     {
         $this->assignAnnotations();
         $this->assignDocBlockExceptions();
@@ -68,9 +91,10 @@ class OperationResponse
 
     /**
      * Set Responses using SwagResponseSchema
+     *
      * @return void
      */
-    private function assignAnnotations() : void
+    private function assignAnnotations(): void
     {
         $swagResponses = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagResponseSchema;
@@ -80,7 +104,6 @@ class OperationResponse
         $defaultMimeType = reset($mimeTypes);
 
         foreach ($swagResponses as $annotation) {
-
             if (empty($annotation->mimeType) && !empty($annotation->refEntity)) {
                 $annotation->mimeType = $defaultMimeType;
             }
@@ -107,9 +130,10 @@ class OperationResponse
 
     /**
      * Sets error Responses using throw tags from Dock Block
+     *
      * @return void
      */
-    private function assignDocBlockExceptions() : void
+    private function assignDocBlockExceptions(): void
     {
         if (!$this->doc->hasTag('throws')) {
             return;
@@ -136,9 +160,10 @@ class OperationResponse
 
     /**
      * Assigns Cake Models as Swagger Schema if possible
+     *
      * @return void
      */
-    private function assignSchema() : void
+    private function assignSchema(): void
     {
         if (!$this->schema) {
             return;
@@ -148,17 +173,16 @@ class OperationResponse
             return;
         }
 
-        if (!in_array(strtolower($this->route->getAction()),['index','add','view','edit'])) {
+        if (!in_array(strtolower($this->route->getAction()), ['index','add','view','edit'])) {
             return;
         }
 
         $schema = clone $this->schema;
 
-        if (in_array(strtolower($this->route->getAction()),['index'])) {
+        if (in_array(strtolower($this->route->getAction()), ['index'])) {
             $response = (new Response())->setCode('200');
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
-
                 if ($mimeType == 'application/xml') {
                     $schema->setXml((new Xml())->setName('response'));
                 }
@@ -170,14 +194,14 @@ class OperationResponse
                 );
             }
             $this->operation->pushResponse($response);
+
             return;
         }
 
-        if (in_array(strtolower($this->route->getAction()),['add','view','edit'])) {
+        if (in_array(strtolower($this->route->getAction()), ['add','view','edit'])) {
             $response = (new Response())->setCode('200');
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
-
                 if ($mimeType == 'application/xml') {
                     $schema->setXml((new Xml())->setName('response'));
                 }
@@ -189,6 +213,7 @@ class OperationResponse
                 );
             }
             $this->operation->pushResponse($response);
+
             return;
         }
     }
@@ -199,9 +224,9 @@ class OperationResponse
      * delete: 204 with empty response body
      * default: 200 with empty response body and first element from responseContentTypes config as mimeType
      *
-     * @response void
+     * @return void
      */
-    private function assignDefaultResponses() : void
+    private function assignDefaultResponses(): void
     {
         if ($this->operation->hasSuccessResponseCode()) {
             return;
@@ -213,13 +238,13 @@ class OperationResponse
                     ->setCode('204')
                     ->setDescription('Resource deleted')
             );
+
             return;
         }
 
         $response = (new Response())->setCode('200');
 
         foreach ($this->config->getResponseContentTypes() as $mimeType) {
-
             $schema = (new Schema())->setDescription('');
 
             if ($mimeType == 'application/xml') {
@@ -232,7 +257,5 @@ class OperationResponse
         }
 
         $this->operation->pushResponse($response);
-
-        return;
     }
 }
