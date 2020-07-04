@@ -20,7 +20,8 @@
         "phpunit/phpunit": "^8.0",
         "friendsofcake/search": "^6.0",
         "cakephp/authentication": "^2.0",
-        "cakephp/cakephp-codesniffer": "^4.2"
+        "cakephp/cakephp-codesniffer": "^4.2",
+        "phpstan/phpstan": "^0.12.32"
     },
     "autoload": {
         "psr-4": {
