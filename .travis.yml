@@ -14,9 +14,21 @@ install:
   - composer install --prefer-dist --no-interaction
 
 script:
-  - vendor/bin/phpunit
-  - vendor/bin/phpcs --report=summary src
-  - vendor/bin/phpstan analyse -n --no-progress src
+  - |
+    if [[ $TRAVIS_PHP_VERSION == '7.4' ]]; then
+      export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
+      vendor/bin/phpcs --report=summary src
+      vendor/bin/phpstan analyse -n --no-progress src
+    else
+      vendor/bin/phpunit
+    fi
+after_success:
+  - |
+    if [[ $TRAVIS_PHP_VERSION == '7.4' ]]; then
+      wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+      chmod +x php-coveralls.phar
+      ./php-coveralls.phar
+    fi
 
 notifications:
   email: false
