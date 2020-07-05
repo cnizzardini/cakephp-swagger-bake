@@ -2,6 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
 [![Build Status](https://travis-ci.org/cnizzardini/cakephp-swagger-bake.svg?branch=master)](https://travis-ci.org/cnizzardini/cakephp-swagger-bake)
+[![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-swagger-bake/badge.svg?branch=master)](https://coveralls.io/github/cnizzardini/cakephp-swagger-bake?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
@@ -553,11 +554,12 @@ Feature requests are welcomed.
 Send pull requests to help improve this library. You can include SwaggerBake in your primary Cake project as a 
 local source to make developing easier:
 
-- Make a clone of this repository
+- Make a fork of this repository and clone it to your localhost
 
 - Remove `cnizzardini\cakephp-swagger-bake` from your `composer.json`
 
 - Add a paths repository to your `composer.json`
+
 ```
 "minimum-stability": "dev",
 "repositories": [
@@ -570,10 +572,20 @@ local source to make developing easier:
     }
 ]
 ```
+
 - Run `composer require cnizzardini/cakephp-swagger-bake @dev`
 
 Undo these steps when you're done. Read the full composer documentation on loading from path here: 
 [https://getcomposer.org/doc/05-repositories.md#path](https://getcomposer.org/doc/05-repositories.md#path)
+
+## Coding Standards
+
+Coding standards run as part of CI with Travis. You may run these locally as follows:
+
+```bash
+vendor/bin/phpstan analyse src
+vendor/bin/phpcs src
+```
 
 ## Unit Tests
 
