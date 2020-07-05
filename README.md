@@ -580,12 +580,7 @@ Undo these steps when you're done. Read the full composer documentation on loadi
 
 ## Coding Standards
 
-Coding standards run as part of CI with Travis. You may run these locally as follows:
-
-```bash
-vendor/bin/phpstan analyse src
-vendor/bin/phpcs src
-```
+Coding standards run as part of CI with Travis. You may run these locally with `composer check`.
 
 ## Unit Tests
 
