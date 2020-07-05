@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
@@ -8,16 +9,19 @@ use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 
 /**
  * Class OperationDocBlock
+ *
  * @package SwaggerBake\Lib\Operation
  */
 class OperationDocBlock
 {
     /**
-     * @param Operation $operation
-     * @param DocBlock $doc
-     * @return Operation
+     * Adds PHP Doc Block tags and meta data to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param \phpDocumentor\Reflection\DocBlock $doc DocBlock
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    public function getOperationWithDocBlock(Operation $operation, DocBlock $doc) : Operation
+    public function getOperationWithDocBlock(Operation $operation, DocBlock $doc): Operation
     {
         if ($doc->hasTag('deprecated')) {
             $operation->setDeprecated(true);

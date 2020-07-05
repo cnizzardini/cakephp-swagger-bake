@@ -1,37 +1,50 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
 use Cake\Utility\Inflector;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Schema\SchemaFactory;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
 use SwaggerBake\Lib\Path\PathFromRouteFactory;
+use SwaggerBake\Lib\Schema\SchemaFactory;
+use SwaggerBake\Lib\Schema\SchemaFromYamlFactory;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class Swagger
+ *
  * @package SwaggerBake\Lib
  */
 class Swagger
 {
-    /** @var array */
+    /**
+     * @var array
+     */
     private $array = [];
 
-    /** @var CakeModel */
+    /**
+     * @var \SwaggerBake\Lib\CakeModel
+     */
     private $cakeModel;
 
-    /** @var CakeRoute */
+    /**
+     * @var \SwaggerBake\Lib\CakeRoute
+     */
     private $cakeRoute;
 
-    /** @var Configuration */
+    /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
     private $config;
 
+    /**
+     * @param \SwaggerBake\Lib\CakeModel $cakeModel CakeModel
+     */
     public function __construct(CakeModel $cakeModel)
     {
         $this->cakeModel = $cakeModel;
@@ -94,7 +107,8 @@ class Swagger
     /**
      * Writes OpenAPI 3.0 spec to a file using the $output argument as a file path
      *
-     * @param string $output
+     * @param string $output Absolute file path
+     * @return void
      */
     public function writeFile(string $output): void
     {
@@ -108,23 +122,24 @@ class Swagger
     /**
      * Adds a Schema element to OpenAPI 3.0 spec
      *
-     * @param Schema $schema
-     * @return Swagger
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema Schema
+     * @return $this
      */
-    public function pushSchema(Schema $schema): Swagger
+    public function pushSchema(Schema $schema)
     {
         $name = $schema->getName();
         if (!isset($this->array['components']['schemas'][$name])) {
             $this->array['components']['schemas'][$name] = $schema;
         }
+
         return $this;
     }
 
     /**
      * Returns a schema object by $name argument
      *
-     * @param string $name
-     * @return Schema|null
+     * @param string $name Name of schema
+     * @return \SwaggerBake\Lib\OpenApi\Schema|null
      */
     public function getSchemaByName(string $name): ?Schema
     {
@@ -138,20 +153,21 @@ class Swagger
     /**
      * Adds a path to OpenAPI 3.0 spec
      *
-     * @param Path $path
+     * @param \SwaggerBake\Lib\OpenApi\Path $path Path
      * @return $this
      */
-    public function pushPath(Path $path): Swagger
+    public function pushPath(Path $path)
     {
         $resource = $path->getResource();
         $this->array['paths'][$resource] = $path;
+
         return $this;
     }
 
     /**
      * Return the configuration
      *
-     * @return Configuration
+     * @return \SwaggerBake\Lib\Configuration
      */
     public function getConfig(): Configuration
     {
@@ -160,6 +176,8 @@ class Swagger
 
     /**
      * Builds schemas from cake models
+     *
+     * @return void
      */
     private function buildSchemasFromModels(): void
     {
@@ -180,6 +198,8 @@ class Swagger
 
     /**
      * Builds paths from cake routes
+     *
+     * @return void
      */
     private function buildPathsFromRoutes(): void
     {
@@ -189,7 +209,6 @@ class Swagger
         $ignorePaths = array_keys($this->array['paths']);
 
         foreach ($routes as $route) {
-
             $resource = $this->convertCakePathToOpenApiResource($route->getTemplate());
             if ($this->hasPathByResource($resource)) {
                 $path = $this->array['paths'][$resource];
@@ -206,7 +225,6 @@ class Swagger
             }
 
             foreach ($route->getMethods() as $httpMethod) {
-
                 if (strtolower($httpMethod) == 'put') {
                     continue;
                 }
@@ -231,19 +249,21 @@ class Swagger
     }
 
     /**
-     * @param RouteDecorator $route
-     * @return Schema|null
+     * Gets the Schema associated with a Route
+     *
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @return \SwaggerBake\Lib\OpenApi\Schema|null
      */
-    private function getSchemaFromRoute(RouteDecorator $route) : ?Schema
+    private function getSchemaFromRoute(RouteDecorator $route): ?Schema
     {
         $controller = $route->getController();
         $name = preg_replace('/\s+/', '', $controller);
 
-        if (in_array(strtolower($route->getAction()),['index']) && $this->getSchemaByName($name)) {
+        if (in_array(strtolower($route->getAction()), ['index']) && $this->getSchemaByName($name)) {
             return $this->getSchemaByName($name);
         }
 
-        if (in_array(strtolower($route->getAction()),['add','view','edit'])) {
+        if (in_array(strtolower($route->getAction()), ['add','view','edit'])) {
             return $this->getSchemaByName(Inflector::singularize($name));
         }
 
@@ -253,9 +273,10 @@ class Swagger
     /**
      * Adds array of objects to #/components/schemas
      *
-     * @param RouteDecorator $route
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @return void
      */
-    private function addArrayOfObjectsSchema(RouteDecorator $route) : void
+    private function addArrayOfObjectsSchema(RouteDecorator $route): void
     {
         if (!in_array('GET', $route->getMethods())) {
             return;
@@ -283,8 +304,10 @@ class Swagger
 
     /**
      * Constructs the primary array used in this class from pre-defined swagger.yml
+     *
+     * @return void
      */
-    private function buildFromYml() : void
+    private function buildFromYml(): void
     {
         $array = Yaml::parseFile($this->config->getYml());
 
@@ -298,74 +321,54 @@ class Swagger
      * Build paths from YML
      *
      * @todo for now an array will work, but should apply proper Path objects in the future
-     * @param $array
+     * @param array $yaml OpenApi YAML as an array
      * @return array
      */
-    private function buildPathsFromYml($array) : array
+    private function buildPathsFromYml(array $yaml): array
     {
-        if (!isset($array['paths'])) {
-            $array['paths'] = [];
+        if (!isset($yaml['paths'])) {
+            $yaml['paths'] = [];
         }
 
-        return $array;
+        return $yaml;
     }
 
     /**
      * Build schema from YML
      *
-     * @param $array
+     * @param array $yaml OpenApi YAML as an array
      * @return array
      */
-    private function buildSchemaFromYml($array) : array
+    private function buildSchemaFromYml(array $yaml): array
     {
-        if (!isset($array['components']['schemas'])) {
-            $array['components']['schemas'] = [];
+        if (!isset($yaml['components']['schemas'])) {
+            $yaml['components']['schemas'] = [];
         }
 
-        foreach ($array['components']['schemas'] as $schemaName => $schemaVar) {
+        $factory = new SchemaFromYamlFactory();
 
-            $schema = (new Schema())
-                ->setName($schemaName)
-                ->setType($schemaVar['type'] ?? '')
-                ->setDescription($schemaVar['description'] ?? '')
-                ->setItems($schemaVar['items'] ?? [])
-                ->setAllOf($schemaVar['allOf'] ?? [])
-                ->setAnyOf($schemaVar['anyOf'] ?? [])
-                ->setOneOf($schemaVar['oneOf'] ?? [])
-            ;
-
-            $schemaVar['properties'] = $schemaVar['properties'] ?? [];
-
-            foreach ($schemaVar['properties'] as $propertyName => $propertyVar) {
-                $property = (new SchemaProperty())
-                    ->setType($propertyVar['type'])
-                    ->setName($propertyName)
-                    ->setFormat($propertyVar['type'] ?? '')
-                    ->setExample($propertyVar['example'] ?? '')
-                ;
-                $schema->pushProperty($property);
-            }
-
-            $array['components']['schemas'][$schemaName] = $schema;
+        foreach ($yaml['components']['schemas'] as $schemaName => $schemaVar) {
+            $yaml['components']['schemas'][$schemaName] = $factory->create($schemaName, $schemaVar);
         }
 
-        return $array;
+        return $yaml;
     }
 
     /**
      * Converts Cake path parameters to OpenApi Spec
      *
      * @example /actor/:id to /actor/{id}
-     * @param string $resource
+     * @param string $resource Resource name
      * @return string
      */
-    private function convertCakePathToOpenApiResource(string $resource) : string
+    private function convertCakePathToOpenApiResource(string $resource): string
     {
         $pieces = array_map(
             function ($piece) {
                 if (substr($piece, 0, 1) == ':') {
                     return '{' . str_replace(':', '', $piece) . '}';
                 }
+
                 return $piece;
             },
             explode('/', $resource)
@@ -382,14 +385,15 @@ class Swagger
     }
 
     /**
-     * @return Operation[]
+     * Returns an array of Operation objects that do not have a 200-299 HTTP status code
+     *
+     * @return \SwaggerBake\Lib\OpenApi\Operation[]
      */
-    public function getOperationsWithNoHttp20x() : array
+    public function getOperationsWithNoHttp20x(): array
     {
         $operations = [];
 
         foreach ($this->array['paths'] as $path) {
-
             if (!$path instanceof Path) {
                 continue;
             }
@@ -401,18 +405,22 @@ class Swagger
                 })
             );
         }
+
         return $operations;
     }
 
     /**
-     * @param string $resource
-     * @return Path|null|mixed
+     * @param string $resource Resource name
+     * @return bool
      */
     private function hasPathByResource(string $resource): bool
     {
         return isset($this->array['paths'][$resource]);
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         return $this->toString();

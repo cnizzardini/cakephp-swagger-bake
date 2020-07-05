@@ -146,4 +146,26 @@ class SchemaPropertyValidationTest extends TestCase
         $this->assertFalse($schemaProperty->isRequired());
         $this->assertFalse($schemaProperty->isRequirePresenceOnCreate());
     }
+
+    public function testWithValidationsEmptyString()
+    {
+        $validators = [
+            'notEmptyString' => (new Validator())->notEmptyString('test_field'),
+            'notBlank' => (new Validator())->notBlank('test_field')
+        ];
+
+        foreach ($validators as $rule => $validator) {
+            $propertyDecorator = (new PropertyDecorator())->setName('test_field')->setType('string');
+            $schemaProperty = (new SchemaPropertyFactory($validator))->create($propertyDecorator);
+
+            $schemaPropertyValidation = new SchemaPropertyValidation(
+                $validator,
+                $schemaProperty,
+                $propertyDecorator
+            );
+
+            $schemaProperty = $schemaPropertyValidation->withValidations();
+            $this->assertEquals(1, $schemaProperty->getMinLength(), $rule);
+        }
+    }
 }

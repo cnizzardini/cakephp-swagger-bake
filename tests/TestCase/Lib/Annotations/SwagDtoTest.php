@@ -72,8 +72,11 @@ class SwagDtoTest extends TestCase
 
         $operation = $arr['paths']['/employees/dto-query']['get'];
 
-        $this->assertEquals('lastName', $operation['parameters'][0]['name']);
-        $this->assertEquals('firstName', $operation['parameters'][1]['name']);
+        $this->assertEquals('firstName', $operation['parameters'][0]['name']);
+        $this->assertEquals('lastName', $operation['parameters'][1]['name']);
+        $this->assertEquals('title', $operation['parameters'][2]['name']);
+        $this->assertEquals('age', $operation['parameters'][3]['name']);
+        $this->assertEquals('date', $operation['parameters'][4]['name']);
     }
 
     public function testSwagDtoPost()
@@ -88,5 +91,8 @@ class SwagDtoTest extends TestCase
 
         $this->assertArrayHasKey('lastName', $properties);
         $this->assertArrayHasKey('firstName', $properties);
+        $this->assertArrayHasKey('title', $properties);
+        $this->assertArrayHasKey('age', $properties);
+        $this->assertArrayHasKey('date', $properties);
     }
 }

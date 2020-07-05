@@ -1,9 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
-use LogicException;
-use ReflectionClass;
 use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagPaginator;
 use SwaggerBake\Lib\Annotation\SwagQuery;
@@ -12,20 +11,22 @@ use SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\Utility\DocBlockUtility;
 
 /**
  * Class OperationQueryParameter
+ *
  * @package SwaggerBake\Lib\Operation
  */
 class OperationQueryParameter
 {
     /**
-     * @param Operation $operation
-     * @param array $annotations
-     * @return Operation
+     * Adds query parameters to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param array $annotations Array of annotation objects
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    public function getOperationWithQueryParameters(Operation $operation, array $annotations) : Operation
+    public function getOperationWithQueryParameters(Operation $operation, array $annotations): Operation
     {
         if ($operation->getHttpMethod() != 'GET') {
             return $operation;
@@ -43,11 +44,14 @@ class OperationQueryParameter
     }
 
     /**
-     * @param Operation $operation
-     * @param array $annotations
-     * @return Operation
+     * Adds CakePHP Paginator query parameters to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param array $annotations Array of annotation objects
+     * @see https://book.cakephp.org/4/en/controllers/components/pagination.html
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    private function withSwagPaginator(Operation $operation, array $annotations) : Operation
+    private function withSwagPaginator(Operation $operation, array $annotations): Operation
     {
         $swagPaginator = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagPaginator;
@@ -74,11 +78,13 @@ class OperationQueryParameter
     }
 
     /**
-     * @param Operation $operation
-     * @param array $annotations
-     * @return Operation
+     * Adds query parameters from SwagPaginator to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param array $annotations An array of annotation objects
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    private function withSwagQuery(Operation $operation, array $annotations) : Operation
+    private function withSwagQuery(Operation $operation, array $annotations): Operation
     {
         $swagQueries = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagQuery;
@@ -93,12 +99,14 @@ class OperationQueryParameter
     }
 
     /**
-     * @param Operation $operation
-     * @param array $annotations
-     * @return Operation
+     * Adds query parameters from SwagDto to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param array $annotations An array of annotation objects
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      * @throws \ReflectionException
      */
-    private function withSwagDto(Operation $operation, array $annotations) : Operation
+    private function withSwagDto(Operation $operation, array $annotations): Operation
     {
         $swagDtos = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagDto;
@@ -109,43 +117,15 @@ class OperationQueryParameter
         }
 
         $dto = reset($swagDtos);
-        $class = $dto->class;
+        $fqns = $dto->class;
 
-        if (!class_exists($class)) {
+        if (!class_exists($fqns)) {
             return $operation;
         }
 
-        $instance = (new ReflectionClass($class))->newInstanceWithoutConstructor();
-        $properties = DocBlockUtility::getProperties($instance);
-
-        if (empty($properties)) {
-            return $operation;
-        }
-
-        $filteredProperties = array_filter($properties, function ($property) use ($instance) {
-            if (!isset($property->class) || $property->class != get_class($instance)) {
-                return null;
-            }
-            return true;
-        });
-
-        foreach ($filteredProperties as $name => $reflectionProperty) {
-            $docBlock = DocBlockUtility::getPropertyDocBlock($reflectionProperty);
-            $vars = $docBlock->getTagsByName('var');
-            if (empty($vars)) {
-                throw new LogicException('@var must be set for ' . $class . '::' . $name);
-            }
-            $var = reset($vars);
-            $dataType = DocBlockUtility::getDocBlockConvertedVar($var);
-
-            $operation->pushParameter(
-                (new Parameter())
-                    ->setName($name)
-                    ->setIn('query')
-                    ->setRequired(!empty($docBlock->getTagsByName('required')))
-                    ->setDescription($docBlock->getSummary())
-                    ->setSchema((new Schema())->setType($dataType))
-            );
+        $parameters = (new DtoParser($fqns))->getParameters();
+        foreach ($parameters as $parameter) {
+            $operation->pushParameter($parameter);
         }
 
         return $operation;

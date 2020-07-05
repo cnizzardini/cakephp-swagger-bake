@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Controller;
 
-use App\Controller\AppController as BaseController;
+use Cake\Controller\Controller;
 
-class AppController extends BaseController
+class AppController extends Controller
 {
+    /**
+     * @return void
+     */
     public function initialize(): void
     {
         parent::initialize();

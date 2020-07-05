@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
@@ -7,13 +8,21 @@ use SwaggerBake\Lib\Annotation as SwagAnnotation;
 
 /**
  * Class AnnotationLoader
+ *
  * @package SwaggerBake\Lib
  */
 class AnnotationLoader
 {
-    public static function load() : void
+    /**
+     * Loads SwaggerBake annotations
+     *
+     * @return void
+     */
+    public static function load(): void
     {
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagDto::class);
+        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagDtoForm::class);
+        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagDtoQuery::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagEntity::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagEntityAttribute::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagForm::class);

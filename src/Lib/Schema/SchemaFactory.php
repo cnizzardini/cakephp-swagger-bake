@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Schema;
 
@@ -10,37 +11,49 @@ use ReflectionClass;
 use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Decorator\PropertyDecorator;
 use SwaggerBake\Lib\Decorator\EntityDecorator;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
-use SwaggerBake\Lib\Utility\DataTypeConversion;
 
 /**
  * Class SchemaFactory
+ *
  * @package SwaggerBake\Lib\Factory
  *
  * Creates an instance of SwaggerBake\Lib\OpenApi\Schema per OpenAPI specifications
  */
 class SchemaFactory
 {
-    /** @var Validator */
+    /**
+     * @var \Cake\Validation\Validator
+     */
     private $validator;
 
+    /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
+    private $config;
+
+    /**
+     * @param \SwaggerBake\Lib\Configuration $config Configuration
+     */
     public function __construct(Configuration $config)
     {
         $this->config = $config;
     }
 
     /**
-     * @param EntityDecorator $entity
-     * @return Schema|null
+     * Creates an instance of Schema for an EntityDecorator, returns null if the Entity is set to invisible
+     *
+     * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
+     * @return \SwaggerBake\Lib\OpenApi\Schema|null
      */
-    public function create(EntityDecorator $entity) : ?Schema
+    public function create(EntityDecorator $entity): ?Schema
     {
-        if (!$this->isSwaggable($entity)) {
+        $swagEntity = $this->getSwagEntityAnnotation($entity);
+
+        if ($swagEntity !== null && $swagEntity->isVisible === false) {
             return null;
         }
 
@@ -50,13 +63,17 @@ class SchemaFactory
 
         $properties = $this->getProperties($entity);
 
-        $schema = new Schema();
-        $schema
+        $schema = (new Schema())
             ->setName($entity->getName())
-            ->setDescription($docBlock ? $docBlock->getSummary() : '')
+            ->setTitle($swagEntity !== null ? $swagEntity->description : null)
             ->setType('object')
-            ->setProperties($properties)
-        ;
+            ->setProperties($properties);
+
+        if ($swagEntity !== null && isset($swagEntity->description)) {
+            $schema->setDescription($swagEntity->description);
+        } else {
+            $schema->setDescription($docBlock ? $docBlock->getSummary() : null);
+        }
 
         $requiredProperties = array_filter($properties, function ($property) {
             return $property->isRequired();
@@ -70,34 +87,28 @@ class SchemaFactory
     }
 
     /**
-     * @param EntityDecorator $entity
+     * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
      * @return array
      */
-    private function getProperties(EntityDecorator $entity) : array
+    private function getProperties(EntityDecorator $entity): array
     {
-        $return = $this->getSwagPropertyAnnotations($entity);
-
+        $return = [];
         $factory = new SchemaPropertyFactory($this->validator);
 
         foreach ($entity->getProperties() as $attribute) {
-            $name = $attribute->getName();
-
-            // skip if this property has been defined by SwagEntityAttribute annotation
-            if (isset($return[$name])) {
-                continue;
-            }
-
-            $return[$name] = $factory->create($attribute);
+            $return[$attribute->getName()] = $factory->create($attribute);
         }
+
+        $return = array_merge($return, $this->getSwagPropertyAnnotations($entity));
 
         return $return;
     }
 
     /**
-     * @param EntityDecorator $entity
-     * @return DocBlock|null
+     * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
+     * @return \phpDocumentor\Reflection\DocBlock|null
      */
-    private function getDocBlock(EntityDecorator $entity) : ?DocBlock
+    private function getDocBlock(EntityDecorator $entity): ?DocBlock
     {
         try {
             $instance = $entity->getEntity();
@@ -113,14 +124,15 @@ class SchemaFactory
         }
 
         $docFactory = DocBlockFactory::createInstance();
+
         return $docFactory->create($comments);
     }
 
     /**
-     * @param string $className
+     * @param string $className Name of the Table class
      * @return string|null
      */
-    private function getTableFromNamespaces(string $className) : ?string
+    private function getTableFromNamespaces(string $className): ?string
     {
         $namespaces = $this->config->getNamespaces();
 
@@ -143,10 +155,10 @@ class SchemaFactory
     /**
      * Returns key-value pair of property name => SchemaProperty
      *
-     * @param EntityDecorator $entity
-     * @return SchemaProperty[]
+     * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
+     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
      */
-    private function getSwagPropertyAnnotations(EntityDecorator $entity) : array
+    private function getSwagPropertyAnnotations(EntityDecorator $entity): array
     {
         $return = [];
 
@@ -166,31 +178,35 @@ class SchemaFactory
     }
 
     /**
-     * @param EntityDecorator $entity
-     * @return bool
+     * Returns instance of SwagEntity annotation, otherwise null
+     *
+     * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
+     * @return \SwaggerBake\Lib\Annotation\SwagEntity|null
      */
-    private function isSwaggable(EntityDecorator $entity) : bool
+    private function getSwagEntityAnnotation(EntityDecorator $entity): ?SwagEntity
     {
         $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity->getEntity());
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagEntity) {
-                return $annotation->isVisible;
+                return $annotation;
             }
         }
 
-        return true;
+        return null;
     }
 
     /**
-     * @param string $className
-     * @return Validator|null
+     * Gets the Table classes Validator
+     *
+     * @param string $className Name of the Table class
+     * @return \Cake\Validation\Validator|null
      */
-    private function getValidator(string $className) : ?Validator
+    private function getValidator(string $className): ?Validator
     {
         try {
             $table = $this->getTableFromNamespaces(Inflector::pluralize($className) . 'Table');
-            $instance = new $table;
+            $instance = new $table();
             $validator = $instance->validationDefault(new Validator());
         } catch (\Exception $e) {
             return new Validator();

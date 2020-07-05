@@ -2,6 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
 [![Build Status](https://travis-ci.org/cnizzardini/cakephp-swagger-bake.svg?branch=master)](https://travis-ci.org/cnizzardini/cakephp-swagger-bake)
+[![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-swagger-bake/badge.svg?branch=master)](https://coveralls.io/github/cnizzardini/cakephp-swagger-bake?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
@@ -177,7 +178,7 @@ public function index() {}
 ```
 
 #### `@SwagForm`
-Method level annotation for adding form data fields. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
+Method level annotation for adding form data fields. [Read the comments](src/Lib/Annotation/SwagForm.php) 
 to see all supported OpenAPI properties.
 
 ```php
@@ -190,8 +191,8 @@ public function index() {}
 #### `@SwagDto`
 Method level annotation for building query or form parameters from a DataTransferObject. DTOs are more than just a 
 best practice. Using them with SwaggerBake greatly reduces the amount of annotations you need to write. Consider 
-using a DTO in place of SwagQuery or SwagForm. SwagDto parses property doc blocks to build swagger query and 
-post parameters.
+using a DTO in place of SwagQuery or SwagForm. SwagDto uses either SwagDtoProperty or your existing Doc Blocks to 
+build swagger query and post parameters.
 
 ```php
 /**
@@ -215,6 +216,40 @@ class ActorDto {
 
     /** @var string */
     private $firstName;
+```
+
+#### `@SwagDtoQuery`
+Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoQuery.php) to 
+see all supported properties.
+
+```php
+class ActorDto {
+    /**
+     * @SwagDtoQuery(name="firstName", type="string", required=true)
+     */
+    private $firstName;
+
+    /**
+     * @SwagDtoQuery(name="gender", type="string", enum="{"male","female","other"}")
+     */
+    private $gender;
+```
+
+#### `@SwagDtoForm`
+Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoForm.php) to 
+see all supported properties.
+
+```php
+class ActorDto {
+    /**
+     * @SwagDtoForm(name="title", type="string", required=true)
+     */
+    private $title;
+
+    /**
+     * @SwagDtoForm(name="age", type="integer", format="int32")
+     */
+    private $age;
 ```
 
 #### `@SwagHeader`
@@ -289,18 +324,18 @@ Class level annotation for exposing controllers to Swagger UI. You can hide enti
 
 ```php
 /**
- * @Swag\SwagPath(isVisible=false)
+ * @Swag\SwagPath(isVisible=false, description="optional description", summary="operational summary")
  */
 class UsersController extends AppController {
 ```
 
 #### `@SwagEntity`
-Class level annotation for exposing entities to Swagger UI. By default all entities with routes will display as Swagger 
+Class level annotation for exposing entities to Swagger UI. By default, all entities with routes will display as Swagger 
 schema. You can hide a schema or display a schema that does not have an associated route.
 
 ```php
 /**
- * @Swag\SwagEntity(isVisible=false)
+ * @Swag\SwagEntity(isVisible=false, title="optional title", description="optional description")
  */
 class Employee extends Entity {
 ```
@@ -323,8 +358,8 @@ There are several options to extend functionality.
 #### Using Your Own SwaggerUI
 
 You may use your own swagger install in lieu of the version that comes with SwaggerBake. Simply don't add a custom 
-route as indicated in step 3 of Basic Usage. In this case just reference the generated swagger.json with your own 
-Swagger UI install.
+route as indicated in the installation steps. In this case just reference the generated swagger.json within your 
+userland Swagger UI install.
 
 #### Using Your Own Controller
 
@@ -411,6 +446,46 @@ bin/cake bake controller {Name} --theme SwaggerBake
 - SwaggerBake has been developed primarily for application/json and application/x-www-form-urlencoded, but does have 
 some support for application/xml and *should* work with application/vnd.api+json.
 
+SwaggerBake does not document schema associations. If your application includes associations on things like 
+GET requests, you can easily add them into your swagger documentation through the OpenAPI `allOf` property. Since 
+SwaggerBake works in conjunction with OpenAPI YAML you can easily add a new schema with this association. Below is an 
+example of extending an existing City schema to include a Country association.
+
+```yaml
+# in your swagger.yml
+components:
+  schemas:
+    CityExtended:
+      description: 'City with extended information including Country'
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/City'
+        - type: object
+          properties:
+            country:
+              $ref: '#/components/schemas/Country'
+
+```
+
+Then in your controller action you'd specify the Schema: 
+
+```php
+/**
+ * View method
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/CityExtended")
+ */
+public function view($id)
+{
+    $this->request->allowMethod('get');
+    $city = $this->Cities->get($id, ['contain' => ['Countries']]);
+    $this->set(compact('cities'));
+    $this->viewBuilder()->setOption('serialize', 'cities');
+}
+```
+
+The demo application includes this and many other examples of usage. Read more about `oneOf`, `anyOf`, `allOf`, and 
+`not` in the [OpenAPI 3 documentation](https://swagger.io/docs/specification/data-models/oneof-anyof-allof-not/).
+
 ## Supported Versions
 
 This is built for CakePHP 4.x only. A cake-3.8 option is available, but not supported.
@@ -479,11 +554,12 @@ Feature requests are welcomed.
 Send pull requests to help improve this library. You can include SwaggerBake in your primary Cake project as a 
 local source to make developing easier:
 
-- Make a clone of this repository
+- Make a fork of this repository and clone it to your localhost
 
 - Remove `cnizzardini\cakephp-swagger-bake` from your `composer.json`
 
 - Add a paths repository to your `composer.json`
+
 ```
 "minimum-stability": "dev",
 "repositories": [
@@ -496,10 +572,20 @@ local source to make developing easier:
     }
 ]
 ```
+
 - Run `composer require cnizzardini/cakephp-swagger-bake @dev`
 
 Undo these steps when you're done. Read the full composer documentation on loading from path here: 
 [https://getcomposer.org/doc/05-repositories.md#path](https://getcomposer.org/doc/05-repositories.md#path)
+
+## Coding Standards
+
+Coding standards run as part of CI with Travis. You may run these locally as follows:
+
+```bash
+vendor/bin/phpstan analyse src
+vendor/bin/phpcs src
+```
 
 ## Unit Tests
 

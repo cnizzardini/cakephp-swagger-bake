@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
@@ -9,24 +10,29 @@ use Exception;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagOperation;
-use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\Swagger;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
-use SwaggerBake\Lib\Swagger;
 
 /**
  * Class OperationFromRouteFactory
+ *
  * @package SwaggerBake\Lib\Operation
  */
 class OperationFromRouteFactory
 {
-    /** @var Swagger  */
+    /**
+     * @var \SwaggerBake\Lib\Swagger
+     */
     private $swagger;
 
+    /**
+     * @param \SwaggerBake\Lib\Swagger $swagger Swagger
+     */
     public function __construct(Swagger $swagger)
     {
         $this->swagger = $swagger;
@@ -35,12 +41,12 @@ class OperationFromRouteFactory
     /**
      * Creates an instance of Operation
      *
-     * @param RouteDecorator $route
-     * @param string $httpMethod
-     * @param null|Schema $schema
-     * @return Operation|null
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param string $httpMethod Http method such i.e. PUT, POST, PATCH, GET, and DELETE
+     * @param null|\SwaggerBake\Lib\OpenApi\Schema $schema Schema
+     * @return \SwaggerBake\Lib\OpenApi\Operation|null
      */
-    public function create(RouteDecorator $route, string $httpMethod, ?Schema $schema) : ?Operation
+    public function create(RouteDecorator $route, string $httpMethod, ?Schema $schema): ?Operation
     {
         if (empty($route->getMethods())) {
             return null;
@@ -60,13 +66,11 @@ class OperationFromRouteFactory
 
         $operation = (new Operation())
             ->setSummary($docBlock->getSummary())
-            ->setDescription($docBlock->getDescription())
+            ->setDescription($docBlock->getDescription()->render())
             ->setHttpMethod(strtolower($httpMethod))
             ->setOperationId($route->getName());
 
         $operation = $this->getOperationWithTags($operation, $route, $annotations);
-
-        $args = [$config, $operation, $docBlock, $annotations, $route, $schema];
 
         $operation = (new OperationDocBlock())
             ->getOperationWithDocBlock($operation, $docBlock);
@@ -83,9 +87,10 @@ class OperationFromRouteFactory
         $operation = (new OperationQueryParameter())
             ->getOperationWithQueryParameters($operation, $annotations);
 
-        $operation = (new OperationRequestBody(...$args))->getOperationWithRequestBody();
+        $operation = (new OperationRequestBody($config, $operation, $annotations, $route, $schema))
+            ->getOperationWithRequestBody();
 
-        $operation = (new OperationResponse(...$args))
+        $operation = (new OperationResponse($config, $operation, $docBlock, $annotations, $route, $schema))
             ->getOperationWithResponses();
 
         EventManager::instance()->dispatch(
@@ -104,11 +109,11 @@ class OperationFromRouteFactory
     /**
      * Gets an instance of DocBlock from the controllers method
      *
-     * @param string $fullyQualifiedNameSpace
-     * @param string $methodName
-     * @return DocBlock
+     * @param string $fullyQualifiedNameSpace Fully qualified namespace of the controller
+     * @param string $methodName Controller action (method) name
+     * @return \phpDocumentor\Reflection\DocBlock
      */
-    private function getDocBlock(string $fullyQualifiedNameSpace, string $methodName) : DocBlock
+    private function getDocBlock(string $fullyQualifiedNameSpace, string $methodName): DocBlock
     {
         $emptyDocBlock = DocBlockFactory::createInstance()->create('/**  */');
 
@@ -117,17 +122,19 @@ class OperationFromRouteFactory
         }
 
         try {
-            return DocBlockUtility::getMethodDocBlock(new $fullyQualifiedNameSpace, $methodName) ?? $emptyDocBlock;
+            return DocBlockUtility::getMethodDocBlock(new $fullyQualifiedNameSpace(), $methodName) ?? $emptyDocBlock;
         } catch (Exception $e) {
             return $emptyDocBlock;
         }
     }
 
     /**
-     * @param array $annotations
+     * Is the Operation visible in Swagger UI / OpenAPI
+     *
+     * @param array $annotations An array of annotation objects
      * @return bool
      */
-    private function isVisible(array $annotations) : bool
+    private function isVisible(array $annotations): bool
     {
         $swagOperations = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagOperation;
@@ -143,12 +150,14 @@ class OperationFromRouteFactory
     }
 
     /**
-     * @param Operation $operation
-     * @param RouteDecorator $route
-     * @param array $annotations
-     * @return Operation]
+     * Applies Operation::tags to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param array $annotations An array of annotation objects
+     * @return \SwaggerBake\Lib\OpenApi\Operation ]
      */
-    private function getOperationWithTags(Operation $operation, RouteDecorator $route, array $annotations) : Operation
+    private function getOperationWithTags(Operation $operation, RouteDecorator $route, array $annotations): Operation
     {
         $swagOperations = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagOperation;
@@ -158,7 +167,7 @@ class OperationFromRouteFactory
 
         if (empty($swagOperation->tagNames)) {
             return $operation->setTags([
-                Inflector::humanize(Inflector::underscore($route->getController()))
+                Inflector::humanize(Inflector::underscore($route->getController())),
             ]);
         }
 

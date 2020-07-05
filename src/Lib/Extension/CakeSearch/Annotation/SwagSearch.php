@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Extension\CakeSearch\Annotation;
 
@@ -8,18 +9,25 @@ use InvalidArgumentException;
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
- *   @Attribute("tableClass", type = "string"),
- *   @Attribute("collection", type = "string")
+ * @Attribute("tableClass", type = "string"),
+ * @Attribute("collection", type = "string")
  * })
  */
 class SwagSearch
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public $tableClass;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $collection;
 
+    /**
+     * @param array $values Key-value pair of annotation attributes
+     */
     public function __construct(array $values)
     {
         if (!isset($values['tableClass'])) {

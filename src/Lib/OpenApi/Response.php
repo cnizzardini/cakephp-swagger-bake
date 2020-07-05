@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
@@ -6,30 +7,38 @@ use JsonSerializable;
 
 /**
  * Class Response
+ *
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/describing-responses/
  */
 class Response implements JsonSerializable
 {
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $code;
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $description = '';
 
-    /** @var Content[]  */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Content[]
+     */
     private $content = [];
 
     /**
      * @return array
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         $vars = get_object_vars($this);
         unset($vars['code']);
         if (empty($vars['content'])) {
             unset($vars['content']);
         }
+
         return $vars;
     }
 
@@ -50,12 +59,13 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @param string $code
-     * @return Response
+     * @param string|int $code Http status code
+     * @return $this
      */
-    public function setCode(string $code): Response
+    public function setCode($code)
     {
-        $this->code = $code;
+        $this->code = (string)$code;
+
         return $this;
     }
 
@@ -68,17 +78,18 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @param string $description
-     * @return Response
+     * @param string $description Description
+     * @return $this
      */
-    public function setDescription(string $description): Response
+    public function setDescription(string $description)
     {
         $this->description = $description;
+
         return $this;
     }
 
     /**
-     * @return Content[]
+     * @return \SwaggerBake\Lib\OpenApi\Content[]
      */
     public function getContent(): array
     {
@@ -86,26 +97,37 @@ class Response implements JsonSerializable
     }
 
     /**
+     * @param string $mimeType Mime type i.e. application/json, application/xml
+     * @return \SwaggerBake\Lib\OpenApi\Content|null
+     */
+    public function getContentByMimeType($mimeType): ?Content
+    {
+        return $this->content[$mimeType] ?? null;
+    }
+
+    /**
      * Sets the array of Content[]
      *
-     * @param Content[] $contents
-     * @return Response
+     * @param \SwaggerBake\Lib\OpenApi\Content[] $contents Content
+     * @return $this
      */
-    public function setContent(array $contents): Response
+    public function setContent(array $contents)
     {
         $this->content = $contents;
+
         return $this;
     }
 
     /**
      * Appends to array of Content[]
      *
-     * @param Content $content
-     * @return Response
+     * @param \SwaggerBake\Lib\OpenApi\Content $content Content
+     * @return $this
      */
-    public function pushContent(Content $content): Response
+    public function pushContent(Content $content)
     {
         $this->content[$content->getMimeType()] = $content;
+
         return $this;
     }
 }

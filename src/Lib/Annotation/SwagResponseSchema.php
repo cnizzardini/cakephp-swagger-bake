@@ -1,22 +1,23 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Annotation;
 
 use Cake\Log\Log;
-use InvalidArgumentException;
 
 /**
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
- *   @Attribute("refEntity", type = "string"),
- *   @Attribute("httpCode", type = "integer"),
- *   @Attribute("statusCode", type = "string"),
- *   @Attribute("description", type = "string"),
- *   @Attribute("mimeType", type = "string"),
- *   @Attribute("schemaType", type = "string"),
- *   @Attribute("schemaFormat", type = "string"),
+ * @Attribute("refEntity", type = "string"),
+ * @Attribute("httpCode", type = "integer"),
+ * @Attribute("statusCode", type = "string"),
+ * @Attribute("description", type = "string"),
+ * @Attribute("mimeType", type = "string"),
+ * @Attribute("schemaType", type = "string"),
+ * @Attribute("schemaFormat", type = "string"),
  * })
+ * @todo remove httpCode in future version
  */
 class SwagResponseSchema
 {
@@ -28,34 +29,46 @@ class SwagResponseSchema
         'description' => '',
         'mimeType' => '',
         'schemaType' => '',
-        'schemaFormat' => ''
+        'schemaFormat' => '',
     ];
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $refEntity;
 
-    /** @var integer */
-    public $httpCode = 200;
+    /**
+     * @var string
+     */
+    public $httpCode = '200';
 
-    /** @var string */
-    public $statusCode = '200';
-
-    /** @var string */
+    /**
+     * @var string
+     */
     public $description;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $mimeType;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $schemaType;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $schemaFormat;
 
+    /**
+     * @param array $values Annotation attributes as key-value pair
+     */
     public function __construct(array $values)
     {
         if (isset($values['httpCode'])) {
-            $this->httpCode = (string) $values['httpCode'];
+            $this->httpCode = (string)$values['httpCode'];
             $deprecationMsg = 'SwaggerBake: httpCode will be deprecated, use statusCode in SwagResponseSchema';
             Log::warning($deprecationMsg);
             deprecationWarning($deprecationMsg);
@@ -65,7 +78,7 @@ class SwagResponseSchema
             $this->httpCode = $values['statusCode'];
         }
 
-        $values = array_merge(SELF::DEFAULTS, $values);
+        $values = array_merge(self::DEFAULTS, $values);
 
         $this->refEntity = $values['refEntity'];
         $this->description = $values['description'];

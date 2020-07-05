@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Extension;
 
 /**
  * Interface ExtensionInterface
+ *
  * @package SwaggerBake\Lib\Extension
  */
 interface ExtensionInterface
@@ -14,7 +16,7 @@ interface ExtensionInterface
      *
      * @return bool
      */
-    public function isSupported() : bool;
+    public function isSupported(): bool;
 
     /**
      * This method will load any custom annotations provided by the extension.
@@ -22,7 +24,7 @@ interface ExtensionInterface
      * @example SwaggerBake\Lib\AnnotationLoader
      * @return void
      */
-    public function loadAnnotations() : void;
+    public function loadAnnotations(): void;
 
     /**
      * This will register the listener
@@ -30,5 +32,5 @@ interface ExtensionInterface
      * @see https://book.cakephp.org/4/en/core-libraries/events.html#registering-anonymous-listeners
      * @return void
      */
-    public function registerListeners() : void;
+    public function registerListeners(): void;
 }

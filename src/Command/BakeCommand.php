@@ -12,6 +12,7 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**
  * Class BakeCommand
+ *
  * @package SwaggerBake\Command
  */
 class BakeCommand extends Command
@@ -19,13 +20,13 @@ class BakeCommand extends Command
     /**
      * Writes a swagger.json file
      *
-     * @param Arguments $args
-     * @param ConsoleIo $io
+     * @param \Cake\Console\Arguments $args Arguments
+     * @param \Cake\Console\ConsoleIo $io ConsoleIo
      * @return int|void|null
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out("Running...");
+        $io->out('Running...');
 
         $config = new Configuration();
         ValidateConfiguration::validate($config);
@@ -40,6 +41,7 @@ class BakeCommand extends Command
 
         if (!file_exists($output)) {
             $io->out("<error>Error Creating File: $output</error>");
+
             return;
         }
 

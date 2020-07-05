@@ -1,8 +1,7 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Annotation;
-
-use Doctrine\Common\Annotations\Annotation;
 
 /**
  * @Annotation
@@ -10,5 +9,4 @@ use Doctrine\Common\Annotations\Annotation;
  */
 class SwagPaginator
 {
-
 }

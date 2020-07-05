@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Path;
 
@@ -11,16 +12,25 @@ use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
  * Class PathFromRouteFactory
+ *
  * @package SwaggerBake\Lib\Path
  */
 class PathFromRouteFactory
 {
-    /** @var RouteDecorator */
+    /**
+     * @var \SwaggerBake\Lib\Decorator\RouteDecorator
+     */
     private $route;
 
-    /** @var Configuration */
+    /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
     private $config;
 
+    /**
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\Configuration $config Configuration
+     */
     public function __construct(RouteDecorator $route, Configuration $config)
     {
         $this->config = $config;
@@ -28,45 +38,60 @@ class PathFromRouteFactory
     }
 
     /**
-     * Creates a Path if possible, otherwise returns null
+     * Creates an instance of Path if possible, otherwise returns null
      *
-     * @return Path|null
+     * @return \SwaggerBake\Lib\OpenApi\Path|null
      */
-    public function create() : ?Path
+    public function create(): ?Path
     {
         if (empty($this->route->getMethods())) {
             return null;
         }
 
         $controller = $this->route->getController() . 'Controller';
-        $fullyQualifiedNamespace = NamespaceUtility::getControllerFullQualifiedNameSpace($controller, $this->config);
+        $fqns = NamespaceUtility::getControllerFullQualifiedNameSpace($controller, $this->config);
 
-        if (is_null($fullyQualifiedNamespace) || !$this->isVisible($fullyQualifiedNamespace)) {
+        if (is_null($fqns)) {
             return null;
         }
 
-        return (new Path())->setResource($this->getResourceName());
+        $path = (new Path())->setResource($this->getResourceName());
+
+        $swagPath = $this->getSwagPathAnnotation($fqns);
+
+        if (is_null($swagPath)) {
+            return $path;
+        }
+
+        if ($swagPath->isVisible === false) {
+            return null;
+        }
+
+        return $path
+            ->setRef($swagPath->ref ?? null)
+            ->setDescription($swagPath->description ?? null)
+            ->setSummary($swagPath->summary ?? null);
     }
 
     /**
-     * @param string $fullyQualifiedNamespace
-     * @return bool
+     * Returns SwagPath if the controller has the annotation, otherwise null
+     *
+     * @param string $fqns Full qualified namespace of the Controller
+     * @return \SwaggerBake\Lib\Annotation\SwagPath|null
      */
-    private function isVisible(string $fullyQualifiedNamespace) : bool
+    private function getSwagPathAnnotation(string $fqns): ?SwagPath
     {
-        $annotations = AnnotationUtility::getClassAnnotationsFromFqns($fullyQualifiedNamespace);
+        $annotations = AnnotationUtility::getClassAnnotationsFromFqns($fqns);
 
         $results = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagPath;
         });
 
         if (empty($results)) {
-            return true;
+            return null;
         }
 
-        $swagPath = reset($results);
-
-        return $swagPath->isVisible;
+        return reset($results);
     }
 
     /**
@@ -74,7 +99,7 @@ class PathFromRouteFactory
      *
      * @return string
      */
-    private function getResourceName() : string
+    private function getResourceName(): string
     {
         $pieces = $this->getRoutablePieces();
 
@@ -93,13 +118,14 @@ class PathFromRouteFactory
      *
      * @return string[]
      */
-    private function getRoutablePieces() : array
+    private function getRoutablePieces(): array
     {
         return array_map(
             function ($piece) {
                 if (substr($piece, 0, 1) == ':') {
                     return '{' . str_replace(':', '', $piece) . '}';
                 }
+
                 return $piece;
             },
             explode('/', $this->route->getTemplate())

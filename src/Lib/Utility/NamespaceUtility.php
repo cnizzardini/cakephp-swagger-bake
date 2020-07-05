@@ -1,13 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
-use Cake\ORM\Table;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 /**
  * Class NamespaceUtility
+ *
  * @package SwaggerBake\Lib\Utility
  */
 class NamespaceUtility
@@ -15,11 +16,11 @@ class NamespaceUtility
     /**
      * Gets a controllers FQNS using the controllers short name
      *
-     * @param string $className
-     * @param Configuration $config
+     * @param string $className Controller name
+     * @param \SwaggerBake\Lib\Configuration $config Configuration
      * @return string|null
      */
-    public static function getControllerFullQualifiedNameSpace(string $className, Configuration $config) : ?string
+    public static function getControllerFullQualifiedNameSpace(string $className, Configuration $config): ?string
     {
         $namespaces = $config->getNamespaces();
 
@@ -42,11 +43,11 @@ class NamespaceUtility
     /**
      * Gets a FQNS of an Entity using the entities short name
      *
-     * @param string $className
-     * @param Configuration $config
+     * @param string $className Entity class name
+     * @param \SwaggerBake\Lib\Configuration $config Configuration
      * @return string|null
      */
-    public static function getEntityFullyQualifiedNameSpace(string $className, Configuration $config) : ?string
+    public static function getEntityFullyQualifiedNameSpace(string $className, Configuration $config): ?string
     {
         $namespaces = $config->getNamespaces();
 
@@ -69,11 +70,11 @@ class NamespaceUtility
     /**
      * Gets a FQNS of a Table
      *
-     * @param string $className
-     * @param Configuration $config
+     * @param string $className Table class name
+     * @param \SwaggerBake\Lib\Configuration $config Configuration
      * @return string|null
      */
-    public static function getTableFullyQualifiedNameSpace(string $className, Configuration $config) : ?string
+    public static function getTableFullyQualifiedNameSpace(string $className, Configuration $config): ?string
     {
         $namespaces = $config->getNamespaces();
 

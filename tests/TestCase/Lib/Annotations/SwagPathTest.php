@@ -16,12 +16,17 @@ use SwaggerBake\Lib\Swagger;
 
 class SwagPathTest extends TestCase
 {
+    /** @var string[]  */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
         'plugin.SwaggerBake.EmployeeTitles',
     ];
 
+    /** @var Router  */
     private $router;
+
+    /** @var array  */
+    private $config;
 
     public function setUp(): void
     {
@@ -35,12 +40,7 @@ class SwagPathTest extends TestCase
         });
         $this->router = $router;
 
-        AnnotationLoader::load();
-    }
-
-    public function testPathInvisible()
-    {
-        $config = new Configuration([
+        $this->config = [
             'prefix' => '/api',
             'yml' => '/config/swagger-bare-bones.yml',
             'json' => '/webroot/swagger.json',
@@ -54,7 +54,29 @@ class SwagPathTest extends TestCase
                 'entities' => ['\SwaggerBakeTest\App\\'],
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
-        ], SWAGGER_BAKE_TEST_APP);
+        ];
+
+        AnnotationLoader::load();
+    }
+
+    public function testPath()
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $config));
+
+        $arr = json_decode($swagger->toString(), true);
+        $employees = $arr['paths']['/employees'];
+
+        $this->assertEquals('summary here', $employees['summary']);
+        $this->assertEquals('description here', $employees['description']);
+    }
+
+    public function testPathInvisible()
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new CakeRoute($this->router, $config);
 

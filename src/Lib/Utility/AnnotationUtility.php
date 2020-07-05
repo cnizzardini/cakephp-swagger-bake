@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
@@ -8,6 +9,7 @@ use ReflectionClass;
 
 /**
  * Class AnnotationUtility
+ *
  * @package SwaggerBake\Lib\Utility
  */
 class AnnotationUtility
@@ -17,13 +19,13 @@ class AnnotationUtility
      *
      * @uses AnnotationReader
      * @uses ReflectionClass
-     * @param string $namespace
+     * @param string $namespace Fully qualified namespace of the class
      * @return array
      */
-    public static function getClassAnnotationsFromFqns(string $namespace) : array
+    public static function getClassAnnotationsFromFqns(string $namespace): array
     {
         try {
-            $instance = new $namespace;
+            $instance = new $namespace();
             $reflectionClass = new ReflectionClass(get_class($instance));
         } catch (Exception $e) {
             return [];
@@ -45,10 +47,10 @@ class AnnotationUtility
      *
      * @uses AnnotationReader
      * @uses ReflectionClass
-     * @param object $instance
+     * @param object $instance PHP object
      * @return array
      */
-    public static function getClassAnnotationsFromInstance(object $instance) : array
+    public static function getClassAnnotationsFromInstance(object $instance): array
     {
         try {
             $reflectionClass = new ReflectionClass(get_class($instance));
@@ -72,16 +74,16 @@ class AnnotationUtility
      *
      * @uses AnnotationReader
      * @uses ReflectionClass
-     * @param string $namespace
-     * @param string $method
+     * @param string $namespace Fully qualified namespace
+     * @param string $method Method name
      * @return array
      */
-    public static function getMethodAnnotations(string $namespace, string $method) : array
+    public static function getMethodAnnotations(string $namespace, string $method): array
     {
         $return = [];
 
         try {
-            $instance = new $namespace;
+            $instance = new $namespace();
             $reflectionClass = new ReflectionClass(get_class($instance));
             $reflectedMethods = $reflectionClass->getMethods();
         } catch (Exception $e) {

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
@@ -6,6 +7,7 @@ use JsonSerializable;
 
 /**
  * Class Content
+ *
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/describing-request-body/
  */
@@ -16,26 +18,40 @@ class Content implements JsonSerializable
         'application/json',
         'application/xml',
         'application/vnd.api+json',
-        'application/x-www-form-urlencoded'
+        'application/x-www-form-urlencoded',
     ];
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $mimeType = '';
 
-    /** @var string|Schema */
+    /**
+     * @var string|\SwaggerBake\Lib\OpenApi\Schema
+     */
     private $schema;
 
-    /** @var string $type value can be string, number etc. */
+    /**
+     * @var string $type value can be string, number etc.
+     */
     private $type = '';
 
-    /** @var string $format value can be binary for images for instance */
+    /**
+     * @var string $format value can be binary for images for instance
+     */
     private $format = '';
 
-    public function toArray() : array
+    /**
+     * @return array
+     */
+    public function toArray(): array
     {
         $vars = get_object_vars($this);
         unset($vars['mimeType']);
-        if (is_string($this->schema)) {
+        if ($this->schema === null) {
+            unset($vars['schema']);
+            $vars['schema'] = '';
+        } elseif (is_string($this->schema)) {
             unset($vars['schema']);
             $vars['schema']['$ref'] = $this->schema;
         }
@@ -48,6 +64,9 @@ class Content implements JsonSerializable
         return $vars;
     }
 
+    /**
+     * @return array|mixed
+     */
     public function jsonSerialize()
     {
         return $this->toArray();
@@ -62,19 +81,20 @@ class Content implements JsonSerializable
     }
 
     /**
-     * @param string $mimeType
-     * @return Content
+     * @param string $mimeType Mime type e.g. application/json, application/xml, etc...
+     * @return $this
      */
-    public function setMimeType(string $mimeType): Content
+    public function setMimeType(string $mimeType)
     {
         $this->mimeType = $mimeType;
+
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getSchema() : Schema
+    public function getSchema()
     {
         return $this->schema;
     }
@@ -82,12 +102,13 @@ class Content implements JsonSerializable
     /**
      * Can be either a schema $ref string such as '#/components/schemas/Pet' or a Schema instance.
      *
-     * @param string|Schema $schema
-     * @return Content
+     * @param string|\SwaggerBake\Lib\OpenApi\Schema $schema Schema
+     * @return $this
      */
-    public function setSchema($schema) : Content
+    public function setSchema($schema)
     {
         $this->schema = $schema;
+
         return $this;
     }
 
@@ -100,12 +121,13 @@ class Content implements JsonSerializable
     }
 
     /**
-     * @param string $type
-     * @return Content
+     * @param string $type value can be string, number etc.
+     * @return $this
      */
-    public function setType(string $type): Content
+    public function setType(string $type)
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -118,12 +140,13 @@ class Content implements JsonSerializable
     }
 
     /**
-     * @param string $format
-     * @return Content
+     * @param string $format value can be binary for images for instance
+     * @return $this
      */
-    public function setFormat(string $format): Content
+    public function setFormat(string $format)
     {
         $this->format = $format;
+
         return $this;
     }
 }

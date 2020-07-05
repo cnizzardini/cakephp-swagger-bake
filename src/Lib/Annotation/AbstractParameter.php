@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Annotation;
 
@@ -8,46 +9,80 @@ use SwaggerBake\Lib\Utility\OpenApiDataType;
 
 /**
  * Class AbstractParameter
+ *
  * @package SwaggerBake\Lib\Annotation
+ *
+ * Read OpenAPI specification for exact usage of the attributes:
+ * @see https://swagger.io/specification/ search for "Parameter Object"
+ *
+ * For `format` read OpenAPI specification on data formats:
+ * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format
  */
 abstract class AbstractParameter
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public $name;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $type = 'string';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $description = '';
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $required = false;
 
-    /** @var array  */
+    /**
+     * @var array
+     */
     public $enum = [];
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $deprecated = false;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $allowEmptyValue = false;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $explode = false;
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     public $style = '';
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $allowReserved = false;
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     public $format = '';
 
-    /** @var array  */
-    public $example = [];
+    /**
+     * @var mixed
+     */
+    public $example;
 
+    /**
+     * @param array $values Annotation attributes as key-value pair
+     */
     public function __construct(array $values)
     {
         if (!isset($values['name'])) {
