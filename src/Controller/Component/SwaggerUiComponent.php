@@ -48,7 +48,7 @@ class SwaggerUiComponent extends Component
      */
     public function beforeFilter(Event $event): void
     {
-        if ($this->config->getHotReload()) {
+        if ($this->config->isHotReload()) {
             $output = $this->config->getJson();
             $this->swagger->writeFile($output);
         }

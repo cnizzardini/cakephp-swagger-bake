@@ -25,6 +25,7 @@ class Extension implements ExtensionInterface
 {
     /**
      * @return void
+     * @SuppressWarning(PHPMD)
      */
     public function registerListeners(): void
     {
