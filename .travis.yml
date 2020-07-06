@@ -19,6 +19,7 @@ script:
       export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
       vendor/bin/phpcs --report=summary src
       vendor/bin/phpstan analyse -n --no-progress src
+      vendor/bin/phpmd src/ ansi phpmd.xml
     else
       vendor/bin/phpunit
     fi
