@@ -42,7 +42,8 @@ if (!defined('DS')) {
 }
 
 define('SWAGGER_BAKE_TEST_ROOT', dirname(__DIR__));
-define('SWAGGER_BAKE_TEST_APP', SWAGGER_BAKE_TEST_ROOT . DS . 'tests' . DS . 'test_app');
+define('TEST', SWAGGER_BAKE_TEST_ROOT . DS . 'tests');
+define('SWAGGER_BAKE_TEST_APP', TEST . DS . 'test_app');
 
 define('ROOT', SWAGGER_BAKE_TEST_APP);
 define('APP_DIR', 'test_app');
@@ -60,7 +61,7 @@ define('CORE_TEST_CASES', CORE_TESTS . 'TestCase');
 define('TEST_APP', SWAGGER_BAKE_TEST_APP);
 
 define('WWW_ROOT', SWAGGER_BAKE_TEST_APP . DS . 'webroot');
-define('APP', SWAGGER_BAKE_TEST_APP . DS . 'src');
+define('APP', SWAGGER_BAKE_TEST_APP . DS . 'src' . DS);
 define('CONFIG', SWAGGER_BAKE_TEST_APP . DS . 'config' . DS);
 
 // phpcs:disable

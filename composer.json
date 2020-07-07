@@ -22,7 +22,8 @@
         "cakephp/authentication": "^2.0",
         "cakephp/cakephp-codesniffer": "^4.2",
         "phpstan/phpstan": "^0.12.32",
-        "phpmd/phpmd": "^2.8"
+        "phpmd/phpmd": "^2.8",
+        "cakephp/bake": "^2.1"
     },
     "autoload": {
         "psr-4": {
