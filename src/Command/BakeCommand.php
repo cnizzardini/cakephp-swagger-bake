@@ -6,6 +6,7 @@ namespace SwaggerBake\Command;
 use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
@@ -17,6 +18,21 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class BakeCommand extends Command
 {
+    /**
+     * @param \Cake\Console\ConsoleOptionParser $parser ConsoleOptionParser
+     * @return \Cake\Console\ConsoleOptionParser
+     */
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser
+            ->setDescription('SwaggerBake Installer')
+            ->addOption('output', [
+                'help' => 'Outfile for swagger.json (defaults to config)',
+            ]);
+
+        return $parser;
+    }
+
     /**
      * Writes a swagger.json file
      *
@@ -30,7 +46,7 @@ class BakeCommand extends Command
 
         $config = new Configuration();
         ValidateConfiguration::validate($config);
-        $output = $config->getJson();
+        $output = $args->getOption('output') ?? $config->getJson();
 
         $swagger = (new SwaggerFactory())->create();
         foreach ($swagger->getOperationsWithNoHttp20x() as $operation) {
@@ -38,12 +54,6 @@ class BakeCommand extends Command
         }
 
         $swagger->writeFile($output);
-
-        if (!file_exists($output)) {
-            $io->out("<error>Error Creating File: $output</error>");
-
-            return;
-        }
 
         $io->out("<success>Swagger File Created: $output</success>");
     }

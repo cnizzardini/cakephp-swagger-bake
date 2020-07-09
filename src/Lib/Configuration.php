@@ -208,4 +208,17 @@ class Configuration
     {
         return $this->get('responseContentTypes');
     }
+
+    /**
+     * @param mixed $property Configuration property
+     * @param mixed $value Configuration value
+     * @return void
+     */
+    public function set($property, $value) : void
+    {
+        if (!isset($this->configs[$property])) {
+            throw new LogicException("Configuration does not exist for `$property` in Configuration::configs");
+        }
+        $this->configs[$property] = $value;
+    }
 }

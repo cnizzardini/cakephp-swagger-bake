@@ -117,6 +117,10 @@ class Swagger
         }
 
         file_put_contents($output, $this->toString());
+
+        if (!file_exists($output)) {
+            throw new SwaggerBakeRunTimeException("Error encountered while writing swagger file to $output");
+        }
     }
 
     /**

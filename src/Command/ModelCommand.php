@@ -6,6 +6,7 @@ namespace SwaggerBake\Command;
 use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Routing\Router;
 use SwaggerBake\Lib\CakeModel;
 use SwaggerBake\Lib\CakeRoute;
@@ -20,6 +21,21 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class ModelCommand extends Command
 {
+    /**
+     * @param \Cake\Console\ConsoleOptionParser $parser ConsoleOptionParser
+     * @return \Cake\Console\ConsoleOptionParser
+     */
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser
+            ->setDescription('SwaggerBake Model Checker')
+            ->addOption('prefix', [
+                'help' => 'The route prefix (uses value in configuration by default)',
+            ]);
+
+        return $parser;
+    }
+
     /**
      * List Cake Entities that can be added to Swagger. Prints to console.
      *
@@ -36,6 +52,10 @@ class ModelCommand extends Command
         $config = new Configuration();
         ValidateConfiguration::validate($config);
 
+        if (!empty($args->getOption('prefix'))) {
+            $config->set('prefix', $args->getOption('prefix'));
+        }
+
         $cakeRoute = new CakeRoute(new Router(), $config);
         $cakeModel = new CakeModel($cakeRoute, $config);
         $entities = $cakeModel->getEntityDecorators();
@@ -45,8 +65,7 @@ class ModelCommand extends Command
             $io->warning('No models were found that are associated with: ' . $config->getPrefix());
             $io->out('Have you added RESTful routes? Do you have models associated with those routes?');
             $io->out();
-
-            return;
+            $this->abort();
         }
 
         $header = ['Attribute','Data Type', 'Swagger Type','Default','Primary Key'];
