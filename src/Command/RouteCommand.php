@@ -6,6 +6,7 @@ namespace SwaggerBake\Command;
 use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Routing\Router;
 use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
@@ -18,6 +19,21 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class RouteCommand extends Command
 {
+    /**
+     * @param \Cake\Console\ConsoleOptionParser $parser ConsoleOptionParser
+     * @return \Cake\Console\ConsoleOptionParser
+     */
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser
+            ->setDescription('SwaggerBake Route Checker')
+            ->addOption('prefix', [
+                'help' => 'The route prefix (uses value in configuration by default)',
+            ]);
+
+        return $parser;
+    }
+
     /**
      * List Cake Routes that can be added to Swagger. Prints to console.
      *
@@ -37,6 +53,11 @@ class RouteCommand extends Command
 
         $config = new Configuration();
         ValidateConfiguration::validate($config);
+
+        if (!empty($args->getOption('prefix'))) {
+            $config->set('prefix', $args->getOption('prefix'));
+        }
+
         $prefix = $config->getPrefix();
         $cakeRoute = new CakeRoute(new Router(), $config);
         $routes = $cakeRoute->getRoutes();
@@ -46,8 +67,7 @@ class RouteCommand extends Command
             $io->warning("No routes were found for: $prefix");
             $io->out('Have you added RESTful routes? Do you have models associated with those routes?');
             $io->out();
-
-            return;
+            $this->abort();
         }
 
         foreach ($routes as $route) {

@@ -28,4 +28,10 @@ class ModelCommandTest extends TestCase
         $this->assertOutputContains('id');
         $this->assertOutputContains('name');
     }
+
+    public function testExecuteNoModelsFoundErrorMessage()
+    {
+        $this->exec('swagger models --prefix /nope');
+        $this->assertExitError();
+    }
 }
