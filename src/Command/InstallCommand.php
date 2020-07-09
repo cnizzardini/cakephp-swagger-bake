@@ -76,7 +76,7 @@ class InstallCommand extends Command
         }
 
         $path = trim($io->ask('What is your APIs path prefix (e.g. /api)'));
-        if (empty($path) || !filter_var('http://localhost'. $path, FILTER_VALIDATE_URL)) {
+        if (empty($path) || !filter_var('http://localhost' . $path, FILTER_VALIDATE_URL)) {
             $io->error('A valid API path prefix is required');
             $this->abort();
         }
