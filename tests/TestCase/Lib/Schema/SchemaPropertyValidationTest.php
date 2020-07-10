@@ -12,6 +12,7 @@ class SchemaPropertyValidationTest extends TestCase
 {
     public function testWithValidations()
     {
+        // min/max length, regex, and required
         $validator = (new Validator())
             ->requirePresence('test_field', true)
             ->regex('test_field', '/\D/')
@@ -34,6 +35,23 @@ class SchemaPropertyValidationTest extends TestCase
         $this->assertFalse($schemaProperty->isRequirePresenceOnCreate());
         $this->assertFalse($schemaProperty->isRequirePresenceOnUpdate());
         $this->assertEquals('/\D/', $schemaProperty->getPattern());
+        $this->assertEquals(5, $schemaProperty->getMinLength());
+        $this->assertEquals(10, $schemaProperty->getMaxLength());
+
+        // length between
+        $validator = (new Validator())->lengthBetween('test_field', [5,10]);
+
+        $propertyDecorator = (new PropertyDecorator())->setName('test_field')->setType('integer');
+        $schemaProperty = (new SchemaPropertyFactory($validator))->create($propertyDecorator);
+
+        $schemaPropertyValidation = new SchemaPropertyValidation(
+            $validator,
+            $schemaProperty,
+            $propertyDecorator
+        );
+
+        $schemaProperty = $schemaPropertyValidation->withValidations();
+
         $this->assertEquals(5, $schemaProperty->getMinLength());
         $this->assertEquals(10, $schemaProperty->getMaxLength());
     }

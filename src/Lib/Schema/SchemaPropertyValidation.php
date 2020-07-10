@@ -78,6 +78,7 @@ class SchemaPropertyValidation
      *
      * @param string $rule Rule name
      * @return array|mixed|null
+     * @codeCoverageIgnore
      */
     private function getValidationRuleValue(string $rule)
     {
@@ -105,6 +106,7 @@ class SchemaPropertyValidation
      *
      * @param string $rule Rule name
      * @return mixed
+     * @codeCoverageIgnore
      */
     private function getValidationRuleValueFromClosure(string $rule)
     {
@@ -136,6 +138,15 @@ class SchemaPropertyValidation
         $result = $this->getValidationRuleValue('maxLength');
         if (!empty($result)) {
             $this->schemaProperty->setMaxLength(intval(reset($result)));
+
+            return $this;
+        }
+
+        $result = $this->getValidationRuleValue('lengthBetween');
+        if (!empty($result)) {
+            $this->schemaProperty->setMaxLength(intval(end($result)));
+
+            return $this;
         }
 
         return $this;
@@ -175,6 +186,15 @@ class SchemaPropertyValidation
         $result = $this->getValidationRuleValue('minLength');
         if (!empty($result)) {
             $this->schemaProperty->setMinLength(intval(reset($result)));
+
+            return $this;
+        }
+
+        $result = $this->getValidationRuleValue('lengthBetween');
+        if (!empty($result)) {
+            $this->schemaProperty->setMinLength(intval(reset($result)));
+
+            return $this;
         }
 
         return $this;
@@ -271,11 +291,9 @@ class SchemaPropertyValidation
 
         $items = reset($result);
 
-        if (empty($items)) {
-            return $this;
+        if (!empty($items)) {
+            $this->schemaProperty->setEnum($items);
         }
-
-        $this->schemaProperty->setEnum($items);
 
         return $this;
     }

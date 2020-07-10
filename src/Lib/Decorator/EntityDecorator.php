@@ -5,8 +5,6 @@ namespace SwaggerBake\Lib\Decorator;
 
 use Cake\ORM\Entity;
 use ReflectionClass;
-use ReflectionException;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 /**
  * Class EntityDecorator
