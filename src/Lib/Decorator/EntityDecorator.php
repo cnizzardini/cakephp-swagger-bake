@@ -39,17 +39,13 @@ class EntityDecorator
 
     /**
      * @param \Cake\ORM\Entity $entity Entity
+     * @throws \ReflectionException
      */
     public function __construct(Entity $entity)
     {
         $this->entity = $entity;
         $this->fqns = get_class($entity);
-
-        try {
-            $this->name = (new ReflectionClass($entity))->getShortName();
-        } catch (ReflectionException $e) {
-            throw new SwaggerBakeRunTimeException('ReflectionException: ' . $e->getMessage());
-        }
+        $this->name = (new ReflectionClass($entity))->getShortName();
     }
 
     /**
