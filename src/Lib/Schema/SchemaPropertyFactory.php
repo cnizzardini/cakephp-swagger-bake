@@ -45,7 +45,13 @@ class SchemaPropertyFactory
             ->setFormat(DataTypeConversion::toFormat($property->getType()))
             ->setReadOnly($this->isReadOnly($property));
 
-        return (new SchemaPropertyValidation($this->validator, $schemaProperty, $property))->withValidations();
+        $schemaProperty = (new SchemaPropertyValidation($this->validator, $schemaProperty, $property))
+            ->withValidations();
+
+        $schemaProperty = (new SchemaPropertyFormat($this->validator, $schemaProperty, $property))
+            ->withFormat();
+
+        return $schemaProperty;
     }
 
     /**

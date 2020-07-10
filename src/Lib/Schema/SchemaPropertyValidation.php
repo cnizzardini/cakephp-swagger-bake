@@ -10,11 +10,9 @@ use SwaggerBake\Lib\Decorator\PropertyDecorator;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 /**
- * Class SchemaPropertyValidation
+ * Checks validation rules in your projects Table classes and set Schema Properties from them
  *
  * @package SwaggerBake\Lib\Schema
- *
- * Checks validation rules in your projects Table classes and set Schema Properties from them
  */
 class SchemaPropertyValidation
 {

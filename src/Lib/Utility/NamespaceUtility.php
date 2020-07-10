@@ -7,7 +7,6 @@ use LogicException;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
-
 /**
  * Class NamespaceUtility
  *
@@ -21,13 +20,13 @@ class NamespaceUtility
      * @param string $className Controller name
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      * @return string|null
-     * @throws SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
+     * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
      */
     public static function getControllerFullQualifiedNameSpace(string $className, Configuration $config): ?string
     {
         try {
             $namespaces = $config->getNamespaces();
-        } catch(LogicException $e) {
+        } catch (LogicException $e) {
             throw new SwaggerBakeRunTimeException(
                 'Invalid configuration, missing SwaggerBake.namespaces.controllers'
             );
@@ -49,13 +48,13 @@ class NamespaceUtility
      * @param string $className Entity class name
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      * @return string|null
-     * @throws SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
+     * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
      */
     public static function getEntityFullyQualifiedNameSpace(string $className, Configuration $config): ?string
     {
         try {
             $namespaces = $config->getNamespaces();
-        } catch(LogicException $e) {
+        } catch (LogicException $e) {
             throw new SwaggerBakeRunTimeException(
                 'Invalid configuration, missing SwaggerBake.namespaces.entities'
             );
@@ -77,13 +76,13 @@ class NamespaceUtility
      * @param string $className Table class name
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      * @return string|null
-     * @throws SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
+     * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
      */
     public static function getTableFullyQualifiedNameSpace(string $className, Configuration $config): ?string
     {
         try {
             $namespaces = $config->getNamespaces();
-        } catch(LogicException $e) {
+        } catch (LogicException $e) {
             throw new SwaggerBakeRunTimeException(
                 'Invalid configuration, missing SwaggerBake.namespaces.tables'
             );
