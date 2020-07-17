@@ -50,6 +50,15 @@ class InstallCommand extends Command
             }
         }
 
+        do {
+            $path = $io->ask('What is your relative API path (e.g. /api)');
+            if (empty($path) || !filter_var('http://localhost' . $path, FILTER_VALIDATE_URL)) {
+                $io->warning('You must enter a valid API path');
+                unset($path);
+            }
+        }
+        while (!isset($path));
+
         if (!copy("$assets/swagger.yml", CONFIG . 'swagger.yml')) {
             $io->error('Unable to copy swagger.yml, check permissions');
             return;
@@ -60,16 +69,13 @@ class InstallCommand extends Command
             return;
         }
 
-        $path = $io->ask('What is your relative API path (e.g. /api)');
-        if (!empty($path)) {
-            $contents = file_get_contents(CONFIG . 'swagger.yml');
-            $contents = str_replace('YOUR-SERVER-HERE', $path, $contents);
-            file_put_contents(CONFIG . 'swagger.yml', $contents);
+        $contents = file_get_contents(CONFIG . 'swagger.yml');
+        $contents = str_replace('YOUR-SERVER-HERE', $path, $contents);
+        file_put_contents(CONFIG . 'swagger.yml', $contents);
 
-            $contents = file_get_contents(CONFIG . 'swagger_bake.php');
-            $contents = str_replace('/your-relative-api-url', $path, $contents);
-            file_put_contents(CONFIG . 'swagger_bake.php', $contents);
-        }
+        $contents = file_get_contents(CONFIG . 'swagger_bake.php');
+        $contents = str_replace('/your-relative-api-url', $path, $contents);
+        file_put_contents(CONFIG . 'swagger_bake.php', $contents);
 
         $io->success('Installation Complete!');
 

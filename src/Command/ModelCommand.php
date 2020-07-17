@@ -20,6 +20,8 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class ModelCommand extends Command
 {
+    use CommandTrait;
+
     /**
      * List Cake Entities that can be added to Swagger. Prints to console.
      *
@@ -29,6 +31,8 @@ class ModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $this->loadConfig();
+
         $io->hr();
         $io->out("| SwaggerBake is checking your models...");
         $io->hr();
