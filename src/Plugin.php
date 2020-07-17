@@ -19,14 +19,16 @@ class Plugin extends BasePlugin
 {
     public function bootstrap(PluginApplicationInterface $app) : void
     {
-        parent::bootstrap($app);
-        if (!file_exists(CONFIG . 'swagger_bake.php')) {
-            triggerWarning('Missing configuration file for config/swagger_bake.php');
+        if (file_exists(CONFIG . 'swagger_bake.php')) {
+            Configure::load('swagger_bake', 'default');
+            AnnotationLoader::load();
+            ExtensionLoader::load();
             return;
         }
-        Configure::load('swagger_bake', 'default');
-        AnnotationLoader::load();
-        ExtensionLoader::load();
+
+        if (PHP_SAPI !== 'cli') {
+            triggerWarning('SwaggerBake configuration file `config/swagger_bake.php` is missing');
+        }
     }
 
     public function console(CommandCollection $commands): CommandCollection
