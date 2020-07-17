@@ -14,7 +14,7 @@ use Cake\Console\ConsoleIo;
 class InstallCommand extends Command
 {
     /**
-     * Writes a swagger.json file
+     * Installer
      *
      * @param Arguments $args
      * @param ConsoleIo $io
