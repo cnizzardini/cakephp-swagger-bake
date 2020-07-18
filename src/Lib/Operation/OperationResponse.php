@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
-use Cake\Utility\Inflector;
 use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
