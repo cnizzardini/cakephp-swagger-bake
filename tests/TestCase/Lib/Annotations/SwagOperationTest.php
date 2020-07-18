@@ -12,13 +12,26 @@ use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
-class SwagHeaderTest extends TestCase
+class SwagOperationTest extends TestCase
 {
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 
+    /**
+     * @var Router
+     */
     private $router;
+
+    /**
+     * @var array
+     */
+    private $config;
+
+    /**
+     * @var Swagger
+     */
+    private $swagger;
 
     public function setUp(): void
     {
@@ -26,19 +39,28 @@ class SwagHeaderTest extends TestCase
         $router = new Router();
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Employees', [
+            $builder->resources('Operations', [
                 'map' => [
-                    'customGet' => [
-                        'action' => 'customGet',
+                    'isVisible' => [
+                        'action' => 'isVisible',
                         'method' => 'GET',
-                        'path' => 'custom-get'
+                        'path' => 'is-visible'
+                    ],
+                    'tagNames' => [
+                        'action' => 'tagNames',
+                        'method' => 'GET',
+                        'path' => 'tag-names'
                     ],
                 ]
             ]);
+            $builder->resources('Departments', function (RouteBuilder $routes) {
+                $routes->resources('DepartmentEmployees');
+            });
+            $builder->resources('EmployeeSalaries');
         });
         $this->router = $router;
 
-        $this->config = new Configuration([
+        $this->config = [
             'prefix' => '/api',
             'yml' => '/config/swagger-bare-bones.yml',
             'json' => '/webroot/swagger.json',
@@ -52,27 +74,26 @@ class SwagHeaderTest extends TestCase
                 'entities' => ['\SwaggerBakeTest\App\\'],
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
-        ], SWAGGER_BAKE_TEST_APP);
+        ];
+
+        if (!$this->swagger instanceof Swagger) {
+            $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+            $cakeRoute = new CakeRoute($this->router, $configuration);
+            $this->swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+        }
 
         AnnotationLoader::load();
     }
 
-    public function testSwagHeader()
+    public function testIsVisible()
     {
-        $cakeRoute = new CakeRoute($this->router, $this->config);
+        $arr = json_decode($this->swagger->toString(), true);
+        $this->assertArrayNotHasKey('/operations/is-visible', $arr['paths']);
+    }
 
-        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
-        $arr = json_decode($swagger->toString(), true);
-
-
-        $this->assertArrayHasKey('/employees/custom-get', $arr['paths']);
-        $this->assertArrayHasKey('get', $arr['paths']['/employees/custom-get']);
-        $operation = $arr['paths']['/employees/custom-get']['get'];
-
-        $this->assertEquals('custom-get summary', $operation['summary']);
-
-        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return $param['name'] == 'X-HEAD-ATTRIBUTE';
-        }));
+    public function testTagsNames()
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+        $this->assertCount(4, $arr['paths']['/operations/tag-names']['get']['tags']);
     }
 }

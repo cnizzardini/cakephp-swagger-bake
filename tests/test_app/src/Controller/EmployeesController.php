@@ -148,18 +148,6 @@ class EmployeesController extends AppController
     }
 
     /**
-     * custom-hidden should be hidden from swagger
-     *
-     * @Swag\SwagOperation(isVisible=false)
-     */
-    public function customHidden()
-    {
-        $hello = 'world';
-        $this->set(compact('hello'));
-        $this->viewBuilder()->setOption('serialize', ['hello']);
-    }
-
-    /**
      * @Swag\SwagRequestBodyContent(refEntity="", mimeType="text/plain")
      */
     public function customRequestBodyContent()
