@@ -183,6 +183,16 @@ class EmployeesController extends AppController
     }
 
     /**
+     * @Swag\SwagResponseSchema(schemaItems={"$ref"="#/components/schemas/Pet"})
+     */
+    public function schemaItems()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
+
+    /**
      * @Swag\SwagDto(class="\SwaggerBakeTest\App\Dto\EmployeeData")
      */
     public function dtoQuery()

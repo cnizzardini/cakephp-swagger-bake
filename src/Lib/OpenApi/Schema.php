@@ -44,6 +44,11 @@ class Schema implements JsonSerializable
     private $properties = [];
 
     /**
+     * @var string
+     */
+    private $refEntity;
+
+    /**
      * @var string[]
      */
     private $items = [];
@@ -89,7 +94,11 @@ class Schema implements JsonSerializable
     public function toArray(): array
     {
         $vars = get_object_vars($this);
-        unset($vars['name']);
+
+        // always unset
+        foreach (['name','refEntity'] as $v) {
+            unset($vars[$v]);
+        }
 
         if (empty($vars['required'])) {
             unset($vars['required']);
@@ -98,8 +107,12 @@ class Schema implements JsonSerializable
             $vars['required'] = array_values(array_unique($vars['required']));
         }
 
+        if (!empty($this->refEntity)) {
+            $vars['$ref'] = $this->refEntity;
+        }
+
         // remove empty properties to avoid swagger.json clutter
-        foreach (['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type', 'xml'] as $v) {
+        foreach (['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml'] as $v) {
             if (array_key_exists($v, $vars) && (empty($vars[$v]) || is_null($vars[$v]))) {
                 unset($vars[$v]);
             }
@@ -262,6 +275,25 @@ class Schema implements JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getRefEntity(): string
+    {
+        return $this->refEntity;
+    }
+
+    /**
+     * @param string $refEntity Reference YAML schema such as #/components/schema/MyEntity
+     * @return $this
+     */
+    public function setRefEntity(string $refEntity)
+    {
+        $this->refEntity = $refEntity;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getItems(): array
@@ -376,9 +408,9 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFormat(): string
+    public function getFormat(): ?string
     {
         return $this->format;
     }

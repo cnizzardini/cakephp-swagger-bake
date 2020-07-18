@@ -104,26 +104,26 @@ class OperationResponse
         $defaultMimeType = reset($mimeTypes);
 
         foreach ($swagResponses as $annotation) {
-            if (empty($annotation->mimeType) && !empty($annotation->refEntity)) {
-                $annotation->mimeType = $defaultMimeType;
+            $content = (new Content())->setMimeType($annotation->mimeType);
+
+            if (empty($content->getMimeType())) {
+                $content->setMimeType($defaultMimeType);
             }
 
-            $response = (new Response())
-                ->setCode($annotation->httpCode)
-                ->setDescription($annotation->description);
+            $response = (new Response())->setCode($annotation->httpCode)->setDescription($annotation->description);
 
-            if (empty($annotation->schemaFormat) && empty($annotation->mimeType)) {
+            if (empty($annotation->schemaFormat) && empty($annotation->schemaItems) && empty($annotation->refEntity)) {
+                $response->pushContent($content);
                 $this->operation->pushResponse($response);
                 continue;
             }
 
-            $response->pushContent(
-                (new Content())
-                    ->setSchema($annotation->refEntity)
-                    ->setFormat($annotation->schemaFormat)
-                    ->setType($annotation->schemaType)
-                    ->setMimeType($annotation->mimeType)
-            );
+            $schema = $this->buildSchemaFromAnnotation($annotation);
+
+            $content->setSchema($schema);
+
+            $response->pushContent($content);
+
             $this->operation->pushResponse($response);
         }
     }
@@ -240,5 +240,32 @@ class OperationResponse
         }
 
         $this->operation->pushResponse($response);
+    }
+
+    /**
+     * Builds a Schema instance from SwagResponseSchema annotation
+     *
+     * @param \SwaggerBake\Lib\Annotation\SwagResponseSchema $annotation SwagResponseSchema
+     * @return \SwaggerBake\Lib\OpenApi\Schema
+     */
+    private function buildSchemaFromAnnotation(SwagResponseSchema $annotation): Schema
+    {
+        $schema = new Schema();
+
+        if (!empty($annotation->refEntity)) {
+            $schema->setType('object')->setRefEntity($annotation->refEntity);
+        } elseif (!empty($annotation->schemaItems)) {
+            $schema->setType('array')->setItems($annotation->schemaItems);
+        }
+
+        if (!empty($annotation->schemaType)) {
+            $schema->setFormat($annotation->schemaType);
+        }
+
+        if (empty($schema->getType()) && $annotation->mimeType == 'text/plain') {
+            $schema->setType('string');
+        }
+
+        return $schema->setFormat($annotation->schemaFormat);
     }
 }
