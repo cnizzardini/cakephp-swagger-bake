@@ -167,11 +167,7 @@ class OperationResponse
      */
     private function assignSchema(): void
     {
-        if (!$this->schema) {
-            return;
-        }
-
-        if ($this->operation->hasSuccessResponseCode()) {
+        if (!$this->schema || $this->operation->hasSuccessResponseCode()) {
             return;
         }
 
@@ -181,43 +177,25 @@ class OperationResponse
 
         $schema = clone $this->schema;
 
-        if (in_array(strtolower($this->route->getAction()), ['index'])) {
-            $response = (new Response())->setCode('200');
+        $response = (new Response())->setCode('200');
 
-            foreach ($this->config->getResponseContentTypes() as $mimeType) {
-                if ($mimeType == 'application/xml') {
-                    $schema->setXml((new Xml())->setName('response'));
-                }
-
-                $response->pushContent(
-                    (new Content())
-                        ->setSchema($schema)
-                        ->setMimeType($mimeType)
+        foreach ($this->config->getResponseContentTypes() as $mimeType) {
+            if ($mimeType == 'application/xml') {
+                $schema->setXml(
+                    (new Xml())->setName('response')
                 );
             }
-            $this->operation->pushResponse($response);
 
-            return;
+            $response->pushContent(
+                (new Content())
+                    ->setSchema($schema)
+                    ->setMimeType($mimeType)
+            );
         }
 
-        if (in_array(strtolower($this->route->getAction()), ['add','view','edit'])) {
-            $response = (new Response())->setCode('200');
+        $this->operation->pushResponse($response);
 
-            foreach ($this->config->getResponseContentTypes() as $mimeType) {
-                if ($mimeType == 'application/xml') {
-                    $schema->setXml((new Xml())->setName('response'));
-                }
-
-                $response->pushContent(
-                    (new Content())
-                        ->setSchema($schema)
-                        ->setMimeType($mimeType)
-                );
-            }
-            $this->operation->pushResponse($response);
-
-            return;
-        }
+        return;
     }
 
     /**
