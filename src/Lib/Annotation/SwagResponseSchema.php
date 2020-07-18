@@ -66,7 +66,7 @@ use Cake\Log\Log;
  *                  $ref: '#/components/schemas/Exception'
  * ```
  *
- * Example: Defining an HTTP 400-410 exception schema in XML
+ * Example: Defining a `string` schema with a `date-time` format.
  *
  * `@Swag\SwagResponseSchema(schemaType="string", schemaFormat="date-time")`
  *

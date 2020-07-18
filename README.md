@@ -307,7 +307,7 @@ public function index() {}
 
 #### `@SwagResponseSchema`
 Method level annotation for defining response schema. [Read the comments](src/Lib/Annotation/SwagResponseSchema.php) to 
-see all supported properties and additional examples
+see all supported properties and additional examples.
 
 - `httpCode` is deprecated in >= v1.3, use `statusCode`
 
