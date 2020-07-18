@@ -233,8 +233,6 @@ class Swagger
                     continue;
                 }
 
-                $this->addArrayOfObjectsSchema($route);
-
                 $schema = $this->getSchemaFromRoute($route);
 
                 $operation = $operationFactory->create($route, $httpMethod, $schema);
@@ -263,47 +261,11 @@ class Swagger
         $controller = $route->getController();
         $name = preg_replace('/\s+/', '', $controller);
 
-        if (in_array(strtolower($route->getAction()), ['index']) && $this->getSchemaByName($name)) {
-            return $this->getSchemaByName($name);
-        }
-
-        if (in_array(strtolower($route->getAction()), ['add','view','edit'])) {
+        if (in_array(strtolower($route->getAction()), ['add','view','edit','index'])) {
             return $this->getSchemaByName(Inflector::singularize($name));
         }
 
         return null;
-    }
-
-    /**
-     * Adds array of objects to #/components/schemas
-     *
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
-     * @return void
-     */
-    private function addArrayOfObjectsSchema(RouteDecorator $route): void
-    {
-        if (!in_array('GET', $route->getMethods())) {
-            return;
-        }
-
-        if ($route->getAction() !== 'index') {
-            return;
-        }
-
-        if ($this->getSchemaByName($route->getController())) {
-            return;
-        }
-
-        if (!$this->getSchemaByName(Inflector::singularize($route->getController()))) {
-            return;
-        }
-
-        $this->pushSchema(
-            (new Schema())
-                ->setName($route->getController())
-                ->setType('array')
-                ->setItems(['$ref' => '#/components/schemas/' . Inflector::singularize($route->getController())])
-        );
     }
 
     /**

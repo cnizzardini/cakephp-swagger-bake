@@ -161,63 +161,44 @@ class OperationResponse
     }
 
     /**
-     * Assigns Cake Models as Swagger Schema if possible
+     * Assigns Cake Models as Swagger Schema if possible. For index actions, an array of objects will be assigned.
      *
      * @return void
      */
     private function assignSchema(): void
     {
-        if (!$this->schema) {
-            return;
-        }
+        $action = strtolower($this->route->getAction());
+        $crudActions = ['index','add','view','edit'];
 
-        if ($this->operation->hasSuccessResponseCode()) {
-            return;
-        }
-
-        if (!in_array(strtolower($this->route->getAction()), ['index','add','view','edit'])) {
+        if (!$this->schema || $this->operation->hasSuccessResponseCode() || !in_array($action, $crudActions)) {
             return;
         }
 
         $schema = clone $this->schema;
 
-        if (in_array(strtolower($this->route->getAction()), ['index'])) {
-            $response = (new Response())->setCode('200');
-
-            foreach ($this->config->getResponseContentTypes() as $mimeType) {
-                if ($mimeType == 'application/xml') {
-                    $schema->setXml((new Xml())->setName('response'));
-                }
-
-                $response->pushContent(
-                    (new Content())
-                        ->setSchema($schema)
-                        ->setMimeType($mimeType)
-                );
-            }
-            $this->operation->pushResponse($response);
-
-            return;
+        if ($action === 'index') {
+            $schema = (new Schema())
+                ->setType('array')
+                ->setItems(['$ref' => '#/components/schemas/' . $this->schema->getName()]);
         }
 
-        if (in_array(strtolower($this->route->getAction()), ['add','view','edit'])) {
-            $response = (new Response())->setCode('200');
+        $response = (new Response())->setCode('200');
 
-            foreach ($this->config->getResponseContentTypes() as $mimeType) {
-                if ($mimeType == 'application/xml') {
-                    $schema->setXml((new Xml())->setName('response'));
-                }
+        foreach ($this->config->getResponseContentTypes() as $mimeType) {
+            $schema->setXml(null);
 
-                $response->pushContent(
-                    (new Content())
-                        ->setSchema($schema)
-                        ->setMimeType($mimeType)
-                );
+            if ($mimeType == 'application/xml') {
+                $schema->setXml((new Xml())->setName('response'));
             }
-            $this->operation->pushResponse($response);
 
-            return;
+            $response->pushContent(
+                (new Content())
+                    ->setSchema($schema)
+                    ->setMimeType($mimeType)
+            );
         }
+
+        $this->operation->pushResponse($response);
     }
 
     /**
