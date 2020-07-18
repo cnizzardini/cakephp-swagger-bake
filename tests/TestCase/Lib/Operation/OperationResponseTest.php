@@ -20,8 +20,20 @@ class OperationResponseTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
+    /**
+     * @var Router
+     */
     private $router;
+
+    /**
+     * @var Configuration
+     */
     private $config;
+
+    /**
+     * @var array
+     */
+    private $routes;
 
     public function setUp(): void
     {
@@ -30,55 +42,64 @@ class OperationResponseTest extends TestCase
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => ['index','create','delete','noResponsesDefined'],
+                'only' => [
+                    'index',
+                    'create',
+                    'delete',
+                    'noResponsesDefined',
+                    'textPlain'
+                ],
                 'map' => [
                     'noResponsesDefined'  => [
                         'method' => 'get',
                         'action' => 'noResponseDefined',
                         'path' => 'no-responses-defined'
                     ],
+                    'textPlain'  => [
+                        'method' => 'get',
+                        'action' => 'textPlain',
+                        'path' => 'text-plain'
+                    ],
                 ]
             ]);
         });
         $this->router = $router;
 
-        $this->config = [
-            'prefix' => '/api',
-            'yml' => '/config/swagger-bare-bones.yml',
-            'json' => '/webroot/swagger.json',
-            'webPath' => '/swagger.json',
-            'hotReload' => false,
-            'exceptionSchema' => 'Exception',
-            'requestAccepts' => ['application/x-www-form-urlencoded'],
-            'responseContentTypes' => ['application/json'],
-            'namespaces' => [
-                'controllers' => ['\SwaggerBakeTest\App\\'],
-                'entities' => ['\SwaggerBakeTest\App\\'],
-                'tables' => ['\SwaggerBakeTest\App\\'],
-            ]
-        ];
+        if (!$this->config instanceof Configuration) {
+            $this->config = new Configuration([
+                'prefix' => '/api',
+                'yml' => '/config/swagger-bare-bones.yml',
+                'json' => '/webroot/swagger.json',
+                'webPath' => '/swagger.json',
+                'hotReload' => false,
+                'exceptionSchema' => 'Exception',
+                'requestAccepts' => ['application/x-www-form-urlencoded'],
+                'responseContentTypes' => ['application/json'],
+                'namespaces' => [
+                    'controllers' => ['\SwaggerBakeTest\App\\'],
+                    'entities' => ['\SwaggerBakeTest\App\\'],
+                    'tables' => ['\SwaggerBakeTest\App\\'],
+                ]
+            ], SWAGGER_BAKE_TEST_APP);
+        }
+
+        if (empty($this->routes)) {
+            $cakeRoute = new CakeRoute($this->router, $this->config);
+            $this->routes = $cakeRoute->getRoutes();
+        }
     }
 
     public function testGetOperationWithAnnotatedResponse()
     {
-        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($this->router, $config);
-
-        $routes = $cakeRoute->getRoutes();
-        $route = $routes['employees:index'];
+        $route = $this->routes['employees:index'];
 
         $operationResponse = new OperationResponse(
-            $config,
+            $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/** @throws Exception */'),
             [
                 new SwagResponseSchema([
-                    'refEntity' => '',
                     'httpCode' => 200,
-                    'description' => '',
-                    'mimeType' => '',
-                    'schemaType' => '',
-                    'schemaFormat' => ''
                 ]),
             ],
             $route,
@@ -93,11 +114,7 @@ class OperationResponseTest extends TestCase
 
     public function testGetOperationWithSchemaResponse()
     {
-        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($this->router, $config);
-
-        $routes = $cakeRoute->getRoutes();
-        $route = $routes['employees:add'];
+        $route = $this->routes['employees:add'];
 
         $schema = (new Schema())
             ->setName('Employee')
@@ -105,7 +122,7 @@ class OperationResponseTest extends TestCase
         ;
 
         $operationResponse = new OperationResponse(
-            $config,
+            $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/**  */'),
             [],
@@ -120,14 +137,10 @@ class OperationResponseTest extends TestCase
 
     public function testAddOperationWithNoResponseDefined()
     {
-        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($this->router, $config);
-
-        $routes = $cakeRoute->getRoutes();
-        $route = $routes['employees:add'];
+        $route = $this->routes['employees:add'];
 
         $operationResponse = new OperationResponse(
-            $config,
+            $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/**  */'),
             [],
@@ -147,14 +160,10 @@ class OperationResponseTest extends TestCase
 
     public function testDeleteActionResponseWithHttp204()
     {
-        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($this->router, $config);
-
-        $routes = $cakeRoute->getRoutes();
-        $route = $routes['employees:delete'];
+        $route = $this->routes['employees:delete'];
 
         $operationResponse = new OperationResponse(
-            $config,
+            $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/**  */'),
             [],
@@ -166,17 +175,12 @@ class OperationResponseTest extends TestCase
         $this->assertNotEmpty($operation->getResponseByCode(204));
     }
 
-
     public function testNoResponseDefined()
     {
-        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($this->router, $config);
-
-        $routes = $cakeRoute->getRoutes();
-        $route = $routes['employees:noresponsedefined'];
+        $route = $this->routes['employees:noresponsedefined'];
 
         $operationResponse = new OperationResponse(
-            $config,
+            $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/**  */'),
             [],
@@ -191,5 +195,82 @@ class OperationResponseTest extends TestCase
         $content = $response->getContentByMimeType('application/json');
         $this->assertNotEmpty($content);
         $this->assertNotEmpty($content->getSchema());
+    }
+
+    public function testGetOperationWithSwagResponseSchemaRefEntity()
+    {
+        $route = $this->routes['employees:index'];
+
+        $operationResponse = new OperationResponse(
+            $this->config,
+            new Operation(),
+            DocBlockFactory::createInstance()->create('/** */'),
+            [
+                new SwagResponseSchema([
+                    'refEntity' => '#/components/schema/Employee',
+                ]),
+            ],
+            $route,
+            null
+        );
+
+        $operation = $operationResponse->getOperationWithResponses();
+
+        $content = $operation->getResponseByCode(200)->getContentByMimeType('application/json');
+
+        $this->assertEquals('#/components/schema/Employee', $content->getSchema()->getRefEntity());
+    }
+
+    public function testGetOperationWithSwagResponseSchemaItems()
+    {
+        $route = $this->routes['employees:index'];
+
+        $operationResponse = new OperationResponse(
+            $this->config,
+            new Operation(),
+            DocBlockFactory::createInstance()->create('/** */'),
+            [
+                new SwagResponseSchema([
+                    'schemaItems' => [ '$ref' => '#/components/schema/Employee']
+                ]),
+            ],
+            $route,
+            null
+        );
+
+        $operation = $operationResponse->getOperationWithResponses();
+
+        $content = $operation->getResponseByCode(200)->getContentByMimeType('application/json');
+
+
+        $this->assertEquals('array', $content->getSchema()->getType());
+        $this->assertArrayHasKey('$ref', $content->getSchema()->getItems());
+        $this->assertEquals('#/components/schema/Employee', $content->getSchema()->getItems()['$ref']);
+    }
+
+    public function testGetOperationWithSwagResponseSchemaTextPlain()
+    {
+        $route = $this->routes['employees:textplain'];
+
+        $operationResponse = new OperationResponse(
+            $this->config,
+            new Operation(),
+            DocBlockFactory::createInstance()->create('/** */'),
+            [
+                new SwagResponseSchema([
+                    'mimeType' => 'text/plain',
+                    'schemaFormat' => 'date-time'
+                ]),
+            ],
+            $route,
+            null
+        );
+
+        $operation = $operationResponse->getOperationWithResponses();
+
+        $content = $operation->getResponseByCode(200)->getContentByMimeType('text/plain');
+
+        $this->assertEquals('string', $content->getSchema()->getType());
+        $this->assertEquals('date-time', $content->getSchema()->getFormat());
     }
 }
