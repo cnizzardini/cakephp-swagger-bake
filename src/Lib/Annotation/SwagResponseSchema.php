@@ -66,9 +66,9 @@ use Cake\Log\Log;
  *                  $ref: '#/components/schemas/Exception'
  * ```
  *
- * Example: Defining a `string` schema with a `date-time` format.
+ * Example: Defining a `text/plain` response with `date-time` format.
  *
- * `@Swag\SwagResponseSchema(schemaType="string", schemaFormat="date-time")`
+ * `@Swag\SwagResponseSchema(mimeType="text/plain", schemaFormat="date-time")`
  *
  * ```yaml
  *      responses:
