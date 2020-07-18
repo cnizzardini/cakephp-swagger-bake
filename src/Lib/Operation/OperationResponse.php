@@ -180,7 +180,7 @@ class OperationResponse
         if ($action === 'index') {
             $schema = (new Schema())
                 ->setType('array')
-                ->setItems(['$ref' => '#/components/schemas/' . Inflector::pluralize($this->schema->getName())]);
+                ->setItems(['$ref' => '#/components/schemas/' . $this->schema->getName()]);
         }
 
         $response = (new Response())->setCode('200');

@@ -112,7 +112,7 @@ class SwaggerOperationTest extends TestCase
         $schema =  $employee['responses'][200]['content']['application/json']['schema'];
 
         $this->assertEquals('array', $schema['type']);
-        $this->assertEquals('#/components/schemas/Employees', $schema['items']['$ref']);
+        $this->assertEquals('#/components/schemas/Employee', $schema['items']['$ref']);
     }
 
     public function testDefaultRequestSchemaOnAddMethod()
