@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
+use Cake\Utility\Inflector;
 use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
@@ -161,29 +162,34 @@ class OperationResponse
     }
 
     /**
-     * Assigns Cake Models as Swagger Schema if possible
+     * Assigns Cake Models as Swagger Schema if possible. For index actions, an array of objects will be assigned.
      *
      * @return void
      */
     private function assignSchema(): void
     {
-        if (!$this->schema || $this->operation->hasSuccessResponseCode()) {
-            return;
-        }
+        $action = strtolower($this->route->getAction());
+        $crudActions = ['index','add','view','edit'];
 
-        if (!in_array(strtolower($this->route->getAction()), ['index','add','view','edit'])) {
+        if (!$this->schema || $this->operation->hasSuccessResponseCode() || !in_array($action, $crudActions)) {
             return;
         }
 
         $schema = clone $this->schema;
 
+        if ($action === 'index') {
+            $schema = (new Schema())
+                ->setType('array')
+                ->setItems(['$ref' => '#/components/schemas/' . Inflector::pluralize($this->schema->getName())]);
+        }
+
         $response = (new Response())->setCode('200');
 
         foreach ($this->config->getResponseContentTypes() as $mimeType) {
+            $schema->setXml(null);
+
             if ($mimeType == 'application/xml') {
-                $schema->setXml(
-                    (new Xml())->setName('response')
-                );
+                $schema->setXml((new Xml())->setName('response'));
             }
 
             $response->pushContent(
@@ -194,8 +200,6 @@ class OperationResponse
         }
 
         $this->operation->pushResponse($response);
-
-        return;
     }
 
     /**
