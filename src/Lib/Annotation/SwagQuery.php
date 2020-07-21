@@ -6,12 +6,6 @@ namespace SwaggerBake\Lib\Annotation;
 /**
  * Annotation for describing Query Parameter Objects.
  *
- * Read OpenAPI specification for exact usage of the attributes:
- *
- * @see https://swagger.io/specification/ search for "Parameter Object"
- *
- * For `format` read OpenAPI specification on data formats:
- * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
@@ -28,6 +22,21 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("format",  type = "string"),
  * @Attribute("example",  type = "mixed"),
  * })
+ *
+ * Example: Define a string field that will be exploded on
+ *
+ * `@Swag\SwagForm(name="field", type="string", explode=true, description="Explodes on commas")`
+ *
+ * ```yaml
+ *         field:
+ *           description: Explodes on commas
+ *           type: string
+ *           explode: true
+ * ```
+ *
+ * Read OpenAPI specification for exact usage of the attributes:
+ * @see https://swagger.io/specification/ search for "Parameter Object"
+ * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
  * @see AbstractParameter
  */
 class SwagQuery extends AbstractParameter

@@ -4,14 +4,10 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
- * Annotation for creating application/x-www-form-urlencoded request bodies
+ * Method level annotation for adding form data fields.
  *
- * Read OpenAPI specification for exact usage of the attributes:
+ * For use with application/x-www-form-urlencoded request bodies.
  *
- * @see https://swagger.io/specification/ search for "Schema Object"
- *
- * For `format` read OpenAPI specification on data formats:
- * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
@@ -37,6 +33,22 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("minProperties", type = "integer"),
  * @Attribute("enum", type = "array"),
  * })
+ *
+ * Example: Field that is an integer that must be a between 10 and 100 and a multiple of 10
+ *
+ * `@Swag\SwagForm(name="field", type="integer", minimum=10, maximum=100, multipleOf=10)`
+ *
+ * ```yaml
+ *         field:
+ *           type: integer
+ *           minimum: 5
+ *           maximum: 100
+ *           multipleOf: 10
+ * ```
+ *
+ * Read OpenAPI specification for exact usage of the attributes:
+ * @see https://swagger.io/specification/ search for "Schema Object"
+ * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
  * @see AbstractSchemaProperty
  */
 class SwagForm extends AbstractSchemaProperty

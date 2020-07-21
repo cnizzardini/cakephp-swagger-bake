@@ -72,7 +72,7 @@ use Cake\Log\Log;
  *
  * ```yaml
  *      responses:
- *        '40x':
+ *        '200':
  *          content:
  *            text/plain:
  *              schema:

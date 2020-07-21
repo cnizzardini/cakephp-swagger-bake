@@ -4,14 +4,10 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
- * Annotation for creating application/x-www-form-urlencoded DTO request bodies
+ * Property level annotation for use in your SwagDto classes. Read the comments to see all supported properties.
  *
- * Read OpenAPI specification for exact usage of the attributes:
+ * For use with application/x-www-form-urlencoded requests. Use this in your DTO class (e.g. App\Dto|MyDto)
  *
- * @see https://swagger.io/specification/ search for "Schema Object"
- *
- * For `format` read OpenAPI specification on data formats:
- * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format
  * @Annotation
  * @Target({"PROPERTY"})
  * @Attributes({
@@ -37,6 +33,11 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("minProperties", type = "integer"),
  * @Attribute("enum", type = "array"),
  * })
+ *
+ *
+ * Read OpenAPI specification for exact usage of the attributes:
+ * @see https://swagger.io/specification/ search for "Schema Object"
+ * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
  * @see AbstractSchemaProperty
  */
 class SwagDtoForm extends AbstractSchemaProperty
