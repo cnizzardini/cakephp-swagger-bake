@@ -52,11 +52,6 @@ class SwaggerOperationTest extends TestCase
                         'method' => 'GET',
                         'path' => 'custom-get'
                     ],
-                    'customHidden' => [
-                        'action' => 'customHidden',
-                        'method' => 'GET',
-                        'path' => 'custom-hidden'
-                    ],
                 ]
             ]);
             $builder->resources('Departments', function (RouteBuilder $routes) {
@@ -157,13 +152,6 @@ class SwaggerOperationTest extends TestCase
 
         $this->assertEquals('object', $schema['type']);
         $this->assertCount(6, $schema['properties']);
-    }
-
-    public function testHiddenOperation()
-    {
-        $arr = json_decode($this->swagger->toString(), true);
-
-        $this->assertArrayNotHasKey('/employees/custom-hidden', $arr['paths']);
     }
 
     public function testExceptionResponseSchema()
