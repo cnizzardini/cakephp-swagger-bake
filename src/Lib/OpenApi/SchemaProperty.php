@@ -87,7 +87,7 @@ class SchemaProperty implements JsonSerializable
         }
 
         // reduce JSON clutter by removing empty values
-        foreach (['example','description','enum'] as $v) {
+        foreach (['example','description','enum','format'] as $v) {
             if (empty($vars[$v])) {
                 unset($vars[$v]);
             }
