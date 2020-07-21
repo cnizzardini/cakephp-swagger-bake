@@ -4,14 +4,10 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
- * Annotation for describing Entity properties.
+ * Class level annotation for customizing Schema Attributes.
  *
- * Read OpenAPI specification for exact usage of the attributes:
+ * Use this in your Entity classes (i.e. App\Model\Entity)
  *
- * @see https://swagger.io/specification/ search for "Schema Object"
- *
- * For `format` read OpenAPI specification on data formats:
- * @see https://swagger.io/docs/specification/data-models/data-types
  * @Annotation
  * @Target({"CLASS"})
  * @Attributes({
@@ -37,6 +33,34 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("minProperties", type = "integer"),
  * @Attribute("enum", type = "array"),
  * })
+ *
+ * Example: Define an Entity property as required with a description, min and max length and regex:
+ *
+ * `@Swag\SwagEntityAttribute(refEntity="property_name", type="string", minLength=5, maxLength=10)`
+ *
+ * ```yaml
+ *         property_name:
+ *           type: string
+ *           minLength: 5
+ *           maxLength: 10
+ * ```
+ *
+ * Example: Create enumerated list that is required
+ *
+ * `@Swag\SwagEntityAttribute(refEntity="property_name", type="string", enum={"PG","R"}, required=true)`
+ *
+ * ```yaml
+ *         property_name:
+ *           type: string
+ *           enum:
+ *              - PG
+ *              - R
+ *           required: true
+ * ```
+ *
+ * Read OpenAPI specification for exact usage of the attributes:
+ * @see https://swagger.io/specification/ search for "Schema Object"
+ * @see https://swagger.io/docs/specification/data-models/data-types search for "data formats"
  * @see AbstractSchemaProperty
  */
 class SwagEntityAttribute extends AbstractSchemaProperty

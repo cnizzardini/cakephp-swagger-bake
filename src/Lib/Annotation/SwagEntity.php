@@ -4,6 +4,10 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
+ * Class level annotation for exposing entities to OpenApi
+ *
+ * Use this inside your applications Entity classes (i.e. App\Model|Entity)
+ *
  * @Annotation
  * @Target({"CLASS"})
  * @Attributes({
