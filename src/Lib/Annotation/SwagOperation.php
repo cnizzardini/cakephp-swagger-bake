@@ -10,9 +10,8 @@ namespace SwaggerBake\Lib\Annotation;
  * @Target({"METHOD"})
  * @Attributes({
  * @Attribute("isVisible", type="bool"),
- * @Attribute("tagNames", type="array"),
+ * @Attribute("tagNames", type="array")
  * })
- *
  * @see https://swagger.io/docs/specification/paths-and-operations/
  */
 class SwagOperation
@@ -37,16 +36,6 @@ class SwagOperation
     public $tagNames;
 
     /**
-     * Http Method
-     *
-     * This is automatically set from your routes.php, but can overwritten. This is useful if you need to define
-     * methods like PUT, OPTIONS, and HEAD
-     *
-     * @var string
-     */
-    public $httpMethod;
-
-    /**
      * @param array $values Annotation attributes as key-value pair
      */
     public function __construct(array $values)
@@ -54,6 +43,5 @@ class SwagOperation
         $values = array_merge(['isVisible' => true, 'tagNames' => [], 'httpMethod' => null], $values);
         $this->isVisible = (bool)$values['isVisible'];
         $this->tagNames = $values['tagNames'];
-        $this->httpMethod = $values['httpMethod'];
     }
 }

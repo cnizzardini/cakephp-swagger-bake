@@ -136,7 +136,7 @@ class Operation implements JsonSerializable
     public function setHttpMethod(string $httpMethod)
     {
         $httpMethod = strtoupper($httpMethod);
-        if (!in_array($httpMethod, ['GET','PUT', 'POST', 'PATCH', 'DELETE'])) {
+        if (!in_array($httpMethod, ['GET','PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'])) {
             throw new InvalidArgumentException("Invalid HTTP METHOD: $httpMethod");
         }
 
