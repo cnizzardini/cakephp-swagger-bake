@@ -68,7 +68,7 @@ class OperationFromRouteFactory
             ->setSummary($docBlock->getSummary())
             ->setDescription($docBlock->getDescription()->render())
             ->setHttpMethod(strtolower($httpMethod))
-            ->setOperationId($route->getName() . ':' . $httpMethod);
+            ->setOperationId($route->getName() . ':' . strtolower($httpMethod));
 
         $operation = $this->getOperationWithTags($operation, $route, $annotations);
 

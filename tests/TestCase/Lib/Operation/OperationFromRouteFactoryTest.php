@@ -62,7 +62,7 @@ class OperationFromRouteFactoryTest extends TestCase
 
         $this->assertInstanceOf(Operation::class, $operation);
         $this->assertEquals('GET', $operation->getHttpMethod());
-        $this->assertEquals('employees:index', $operation->getOperationId());
+        $this->assertEquals('employees:index:get', $operation->getOperationId());
         $this->assertEquals('CustomTag', $operation->getTags()[1]);
     }
 }
