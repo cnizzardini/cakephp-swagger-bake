@@ -227,6 +227,12 @@ class OperationResponse
 
         $response = (new Response())->setCode('200');
 
+        if (in_array($this->operation->getHttpMethod(), ['OPTIONS','HEAD'])) {
+            $this->operation->pushResponse($response);
+
+            return;
+        }
+
         foreach ($this->config->getResponseContentTypes() as $mimeType) {
             $schema = (new Schema())->setDescription('');
 

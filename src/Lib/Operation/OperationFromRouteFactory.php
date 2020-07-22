@@ -48,7 +48,7 @@ class OperationFromRouteFactory
      */
     public function create(RouteDecorator $route, string $httpMethod, ?Schema $schema): ?Operation
     {
-        if (empty($route->getMethods())) {
+        if (empty($route->getMethods()) || (strtolower($httpMethod) == 'put' && $route->getAction() == 'edit')) {
             return null;
         }
 

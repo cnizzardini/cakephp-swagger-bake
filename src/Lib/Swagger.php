@@ -229,9 +229,6 @@ class Swagger
             }
 
             foreach ($route->getMethods() as $httpMethod) {
-                if (strtolower($httpMethod) == 'put') {
-                    continue;
-                }
 
                 $schema = $this->getSchemaFromRoute($route);
 
