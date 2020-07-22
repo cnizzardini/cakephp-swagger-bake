@@ -229,7 +229,6 @@ class Swagger
             }
 
             foreach ($route->getMethods() as $httpMethod) {
-
                 $schema = $this->getSchemaFromRoute($route);
 
                 $operation = $operationFactory->create($route, $httpMethod, $schema);
