@@ -6,6 +6,7 @@ namespace SwaggerBake\Command;
 use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
+use Cake\Core\Configure;
 use Cake\Console\ConsoleOptionParser;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
@@ -18,6 +19,8 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class BakeCommand extends Command
 {
+    use CommandTrait;
+
     /**
      * @param \Cake\Console\ConsoleOptionParser $parser ConsoleOptionParser
      * @return \Cake\Console\ConsoleOptionParser
@@ -33,6 +36,8 @@ class BakeCommand extends Command
         return $parser;
     }
 
+
+
     /**
      * Writes a swagger.json file
      *
@@ -42,7 +47,9 @@ class BakeCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out('Running...');
+        $this->loadConfig();
+
+        $io->out("Running...");
 
         $config = new Configuration();
         ValidateConfiguration::validate($config);
@@ -54,6 +61,11 @@ class BakeCommand extends Command
         }
 
         $swagger->writeFile($output);
+
+        if (!file_exists($output)) {
+            $io->out("<error>Error Creating File: $output</error>");
+            $this->abort();
+        }
 
         $io->out("<success>Swagger File Created: $output</success>");
     }

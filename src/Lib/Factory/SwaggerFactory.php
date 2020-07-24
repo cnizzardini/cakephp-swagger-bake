@@ -8,6 +8,7 @@ use LogicException;
 use SwaggerBake\Lib\CakeModel;
 use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Swagger;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
@@ -52,7 +53,10 @@ class SwaggerFactory
         $routes = $this->cakeRoute->getRoutes();
 
         if (empty($routes)) {
-            throw new LogicException('No routes were found for: ' . $this->config->getPrefix());
+            throw new SwaggerBakeRunTimeException(
+                'No restful routes were found for your prefix `' . $this->config->getPrefix() . '`. ' .
+                'Try adding restful routes to your `config/routes.php`.'
+            );
         }
 
         return new Swagger(new CakeModel($this->cakeRoute, $this->config));
