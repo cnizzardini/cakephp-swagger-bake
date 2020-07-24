@@ -1,11 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Command;
 
 use Cake\Core\Configure;
 use SwaggerBake\Lib\AnnotationLoader;
-use SwaggerBake\Lib\ExtensionLoader;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\ExtensionLoader;
 
 trait CommandTrait
 {
@@ -13,7 +14,7 @@ trait CommandTrait
      * Loads configuration
      *
      * @return void
-     * @throws SwaggerBakeRunTimeException
+     * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
      */
     public function loadConfig(): void
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Router;
-use LogicException;
 use SwaggerBake\Lib\CakeModel;
 use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;

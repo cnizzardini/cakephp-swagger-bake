@@ -6,7 +6,6 @@ namespace SwaggerBake\Command;
 use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
-use Cake\Core\Configure;
 use Cake\Console\ConsoleOptionParser;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
@@ -36,8 +35,6 @@ class BakeCommand extends Command
         return $parser;
     }
 
-
-
     /**
      * Writes a swagger.json file
      *
@@ -49,7 +46,7 @@ class BakeCommand extends Command
     {
         $this->loadConfig();
 
-        $io->out("Running...");
+        $io->out('Running...');
 
         $config = new Configuration();
         ValidateConfiguration::validate($config);
