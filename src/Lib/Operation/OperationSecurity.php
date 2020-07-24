@@ -112,7 +112,7 @@ class OperationSecurity
         }
 
         $array = $this->swagger->getArray();
-        if (count($array['components']['securitySchemes']) !== 1) {
+        if (!isset($array['components']['securitySchemes']) || count($array['components']['securitySchemes']) !== 1) {
             return;
         }
 

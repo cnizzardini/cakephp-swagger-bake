@@ -18,6 +18,8 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class BakeCommand extends Command
 {
+    use CommandTrait;
+
     /**
      * @param \Cake\Console\ConsoleOptionParser $parser ConsoleOptionParser
      * @return \Cake\Console\ConsoleOptionParser
@@ -42,6 +44,8 @@ class BakeCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $this->loadConfig();
+
         $io->out('Running...');
 
         $config = new Configuration();
@@ -54,6 +58,11 @@ class BakeCommand extends Command
         }
 
         $swagger->writeFile($output);
+
+        if (!file_exists($output)) {
+            $io->out("<error>Error Creating File: $output</error>");
+            $this->abort();
+        }
 
         $io->out("<success>Swagger File Created: $output</success>");
     }
