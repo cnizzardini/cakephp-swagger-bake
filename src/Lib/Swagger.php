@@ -273,8 +273,8 @@ class Swagger
     {
         $array = Yaml::parseFile($this->config->getYml());
 
-        $array = $this->buildPathsFromYml($array);
         $array = $this->buildSchemaFromYml($array);
+        $array = $this->buildPathsFromYml($array);
 
         $this->array = $array;
     }
