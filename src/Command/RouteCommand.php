@@ -19,6 +19,8 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class RouteCommand extends Command
 {
+    use CommandTrait;
+
     /**
      * @param \Cake\Console\ConsoleOptionParser $parser ConsoleOptionParser
      * @return \Cake\Console\ConsoleOptionParser
@@ -43,6 +45,8 @@ class RouteCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $this->loadConfig();
+
         $io->hr();
         $io->out('| SwaggerBake is checking your routes...');
         $io->hr();

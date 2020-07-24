@@ -21,6 +21,8 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class ModelCommand extends Command
 {
+    use CommandTrait;
+
     /**
      * @param \Cake\Console\ConsoleOptionParser $parser ConsoleOptionParser
      * @return \Cake\Console\ConsoleOptionParser
@@ -45,6 +47,8 @@ class ModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $this->loadConfig();
+
         $io->hr();
         $io->out('| SwaggerBake is checking your models...');
         $io->hr();
