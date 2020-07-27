@@ -298,9 +298,11 @@ public function index() {}
 #### `@SwagRequestBodyContent`
 Method level annotation for describing custom content in request body.
 
+- `mimeType` has been deprecated in >= v1.5, use array form with `mimeTypes`
+
 ```php
 /**
- * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Actor", mimeType="application/json")
+ * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Actor", mimeTypes={"application/json"})
  */
 public function index() {}
 ```

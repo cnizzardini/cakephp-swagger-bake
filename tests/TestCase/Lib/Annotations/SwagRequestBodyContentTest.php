@@ -26,12 +26,22 @@ class SwagRequestBodyContentTest extends TestCase
         $router = new Router();
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Employees', [
+            $builder->resources('SwagRequestBodyContent', [
                 'map' => [
-                    'customRequestBodyContent' => [
-                        'action' => 'customRequestBodyContent',
+                    'textPlain' => [
+                        'action' => 'textPlain',
                         'method' => 'POST',
-                        'path' => 'custom-request-body-content'
+                        'path' => 'text-plain'
+                    ],
+                    'multipleMimeTypes' => [
+                        'action' => 'multipleMimeTypes',
+                        'method' => 'POST',
+                        'path' => 'multiple-mime-types'
+                    ],
+                    'useConfigDefaults' => [
+                        'action' => 'useConfigDefaults',
+                        'method' => 'POST',
+                        'path' => 'use-config-defaults'
                     ],
                 ]
             ]);
@@ -45,7 +55,7 @@ class SwagRequestBodyContentTest extends TestCase
             'webPath' => '/swagger.json',
             'hotReload' => false,
             'exceptionSchema' => 'Exception',
-            'requestAccepts' => ['application/x-www-form-urlencoded'],
+            'requestAccepts' => ['application/x-www-form-urlencoded','application/xml','application/json'],
             'responseContentTypes' => ['application/json'],
             'namespaces' => [
                 'controllers' => ['\SwaggerBakeTest\App\\'],
@@ -64,9 +74,32 @@ class SwagRequestBodyContentTest extends TestCase
         $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
-        $operation = $arr['paths']['/employees/custom-request-body-content']['post'];
+        $operation = $arr['paths']['/swag-request-body-content/text-plain']['post'];
 
         $this->assertArrayHasKey('schema', $operation['requestBody']['content']['text/plain']);
     }
 
+    public function testMultipleMimeTypes()
+    {
+        $cakeRoute = new CakeRoute($this->router, $this->config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
+        $arr = json_decode($swagger->toString(), true);
+
+        $operation = $arr['paths']['/swag-request-body-content/multiple-mime-types']['post'];
+
+        $this->assertCount(2, $operation['requestBody']['content']);
+    }
+
+    public function testUseMimeTypesFromConfig()
+    {
+        $cakeRoute = new CakeRoute($this->router, $this->config);
+
+        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
+        $arr = json_decode($swagger->toString(), true);
+
+        $operation = $arr['paths']['/swag-request-body-content/use-config-defaults']['post'];
+
+        $this->assertCount(3, $operation['requestBody']['content']);
+    }
 }

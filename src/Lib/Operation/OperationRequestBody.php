@@ -134,11 +134,18 @@ class OperationRequestBody
 
         $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
 
-        $requestBody->pushContent(
-            (new Content())
-                ->setMimeType($swagRequestBodyContent->mimeType)
-                ->setSchema($swagRequestBodyContent->refEntity)
-        );
+        $mimeTypes = $this->config->getRequestAccepts();
+        if (!empty($swagRequestBodyContent->mimeTypes)) {
+            $mimeTypes = $swagRequestBodyContent->mimeTypes;
+        }
+
+        foreach ($mimeTypes as $mimeType) {
+            $requestBody->pushContent(
+                (new Content())
+                    ->setMimeType($mimeType)
+                    ->setSchema($swagRequestBodyContent->refEntity)
+            );
+        }
 
         $this->operation->setRequestBody($requestBody);
     }
