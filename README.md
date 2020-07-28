@@ -280,7 +280,7 @@ and further explanations.
 
 ```php
 /**
- * @SwagOperation(isVisible=false, tagNames={"MyTag","AnotherTag"}, showPut=false)
+ * @Swag\SwagOperation(isVisible=false, tagNames={"MyTag","AnotherTag"}, showPut=false)
  */
 public function index() {}
 ```
