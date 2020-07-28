@@ -152,7 +152,7 @@ class OperationFromRouteFactory
     /**
      * Is the HTTP PUT allowed on the CRUD edit action?
      *
-     * @param RouteDecorator $route instance of RouteDecorator
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route instance of RouteDecorator
      * @param string $httpMethod http method (PUT, POST, PATCH etc..)
      * @param array $annotations an array of annotation objects
      * @return bool

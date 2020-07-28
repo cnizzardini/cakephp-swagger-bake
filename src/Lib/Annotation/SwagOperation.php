@@ -37,7 +37,6 @@ namespace SwaggerBake\Lib\Annotation;
  *   put:
  *     summary: PUT method
  * ```
- *
  * @see https://swagger.io/docs/specification/paths-and-operations/
  */
 class SwagOperation
