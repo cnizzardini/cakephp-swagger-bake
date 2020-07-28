@@ -87,7 +87,7 @@ class OperationFromRouteFactory
         $operation = (new OperationQueryParameter())
             ->getOperationWithQueryParameters($operation, $annotations);
 
-        $operation = (new OperationRequestBody($config, $operation, $annotations, $route, $schema))
+        $operation = (new OperationRequestBody($this->swagger, $operation, $annotations, $route, $schema))
             ->getOperationWithRequestBody();
 
         $operation = (new OperationResponse($config, $operation, $docBlock, $annotations, $route, $schema))

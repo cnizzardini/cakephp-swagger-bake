@@ -296,11 +296,14 @@ public function index() {}
 ```
 
 #### `@SwagRequestBodyContent`
-Method level annotation for describing custom content in request body.
+Method level annotation for describing custom content in request body. The mimeTypes parameter is optional. If empty, 
+all mimeTypes defined as `requestAccepts` in your swagger_bake.php will be used.
+
+- `mimeType` has been deprecated in >= v1.5, use array form with `mimeTypes`
 
 ```php
 /**
- * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Actor", mimeType="application/json")
+ * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Actor", mimeTypes={"application/json"})
  */
 public function index() {}
 ```

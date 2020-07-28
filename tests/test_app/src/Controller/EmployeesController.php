@@ -148,16 +148,6 @@ class EmployeesController extends AppController
     }
 
     /**
-     * @Swag\SwagRequestBodyContent(refEntity="", mimeType="text/plain")
-     */
-    public function customRequestBodyContent()
-    {
-        $hello = 'world';
-        $this->set(compact('hello'));
-        $this->viewBuilder()->setOption('serialize', ['hello']);
-    }
-
-    /**
      * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Pet")
      * @Swag\SwagResponseSchema(refEntity="", description="deprecated httpCode still works", httpCode=400)
      * @Swag\SwagResponseSchema(refEntity="", description="new statusCode", statusCode="404")
