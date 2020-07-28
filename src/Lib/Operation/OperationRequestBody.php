@@ -313,7 +313,11 @@ class OperationRequestBody
                 ->getProperties();
         }
 
-        $schema = clone $this->schema;
+        $schema = $this->getSchemaWithWritablePropertiesOnly($this->schema);
+
+        $properties = array_merge($schema->getProperties(), $properties);
+
+        $schema->setProperties($properties);
 
         $requestBody->pushContent(
             (new Content())
