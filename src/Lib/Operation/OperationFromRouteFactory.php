@@ -60,7 +60,7 @@ class OperationFromRouteFactory
         $docBlock = $this->getDocBlock($fqns, $route->getAction());
         $annotations = AnnotationUtility::getMethodAnnotations($fqns, $route->getAction());
 
-        if (!$this->isPutAllowed($route, $httpMethod, $annotations) || !$this->isVisible($annotations)) {
+        if (!$this->isAllowed($route, $httpMethod, $annotations) || !$this->isVisible($annotations)) {
             return null;
         }
 
@@ -150,14 +150,15 @@ class OperationFromRouteFactory
     }
 
     /**
-     * Is the HTTP PUT allowed on the CRUD edit action?
+     * Is the route, http method, and annotation combination allowed? This primarily prevents HTTP PUT methods from
+     * appearing in OpenAPI schema unless by default.
      *
      * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route instance of RouteDecorator
      * @param string $httpMethod http method (PUT, POST, PATCH etc..)
      * @param array $annotations an array of annotation objects
      * @return bool
      */
-    private function isPutAllowed(RouteDecorator $route, string $httpMethod, array $annotations): bool
+    private function isAllowed(RouteDecorator $route, string $httpMethod, array $annotations): bool
     {
         if (strtoupper($httpMethod) !== 'PUT' || $route->getAction() !== 'edit') {
             return true;
