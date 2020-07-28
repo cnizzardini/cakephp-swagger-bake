@@ -275,12 +275,12 @@ public function index() {}
 ```
 
 #### `@SwagOperation`
-Method level annotation for OpenApi Operations. Toggle visibility with isVisible and customize tag names which default 
-to the controllers name.
+Method level annotation for OpenApi Operations. [Read the comments](src/Lib/Annotation/SwagOperation.php) for examples 
+and further explanations.
 
 ```php
 /**
- * @SwagOperation(isVisible=false, tagNames={"MyTag","AnotherTag"})
+ * @SwagOperation(isVisible=false, tagNames={"MyTag","AnotherTag"}, showPut=false)
  */
 public function index() {}
 ```
