@@ -35,5 +35,6 @@ class AnnotationLoader
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagRequestBodyContent::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagResponseSchema::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagSecurity::class);
+        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagPathParameter::class);
     }
 }

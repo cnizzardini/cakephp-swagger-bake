@@ -225,12 +225,12 @@ see all supported properties.
 ```php
 class ActorDto {
     /**
-     * @SwagDtoQuery(name="firstName", type="string", required=true)
+     * @Swag\SwagDtoQuery(name="firstName", type="string", required=true)
      */
     private $firstName;
 
     /**
-     * @SwagDtoQuery(name="gender", type="string", enum="{"male","female","other"}")
+     * @Swag\SwagDtoQuery(name="gender", type="string", enum="{"male","female","other"}")
      */
     private $gender;
 ```
@@ -242,12 +242,12 @@ see all supported properties.
 ```php
 class ActorDto {
     /**
-     * @SwagDtoForm(name="title", type="string", required=true)
+     * @Swag\SwagDtoForm(name="title", type="string", required=true)
      */
     private $title;
 
     /**
-     * @SwagDtoForm(name="age", type="integer", format="int32")
+     * @Swag\SwagDtoForm(name="age", type="integer", format="int32")
      */
     private $age;
 ```
@@ -261,6 +261,18 @@ to see all supported OpenAPI properties.
  * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="string")
  */
 public function index() {}
+```
+
+#### `@SwagPathParameter`
+Method level annotation for modifying path parameters. [Read the comments](src/Lib/Annotation/SwagPathParameter.php) 
+to see all supported OpenAPI properties. This is for modifying existing path parameters only. Path parameters must  
+first be defined in your routes file.
+
+```php
+/**
+ * @Swag\SwagPathParameter(name="id", type="integer", format="int64", description="ID")
+ */
+public function view($id) {}
 ```
 
 #### `@SwagSecurity`
@@ -280,7 +292,7 @@ to the controllers name.
 
 ```php
 /**
- * @SwagOperation(isVisible=false, tagNames={"MyTag","AnotherTag"})
+ * @Swag\SwagOperation(isVisible=false, tagNames={"MyTag","AnotherTag"})
  */
 public function index() {}
 ```

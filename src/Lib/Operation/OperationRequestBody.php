@@ -7,7 +7,6 @@ use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagForm;
 use SwaggerBake\Lib\Annotation\SwagRequestBody;
 use SwaggerBake\Lib\Annotation\SwagRequestBodyContent;
-use SwaggerBake\Lib\Swagger;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -15,6 +14,7 @@ use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\OpenApi\Xml;
+use SwaggerBake\Lib\Swagger;
 
 /**
  * Class OperationRequestBody
@@ -331,8 +331,8 @@ class OperationRequestBody
     /**
      * Returns new Schema instance with only writable properties
      *
-     * @param Schema $schema
-     * @return Schema
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema
+     * @return \SwaggerBake\Lib\OpenApi\Schema
      */
     private function getSchemaWithWritablePropertiesOnly(Schema $schema): Schema
     {
