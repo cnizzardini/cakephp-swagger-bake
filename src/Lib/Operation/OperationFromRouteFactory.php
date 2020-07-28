@@ -48,7 +48,7 @@ class OperationFromRouteFactory
      */
     public function create(RouteDecorator $route, string $httpMethod, ?Schema $schema): ?Operation
     {
-        if (empty($route->getMethods()) || (strtolower($httpMethod) == 'put' && $route->getAction() == 'edit')) {
+        if (empty($route->getMethods())) {
             return null;
         }
 
@@ -60,7 +60,7 @@ class OperationFromRouteFactory
         $docBlock = $this->getDocBlock($fqns, $route->getAction());
         $annotations = AnnotationUtility::getMethodAnnotations($fqns, $route->getAction());
 
-        if (!$this->isVisible($annotations)) {
+        if (!$this->isAllowed($route, $httpMethod, $annotations) || !$this->isVisible($annotations)) {
             return null;
         }
 
@@ -147,6 +147,34 @@ class OperationFromRouteFactory
         $swagOperation = reset($swagOperations);
 
         return $swagOperation->isVisible === false ? false : true;
+    }
+
+    /**
+     * Is the route, http method, and annotation combination allowed? This primarily prevents HTTP PUT methods on
+     * controller `edit()` actions from appearing in OpenAPI schema by default.
+     *
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route instance of RouteDecorator
+     * @param string $httpMethod http method (PUT, POST, PATCH etc..)
+     * @param array $annotations an array of annotation objects
+     * @return bool
+     */
+    private function isAllowed(RouteDecorator $route, string $httpMethod, array $annotations): bool
+    {
+        if (strtoupper($httpMethod) !== 'PUT' || $route->getAction() !== 'edit') {
+            return true;
+        }
+
+        $swagOperations = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagOperation;
+        });
+
+        if (empty($swagOperations)) {
+            return false;
+        }
+
+        $swagOperation = reset($swagOperations);
+
+        return $swagOperation->showPut;
     }
 
     /**

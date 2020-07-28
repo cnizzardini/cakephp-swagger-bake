@@ -331,7 +331,7 @@ class OperationRequestBody
     /**
      * Returns new Schema instance with only writable properties
      *
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
     private function getSchemaWithWritablePropertiesOnly(Schema $schema): Schema
@@ -346,9 +346,12 @@ class OperationRequestBody
         $httpMethods = $this->route->getMethods();
 
         foreach ($schemaProperties as $schemaProperty) {
-            if (count(array_intersect($httpMethods, ['PUT','PATCH'])) > 1 && $schemaProperty->isRequirePresenceOnUpdate()) {
+            $requireOnUpdate = $schemaProperty->isRequirePresenceOnUpdate();
+            $requireOnCreate = $schemaProperty->isRequirePresenceOnCreate();
+
+            if (count(array_intersect($httpMethods, ['PUT','PATCH'])) > 1 && $requireOnUpdate) {
                 $schemaProperty->setRequired(true);
-            } elseif (count(array_intersect($httpMethods, ['POST'])) > 1 && $schemaProperty->isRequirePresenceOnCreate()) {
+            } elseif (count(array_intersect($httpMethods, ['POST'])) > 1 && $requireOnCreate) {
                 $schemaProperty->setRequired(true);
             }
             $newSchema->pushProperty($schemaProperty);
