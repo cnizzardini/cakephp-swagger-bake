@@ -150,8 +150,8 @@ class OperationFromRouteFactory
     }
 
     /**
-     * Is the route, http method, and annotation combination allowed? This primarily prevents HTTP PUT methods from
-     * appearing in OpenAPI schema unless by default.
+     * Is the route, http method, and annotation combination allowed? This primarily prevents HTTP PUT methods on
+     * controller `edit()` actions from appearing in OpenAPI schema by default.
      *
      * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route instance of RouteDecorator
      * @param string $httpMethod http method (PUT, POST, PATCH etc..)
