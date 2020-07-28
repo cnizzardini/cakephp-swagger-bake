@@ -58,7 +58,7 @@ class OperationFromRouteFactoryTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = reset($routes);
 
-        $operation = (new OperationFromRouteFactory($swagger))->create($route, 'GET', null);
+        $operation = (new OperationFromRouteFactory($swagger))->create($routes['employees:index'], 'GET', null);
 
         $this->assertInstanceOf(Operation::class, $operation);
         $this->assertEquals('GET', $operation->getHttpMethod());
