@@ -27,7 +27,7 @@ class OperationFromRouteFactoryTest extends TestCase
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => ['index','edit']
+                'only' => ['index','update']
             ]);
         });
         $this->router = $router;
@@ -76,12 +76,10 @@ class OperationFromRouteFactoryTest extends TestCase
         $cakeRoute = new CakeRoute($this->router, $config);
 
         $routes = $cakeRoute->getRoutes();
-        $route = reset($routes);
-
-        $operation = (new OperationFromRouteFactory($swagger))->create($route, 'PUT', null);
+        $operation = (new OperationFromRouteFactory($swagger))->create($routes['employees:edit'], 'PUT', null);
 
         $this->assertInstanceOf(Operation::class, $operation);
         $this->assertEquals('PUT', $operation->getHttpMethod());
-        $this->assertEquals('employees:index:put', $operation->getOperationId());
+        $this->assertEquals('employees:edit:put', $operation->getOperationId());
     }
 }

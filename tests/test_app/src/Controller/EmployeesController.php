@@ -80,6 +80,7 @@ class EmployeesController extends AppController
     /**
      * Edit method
      *
+     * @Swag\SwagOperation(showPut=true)
      * @param string|null $id Employee id.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
