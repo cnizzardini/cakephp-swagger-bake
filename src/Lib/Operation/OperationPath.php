@@ -119,12 +119,10 @@ class OperationPath
             $parameters[$index]
                 ->setName($pathParameter->name)
                 ->setExample($pathParameter->example)
+                ->setDescription($pathParameter->description)
                 ->setAllowReserved($pathParameter->allowReserved)
                 ->setSchema(
-                    (new Schema())
-                        ->setType($pathParameter->type)
-                        ->setFormat($pathParameter->format)
-                        ->setDescription($pathParameter->description)
+                    (new Schema())->setType($pathParameter->type)->setFormat($pathParameter->format)
                 );
         }
 
