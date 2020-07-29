@@ -100,31 +100,31 @@ class OperationResponse
             return $annotation instanceof SwagResponseSchema;
         });
 
-        $mimeTypes = $this->config->getResponseContentTypes();
-        $defaultMimeType = reset($mimeTypes);
-
-        foreach ($swagResponses as $annotation) {
-            $content = (new Content())->setMimeType($annotation->mimeType);
-
-            if (empty($content->getMimeType())) {
-                $content->setMimeType($defaultMimeType);
+        foreach ($swagResponses as $annotate) {
+            $mimeTypes = $annotate->mimeTypes;
+            if (empty($mimeTypes)) {
+                $mimeTypes = $this->config->getResponseContentTypes();
             }
 
-            $response = (new Response())->setCode($annotation->httpCode)->setDescription($annotation->description);
+            foreach ($mimeTypes as $mimeType) {
+                $content = (new Content())->setMimeType($mimeType);
 
-            if (empty($annotation->schemaFormat) && empty($annotation->schemaItems) && empty($annotation->refEntity)) {
+                $response = (new Response())->setCode($annotate->httpCode)->setDescription($annotate->description);
+
+                if (empty($annotate->schemaFormat) && empty($annotate->schemaItems) && empty($annotate->refEntity)) {
+                    $response->pushContent($content);
+                    $this->operation->pushResponse($response);
+                    continue;
+                }
+
+                $schema = $this->buildSchemaFromAnnotationAndMimeType($annotate, $mimeType);
+
+                $content->setSchema($schema);
+
                 $response->pushContent($content);
+
                 $this->operation->pushResponse($response);
-                continue;
             }
-
-            $schema = $this->buildSchemaFromAnnotation($annotation);
-
-            $content->setSchema($schema);
-
-            $response->pushContent($content);
-
-            $this->operation->pushResponse($response);
         }
     }
 
@@ -249,12 +249,13 @@ class OperationResponse
     }
 
     /**
-     * Builds a Schema instance from SwagResponseSchema annotation
+     * Builds a Schema instance from SwagResponseSchema annotation and mime type
      *
      * @param \SwaggerBake\Lib\Annotation\SwagResponseSchema $annotation SwagResponseSchema
+     * @param string $mimeType mine type string (i.e application/json)
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function buildSchemaFromAnnotation(SwagResponseSchema $annotation): Schema
+    private function buildSchemaFromAnnotationAndMimeType(SwagResponseSchema $annotation, string $mimeType): Schema
     {
         $schema = new Schema();
 
@@ -268,7 +269,7 @@ class OperationResponse
             $schema->setFormat($annotation->schemaType);
         }
 
-        if (empty($schema->getType()) && $annotation->mimeType == 'text/plain') {
+        if (empty($schema->getType()) && $mimeType == 'text/plain') {
             $schema->setType('string');
         }
 
