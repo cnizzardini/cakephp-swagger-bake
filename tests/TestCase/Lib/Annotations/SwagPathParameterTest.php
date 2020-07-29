@@ -68,7 +68,7 @@ class SwagPathParameterTest extends TestCase
         $param = reset($params);
 
         $this->assertEquals('integer', $param['schema']['type']);
-        $this->assertEquals('ID', $param['schema']['description']);
+        $this->assertEquals('ID', $param['description']);
         $this->assertEquals('int64', $param['schema']['format']);
     }
 }
