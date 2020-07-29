@@ -32,7 +32,7 @@ class OperationPath
     private $annotations;
 
     /**
-     * @var Schema|null
+     * @var \SwaggerBake\Lib\OpenApi\Schema|null
      */
     private $schema;
 
@@ -47,8 +47,7 @@ class OperationPath
         RouteDecorator $route,
         array $annotations = [],
         ?Schema $schema = null
-    )
-    {
+    ) {
         $this->operation = $operation;
         $this->route = $route;
         $this->annotations = $annotations;
