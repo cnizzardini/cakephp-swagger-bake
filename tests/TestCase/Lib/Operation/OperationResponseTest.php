@@ -258,7 +258,7 @@ class OperationResponseTest extends TestCase
             DocBlockFactory::createInstance()->create('/** */'),
             [
                 new SwagResponseSchema([
-                    'mimeType' => 'text/plain',
+                    'mimeTypes' => ['text/plain'],
                     'schemaFormat' => 'date-time'
                 ]),
             ],

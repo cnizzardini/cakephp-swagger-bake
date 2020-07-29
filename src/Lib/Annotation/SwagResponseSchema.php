@@ -16,6 +16,7 @@ use Cake\Log\Log;
  * @Attribute("statusCode", type = "string"),
  * @Attribute("description", type = "string"),
  * @Attribute("mimeType", type = "string"),
+ * @Attribute("mimeTypes", type = "string"),
  * @Attribute("schemaType", type = "string"),
  * @Attribute("schemaFormat", type = "string"),
  * @Attribute("schemaItems", type = "array")
@@ -53,7 +54,7 @@ use Cake\Log\Log;
  *
  * Example: Defining an HTTP 400-410 exception schema in XML
  *
- * `@Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", mimeType="application/xml", statusCode="40x")`
+ * `@Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", mimeTypes={"application/xml"}, statusCode="40x")`
  *
  * ```yaml
  *      responses:
@@ -68,7 +69,7 @@ use Cake\Log\Log;
  *
  * Example: Defining a `text/plain` response with `date-time` format.
  *
- * `@Swag\SwagResponseSchema(mimeType="text/plain", schemaFormat="date-time")`
+ * `@Swag\SwagResponseSchema(mimeTypes={"text/plain"}, schemaFormat="date-time")`
  *
  * ```yaml
  *      responses:
@@ -113,8 +114,17 @@ class SwagResponseSchema
      *
      * @var string
      * @example application/json
+     * @deprecated use $mimeTypes
      */
     public $mimeType;
+
+    /**
+     * Response Content mime types
+     *
+     * @var array
+     * @example mimeTypes={"application/json","application/xml"}
+     */
+    public $mimeTypes;
 
     /**
      * The data type of the schema
@@ -153,6 +163,7 @@ class SwagResponseSchema
         'statusCode' => '200',
         'description' => '',
         'mimeType' => '',
+        'mimeTypes' => [],
         'schemaType' => '',
         'schemaFormat' => '',
         'schemaItems' => [],
@@ -170,6 +181,13 @@ class SwagResponseSchema
             deprecationWarning($msg);
         }
 
+        if (isset($values['mimeType'])) {
+            array_push($values['mimeTypes'], $values['mimeType']);
+            $msg = 'SwaggerBake: `mimeType` is deprecated, use `mimeTypes` in SwagResponseSchema';
+            Log::warning($msg);
+            deprecationWarning($msg);
+        }
+
         if (isset($values['statusCode'])) {
             $this->httpCode = $values['statusCode'];
         }
@@ -178,7 +196,7 @@ class SwagResponseSchema
 
         $this->refEntity = $values['refEntity'];
         $this->description = $values['description'];
-        $this->mimeType = $values['mimeType'];
+        $this->mimeTypes = $values['mimeTypes'];
         $this->schemaType = $values['schemaType'];
         $this->schemaFormat = $values['schemaFormat'];
         $this->schemaItems = $values['schemaItems'];

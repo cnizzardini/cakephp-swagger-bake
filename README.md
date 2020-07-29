@@ -312,14 +312,15 @@ public function index() {}
 Method level annotation for defining response schema. [Read the comments](src/Lib/Annotation/SwagResponseSchema.php) to 
 see all supported properties and additional examples.
 
-- `httpCode` is deprecated in >= v1.3, use `statusCode`
+- `mimeType` is deprecated in >= v1.5, use `mimeTypes` as an array.
+- `httpCode` is deprecated in >= v1.3, use `statusCode` 
 
 ```php
 /**
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="Summary", statusCode="200")
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", description="Range status codes", statusCode="5XX")
  * @Swag\SwagResponseSchema(schemaItems={"$ref"="#/components/schemas/Pet"})
- * @Swag\SwagResponseSchema(mimeType="text/plain", schemaFormat="date-time")
+ * @Swag\SwagResponseSchema(mimeTypes={"text/plain"}, schemaFormat="date-time")
  */
 public function index() {}
 ```
