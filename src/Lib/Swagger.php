@@ -257,7 +257,7 @@ class Swagger
         $controller = $route->getController();
         $name = preg_replace('/\s+/', '', $controller);
 
-        if (in_array(strtolower($route->getAction()), ['add','view','edit','index'])) {
+        if (in_array(strtolower($route->getAction()), ['add','view','edit','index','delete'])) {
             return $this->getSchemaByName(Inflector::singularize($name));
         }
 

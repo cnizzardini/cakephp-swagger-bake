@@ -21,7 +21,7 @@ class OperationPathTest extends TestCase
             ])
         );
 
-        $operation = (new OperationPath(new Operation(), $routeDecorator, []))->getOperationWithPathParameters();
+        $operation = (new OperationPath(new Operation(), $routeDecorator))->getOperationWithPathParameters();
 
         $parameters = $operation->getParameters();
         $param = reset($parameters);

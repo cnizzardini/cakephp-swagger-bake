@@ -32,15 +32,26 @@ class OperationPath
     private $annotations;
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
-     * @param array $annotations Array of annotation objects
+     * @var \SwaggerBake\Lib\OpenApi\Schema|null
      */
-    public function __construct(Operation $operation, RouteDecorator $route, array $annotations)
-    {
+    private $schema;
+
+    /**
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation instance of Operation
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route instance of RouteDecorator
+     * @param array $annotations array of annotation objects or empty array
+     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema instance of Schema or null
+     */
+    public function __construct(
+        Operation $operation,
+        RouteDecorator $route,
+        array $annotations = [],
+        ?Schema $schema = null
+    ) {
         $this->operation = $operation;
         $this->route = $route;
         $this->annotations = $annotations;
+        $this->schema = $schema;
     }
 
     /**
@@ -68,6 +79,8 @@ class OperationPath
             return substr($piece, 0, 1) == ':' ? true : null;
         });
 
+        $properties = $this->schema instanceof Schema ? $this->schema->getProperties() : [];
+
         foreach ($results as $result) {
             $name = strtolower($result);
 
@@ -75,14 +88,21 @@ class OperationPath
                 $name = substr($name, 1);
             }
 
+            if (isset($properties[$name])) {
+                $type = $properties[$name]->getType();
+                $format = $properties[$name]->getFormat();
+                $description = $properties[$name]->getDescription();
+            }
+
             $this->operation->pushParameter(
                 (new Parameter())
                     ->setName($name)
-                    ->setAllowEmptyValue(false)
-                    ->setDeprecated(false)
+                    ->setDescription($description ?? '')
                     ->setRequired(true)
                     ->setIn('path')
-                    ->setSchema((new Schema())->setType('string'))
+                    ->setSchema(
+                        (new Schema())->setType($type ?? 'string')->setFormat($format ?? '')
+                    )
             );
         }
     }
