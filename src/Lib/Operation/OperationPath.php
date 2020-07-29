@@ -89,7 +89,7 @@ class OperationPath
 
     /**
      * Updates Path Parameters using values from SwagPathParameter annotation. The path parameter must already exist
-     * having been adding from routes. This will not add new parameters, only update existing ones.
+     * having been added from routes. This will not add new parameters, only update existing ones.
      *
      * @return void
      */

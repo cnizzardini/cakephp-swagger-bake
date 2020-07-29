@@ -265,7 +265,7 @@ public function index() {}
 
 #### `@SwagPathParameter`
 Method level annotation for modifying path parameters. [Read the comments](src/Lib/Annotation/SwagPathParameter.php) 
-to see all supported OpenAPI properties. This is for modifying existing path parameters only. Path parameters must  
+to see all supported OpenAPI properties. This is for modifying existing path parameters only. Path parameters must 
 first be defined in your routes file.
 
 ```php
