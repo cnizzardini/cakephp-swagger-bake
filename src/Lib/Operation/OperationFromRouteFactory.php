@@ -75,8 +75,8 @@ class OperationFromRouteFactory
         $operation = (new OperationDocBlock())
             ->getOperationWithDocBlock($operation, $docBlock);
 
-        $operation = (new OperationPath())
-            ->getOperationWithPathParameters($operation, $route);
+        $operation = (new OperationPath($operation, $route, $annotations))
+            ->getOperationWithPathParameters();
 
         $operation = (new OperationHeader())
             ->getOperationWithHeaders($operation, $annotations);

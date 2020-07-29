@@ -25,7 +25,7 @@ namespace SwaggerBake\Lib\Annotation;
  *
  * Example: Define a string field that will be exploded on
  *
- * `@Swag\SwagForm(name="field", type="string", explode=true, description="Explodes on commas")`
+ * `@Swag\SwagQuery(name="field", type="string", explode=true, description="Explodes on commas")`
  *
  * ```yaml
  *         field:
