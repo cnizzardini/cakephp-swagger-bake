@@ -4,6 +4,8 @@
 [![Build Status](https://travis-ci.org/cnizzardini/cakephp-swagger-bake.svg?branch=master)](https://travis-ci.org/cnizzardini/cakephp-swagger-bake)
 [![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-swagger-bake/badge.svg?branch=master)](https://coveralls.io/github/cnizzardini/cakephp-swagger-bake?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+[![CakePHP](https://img.shields.io/badge/cakephp-%3E%3D%204.0-red)](https://book.cakephp.org/4/en/index.html)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg)](https://php.net/)
 
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
 builds your Swagger UI and ReDoc from your existing cake models and routes.
