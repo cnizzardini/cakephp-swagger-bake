@@ -370,6 +370,10 @@ $swagger->toString(); # returns swagger json
 $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
 ```
 
+#### Event System
+
+You extend Swagger Bake further with events. Read the [extension documentation](src/Lib/Extension#swaggerbake-extensions) for details.
+
 ## Console Commands
 
 In addition to `swagger bake` these console helpers provide insight into how your Swagger documentation is generated.
