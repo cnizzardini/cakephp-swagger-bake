@@ -22,8 +22,7 @@ and controllers.
 
 [Demo Site](http://cakephpswaggerbake.cnizz.com/) | 
 [Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo) | 
-[Screenshot](assets/screenshot.png) |
-[Console Demo](assets/console-demo.svg) 
+[Screenshot](assets/screenshot.png) 
 
 ## Table of Contents
 - [Installation](#installation)
