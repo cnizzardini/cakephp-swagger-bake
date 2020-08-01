@@ -217,7 +217,7 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @return array
+     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
      */
     public function getProperties(): array
     {
