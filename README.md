@@ -136,7 +136,7 @@ SwaggerBake provides some optional Annotations for enhanced functionality. These
 
 [Read the Annotations README](src/Lib/Annotation#swaggerbake-annotations) for detailed examples.
 
-#### `@SwagPaginator`
+#### @SwagPaginator
 Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
 query parameters: page, limit, sort, and direction. 
 
