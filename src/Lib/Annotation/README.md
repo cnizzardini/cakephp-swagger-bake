@@ -188,7 +188,7 @@ OpenAPI:
 ```
 
 ### @SwagQuery 
-Method level annotation for adding query parameters. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
+Method level annotation for adding query parameters. [Read the comments](SwagQuery.php) 
 to see all supported OpenAPI properties.
 
 ```php
@@ -227,7 +227,7 @@ OpenAPI:
 ```
 
 ### @SwagForm
-Method level annotation for adding form data fields. [Read the comments](src/Lib/Annotation/SwagForm.php) 
+Method level annotation for adding form data fields. [Read the comments](SwagForm.php) 
 to see all supported OpenAPI properties.
 
 ```php
@@ -283,7 +283,7 @@ public function index() {}
 ```
 
 ### @SwagDtoQuery
-Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoQuery.php) to 
+Property level annotation for use in your SwagDto classes. [Read the comments](SwagDtoQuery.php) to 
 see all supported properties.
 
 ```php
@@ -295,7 +295,7 @@ class ActorDto {
 ```
 
 ### @SwagDtoForm
-Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoForm.php) to 
+Property level annotation for use in your SwagDto classes. [Read the comments](SwagDtoForm.php) to 
 see all supported properties.
 
 ```php
@@ -307,7 +307,7 @@ class ActorDto {
 ```
 
 ### @SwagHeader
-Method level annotation for adding header parameters. [Read the comments](src/Lib/Annotation/SwagHeader.php) 
+Method level annotation for adding header parameters. [Read the comments](SwagHeader.php) 
 to see all supported OpenAPI properties.
 
 ```php
@@ -329,7 +329,7 @@ OpenAPI:
 ```
 
 ### @SwagPathParameter
-Method level annotation for modifying path parameters. [Read the comments](src/Lib/Annotation/SwagPathParameter.php) 
+Method level annotation for modifying path parameters. [Read the comments](SwagPathParameter.php) 
 to see all supported OpenAPI properties. This is for modifying existing path parameters only. Path parameters must 
 first be defined in your routes file.
 
@@ -364,7 +364,7 @@ public function index() {}
 ```
 
 ### @SwagOperation
-Method level annotation for OpenApi Operations. [Read the comments](src/Lib/Annotation/SwagOperation.php) for examples 
+Method level annotation for OpenApi Operations. [Read the comments](SwagOperation.php) for examples 
 and further explanations.
 
 ```php
@@ -428,7 +428,7 @@ OpenAPI:
 
 
 ### @SwagResponseSchema
-Method level annotation for defining response schema. [Read the comments](src/Lib/Annotation/SwagResponseSchema.php) to 
+Method level annotation for defining response schema. [Read the comments](SwagResponseSchema.php) to 
 see all supported properties and additional examples.
 
 - `mimeType` is deprecated in >= v1.5, use `mimeTypes` as an array.
@@ -482,7 +482,7 @@ class Employee extends Entity {
 ```
 
 ### @SwagEntityAttribute
-Class level annotation for customizing Schema Attributes. [Read the comments](src/Lib/Annotation/SwagEntityAttribute.php) 
+Class level annotation for customizing Schema Attributes. [Read the comments](SwagEntityAttribute.php) 
 to see all supported OpenAPI properties.
 
 ```php
