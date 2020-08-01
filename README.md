@@ -371,7 +371,7 @@ $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
 
 #### Event System
 
-You extend Swagger Bake further with events. Read the [extension documentation](src/Lib/Extension#swaggerbake-extensions) for details.
+You can extend Swagger Bake further with events. Read the [extension documentation](src/Lib/Extension#swaggerbake-extensions) for details.
 
 ## Console Commands
 
