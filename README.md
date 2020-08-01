@@ -141,7 +141,7 @@ SwaggerBake provides some optional Annotations for enhanced functionality. These
 
 #### `@SwagPaginator`
 Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
-query parameters: page, limit, sort, and direction. [Read more :book:](src/Lib/Annotation#swagpaginator)
+query parameters: page, limit, sort, and direction. [Read more :link: ](src/Lib/Annotation#swagpaginator)
 
 ```php
 /**
@@ -152,10 +152,10 @@ public function index() {}
 
 #### `@SwagSearch`
 Method level annotation for documenting search parameters using the popular 
-[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin. Note, you must import `@SwagSearch` from the  
-`SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch`. [Read more :book:](src/Lib/Annotation#swagsearch)
+[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin. [Read more :link: ](src/Lib/Annotation#swagsearch)
 
 ```php
+use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 /**
  * @SwagSearch(tableClass="\App\Model\Table\ActorsTable", collection="default")
  */
@@ -163,7 +163,7 @@ public function index() {}
 ```
 
 #### `@SwagQuery` 
-Method level annotation for adding query parameters. [Read more :book:](src/Lib/Annotation#swagquery)
+Method level annotation for adding query parameters. [Read more :link: ](src/Lib/Annotation#swagquery)
 
 ```php
 /**
@@ -173,7 +173,7 @@ public function index() {}
 ```
 
 #### `@SwagForm`
-Method level annotation for adding form data fields. [Read more :book:](src/Lib/Annotation#swagform)
+Method level annotation for adding form data fields. [Read more :link: ](src/Lib/Annotation#swagform)
 
 ```php
 /**
@@ -185,16 +185,16 @@ public function index() {}
 #### `@SwagDto`
 Method level annotation for building query or form parameters from a DataTransferObject. DTOs are more than just a 
 best practice. Using them with SwaggerBake greatly reduces the amount of annotations you need to write. Consider 
-using a DTO in place of SwagQuery or SwagForm. [Read more :book:](src/Lib/Annotation#swagdto)
+using a DTO in place of SwagQuery or SwagForm. [Read more :link: ](src/Lib/Annotation#swagdto)
 
 ##### `@SwagDtoQuery`
-Property level annotation for use in your SwagDto classes. [Read more :book:](src/Lib/Annotation#swagdtoquery)
+Property level annotation for use in your SwagDto classes. [Read more :link: ](src/Lib/Annotation#swagdtoquery)
 
 ##### `@SwagDtoForm`
-Property level annotation for use in your SwagDto classes. [Read more :book:](src/Lib/Annotation#swagdtoform)
+Property level annotation for use in your SwagDto classes. [Read more :link: ](src/Lib/Annotation#swagdtoform)
 
 #### `@SwagHeader`
-Method level annotation for adding header parameters. [Read more :book:](src/Lib/Annotation#swagheader)
+Method level annotation for adding header parameters. [Read more :link: ](src/Lib/Annotation#swagheader)
 
 ```php
 /**
@@ -204,7 +204,7 @@ public function index() {}
 ```
 
 #### `@SwagPathParameter`
-Method level annotation for modifying path parameters. [Read more :book:](src/Lib/Annotation#swagpathparameter)
+Method level annotation for modifying path parameters. [Read more :link: ](src/Lib/Annotation#swagpathparameter)
 
 ```php
 /**
@@ -225,7 +225,7 @@ public function index() {}
 ```
 
 #### `@SwagOperation`
-Method level annotation for OpenApi Operations. [Read more :book:](src/Lib/Annotation#swagoperation)
+Method level annotation for OpenApi Operations. [Read more :link: ](src/Lib/Annotation#swagoperation)
 
 ```php
 /**
@@ -236,7 +236,7 @@ public function index() {}
 
 #### `@SwagRequestBody`
 Method level annotation for describing request body. Set ignoreCakeSchema for full control over request body. 
-[Read more :book:](src/Lib/Annotation#swagrequestbody)
+[Read more :link: ](src/Lib/Annotation#swagrequestbody)
 
 ```php
 /**
@@ -248,7 +248,7 @@ public function index() {}
 #### `@SwagRequestBodyContent`
 Method level annotation for describing custom content in request body. The mimeTypes parameter is optional. If empty, 
 all mimeTypes defined as `requestAccepts` in your swagger_bake.php will be used. 
-[Read more :book:](src/Lib/Annotation#swagrequestbodycontent)
+[Read more :link: ](src/Lib/Annotation#swagrequestbodycontent)
 
 - `mimeType` has been deprecated in >= v1.5, use array form with `mimeTypes`
 
@@ -260,7 +260,7 @@ public function index() {}
 ```
 
 #### `@SwagResponseSchema`
-Method level annotation for defining response schema. [Read more :book:](src/Lib/Annotation#swagresponseschema)
+Method level annotation for defining response schema. [Read more :link: ](src/Lib/Annotation#swagresponseschema)
 
 - `mimeType` is deprecated in >= v1.5, use `mimeTypes` as an array.
 - `httpCode` is deprecated in >= v1.3, use `statusCode` 
@@ -274,7 +274,7 @@ public function index() {}
 
 #### `@SwagPath`
 Class level annotation for exposing controllers to Swagger UI. You can hide entire controllers with this annotation. 
-[Read more :book:](src/Lib/Annotation#swagpath)
+[Read more :link: ](src/Lib/Annotation#swagpath)
 
 ```php
 /**
@@ -286,7 +286,7 @@ class UsersController extends AppController {
 #### `@SwagEntity`
 Class level annotation for exposing entities to Swagger UI. By default, all entities with routes will display as Swagger 
 schema. You can hide a schema or display a schema that does not have an associated route. 
-[Read more :book:](src/Lib/Annotation#swagentity)
+[Read more :link: ](src/Lib/Annotation#swagentity)
 
 ```php
 /**
@@ -296,7 +296,7 @@ class Employee extends Entity {
 ```
 
 #### `@SwagEntityAttribute`
-Class level annotation for customizing Schema Attributes. [Read more :book:](src/Lib/Annotation#swagentityattribute)
+Class level annotation for customizing Schema Attributes. [Read more :link: ](src/Lib/Annotation#swagentityattribute)
 
 ```php
 /**
