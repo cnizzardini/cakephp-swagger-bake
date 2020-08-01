@@ -64,20 +64,16 @@ use the manual setup.
 
 ### Automated Setup
 
-Run `bin/cake swagger install`
-
-Then just [add a route](#last-step).
+Run `bin/cake swagger install` and then [add a route](#last-step).
 
 ### Manual Setup
 
 - Create a base swagger.yml file in `config\swagger.yml`. An example file is provided [here](assets/swagger.yml). 
 
 - Create a `config/swagger_bake.php` file. See the example file [here](assets/swagger_bake.php) for further 
-explanation.
+explanation. Then just add a route
 
-- Create a route for the SwaggerUI page in `config/routes.php`. 
-
-### Last Step
+### Add a route to SwaggerUI
 
 Create a route for the SwaggerUI page in `config/routes.php`, example:
 
