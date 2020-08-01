@@ -67,40 +67,24 @@ OpenAPI:
           schema:
             description: ''
             type: integer
-          deprecated: false
-          allowEmptyValue: false
-          explode: false
-          allowReserved: false
         - name: limit
           in: query
           required: false
           schema:
             description: ''
             type: integer
-          deprecated: false
-          allowEmptyValue: false
-          explode: false
-          allowReserved: false
         - name: sort
           in: query
           required: false
           schema:
             description: ''
             type: string
-          deprecated: false
-          allowEmptyValue: false
-          explode: false
-          allowReserved: false
         - name: direction
           in: query
           required: false
           schema:
             description: ''
             type: string
-          deprecated: false
-          allowEmptyValue: false
-          explode: false
-          allowReserved: false
 ```
 
 ### @SwagSearch
