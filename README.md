@@ -126,7 +126,7 @@ code.
  * 
  * @see https://book.cakephp.org/4/en/index.html The link and this description appear in Swagger
  * @deprecated
- * @throws BadRequestException
+ * @throws BadRequestException An optional bad request description here
  * @throws Exception
  */
 public function index() {}
@@ -137,29 +137,25 @@ public function index() {}
 SwaggerBake provides some optional Annotations for enhanced functionality. These can be imported individually from 
 `SwaggerBake\Lib\Annotation` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Annotation as Swag`.
 
-#### `@SwagPaginator`
+[Read the Annotations README](src/Lib/Annotation/README.md) for detailed examples.
+
+#### `@SwagPaginator` [:book:](src/Lib/Annotation/README.md#swagpaginator)
 Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
 query parameters: page, limit, sort, and direction.
 
 ```php
-use SwaggerBake\Lib\Annotation as Swag;
 /**
  * @Swag\SwagPaginator
  */
-public function index() {
-    $employees = $this->paginate($this->Employees);
-    $this->set(compact('employees'));
-    $this->viewBuilder()->setOption('serialize', ['employees']);
-}
+public function index() {}
 ```
 
 #### `@SwagSearch`
 Method level annotation for documenting search parameters using the popular 
-[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin. Note, you must import `@SwagSearch` from a 
-different namespace.
+[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin. Note, you must import `@SwagSearch` from the  
+`SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch`.
 
 ```php
-use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 /**
  * @SwagSearch(tableClass="\App\Model\Table\ActorsTable", collection="default")
  */
@@ -167,8 +163,7 @@ public function index() {}
 ```
 
 #### `@SwagQuery` 
-Method level annotation for adding query parameters. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
-to see all supported OpenAPI properties.
+Method level annotation for adding query parameters. 
 
 ```php
 /**
@@ -178,8 +173,7 @@ public function index() {}
 ```
 
 #### `@SwagForm`
-Method level annotation for adding form data fields. [Read the comments](src/Lib/Annotation/SwagForm.php) 
-to see all supported OpenAPI properties.
+Method level annotation for adding form data fields. 
 
 ```php
 /**
@@ -191,66 +185,21 @@ public function index() {}
 #### `@SwagDto`
 Method level annotation for building query or form parameters from a DataTransferObject. DTOs are more than just a 
 best practice. Using them with SwaggerBake greatly reduces the amount of annotations you need to write. Consider 
-using a DTO in place of SwagQuery or SwagForm. SwagDto uses either SwagDtoProperty or your existing Doc Blocks to 
-build swagger query and post parameters.
+using a DTO in place of SwagQuery or SwagForm. 
 
-```php
-/**
- * @Swag\SwagDto(class="\App\Dto\ActorDto")
- */
-public function index() {}
-```
-
-Example DTO:
-
-```php
-namespace App\Dto;
-
-class ActorDto {
-    /**
-     * Last name required
-     * @var string
-     * @required
-     */
-    private $lastName;
-
-    /** @var string */
-    private $firstName;
-```
+Read [SwagDto documentation](src/Lib/Annotation/README.md#SwagDto) for detailed examples.
 
 #### `@SwagDtoQuery`
 Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoQuery.php) to 
 see all supported properties.
 
-```php
-class ActorDto {
-    /**
-     * @SwagDtoQuery(name="firstName", type="string", required=true)
-     */
-    private $firstName;
-
-    /**
-     * @Swag\SwagDtoQuery(name="gender", type="string", enum="{"male","female","other"}")
-     */
-    private $gender;
-```
+Read [SwagDtoQuery documentation](src/Lib/Annotation/README.md#SwagDtoQuery) for detailed examples.
 
 #### `@SwagDtoForm`
 Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoForm.php) to 
 see all supported properties.
 
-```php
-class ActorDto {
-    /**
-     * @Swag\SwagDtoForm(name="title", type="string", required=true)
-     */
-    private $title;
-
-    /**
-     * @Swag\SwagDtoForm(name="age", type="integer", format="int32")
-     */
-    private $age;
-```
+Read [SwagDtoForm documentation](src/Lib/Annotation/README.md#SwagDtoForm) for detailed examples.
 
 #### `@SwagHeader`
 Method level annotation for adding header parameters. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
@@ -330,9 +279,6 @@ see all supported properties and additional examples.
 ```php
 /**
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="Summary", statusCode="200")
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", description="Range status codes", statusCode="5XX")
- * @Swag\SwagResponseSchema(schemaItems={"$ref"="#/components/schemas/Pet"})
- * @Swag\SwagResponseSchema(mimeTypes={"text/plain"}, schemaFormat="date-time")
  */
 public function index() {}
 ```

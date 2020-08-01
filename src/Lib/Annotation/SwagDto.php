@@ -14,7 +14,6 @@ use InvalidArgumentException;
  * @Attribute("class", type = "string")
  * })
  *
- * Example: `@Swag\SwagDto(class="\App\Dto\ActorDto")`
  * @see https://github.com/cnizzardini/cakephp-swagger-bake for example DTO
  */
 class SwagDto

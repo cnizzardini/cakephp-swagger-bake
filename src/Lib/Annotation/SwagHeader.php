@@ -21,19 +21,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("example",  type = "mixed"),
  * })
  *
- * Example: Defining a custom header attribute
- *
- * `@Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="summary")`
- *
- * ```yaml
- *      parameters:
- *        - name: X-HEAD-ATTRIBUTE
- *          in: header
- *          description: summary
- *          schema:
- *            type: string
- * ```
- *
  * Read OpenAPI specification for exact usage of the attributes:
  * @see https://swagger.io/specification/ search for "Parameter Object"
  * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"

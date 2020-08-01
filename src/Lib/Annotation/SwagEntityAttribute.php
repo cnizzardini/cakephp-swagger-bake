@@ -34,30 +34,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("enum", type = "array"),
  * })
  *
- * Example: Define an Entity property as required with a description, min and max length and regex:
- *
- * `@Swag\SwagEntityAttribute(refEntity="property_name", type="string", minLength=5, maxLength=10)`
- *
- * ```yaml
- *         property_name:
- *           type: string
- *           minLength: 5
- *           maxLength: 10
- * ```
- *
- * Example: Create enumerated list that is required
- *
- * `@Swag\SwagEntityAttribute(refEntity="property_name", type="string", enum={"PG","R"}, required=true)`
- *
- * ```yaml
- *         property_name:
- *           type: string
- *           enum:
- *              - PG
- *              - R
- *           required: true
- * ```
- *
  * Read OpenAPI specification for exact usage of the attributes:
  * @see https://swagger.io/specification/ search for "Schema Object"
  * @see https://swagger.io/docs/specification/data-models/data-types search for "data formats"
