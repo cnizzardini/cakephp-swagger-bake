@@ -413,10 +413,11 @@ see all supported properties and additional examples.
 ```php
 /**
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="Summary", statusCode="200")
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", mimeTypes={"application/xml"}, statusCode="40x")
  */
 public function view() {}
 ```
+
+OpenAPI:
 
 ```yaml
      responses:
@@ -427,6 +428,18 @@ public function view() {}
                description: My summary
                type: object                      # note: `object` is default when using refEntity
                $ref: '#/components/schemas/Actor'
+```
+
+Defining a single mimeType and 400-409 status code range:
+
+```php
+/**
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", mimeTypes={"application/xml"}, statusCode="40x")
+ */
+```
+OpenAPI:
+
+```yaml
        '40x':
          content:
            application/xml:
@@ -434,6 +447,26 @@ public function view() {}
                type: object
                items:
                  $ref: '#/components/schemas/Exception'
+```
+
+Defining an array of objects:
+
+```php
+/**
+ * @Swag\SwagResponseSchema(schemaItems={"$ref"="#/components/schemas/Actor"})
+ */
+```
+
+OpenAPI:
+
+```yaml
+       '200':
+         content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 $ref: '#/components/schemas/Actor'
 ```
 
 ### @SwagPath
