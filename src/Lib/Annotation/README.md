@@ -32,8 +32,6 @@ annotations which support other Cake plugins. These can be imported individually
 Annotations use the `doctrine/annotations` package. To add a new Annotation simply create a new class using one of the 
 existing annotations as an example. Then add the new annotation to `src/Lib/AnnotationLoader.php`.
 
-See the [Extension README](src/Lib/Extension/README.md) for details on extension. 
-
 ## Usage
 
 You can improve this documentation by submitting PRs.
