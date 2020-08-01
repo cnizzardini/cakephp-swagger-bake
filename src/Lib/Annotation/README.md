@@ -24,12 +24,6 @@ annotations which support other Cake plugins. These can be imported individually
 - [@SwagRequestBodyContent](#swagrequestbodycontent)
 - [@SwagResponseSchema](#swagresponseschema)
 - [@SwagPath](#swagpath)
-- [@SwagSecurity](#swagsecurity)
-- [@SwagOperation](#swagoperation)
-- [@SwagRequestBody](#swagrequestbody)
-- [@SwagRequestBodyContent](#swagrequestbodycontent)
-- [@SwagResponseSchema](#swagresponseschema)
-- [@SwagPath](#swagpath)
 - [@SwagEntity](#swagentity)
 - [@SwagEntityAttribute](#swagentityattribute)
 
