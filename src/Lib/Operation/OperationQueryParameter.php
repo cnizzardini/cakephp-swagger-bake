@@ -67,11 +67,17 @@ class OperationQueryParameter
             ->setRequired(false)
             ->setIn('query');
 
-        $params = ['page' => 'integer', 'limit' => 'integer', 'sort' => 'string', 'direction' => 'string'];
-        foreach ($params as $name => $type) {
-            $operation->pushParameter(
-                (clone $parameter)->setName($name)->setSchema((new Schema())->setType($type))
-            );
+        $params = [
+            'page' => ['type' => 'integer'],
+            'limit' => ['type' => 'integer'],
+            'sort' => ['type' => 'string'],
+            'direction' => ['type' => 'string', 'enum' => ['asc','desc']],
+        ];
+
+        foreach ($params as $name => $param) {
+            $schema = (new Schema())->setType($param['type']);
+            $schema->setEnum($param['enum'] ?? []);
+            $operation->pushParameter((clone $parameter)->setName($name)->setSchema($schema));
         }
 
         return $operation;
