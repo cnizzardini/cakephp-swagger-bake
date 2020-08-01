@@ -13,7 +13,6 @@ use InvalidArgumentException;
  * @Attributes({
  * @Attribute("class", type = "string")
  * })
- *
  * @see https://github.com/cnizzardini/cakephp-swagger-bake for example DTO
  */
 class SwagDto

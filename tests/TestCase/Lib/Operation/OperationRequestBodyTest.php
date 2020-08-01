@@ -8,6 +8,7 @@ use Cake\TestSuite\TestCase;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagForm;
+use SwaggerBake\Lib\Annotation\SwagRequestBody;
 use SwaggerBake\Lib\CakeModel;
 use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
@@ -164,5 +165,29 @@ class OperationRequestBodyTest extends TestCase
         $this->assertTrue($properties['firstName']->isRequired());
         $this->assertEquals('firstName', $properties['firstName']->getName());
         $this->assertEquals('otherField', $properties['otherField']->getName());
+    }
+
+    public function testIgnoreSchema()
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new CakeRoute($this->router, $config);
+        $cakeModels = new CakeModel($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
+
+        $routes = $cakeRoute->getRoutes();
+        $route = $routes['employees:add'];
+
+        $operationRequestBody = new OperationRequestBody(
+            $swagger,
+            (new Operation())->setHttpMethod('POST'),
+            [
+                new SwagRequestBody(['ignoreSchema' => true])
+            ],
+            $route,
+            null
+        );
+
+        $operation = $operationRequestBody->getOperationWithRequestBody();
+        $this->assertEmpty($operation->getRequestBody()->getContent());
     }
 }

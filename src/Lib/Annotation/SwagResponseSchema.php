@@ -21,7 +21,6 @@ use Cake\Log\Log;
  * @Attribute("schemaFormat", type = "string"),
  * @Attribute("schemaItems", type = "array")
  * })
- *
  * @see https://swagger.io/docs/specification/describing-responses/
  * @see https://swagger.io/specification/
  * @todo remove httpCode in future version

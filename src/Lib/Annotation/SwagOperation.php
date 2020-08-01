@@ -13,7 +13,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("tagNames", type="array"),
  * @Attribute("showPut", type="bool")
  * })
- *
  * @see https://swagger.io/docs/specification/paths-and-operations/
  */
 class SwagOperation
