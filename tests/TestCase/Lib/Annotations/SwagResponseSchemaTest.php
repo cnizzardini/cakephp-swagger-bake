@@ -18,7 +18,15 @@ class SwagResponseSchemaTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
+    /**
+     * @var Router
+     */
     private $router;
+
+    /**
+     * @var Swagger
+     */
+    private $swagger;
 
     public function setUp(): void
     {
@@ -32,6 +40,11 @@ class SwagResponseSchemaTest extends TestCase
                         'action' => 'customResponseSchema',
                         'method' => 'GET',
                         'path' => 'custom-response-schema'
+                    ],
+                    'schemaItems' => [
+                        'action' => 'schemaItems',
+                        'method' => 'GET',
+                        'path' => 'schema-items'
                     ],
                 ]
             ]);
@@ -54,19 +67,21 @@ class SwagResponseSchemaTest extends TestCase
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
+        if (!$this->swagger instanceof Swagger) {
+            $cakeRoute = new CakeRoute($this->router, $this->config);
+            $this->swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
+        }
+
+
         AnnotationLoader::load();
     }
 
     public function testSwagResponseSchema()
     {
-        $cakeRoute = new CakeRoute($this->router, $this->config);
-
-        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
-        $arr = json_decode($swagger->toString(), true);
+        $arr = json_decode($this->swagger->toString(), true);
 
         $operation = $arr['paths']['/employees/custom-response-schema']['get'];
 
-        $this->assertArrayHasKey('$ref', $operation['responses']['200']['content']['application/json']['schema']);
         $schema = $operation['responses']['200']['content']['application/json']['schema'];
         $this->assertEquals('#/components/schemas/Pet', $schema['$ref']);
 
@@ -78,6 +93,17 @@ class SwagResponseSchemaTest extends TestCase
 
         $this->assertArrayHasKey('5XX', $operation['responses']);
         $this->assertEquals('status code range', $operation['responses']['5XX']['description']);
+    }
 
+    public function testSchemaItems()
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+
+        $operation = $arr['paths']['/employees/schema-items']['get'];
+
+        $schema = $operation['responses']['200']['content']['application/json']['schema'];
+
+        $this->assertEquals('array', $schema['type']);
+        $this->assertEquals('#/components/schemas/Pet', $schema['items']['$ref']);
     }
 }

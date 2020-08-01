@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
@@ -11,25 +12,43 @@ use SwaggerBake\Lib\Swagger;
 
 /**
  * Class OperationSecurity
+ *
  * @package SwaggerBake\Lib\Operation
  */
 class OperationSecurity
 {
-    /** @var Operation  */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Operation
+     */
     private $operation;
 
-    /** @var array  */
+    /**
+     * @var array
+     */
     private $annotations;
 
-    /** @var RouteDecorator  */
+    /**
+     * @var \SwaggerBake\Lib\Decorator\RouteDecorator
+     */
     private $route;
 
-    /** @var Controller  */
+    /**
+     * @var \Cake\Controller\Controller
+     */
     private $controller;
 
-    /** @var Swagger  */
+    /**
+     * @var \SwaggerBake\Lib\Swagger
+     */
     private $swagger;
 
+    /**
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param array $annotations Array of annotation objects
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \Cake\Controller\Controller $controller Controller
+     * @param \SwaggerBake\Lib\Swagger $swagger Swagger
+     */
     public function __construct(
         Operation $operation,
         array $annotations,
@@ -44,13 +63,12 @@ class OperationSecurity
         $this->swagger = $swagger;
     }
 
-
     /**
      * Gets an Operation instance after applying security
      *
-     * @return Operation
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    public function getOperationWithSecurity() : Operation
+    public function getOperationWithSecurity(): Operation
     {
         $this->assignSwagSecurityAnnotations();
         $this->assignAuthenticationComponent();
@@ -63,7 +81,7 @@ class OperationSecurity
      *
      * @return void
      */
-    private function assignSwagSecurityAnnotations() : void
+    private function assignSwagSecurityAnnotations(): void
     {
         $swagSecurities = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagSecurity;
@@ -83,7 +101,7 @@ class OperationSecurity
      *
      * @return void
      */
-    private function assignAuthenticationComponent() : void
+    private function assignAuthenticationComponent(): void
     {
         if (!isset($this->controller->Authentication)) {
             return;

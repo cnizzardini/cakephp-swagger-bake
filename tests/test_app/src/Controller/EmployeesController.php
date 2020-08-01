@@ -80,6 +80,7 @@ class EmployeesController extends AppController
     /**
      * Edit method
      *
+     * @Swag\SwagOperation(showPut=true)
      * @param string|null $id Employee id.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
@@ -148,34 +149,22 @@ class EmployeesController extends AppController
     }
 
     /**
-     * custom-hidden should be hidden from swagger
-     *
-     * @Swag\SwagOperation(isVisible=false)
-     */
-    public function customHidden()
-    {
-        $hello = 'world';
-        $this->set(compact('hello'));
-        $this->viewBuilder()->setOption('serialize', ['hello']);
-    }
-
-    /**
-     * @Swag\SwagRequestBodyContent(refEntity="", mimeType="text/plain")
-     */
-    public function customRequestBodyContent()
-    {
-        $hello = 'world';
-        $this->set(compact('hello'));
-        $this->viewBuilder()->setOption('serialize', ['hello']);
-    }
-
-    /**
      * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Pet")
      * @Swag\SwagResponseSchema(refEntity="", description="deprecated httpCode still works", httpCode=400)
      * @Swag\SwagResponseSchema(refEntity="", description="new statusCode", statusCode="404")
      * @Swag\SwagResponseSchema(refEntity="", description="status code range", statusCode="5XX")
      */
     public function customResponseSchema()
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
+
+    /**
+     * @Swag\SwagResponseSchema(schemaItems={"$ref"="#/components/schemas/Pet"})
+     */
+    public function schemaItems()
     {
         $hello = 'world';
         $this->set(compact('hello'));

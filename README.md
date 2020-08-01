@@ -2,7 +2,11 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
 [![Build Status](https://travis-ci.org/cnizzardini/cakephp-swagger-bake.svg?branch=master)](https://travis-ci.org/cnizzardini/cakephp-swagger-bake)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+[![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-swagger-bake/badge.svg?branch=master)](https://coveralls.io/github/cnizzardini/cakephp-swagger-bake?branch=master)
+[![License: MIT](https://img.shields.io/badge/license-mit-blue)](LICENSE.md)
+[![CakePHP](https://img.shields.io/badge/cakephp-%3E%3D%204.0-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?logo=php)](https://php.net/)
+[![OpenAPI](https://img.shields.io/badge/openapi-3.0-green?logo=openapi-initiative)](https://www.openapis.org/)
 
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
 builds your Swagger UI and ReDoc from your existing cake models and routes.
@@ -21,8 +25,7 @@ and controllers.
 
 [Demo Site](http://cakephpswaggerbake.cnizz.com/) | 
 [Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo) | 
-[Screenshot](assets/screenshot.png) |
-[Console Demo](assets/console-demo.svg) 
+[Screenshot](assets/screenshot.png) 
 
 ## Table of Contents
 - [Installation](#installation)
@@ -61,20 +64,16 @@ use the manual setup.
 
 ### Automated Setup
 
-Run `bin/cake swagger install`
-
-Then just [add a route](#last-step).
+Run `bin/cake swagger install` and then [add a route](#add-a-route-to-swaggerui).
 
 ### Manual Setup
 
 - Create a base swagger.yml file in `config\swagger.yml`. An example file is provided [here](assets/swagger.yml). 
 
 - Create a `config/swagger_bake.php` file. See the example file [here](assets/swagger_bake.php) for further 
-explanation.
+explanation. Then just add a route.
 
-- Create a route for the SwaggerUI page in `config/routes.php`. 
-
-### Last Step
+### Add a route to SwaggerUI
 
 Create a route for the SwaggerUI page in `config/routes.php`, example:
 
@@ -84,8 +83,6 @@ $builder->connect('/my-swagger-ui', ['controller' => 'Swagger', 'action' => 'ind
 
 If Hot Reload is enabled ([see config](assets/swagger_bake.php)) then you should be able to browse to the above 
 route. Otherwise you must first run `bin/cake swagger bake` to generate your swagger documentation. 
- 
-
  
 ## Automatic Documentation
 
@@ -125,7 +122,7 @@ code.
  * 
  * @see https://book.cakephp.org/4/en/index.html The link and this description appear in Swagger
  * @deprecated
- * @throws BadRequestException
+ * @throws BadRequestException An optional bad request description here
  * @throws Exception
  */
 public function index() {}
@@ -136,26 +133,25 @@ public function index() {}
 SwaggerBake provides some optional Annotations for enhanced functionality. These can be imported individually from 
 `SwaggerBake\Lib\Annotation` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Annotation as Swag`.
 
-#### `@SwagPaginator`
+[Read the Annotations README](src/Lib/Annotation#swaggerbake-annotations) for detailed examples.
+
+#### @SwagPaginator
 Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
-query parameters: page, limit, sort, and direction.
+query parameters: page, limit, sort, and direction. 
+
+[Read more](src/Lib/Annotation#swagpaginator)
 
 ```php
-use SwaggerBake\Lib\Annotation as Swag;
 /**
  * @Swag\SwagPaginator
  */
-public function index() {
-    $employees = $this->paginate($this->Employees);
-    $this->set(compact('employees'));
-    $this->viewBuilder()->setOption('serialize', ['employees']);
-}
+public function index() {}
 ```
 
-#### `@SwagSearch`
-Method level annotation for documenting search parameters using the popular 
-[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin. Note, you must import `@SwagSearch` from a 
-different namespace.
+#### @SwagSearch
+Method level annotation for documenting search parameters using the popular [friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
+ 
+[Read more](src/Lib/Annotation#swagsearch)
 
 ```php
 use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
@@ -165,9 +161,10 @@ use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 public function index() {}
 ```
 
-#### `@SwagQuery` 
-Method level annotation for adding query parameters. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
-to see all supported OpenAPI properties.
+#### @SwagQuery 
+Method level annotation for adding query parameters. 
+
+[Read more](src/Lib/Annotation#swagquery)
 
 ```php
 /**
@@ -176,9 +173,10 @@ to see all supported OpenAPI properties.
 public function index() {}
 ```
 
-#### `@SwagForm`
-Method level annotation for adding form data fields. [Read the comments](src/Lib/Annotation/SwagForm.php) 
-to see all supported OpenAPI properties.
+#### @SwagForm
+Method level annotation for adding form data fields. 
+
+[Read more](src/Lib/Annotation#swagform)
 
 ```php
 /**
@@ -187,73 +185,27 @@ to see all supported OpenAPI properties.
 public function index() {}
 ```
 
-#### `@SwagDto`
+#### @SwagDto
 Method level annotation for building query or form parameters from a DataTransferObject. DTOs are more than just a 
 best practice. Using them with SwaggerBake greatly reduces the amount of annotations you need to write. Consider 
-using a DTO in place of SwagQuery or SwagForm. SwagDto uses either SwagDtoProperty or your existing Doc Blocks to 
-build swagger query and post parameters.
+using a DTO in place of SwagQuery or SwagForm. 
 
-```php
-/**
- * @Swag\SwagDto(class="\App\Dto\ActorDto")
- */
-public function index() {}
-```
+[Read more](src/Lib/Annotation#swagdto)
 
-Example DTO:
+##### @SwagDtoQuery
+Property level annotation for use in your SwagDto classes. 
 
-```php
-namespace App\Dto;
+[Read more](src/Lib/Annotation#swagdtoquery)
 
-class ActorDto {
-    /**
-     * Last name required
-     * @var string
-     * @required
-     */
-    private $lastName;
+##### @SwagDtoForm
+Property level annotation for use in your SwagDto classes. 
 
-    /** @var string */
-    private $firstName;
-```
+[Read more](src/Lib/Annotation#swagdtoform)
 
-#### `@SwagDtoQuery`
-Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoQuery.php) to 
-see all supported properties.
+#### @SwagHeader
+Method level annotation for adding header parameters. 
 
-```php
-class ActorDto {
-    /**
-     * @SwagDtoQuery(name="firstName", type="string", required=true)
-     */
-    private $firstName;
-
-    /**
-     * @SwagDtoQuery(name="gender", type="string", enum="{"male","female","other"}")
-     */
-    private $gender;
-```
-
-#### `@SwagDtoForm`
-Property level annotation for use in your SwagDto classes. [Read the comments](src/Lib/Annotation/SwagDtoForm.php) to 
-see all supported properties.
-
-```php
-class ActorDto {
-    /**
-     * @SwagDtoForm(name="title", type="string", required=true)
-     */
-    private $title;
-
-    /**
-     * @SwagDtoForm(name="age", type="integer", format="int32")
-     */
-    private $age;
-```
-
-#### `@SwagHeader`
-Method level annotation for adding header parameters. [Read the comments](src/Lib/Annotation/SwagQuery.php) 
-to see all supported OpenAPI properties.
+[Read more](src/Lib/Annotation#swagheader)
 
 ```php
 /**
@@ -262,9 +214,23 @@ to see all supported OpenAPI properties.
 public function index() {}
 ```
 
-#### `@SwagSecurity`
+#### @SwagPathParameter
+Method level annotation for modifying path parameters. 
+
+[Read more](src/Lib/Annotation#swagpathparameter)
+
+```php
+/**
+ * @Swag\SwagPathParameter(name="id", type="integer", format="int64", description="ID")
+ */
+public function view($id) {}
+```
+
+#### @SwagSecurity
 Method level annotation for adding authentication requirements. This annotation takes precedence over settings that 
-SwaggerBake gathers from AuthenticationComponent. Read [details](#details) below.
+SwaggerBake gathers from AuthenticationComponent. 
+
+[Read details below](#details)
 
 ```php
 /**
@@ -273,19 +239,22 @@ SwaggerBake gathers from AuthenticationComponent. Read [details](#details) below
 public function index() {}
 ```
 
-#### `@SwagOperation`
-Method level annotation for OpenApi Operations. Toggle visibility with isVisible and customize tag names which default 
-to the controllers name.
+#### @SwagOperation
+Method level annotation for OpenApi Operations. 
+
+[Read more](src/Lib/Annotation#swagoperation)
 
 ```php
 /**
- * @SwagOperation(isVisible=false, tagNames={"MyTag","AnotherTag"})
+ * @Swag\SwagOperation(isVisible=false, tagNames={"MyTag","AnotherTag"}, showPut=false)
  */
 public function index() {}
 ```
 
-#### `@SwagRequestBody`
-Method level annotation for describing request body. Set ignoreCakeSchema for full control over request body.
+#### @SwagRequestBody
+Method level annotation for describing request body. Set ignoreCakeSchema for full control over request body. 
+
+[Read more](src/Lib/Annotation#swagrequestbody)
 
 ```php
 /**
@@ -294,32 +263,40 @@ Method level annotation for describing request body. Set ignoreCakeSchema for fu
 public function index() {}
 ```
 
-#### `@SwagRequestBodyContent`
-Method level annotation for describing custom content in request body.
+#### @SwagRequestBodyContent
+Method level annotation for describing custom content in request body. The mimeTypes parameter is optional. If empty, 
+all mimeTypes defined as `requestAccepts` in your swagger_bake.php will be used. 
+
+[Read more](src/Lib/Annotation#swagrequestbodycontent)
+
+- `mimeType` has been deprecated in >= v1.5, use array form with `mimeTypes`
 
 ```php
 /**
- * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Actor", mimeType="application/json")
+ * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Actor", mimeTypes={"application/json"})
  */
 public function index() {}
 ```
 
-#### `@SwagResponseSchema`
-Method level annotation for defining custom response schema. Leave refEntity empty to define no schema. Note, as of  
-`v1.3`, please use `statusCode` instead of `httpCode` as it will be removed in a future version. See 1.3 release notes.
+#### @SwagResponseSchema
+Method level annotation for defining response schema. 
+
+[Read more](src/Lib/Annotation#swagresponseschema)
+
+- `mimeType` is deprecated in >= v1.5, use `mimeTypes` as an array.
+- `httpCode` is deprecated in >= v1.3, use `statusCode` 
 
 ```php
 /**
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="summary", statusCode="200")
- * @Swag\SwagResponseSchema(refEntity="", description="Support range status codes", statusCode="5XX")
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", mimeType="application/xml")
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", mimeType="application/json")
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="Summary", statusCode="200")
  */
 public function index() {}
 ```
 
-#### `@SwagPath`
-Class level annotation for exposing controllers to Swagger UI. You can hide entire controllers with this annotation.
+#### @SwagPath
+Class level annotation for exposing controllers to Swagger UI. You can hide entire controllers with this annotation. 
+
+[Read more](src/Lib/Annotation#swagpath)
 
 ```php
 /**
@@ -328,9 +305,11 @@ Class level annotation for exposing controllers to Swagger UI. You can hide enti
 class UsersController extends AppController {
 ```
 
-#### `@SwagEntity`
+#### @SwagEntity
 Class level annotation for exposing entities to Swagger UI. By default, all entities with routes will display as Swagger 
-schema. You can hide a schema or display a schema that does not have an associated route.
+schema. You can hide a schema or display a schema that does not have an associated route. 
+
+[Read more](src/Lib/Annotation#swagentity)
 
 ```php
 /**
@@ -339,9 +318,10 @@ schema. You can hide a schema or display a schema that does not have an associat
 class Employee extends Entity {
 ```
 
-#### `@SwagEntityAttribute`
-Class level annotation for customizing Schema Attributes. [Read the comments](src/Lib/Annotation/SwagEntityAttribute.php) 
-to see all supported OpenAPI properties.
+#### @SwagEntityAttribute
+Class level annotation for customizing Schema Attributes. 
+
+[Read more](src/Lib/Annotation#swagentityattribute)
 
 ```php
 /**
@@ -388,6 +368,10 @@ $swagger->toArray(); # returns swagger array
 $swagger->toString(); # returns swagger json
 $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
 ```
+
+#### Event System
+
+You can extend Swagger Bake further with events. Read the [extension documentation](src/Lib/Extension#swaggerbake-extensions) for details.
 
 ## Console Commands
 
@@ -553,11 +537,12 @@ Feature requests are welcomed.
 Send pull requests to help improve this library. You can include SwaggerBake in your primary Cake project as a 
 local source to make developing easier:
 
-- Make a clone of this repository
+- Make a fork of this repository and clone it to your localhost
 
 - Remove `cnizzardini\cakephp-swagger-bake` from your `composer.json`
 
 - Add a paths repository to your `composer.json`
+
 ```
 "minimum-stability": "dev",
 "repositories": [
@@ -570,10 +555,15 @@ local source to make developing easier:
     }
 ]
 ```
+
 - Run `composer require cnizzardini/cakephp-swagger-bake @dev`
 
 Undo these steps when you're done. Read the full composer documentation on loading from path here: 
 [https://getcomposer.org/doc/05-repositories.md#path](https://getcomposer.org/doc/05-repositories.md#path)
+
+## Coding Standards
+
+Coding standards run as part of CI with Travis. You may run these locally with `composer check`.
 
 ## Unit Tests
 

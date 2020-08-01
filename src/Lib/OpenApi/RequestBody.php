@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
@@ -6,30 +7,46 @@ use JsonSerializable;
 
 /**
  * Class RequestBody
+ *
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/describing-request-body/
  */
 class RequestBody implements JsonSerializable
 {
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $description = '';
 
-    /** @var Content[]  */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Content[]
+     */
     private $content = [];
 
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     private $required = false;
 
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     private $ignoreCakeSchema = false;
 
     /**
      * @return array
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         $vars = get_object_vars($this);
         unset($vars['ignoreCakeSchema']);
+        if ($this->required == false) {
+            unset($vars['required']);
+        }
+        if (empty($this->description)) {
+            unset($vars['description']);
+        }
+
         return $vars;
     }
 
@@ -50,38 +67,40 @@ class RequestBody implements JsonSerializable
     }
 
     /**
-     * @param string $description
-     * @return RequestBody
+     * @param string $description Description
+     * @return $this
      */
-    public function setDescription(string $description): RequestBody
+    public function setDescription(string $description)
     {
         $this->description = $description;
+
         return $this;
     }
 
     /**
-     * @return array|Content[]
+     * @return array|\SwaggerBake\Lib\OpenApi\Content[]
      */
-    public function getContent() : array
+    public function getContent(): array
     {
         return $this->content;
     }
 
     /**
-     * @param Content $content
+     * @param \SwaggerBake\Lib\OpenApi\Content $content Content
      * @return $this
      */
-    public function pushContent(Content $content) : RequestBody
+    public function pushContent(Content $content)
     {
         $this->content[$content->getMimeType()] = $content;
+
         return $this;
     }
 
     /**
-     * @param string $mimeType
-     * @return Content|null
+     * @param string $mimeType Mime type i.e. application/json, application/xml
+     * @return \SwaggerBake\Lib\OpenApi\Content|null
      */
-    public function getContentByType(string $mimeType) : ?Content
+    public function getContentByType(string $mimeType): ?Content
     {
         if (isset($this->content[$mimeType])) {
             return $this->content[$mimeType];
@@ -99,12 +118,13 @@ class RequestBody implements JsonSerializable
     }
 
     /**
-     * @param bool $required
-     * @return RequestBody
+     * @param bool $required Required
+     * @return $this
      */
-    public function setRequired(bool $required): RequestBody
+    public function setRequired(bool $required)
     {
         $this->required = $required;
+
         return $this;
     }
 
@@ -117,12 +137,13 @@ class RequestBody implements JsonSerializable
     }
 
     /**
-     * @param bool $ignoreCakeSchema
-     * @return RequestBody
+     * @param bool $ignoreCakeSchema Ignore cake schema
+     * @return $this
      */
-    public function setIgnoreCakeSchema(bool $ignoreCakeSchema): RequestBody
+    public function setIgnoreCakeSchema(bool $ignoreCakeSchema)
     {
         $this->ignoreCakeSchema = $ignoreCakeSchema;
+
         return $this;
     }
 }

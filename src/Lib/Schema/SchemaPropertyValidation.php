@@ -1,38 +1,46 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Schema;
 
 use Cake\Validation\ValidationRule;
-use Cake\Validation\ValidationSet;
 use Cake\Validation\Validator;
 use ReflectionFunction;
 use SwaggerBake\Lib\Decorator\PropertyDecorator;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 /**
- * Class SchemaPropertyValidation
- * @package SwaggerBake\Lib\Schema
- *
  * Checks validation rules in your projects Table classes and set Schema Properties from them
+ *
+ * @package SwaggerBake\Lib\Schema
  */
 class SchemaPropertyValidation
 {
-    /** @var Validator  */
+    /**
+     * @var \Cake\Validation\Validator
+     */
     private $validator;
 
-    /** @var SchemaProperty  */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\SchemaProperty
+     */
     private $schemaProperty;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $propertyName;
 
-    public function __construct
-    (
+    /**
+     * @param \Cake\Validation\Validator $validator Validator
+     * @param \SwaggerBake\Lib\OpenApi\SchemaProperty $schemaProperty SchemaProperty
+     * @param \SwaggerBake\Lib\Decorator\PropertyDecorator $propertyDecorator PropertyDecorator
+     */
+    public function __construct(
         Validator $validator,
         SchemaProperty $schemaProperty,
         PropertyDecorator $propertyDecorator
-    )
-    {
+    ) {
         $this->validator = $validator;
         $this->schemaProperty = $schemaProperty;
         $this->propertyName = $propertyDecorator->getName();
@@ -41,9 +49,9 @@ class SchemaPropertyValidation
     /**
      * Sets SchemaProperty properties from Cake validation rules and returns an instance of SchemaProperty
      *
-     * @return SchemaProperty
+     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty
      */
-    public function withValidations() : SchemaProperty
+    public function withValidations(): SchemaProperty
     {
         $this
             ->defineRequired()
@@ -57,8 +65,7 @@ class SchemaPropertyValidation
             ->defineEnum()
             ->defineMinItems()
             ->defineMaxItems()
-            ->assignMinLength()
-        ;
+            ->assignMinLength();
 
         return $this->schemaProperty;
     }
@@ -67,8 +74,9 @@ class SchemaPropertyValidation
      * Returns a mixed variable for the validation rules condition if the rule exists, null otherwise. This method
      * only rules a rule value of the validation is applied to both creates and update.
      *
-     * @param string $rule
+     * @param string $rule Rule name
      * @return array|mixed|null
+     * @codeCoverageIgnore
      */
     private function getValidationRuleValue(string $rule)
     {
@@ -94,8 +102,9 @@ class SchemaPropertyValidation
      * Returns a mixed variable for the validation rules condition if the rule exists, null otherwise. This is for
      * ValidationRule's which use closures.
      *
-     * @param string $rule
+     * @param string $rule Rule name
      * @return mixed
+     * @codeCoverageIgnore
      */
     private function getValidationRuleValueFromClosure(string $rule)
     {
@@ -107,7 +116,7 @@ class SchemaPropertyValidation
         $result = $validationRule->get('rule');
         try {
             $vars = (new ReflectionFunction($result))->getStaticVariables();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return null;
         }
 
@@ -120,31 +129,40 @@ class SchemaPropertyValidation
 
     /**
      * @see Validator::maxLength()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function defineMaxLength() : SchemaPropertyValidation
+    private function defineMaxLength()
     {
         $result = $this->getValidationRuleValue('maxLength');
         if (!empty($result)) {
             $this->schemaProperty->setMaxLength(intval(reset($result)));
+
+            return $this;
         }
+
+        $result = $this->getValidationRuleValue('lengthBetween');
+        if (!empty($result)) {
+            $this->schemaProperty->setMaxLength(intval(end($result)));
+
+            return $this;
+        }
+
         return $this;
     }
 
     /**
      * @see Validator::isPresenceRequired()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function defineRequired() : SchemaPropertyValidation
+    private function defineRequired()
     {
         $validationSet = $this->validator->field($this->propertyName);
         $isPresenceRequired = $validationSet->isPresenceRequired();
 
         if ($isPresenceRequired === true) {
             $this->schemaProperty->setRequired(true);
-        } else if (is_string($isPresenceRequired)) {
-            switch (strtoupper($isPresenceRequired))
-            {
+        } elseif (is_string($isPresenceRequired)) {
+            switch (strtoupper($isPresenceRequired)) {
                 case 'UPDATE':
                     $this->schemaProperty->setRequirePresenceOnUpdate(true);
                     break;
@@ -159,36 +177,48 @@ class SchemaPropertyValidation
 
     /**
      * @see Validator::minLength()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function defineMinLength() : SchemaPropertyValidation
+    private function defineMinLength()
     {
         $result = $this->getValidationRuleValue('minLength');
         if (!empty($result)) {
             $this->schemaProperty->setMinLength(intval(reset($result)));
+
+            return $this;
         }
+
+        $result = $this->getValidationRuleValue('lengthBetween');
+        if (!empty($result)) {
+            $this->schemaProperty->setMinLength(intval(reset($result)));
+
+            return $this;
+        }
+
         return $this;
     }
 
     /**
      * @see Validator::greaterThanOrEqual()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function defineMinimum() : SchemaPropertyValidation
+    private function defineMinimum()
     {
         $result = $this->getValidationRuleValue('greaterThanOrEqual');
         if (!empty($result)) {
             $this->schemaProperty->setMinimum(floatval(end($result)));
         }
+
         return $this;
     }
 
     /**
      * Sets minimum and exclusiveMinimum
+     *
      * @see Validator::greaterThan()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function defineExclusiveMinimum() : SchemaPropertyValidation
+    private function defineExclusiveMinimum()
     {
         $result = $this->getValidationRuleValue('greaterThan');
         if (!empty($result)) {
@@ -196,28 +226,31 @@ class SchemaPropertyValidation
                 ->setMinimum(floatval(end($result)))
                 ->setExclusiveMinimum(true);
         }
+
         return $this;
     }
 
     /**
      * @see Validator::lessThanOrEqual()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function defineMaximum() : SchemaPropertyValidation
+    private function defineMaximum()
     {
         $result = $this->getValidationRuleValue('lessThanOrEqual');
         if (!empty($result)) {
             $this->schemaProperty->setMaximum(floatval(end($result)));
         }
+
         return $this;
     }
 
     /**
      * Sets maximum and exclusiveMaximum
+     *
      * @see Validator::lessThan()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function defineExclusiveMaximum() : SchemaPropertyValidation
+    private function defineExclusiveMaximum()
     {
         $result = $this->getValidationRuleValue('lessThan');
         if (!empty($result)) {
@@ -225,27 +258,29 @@ class SchemaPropertyValidation
                 ->setMaximum(floatval(end($result)))
                 ->setExclusiveMaximum(true);
         }
+
         return $this;
     }
 
     /**
      * @see Validator::regex()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function definePattern() : SchemaPropertyValidation
+    private function definePattern()
     {
         $result = $this->getValidationRuleValue('regex');
         if (!empty($result)) {
             $this->schemaProperty->setPattern(reset($result));
         }
+
         return $this;
     }
 
     /**
      * @see Validator::inList()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function defineEnum() : SchemaPropertyValidation
+    private function defineEnum()
     {
         $result = $this->getValidationRuleValue('inList');
         if (empty($result)) {
@@ -254,47 +289,48 @@ class SchemaPropertyValidation
 
         $items = reset($result);
 
-        if (empty($items)) {
-            return $this;
+        if (!empty($items)) {
+            $this->schemaProperty->setEnum($items);
         }
-
-        $this->schemaProperty->setEnum($items);
 
         return $this;
     }
 
     /**
      * @see Validator::hasAtLeast()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function defineMinItems() : SchemaPropertyValidation
+    private function defineMinItems()
     {
         $result = $this->getValidationRuleValueFromClosure('hasAtLeast');
         if (is_numeric($result)) {
             $this->schemaProperty->setMinItems($result);
         }
+
         return $this;
     }
 
     /**
      * @see Validator::hasAtMost()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function defineMaxItems() : SchemaPropertyValidation
+    private function defineMaxItems()
     {
         $result = $this->getValidationRuleValueFromClosure('hasAtMost');
         if (is_numeric($result)) {
             $this->schemaProperty->setMaxItems($result);
         }
+
         return $this;
     }
 
     /**
      * Assigns a minLength of 1 to scalar types which have no min length defined and do not allow empty
+     *
      * @see ValidationSet::isEmptyAllowed()
-     * @return SchemaPropertyValidation
+     * @return $this
      */
-    private function assignMinLength() : SchemaPropertyValidation
+    private function assignMinLength()
     {
         if ($this->schemaProperty->isTypeScalar() === false) {
             return $this;

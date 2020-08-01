@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
@@ -8,11 +9,19 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 /**
  * Class ValidateConfiguration
+ *
  * @package SwaggerBake\Lib\Utility\
  */
 class ValidateConfiguration
 {
-    public static function validate(?Configuration $config) : void
+    /**
+     * Validates the supplied Configuration, if null is passed then it will create an instance of Configuration in the
+     * local scope and validate that
+     *
+     * @param \SwaggerBake\Lib\Configuration|null $config Configuration or null
+     * @return void
+     */
+    public static function validate(?Configuration $config): void
     {
         $config = $config ?? new Configuration();
         $ymlFile = $config->getYml();

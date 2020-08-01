@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Factory;
 
@@ -10,7 +11,13 @@ use SwaggerBake\Lib\OpenApi\Schema;
 
 class ParameterFromAnnotationFactory
 {
-    public function create(AbstractParameter $annotation) : Parameter
+    /**
+     * Creates an instance of Parameter from an AbstractParameter annotation
+     *
+     * @param \SwaggerBake\Lib\Annotation\AbstractParameter $annotation Class extending AbstractParameter
+     * @return \SwaggerBake\Lib\OpenApi\Parameter
+     */
+    public function create(AbstractParameter $annotation): Parameter
     {
         $parameter = (new Parameter())
             ->setName($annotation->name)
@@ -25,16 +32,14 @@ class ParameterFromAnnotationFactory
                     ->setType($annotation->type)
                     ->setEnum($annotation->enum)
                     ->setFormat($annotation->format)
-            )
-        ;
+            );
 
         if ($annotation instanceof SwagQuery) {
             $parameter
                 ->setIn('query')
                 ->setAllowReserved($annotation->allowReserved)
-                ->setAllowEmptyValue($annotation->allowEmptyValue)
-            ;
-        } else if ($annotation instanceof SwagHeader) {
+                ->setAllowEmptyValue($annotation->allowEmptyValue);
+        } elseif ($annotation instanceof SwagHeader) {
             $parameter->setIn('header');
         }
 

@@ -1,42 +1,49 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Decorator;
 
 use Cake\ORM\Entity;
 use ReflectionClass;
-use ReflectionException;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 /**
  * Class EntityDecorator
+ *
  * @package SwaggerBake\Lib\Decorator
  *
  * Decorates Cake\ORM\Entity
  */
 class EntityDecorator
 {
-    /** @var Entity  */
+    /**
+     * @var \Cake\ORM\Entity
+     */
     private $entity;
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $name = '';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $fqns;
 
-    /** @var PropertyDecorator[]  */
+    /**
+     * @var \SwaggerBake\Lib\Decorator\PropertyDecorator[]
+     */
     private $properties = [];
 
+    /**
+     * @param \Cake\ORM\Entity $entity Entity
+     * @throws \ReflectionException
+     */
     public function __construct(Entity $entity)
     {
         $this->entity = $entity;
         $this->fqns = get_class($entity);
-
-        try {
-            $this->name = (new ReflectionClass($entity))->getShortName();
-        } catch(ReflectionException $e) {
-            throw new SwaggerBakeRunTimeException('ReflectionException: ' . $e->getMessage());
-        }
+        $this->name = (new ReflectionClass($entity))->getShortName();
     }
 
     /**
@@ -48,17 +55,18 @@ class EntityDecorator
     }
 
     /**
-     * @param string $name
-     * @return EntityDecorator
+     * @param string $name Name of the entity
+     * @return $this
      */
-    public function setName(string $name): EntityDecorator
+    public function setName(string $name)
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
-     * @return PropertyDecorator[]
+     * @return \SwaggerBake\Lib\Decorator\PropertyDecorator[]
      */
     public function getProperties(): array
     {
@@ -66,17 +74,18 @@ class EntityDecorator
     }
 
     /**
-     * @param PropertyDecorator[] $properties
-     * @return EntityDecorator
+     * @param \SwaggerBake\Lib\Decorator\PropertyDecorator[] $properties Array of PropertyDecorator objects
+     * @return $this
      */
-    public function setProperties(array $properties): EntityDecorator
+    public function setProperties(array $properties)
     {
         $this->properties = $properties;
+
         return $this;
     }
 
     /**
-     * @return Entity
+     * @return \Cake\ORM\Entity
      */
     public function getEntity(): Entity
     {
@@ -84,12 +93,13 @@ class EntityDecorator
     }
 
     /**
-     * @param Entity $entity
-     * @return EntityDecorator
+     * @param \Cake\ORM\Entity $entity Entity
+     * @return $this
      */
-    public function setEntity(Entity $entity): EntityDecorator
+    public function setEntity(Entity $entity)
     {
         $this->entity = $entity;
+
         return $this;
     }
 
@@ -102,12 +112,13 @@ class EntityDecorator
     }
 
     /**
-     * @param string $fqns
-     * @return EntityDecorator
+     * @param string $fqns Fully Qualified Namespace of the Entity
+     * @return $this
      */
-    public function setFqns(string $fqns): EntityDecorator
+    public function setFqns(string $fqns)
     {
         $this->fqns = $fqns;
+
         return $this;
     }
 }

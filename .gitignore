@@ -1,6 +1,9 @@
 # SwaggerBake sspecific files #
 ##########################
 /tests/test_app/webroot/*
+/tests/test_app/src/Controller/BakersController.php
+/coverage-reports/
+/tests/test_app/config/testing/*
 
 # CakePHP specific files #
 ##########################

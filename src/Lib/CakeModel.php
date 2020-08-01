@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
+use Cake\Database\Connection;
+use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\EntityInterface;
-use Cake\Database\Schema\TableSchema;
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Decorator\EntityDecorator;
@@ -15,19 +17,30 @@ use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
  * Class CakeModel
+ *
  * @package SwaggerBake\Lib
  */
 class CakeModel
 {
-    /** @var CakeRoute */
+    /**
+     * @var \SwaggerBake\Lib\CakeRoute
+     */
     private $cakeRoute;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $prefix;
 
-    /** @var Configuration */
+    /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
     private $config;
 
+    /**
+     * @param \SwaggerBake\Lib\CakeRoute $cakeRoute CakeRoute
+     * @param \SwaggerBake\Lib\Configuration $config Configuration
+     */
     public function __construct(CakeRoute $cakeRoute, Configuration $config)
     {
         $this->cakeRoute = $cakeRoute;
@@ -38,13 +51,18 @@ class CakeModel
     /**
      * Gets an array of EntityDecorator
      *
-     * @return EntityDecorator[]
+     * @return \SwaggerBake\Lib\Decorator\EntityDecorator[]
      */
-    public function getEntityDecorators() : array
+    public function getEntityDecorators(): array
     {
         $return = [];
 
         $connection = ConnectionManager::get('default');
+
+        if (!$connection instanceof Connection) {
+            throw new SwaggerBakeRunTimeException('Unable to get Database Connection instance');
+        }
+
         $scanner = new TableScanner($connection);
         $tables = $scanner->listUnskipped();
         $collection = $connection->getSchemaCollection();
@@ -52,7 +70,6 @@ class CakeModel
         $tabularRoutes = $this->getTablesFromRoutes($routes);
 
         foreach ($tables as $tableName) {
-
             $classShortName = Inflector::classify($tableName);
             $entityFqns = NamespaceUtility::getEntityFullyQualifiedNameSpace($classShortName, $this->config);
 
@@ -64,8 +81,12 @@ class CakeModel
                 continue;
             }
 
-            $entityInstance = new $entityFqns;
+            $entityInstance = new $entityFqns();
             $schema = $collection->describe($tableName);
+
+            if (!$schema instanceof TableSchema) {
+                throw new SwaggerBakeRunTimeException('Unable to get TableSchema instance');
+            }
 
             $properties = $this->getPropertyDecorators($entityInstance, $schema);
 
@@ -76,9 +97,9 @@ class CakeModel
     }
 
     /**
-     * @return CakeRoute
+     * @return \SwaggerBake\Lib\CakeRoute
      */
-    public function getCakeRoute() : CakeRoute
+    public function getCakeRoute(): CakeRoute
     {
         return $this->cakeRoute;
     }
@@ -86,24 +107,24 @@ class CakeModel
     /**
      * @return string
      */
-    public function getPrefix() : string
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
 
     /**
-     * @return Configuration
+     * @return \SwaggerBake\Lib\Configuration
      */
-    public function getConfig() : Configuration
+    public function getConfig(): Configuration
     {
         return $this->config;
     }
 
     /**
-     * @param array $routes
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator[] $routes An array of RouteDecorator objects
      * @return string[]
      */
-    private function getTablesFromRoutes(array $routes) : array
+    private function getTablesFromRoutes(array $routes): array
     {
         $return = [];
         foreach ($routes as $route) {
@@ -112,15 +133,16 @@ class CakeModel
             }
             $return[] = Inflector::underscore($route->getController());
         }
+
         return array_unique($return);
     }
 
     /**
-     * @param EntityInterface $entity
-     * @param TableSchema $schema
-     * @return PropertyDecorator[]
+     * @param \Cake\Datasource\EntityInterface $entity EntityInterface
+     * @param \Cake\Database\Schema\TableSchema $schema TableSchema
+     * @return \SwaggerBake\Lib\Decorator\PropertyDecorator[]
      */
-    private function getPropertyDecorators(EntityInterface $entity, TableSchema $schema) : array
+    private function getPropertyDecorators(EntityInterface $entity, TableSchema $schema): array
     {
         $return = [];
 
@@ -131,17 +153,15 @@ class CakeModel
         });
 
         foreach ($columns as $columnName) {
-
             $vars = $schema->__debugInfo();
-            $default = isset($vars['columns'][$columnName]['default']) ? $vars['columns'][$columnName]['default'] : '';
+            $default = $vars['columns'][$columnName]['default'] ?? '';
 
             $PropertyDecorator = new PropertyDecorator();
             $PropertyDecorator
                 ->setName($columnName)
                 ->setType($schema->getColumnType($columnName))
                 ->setDefault($default)
-                ->setIsPrimaryKey($this->isPrimaryKey($vars, $columnName))
-            ;
+                ->setIsPrimaryKey($this->isPrimaryKey($vars, $columnName));
             $return[] = $PropertyDecorator;
         }
 
@@ -149,11 +169,11 @@ class CakeModel
     }
 
     /**
-     * @param array $schemaDebugInfo
-     * @param string $columnName
+     * @param array $schemaDebugInfo Debug array from TableSchema
+     * @param string $columnName Column name
      * @return bool
      */
-    private function isPrimaryKey(array $schemaDebugInfo, string $columnName) : bool
+    private function isPrimaryKey(array $schemaDebugInfo, string $columnName): bool
     {
         if (!isset($schemaDebugInfo['constraints']['primary']['columns'])) {
             return false;
@@ -163,10 +183,10 @@ class CakeModel
     }
 
     /**
-     * @param string $fqns
+     * @param string $fqns Fully Qualified Namespace of the entity
      * @return bool
      */
-    private function entityHasVisibility(string $fqns) : bool
+    private function entityHasVisibility(string $fqns): bool
     {
         if (empty($fqns)) {
             return false;

@@ -1,28 +1,58 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Annotation;
 
-use InvalidArgumentException;
+use Cake\Log\Log;
 
 /**
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
- *   @Attribute("refEntity", type = "string"),
- *   @Attribute("mimeType", type = "string")
+ * @Attribute("refEntity", type = "string"),
+ * @Attribute("mimeTypes", type = "array"),
+ * @Attribute("mimeType", type = "string")
  * })
  */
 class SwagRequestBodyContent
 {
-    /** @var string */
+    /**
+     * OpenApi Components.Schema
+     *
+     * @var string
+     * @example #/components/schemas/Actor
+     */
     public $refEntity;
 
-    /** @var string */
+    /**
+     * List of mimeTypes accepted as request bodies
+     *
+     * @var array
+     * @example {"application/json","application/xml"}
+     */
+    public $mimeTypes;
+
+    /**
+     * @var string
+     * @deprecated use mimeTypes instead
+     */
     public $mimeType;
 
+    /**
+     * @param array $values Annotation attributes as key-value pair
+     */
     public function __construct(array $values)
     {
+        $values = array_merge(['refEntity' => '', 'mimeTypes' => []], $values);
+
+        if (isset($values['mimeType'])) {
+            array_push($values['mimeTypes'], $values['mimeType']);
+            $msg = 'SwaggerBake: `mimeType` is deprecated, use `mimeTypes` in SwagRequestBodyContent';
+            Log::warning($msg);
+            deprecationWarning($msg);
+        }
+
         $this->refEntity = $values['refEntity'];
-        $this->mimeType = $values['mimeType'];
+        $this->mimeTypes = $values['mimeTypes'];
     }
 }

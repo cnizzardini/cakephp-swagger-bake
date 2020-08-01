@@ -14,7 +14,9 @@ use SwaggerBake\Lib\Swagger;
 
 class SwaggerOperationTest extends TestCase
 {
-    /** @var string[] */
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.DepartmentEmployees',
         'plugin.SwaggerBake.Departments',
@@ -22,11 +24,20 @@ class SwaggerOperationTest extends TestCase
         'plugin.SwaggerBake.EmployeeSalaries',
     ];
 
-    /** @var Router  */
+    /**
+     * @var Router
+     */
     private $router;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $config;
+
+    /**
+     * @var Swagger
+     */
+    private $swagger;
 
     public function setUp(): void
     {
@@ -40,11 +51,6 @@ class SwaggerOperationTest extends TestCase
                         'action' => 'customGet',
                         'method' => 'GET',
                         'path' => 'custom-get'
-                    ],
-                    'customHidden' => [
-                        'action' => 'customHidden',
-                        'method' => 'GET',
-                        'path' => 'custom-hidden'
                     ],
                 ]
             ]);
@@ -71,17 +77,18 @@ class SwaggerOperationTest extends TestCase
             ]
         ];
 
+        if (!$this->swagger instanceof Swagger) {
+            $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+            $cakeRoute = new CakeRoute($this->router, $configuration);
+            $this->swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+        }
+
         AnnotationLoader::load();
     }
 
     public function testCrudOperationsExist()
     {
-        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
-
-        $arr = json_decode($swagger->toString(), true);
+        $arr = json_decode($this->swagger->toString(), true);
 
         $this->assertArrayHasKey('get', $arr['paths']['/employees']);
         $this->assertArrayHasKey('post', $arr['paths']['/employees']);
@@ -93,14 +100,10 @@ class SwaggerOperationTest extends TestCase
 
     public function testDefaultResponseSchemaOnIndexMethod()
     {
-        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
-
-        $arr = json_decode($swagger->toString(), true);
+        $arr = json_decode($this->swagger->toString(), true);
 
         $employee = $arr['paths']['/employees']['get'];
+
         $schema =  $employee['responses'][200]['content']['application/json']['schema'];
 
         $this->assertEquals('array', $schema['type']);
@@ -109,12 +112,7 @@ class SwaggerOperationTest extends TestCase
 
     public function testDefaultRequestSchemaOnAddMethod()
     {
-        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
-
-        $arr = json_decode($swagger->toString(), true);
+        $arr = json_decode($this->swagger->toString(), true);
 
         $employee = $arr['paths']['/employees']['post'];
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
@@ -125,12 +123,7 @@ class SwaggerOperationTest extends TestCase
 
     public function testDefaultResponseSchemaOnAddMethod()
     {
-        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
-
-        $arr = json_decode($swagger->toString(), true);
+        $arr = json_decode($this->swagger->toString(), true);
 
         $employee = $arr['paths']['/employees']['post'];
         $schema =  $employee['responses'][200]['content']['application/json']['schema'];
@@ -141,12 +134,7 @@ class SwaggerOperationTest extends TestCase
 
     public function testDefaultRequestSchemaOnEditMethod()
     {
-        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
-
-        $arr = json_decode($swagger->toString(), true);
+        $arr = json_decode($this->swagger->toString(), true);
 
         $employee = $arr['paths']['/employees/{id}']['patch'];
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
@@ -157,12 +145,7 @@ class SwaggerOperationTest extends TestCase
 
     public function testDefaultResponseSchemaOnEditMethod()
     {
-        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
-
-        $arr = json_decode($swagger->toString(), true);
+        $arr = json_decode($this->swagger->toString(), true);
 
         $employee = $arr['paths']['/employees/{id}']['patch'];
         $schema =  $employee['responses'][200]['content']['application/json']['schema'];
@@ -171,26 +154,9 @@ class SwaggerOperationTest extends TestCase
         $this->assertCount(6, $schema['properties']);
     }
 
-    public function testHiddenOperation()
-    {
-        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
-
-        $arr = json_decode($swagger->toString(), true);
-
-        $this->assertArrayNotHasKey('/employees/custom-hidden', $arr['paths']);
-    }
-
     public function testExceptionResponseSchema()
     {
-        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
-
-        $arr = json_decode($swagger->toString(), true);
+        $arr = json_decode($this->swagger->toString(), true);
 
         $responses = $arr['paths']['/employees/custom-get']['get']['responses'];
 

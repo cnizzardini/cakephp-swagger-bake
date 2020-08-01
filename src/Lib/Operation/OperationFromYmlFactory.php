@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
@@ -8,6 +9,7 @@ use SwaggerBake\Lib\OpenApi\PathSecurity;
 
 /**
  * Class OperationFromYmlFactory
+ *
  * @package SwaggerBake\Lib\Operation
  */
 class OperationFromYmlFactory
@@ -15,30 +17,30 @@ class OperationFromYmlFactory
     /**
      * Create Operation from YML
      *
-     * @param string $httpMethod
-     * @param array $var
-     * @return Operation
+     * @param string $httpMethod Http method i.e. PUT, POST, PATCH, GET, or DELETE
+     * @param array $yaml OpenApi Operation YAML as an array
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    public function create(string $httpMethod, array $var) : Operation
+    public function create(string $httpMethod, array $yaml): Operation
     {
         $operation = (new Operation())
             ->setHttpMethod($httpMethod)
-            ->setTags(isset($var['tags']) ? $var['tags'] : [])
-            ->setOperationId(isset($var['operationId']) ? $var['operationId'] : '')
-            ->setDeprecated((bool) isset($var['deprecated']) ? $var['deprecated'] : false);
+            ->setTags($yaml['tags'] ?? [])
+            ->setOperationId($yaml['operationId'] ?? '')
+            ->setDeprecated($yaml['deprecated'] ?? false);
 
-        if (isset($var['externalDocs']['url'])) {
+        if (isset($yaml['externalDocs']['url'])) {
             $operation->setExternalDocs(
                 (new OperationExternalDoc())
                     ->setDescription(
-                        isset($var['externalDocs']['description']) ? $var['externalDocs']['description'] : ''
+                        $yaml['externalDocs']['description'] ?? ''
                     )
-                    ->setUrl($var['externalDocs']['url'])
+                    ->setUrl($yaml['externalDocs']['url'])
             );
         }
 
-        if (isset($var['security']) && is_array($var['security'])) {
-            foreach ($var['security'] as $key => $scopes) {
+        if (isset($yaml['security']) && is_array($yaml['security'])) {
+            foreach ($yaml['security'] as $key => $scopes) {
                 $operation->pushSecurity((new PathSecurity())->setName($key)->setScopes($scopes));
             }
         }

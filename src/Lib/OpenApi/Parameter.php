@@ -1,53 +1,79 @@
 <?php
-
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
-use LogicException;
 use InvalidArgumentException;
 use JsonSerializable;
+use LogicException;
 
 /**
  * Class Parameter
+ *
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/describing-parameters/
  */
 class Parameter implements JsonSerializable
 {
-    /** @var string **/
+    /**
+     * @var string
+     **/
     private $name = '';
 
-    /** @var string **/
+    /**
+     * @var string
+     **/
     private $in = '';
 
-    /** @var string **/
+    /**
+     * @var string
+     **/
     private $description = '';
 
-    /** @var bool **/
+    /**
+     * @var bool
+     **/
     private $required = false;
 
-    /** @var Schema **/
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Schema
+     **/
     private $schema;
 
-    /** @var bool **/
+    /**
+     * @var bool
+     **/
     private $deprecated = false;
 
-    /** @var bool **/
+    /**
+     * @var bool
+     **/
     private $allowEmptyValue = false;
 
-    /** @var bool **/
+    /**
+     * @var bool
+     **/
     private $explode = false;
 
-    /** @var string **/
+    /**
+     * @var string
+     **/
     private $style = '';
 
-    /** @var bool **/
+    /**
+     * @var bool
+     **/
     private $allowReserved = false;
 
-    /** @var mixed **/
+    /**
+     * @var mixed
+     **/
     private $example = '';
 
-    public function toArray() : array
+    /**
+     * @return array
+     */
+    public function toArray(): array
     {
         if (empty($this->in)) {
             throw new LogicException('Parameter::in is required for ' . $this->name);
@@ -56,6 +82,9 @@ class Parameter implements JsonSerializable
         return get_object_vars($this);
     }
 
+    /**
+     * @return array|mixed
+     */
     public function jsonSerialize()
     {
         $vars = $this->toArray();
@@ -67,6 +96,14 @@ class Parameter implements JsonSerializable
         foreach (['style','description','schema','example'] as $property) {
             if (empty($vars[$property])) {
                 unset($vars[$property]);
+            }
+        }
+
+        // reduce JSON clutter if these values are equal to their defaults
+        $defaults = ['deprecated' => false, 'allowEmptyValue' => false, 'explode' => false, 'allowReserved' => false];
+        foreach ($defaults as $name => $value) {
+            if ($this->{$name} === $value) {
+                unset($vars[$name]);
             }
         }
 
@@ -82,12 +119,13 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param string $name
-     * @return Parameter
+     * @param string $name Name
+     * @return $this
      */
-    public function setName(string $name): Parameter
+    public function setName(string $name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -100,16 +138,17 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param string $in
-     * @return Parameter
+     * @param string $in In
+     * @return $this
      */
-    public function setIn(string $in): Parameter
+    public function setIn(string $in)
     {
         $in = strtolower($in);
         if (!in_array($in, ['query','cookie','header','path','body'])) {
             throw new InvalidArgumentException("Invalid type for in. Given $in");
         }
         $this->in = $in;
+
         return $this;
     }
 
@@ -122,12 +161,13 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param string $description
-     * @return Parameter
+     * @param string $description Description
+     * @return $this
      */
-    public function setDescription(string $description): Parameter
+    public function setDescription(string $description)
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -140,12 +180,13 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param bool $required
-     * @return Parameter
+     * @param bool $required Is required
+     * @return $this
      */
-    public function setRequired(bool $required): Parameter
+    public function setRequired(bool $required)
     {
         $this->required = $required;
+
         return $this;
     }
 
@@ -158,12 +199,13 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param bool $deprecated
-     * @return Parameter
+     * @param bool $deprecated Deprecated
+     * @return $this
      */
-    public function setDeprecated(bool $deprecated): Parameter
+    public function setDeprecated(bool $deprecated)
     {
         $this->deprecated = $deprecated;
+
         return $this;
     }
 
@@ -176,12 +218,13 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param bool $allowEmptyValue
-     * @return Parameter
+     * @param bool $allowEmptyValue Allow empty
+     * @return $this
      */
-    public function setAllowEmptyValue(bool $allowEmptyValue): Parameter
+    public function setAllowEmptyValue(bool $allowEmptyValue)
     {
         $this->allowEmptyValue = $allowEmptyValue;
+
         return $this;
     }
 
@@ -194,12 +237,13 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param Schema $schema
-     * @return Parameter
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema Schema
+     * @return $this
      */
-    public function setSchema(Schema $schema) : Parameter
+    public function setSchema(Schema $schema)
     {
         $this->schema = $schema;
+
         return $this;
     }
 
@@ -212,12 +256,13 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param bool $explode
-     * @return Parameter
+     * @param bool $explode Explode
+     * @return $this
      */
-    public function setExplode(bool $explode): Parameter
+    public function setExplode(bool $explode)
     {
         $this->explode = $explode;
+
         return $this;
     }
 
@@ -230,12 +275,13 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param string $style
-     * @return Parameter
+     * @param string $style Style
+     * @return $this
      */
-    public function setStyle(string $style): Parameter
+    public function setStyle(string $style)
     {
         $this->style = $style;
+
         return $this;
     }
 
@@ -248,12 +294,13 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param bool $allowReserved
-     * @return Parameter
+     * @param bool $allowReserved Allow reserved
+     * @return $this
      */
-    public function setAllowReserved(bool $allowReserved): Parameter
+    public function setAllowReserved(bool $allowReserved)
     {
         $this->allowReserved = $allowReserved;
+
         return $this;
     }
 
@@ -266,12 +313,13 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @param mixed $example
-     * @return Parameter
+     * @param mixed $example Example
+     * @return $this
      */
-    public function setExample($example): Parameter
+    public function setExample($example)
     {
         $this->example = $example;
+
         return $this;
     }
 }

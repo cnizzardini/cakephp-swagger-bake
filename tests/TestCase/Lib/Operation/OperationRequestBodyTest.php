@@ -8,12 +8,15 @@ use Cake\TestSuite\TestCase;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagForm;
+use SwaggerBake\Lib\Annotation\SwagRequestBody;
+use SwaggerBake\Lib\CakeModel;
 use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationRequestBody;
+use SwaggerBake\Lib\Swagger;
 
 class OperationRequestBodyTest extends TestCase
 {
@@ -57,14 +60,15 @@ class OperationRequestBodyTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new CakeRoute($this->router, $config);
+        $cakeModels = new CakeModel($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
 
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
 
         $operationRequestBody = new OperationRequestBody(
-            $config,
+            $swagger,
             (new Operation())->setHttpMethod('POST'),
-            DocBlockFactory::createInstance()->create('/** @throws Exception */'),
             [
                 new SwagForm(['name' => 'test', 'type' => 'string', 'description' => '', 'required' => false])
             ],
@@ -88,14 +92,15 @@ class OperationRequestBodyTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new CakeRoute($this->router, $config);
+        $cakeModels = new CakeModel($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
 
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
 
         $operationRequestBody = new OperationRequestBody(
-            $config,
+            $swagger,
             (new Operation())->setHttpMethod('POST'),
-            DocBlockFactory::createInstance()->create('/** @throws Exception */'),
             [
                 new SwagDto(['class' => '\SwaggerBakeTest\App\Dto\EmployeeData'])
             ],
@@ -120,6 +125,8 @@ class OperationRequestBodyTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new CakeRoute($this->router, $config);
+        $cakeModels = new CakeModel($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
 
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
@@ -135,9 +142,8 @@ class OperationRequestBodyTest extends TestCase
         ;
 
         $operationRequestBody = new OperationRequestBody(
-            $config,
+            $swagger,
             (new Operation())->setHttpMethod('POST'),
-            DocBlockFactory::createInstance()->create('/** */'),
             [],
             $route,
             $schema
@@ -159,5 +165,29 @@ class OperationRequestBodyTest extends TestCase
         $this->assertTrue($properties['firstName']->isRequired());
         $this->assertEquals('firstName', $properties['firstName']->getName());
         $this->assertEquals('otherField', $properties['otherField']->getName());
+    }
+
+    public function testIgnoreSchema()
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new CakeRoute($this->router, $config);
+        $cakeModels = new CakeModel($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
+
+        $routes = $cakeRoute->getRoutes();
+        $route = $routes['employees:add'];
+
+        $operationRequestBody = new OperationRequestBody(
+            $swagger,
+            (new Operation())->setHttpMethod('POST'),
+            [
+                new SwagRequestBody(['ignoreSchema' => true])
+            ],
+            $route,
+            null
+        );
+
+        $operation = $operationRequestBody->getOperationWithRequestBody();
+        $this->assertEmpty($operation->getRequestBody()->getContent());
     }
 }

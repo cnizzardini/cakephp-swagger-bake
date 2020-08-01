@@ -1,23 +1,30 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Annotation;
 
 use InvalidArgumentException;
 
 /**
- * Annotation for specifying a DTO class
+ * Method level annotation for building query or form parameters from a DataTransferObject.
  *
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
- *   @Attribute("class", type = "string")
+ * @Attribute("class", type = "string")
  * })
+ * @see https://github.com/cnizzardini/cakephp-swagger-bake for example DTO
  */
 class SwagDto
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public $class;
 
+    /**
+     * @param array $values Annotation attributes as key-value pair
+     */
     public function __construct(array $values)
     {
         if (!isset($values['class'])) {

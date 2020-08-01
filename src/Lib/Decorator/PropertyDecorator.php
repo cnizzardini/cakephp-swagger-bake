@@ -1,25 +1,35 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Decorator;
 
 /**
  * Class PropertyDecorator
+ *
  * @package SwaggerBake\Lib\Decorator
  *
  * Decorates a table column
  */
 class PropertyDecorator
 {
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $name = '';
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $type = '';
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $default = '';
 
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     private $isPrimaryKey = false;
 
     /**
@@ -31,12 +41,13 @@ class PropertyDecorator
     }
 
     /**
-     * @param string $name
-     * @return PropertyDecorator
+     * @param string $name Property name
+     * @return $this
      */
-    public function setName(string $name): PropertyDecorator
+    public function setName(string $name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -49,12 +60,13 @@ class PropertyDecorator
     }
 
     /**
-     * @param string $type
-     * @return PropertyDecorator
+     * @param string $type Property data type (string, integer, etc.)
+     * @return $this
      */
-    public function setType(string $type): PropertyDecorator
+    public function setType(string $type)
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -67,12 +79,13 @@ class PropertyDecorator
     }
 
     /**
-     * @param string $default
-     * @return PropertyDecorator
+     * @param string $default Default value for the property
+     * @return $this
      */
-    public function setDefault(string $default): PropertyDecorator
+    public function setDefault(string $default)
     {
         $this->default = $default;
+
         return $this;
     }
 
@@ -85,12 +98,13 @@ class PropertyDecorator
     }
 
     /**
-     * @param bool $isPrimaryKey
-     * @return PropertyDecorator
+     * @param bool $isPrimaryKey Is this property a primary key?
+     * @return $this
      */
-    public function setIsPrimaryKey(bool $isPrimaryKey): PropertyDecorator
+    public function setIsPrimaryKey(bool $isPrimaryKey)
     {
         $this->isPrimaryKey = $isPrimaryKey;
+
         return $this;
     }
 }

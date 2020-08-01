@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
@@ -7,13 +8,17 @@ use SwaggerBake\Lib\Extension\ExtensionInterface;
 class ExtensionLoader
 {
     private const EXTENSIONS = [
-        '\SwaggerBake\Lib\Extension\CakeSearch\Extension'
+        '\SwaggerBake\Lib\Extension\CakeSearch\Extension',
     ];
 
-    public static function load() : void
+    /**
+     * Loads extensions from self::EXTENSIONS
+     *
+     * @return void
+     */
+    public static function load(): void
     {
-        foreach (SELF::EXTENSIONS as $extension) {
-
+        foreach (self::EXTENSIONS as $extension) {
             $instance = new $extension();
 
             if (!$instance instanceof ExtensionInterface) {

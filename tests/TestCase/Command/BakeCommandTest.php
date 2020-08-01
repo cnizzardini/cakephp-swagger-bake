@@ -4,6 +4,7 @@ namespace SwaggerBake\Test\TestCase\Command;
 
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 class BakeCommandTest extends TestCase
 {
@@ -27,5 +28,11 @@ class BakeCommandTest extends TestCase
         $this->exec('swagger bake');
         $this->assertOutputContains('Running...');
         $this->assertOutputContains("Swagger File Created: $path");
+    }
+
+    public function testExecuteWriteFailure()
+    {
+        $this->expectException(SwaggerBakeRunTimeException::class);
+        $this->exec('swagger bake --output /etc/no-no/swagger.json');
     }
 }

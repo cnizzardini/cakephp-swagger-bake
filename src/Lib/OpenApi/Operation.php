@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
@@ -7,44 +8,70 @@ use JsonSerializable;
 
 /**
  * Class Operation
+ *
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/paths-and-operations/
  */
 class Operation implements JsonSerializable
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $summary = '';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $description = '';
 
-    /** @var OperationExternalDoc|null */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\OperationExternalDoc|null
+     */
     private $externalDocs;
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $httpMethod = '';
 
-    /** @var string[]  */
+    /**
+     * @var string[]
+     */
     private $tags = [];
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $operationId = '';
 
-    /** @var Parameter[]  */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Parameter[]
+     */
     private $parameters = [];
 
-    /** @var RequestBody|null */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\RequestBody|null
+     */
     private $requestBody;
 
-    /** @var Response[] */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Response[]
+     */
     private $responses = [];
 
-    /** @var PathSecurity[]  */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\PathSecurity[]
+     */
     private $security = [];
 
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     private $deprecated = false;
 
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
         $vars = get_object_vars($this);
@@ -61,6 +88,9 @@ class Operation implements JsonSerializable
         if (empty($vars['externalDocs'])) {
             unset($vars['externalDocs']);
         }
+        if (empty($this->requestBody) || count($this->requestBody->getContent()) === 0) {
+            unset($vars['requestBody']);
+        }
 
         return $vars;
     }
@@ -76,7 +106,7 @@ class Operation implements JsonSerializable
     /**
      * @return bool
      */
-    public function hasSuccessResponseCode() : bool
+    public function hasSuccessResponseCode(): bool
     {
         $results = array_filter($this->getResponses(), function ($response) {
 
@@ -86,7 +116,7 @@ class Operation implements JsonSerializable
                 return true;
             }
 
-            return ($code >= 200 && $code < 300);
+            return $code >= 200 && $code < 300;
         });
 
         return count($results) > 0;
@@ -94,6 +124,7 @@ class Operation implements JsonSerializable
 
     /**
      * Gets httpMethod as UPPERCASE string
+     *
      * @return string
      */
     public function getHttpMethod(): string
@@ -102,17 +133,18 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param string $httpMethod
-     * @return Operation
+     * @param string $httpMethod Http method i.e. PUT, POST, PATCH, GET, DELETE
+     * @return $this
      */
-    public function setHttpMethod(string $httpMethod): Operation
+    public function setHttpMethod(string $httpMethod)
     {
         $httpMethod = strtoupper($httpMethod);
-        if (!in_array($httpMethod, ['GET','PUT', 'POST', 'PATCH', 'DELETE'])) {
+        if (!in_array($httpMethod, ['GET','PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'])) {
             throw new InvalidArgumentException("Invalid HTTP METHOD: $httpMethod");
         }
 
         $this->httpMethod = $httpMethod;
+
         return $this;
     }
 
@@ -125,12 +157,13 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param array $tags
-     * @return Operation
+     * @param string[] $tags An array of operation tags
+     * @return $this
      */
-    public function setTags(array $tags): Operation
+    public function setTags(array $tags)
     {
         $this->tags = $tags;
+
         return $this;
     }
 
@@ -143,12 +176,13 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param string $operationId
-     * @return Operation
+     * @param string $operationId OpenAPI operationId
+     * @return $this
      */
-    public function setOperationId(string $operationId): Operation
+    public function setOperationId(string $operationId)
     {
         $this->operationId = $operationId;
+
         return $this;
     }
 
@@ -161,45 +195,48 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param array $parameters
-     * @return Operation
+     * @param \SwaggerBake\Lib\OpenApi\Parameter[] $parameters Array of Parameter objects
+     * @return $this
      */
-    public function setParameters(array $parameters): Operation
+    public function setParameters(array $parameters)
     {
         $this->parameters = $parameters;
+
         return $this;
     }
 
     /**
-     * @param Parameter $parameter
-     * @return Operation
+     * @param \SwaggerBake\Lib\OpenApi\Parameter $parameter Parameter
+     * @return $this
      */
-    public function pushParameter(Parameter $parameter): Operation
+    public function pushParameter(Parameter $parameter)
     {
         $this->parameters[] = $parameter;
+
         return $this;
     }
 
     /**
-     * @return RequestBody|null
+     * @return \SwaggerBake\Lib\OpenApi\RequestBody|null
      */
-    public function getRequestBody() : ?RequestBody
+    public function getRequestBody(): ?RequestBody
     {
         return $this->requestBody;
     }
 
     /**
-     * @param RequestBody $requestBody
-     * @return Operation
+     * @param \SwaggerBake\Lib\OpenApi\RequestBody $requestBody RequestBody
+     * @return $this
      */
-    public function setRequestBody(RequestBody $requestBody) : Operation
+    public function setRequestBody(RequestBody $requestBody)
     {
         $this->requestBody = $requestBody;
+
         return $this;
     }
 
     /**
-     * @return Response[]
+     * @return \SwaggerBake\Lib\OpenApi\Response[]
      */
     public function getResponses(): array
     {
@@ -207,29 +244,30 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param string $code
-     * @return Response|null
+     * @param string $code Http status code
+     * @return \SwaggerBake\Lib\OpenApi\Response|null
      */
-    public function getResponseByCode(string $code) : ?Response
+    public function getResponseByCode(string $code): ?Response
     {
-        return isset($this->responses[$code]) ? $this->responses[$code] : null;
+        return $this->responses[$code] ?? null;
     }
 
     /**
-     * @param array $array
-     * @return Operation
+     * @param \SwaggerBake\Lib\OpenApi\Response[] $array Array of Response objects
+     * @return $this
      */
-    public function setResponses(array $array) : Operation
+    public function setResponses(array $array)
     {
         $this->responses = $array;
+
         return $this;
     }
 
     /**
-     * @param Response $response
-     * @return Operation
+     * @param \SwaggerBake\Lib\OpenApi\Response $response Response
+     * @return $this
      */
-    public function pushResponse(Response $response): Operation
+    public function pushResponse(Response $response)
     {
         $code = $response->getCode();
         $existingResponse = $this->getResponseByCode($response->getCode());
@@ -237,9 +275,11 @@ class Operation implements JsonSerializable
             $content = $existingResponse->getContent() + $response->getContent();
             $existingResponse->setContent($content);
             $this->responses[$code] = $existingResponse;
+
             return $this;
         }
         $this->responses[$code] = $response;
+
         return $this;
     }
 
@@ -252,25 +292,27 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param PathSecurity[] $pathSecurities
-     * @return Operation
+     * @param \SwaggerBake\Lib\OpenApi\PathSecurity[] $pathSecurities Array of PathSecurity
+     * @return $this
      */
-    public function setSecurity(array $pathSecurities): Operation
+    public function setSecurity(array $pathSecurities)
     {
         $this->security = [];
         foreach ($pathSecurities as $security) {
             $this->pushSecurity($security);
         }
+
         return $this;
     }
 
     /**
-     * @param PathSecurity $security
-     * @return Operation
+     * @param \SwaggerBake\Lib\OpenApi\PathSecurity $security PathSecurity
+     * @return $this
      */
-    public function pushSecurity(PathSecurity $security): Operation
+    public function pushSecurity(PathSecurity $security)
     {
         $this->security[$security->getName()] = $security;
+
         return $this;
     }
 
@@ -283,30 +325,32 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param bool $deprecated
-     * @return Operation
+     * @param bool $deprecated Is deprecated?
+     * @return $this
      */
-    public function setDeprecated(bool $deprecated): Operation
+    public function setDeprecated(bool $deprecated)
     {
         $this->deprecated = $deprecated;
+
         return $this;
     }
 
     /**
-     * @return OperationExternalDoc
+     * @return \SwaggerBake\Lib\OpenApi\OperationExternalDoc
      */
-    public function getExternalDocs() : OperationExternalDoc
+    public function getExternalDocs(): OperationExternalDoc
     {
         return $this->externalDocs;
     }
 
     /**
-     * @param OperationExternalDoc $externalDoc
-     * @return Operation
+     * @param \SwaggerBake\Lib\OpenApi\OperationExternalDoc $externalDoc OperationExternalDoc
+     * @return $this
      */
-    public function setExternalDocs(OperationExternalDoc $externalDoc) : Operation
+    public function setExternalDocs(OperationExternalDoc $externalDoc)
     {
         $this->externalDocs = $externalDoc;
+
         return $this;
     }
 
@@ -319,12 +363,13 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param string $summary
-     * @return Operation
+     * @param string $summary Summary
+     * @return $this
      */
-    public function setSummary(string $summary): Operation
+    public function setSummary(string $summary)
     {
         $this->summary = $summary;
+
         return $this;
     }
 
@@ -337,12 +382,13 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param string $description
-     * @return Operation
+     * @param string $description Description
+     * @return $this
      */
-    public function setDescription(string $description): Operation
+    public function setDescription(string $description)
     {
         $this->description = $description;
+
         return $this;
     }
 }

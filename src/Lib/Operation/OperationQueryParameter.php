@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
@@ -13,16 +14,19 @@ use SwaggerBake\Lib\OpenApi\Schema;
 
 /**
  * Class OperationQueryParameter
+ *
  * @package SwaggerBake\Lib\Operation
  */
 class OperationQueryParameter
 {
     /**
-     * @param Operation $operation
-     * @param array $annotations
-     * @return Operation
+     * Adds query parameters to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param array $annotations Array of annotation objects
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    public function getOperationWithQueryParameters(Operation $operation, array $annotations) : Operation
+    public function getOperationWithQueryParameters(Operation $operation, array $annotations): Operation
     {
         if ($operation->getHttpMethod() != 'GET') {
             return $operation;
@@ -40,11 +44,14 @@ class OperationQueryParameter
     }
 
     /**
-     * @param Operation $operation
-     * @param array $annotations
-     * @return Operation
+     * Adds CakePHP Paginator query parameters to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param array $annotations Array of annotation objects
+     * @see https://book.cakephp.org/4/en/controllers/components/pagination.html
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    private function withSwagPaginator(Operation $operation, array $annotations) : Operation
+    private function withSwagPaginator(Operation $operation, array $annotations): Operation
     {
         $swagPaginator = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagPaginator;
@@ -60,22 +67,30 @@ class OperationQueryParameter
             ->setRequired(false)
             ->setIn('query');
 
-        $params = ['page' => 'integer', 'limit' => 'integer', 'sort' => 'string', 'direction' => 'string'];
-        foreach ($params as $name => $type) {
-            $operation->pushParameter(
-                (clone $parameter)->setName($name)->setSchema((new Schema())->setType($type))
-            );
+        $params = [
+            'page' => ['type' => 'integer'],
+            'limit' => ['type' => 'integer'],
+            'sort' => ['type' => 'string'],
+            'direction' => ['type' => 'string', 'enum' => ['asc','desc']],
+        ];
+
+        foreach ($params as $name => $param) {
+            $schema = (new Schema())->setType($param['type']);
+            $schema->setEnum($param['enum'] ?? []);
+            $operation->pushParameter((clone $parameter)->setName($name)->setSchema($schema));
         }
 
         return $operation;
     }
 
     /**
-     * @param Operation $operation
-     * @param array $annotations
-     * @return Operation
+     * Adds query parameters from SwagPaginator to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param array $annotations An array of annotation objects
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    private function withSwagQuery(Operation $operation, array $annotations) : Operation
+    private function withSwagQuery(Operation $operation, array $annotations): Operation
     {
         $swagQueries = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagQuery;
@@ -90,12 +105,14 @@ class OperationQueryParameter
     }
 
     /**
-     * @param Operation $operation
-     * @param array $annotations
-     * @return Operation
+     * Adds query parameters from SwagDto to the Operation
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param array $annotations An array of annotation objects
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      * @throws \ReflectionException
      */
-    private function withSwagDto(Operation $operation, array $annotations) : Operation
+    private function withSwagDto(Operation $operation, array $annotations): Operation
     {
         $swagDtos = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagDto;

@@ -27,7 +27,7 @@ class OperationFromRouteFactoryTest extends TestCase
         $router::scope('/api', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => 'index'
+                'only' => ['index','update']
             ]);
         });
         $this->router = $router;
@@ -58,11 +58,28 @@ class OperationFromRouteFactoryTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = reset($routes);
 
-        $operation = (new OperationFromRouteFactory($swagger))->create($route, 'GET', null);
+        $operation = (new OperationFromRouteFactory($swagger))->create($routes['employees:index'], 'GET', null);
 
         $this->assertInstanceOf(Operation::class, $operation);
         $this->assertEquals('GET', $operation->getHttpMethod());
-        $this->assertEquals('employees:index', $operation->getOperationId());
+        $this->assertEquals('employees:index:get', $operation->getOperationId());
         $this->assertEquals('CustomTag', $operation->getTags()[1]);
+    }
+
+    /**
+     * Tests `@SwagOperation(showPut=true)`
+     */
+    public function testShowPut()
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $swagger = (new SwaggerFactory($config))->create();
+        $cakeRoute = new CakeRoute($this->router, $config);
+
+        $routes = $cakeRoute->getRoutes();
+        $operation = (new OperationFromRouteFactory($swagger))->create($routes['employees:edit'], 'PUT', null);
+
+        $this->assertInstanceOf(Operation::class, $operation);
+        $this->assertEquals('PUT', $operation->getHttpMethod());
+        $this->assertEquals('employees:edit:put', $operation->getOperationId());
     }
 }

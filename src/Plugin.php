@@ -13,16 +13,22 @@ use SwaggerBake\Lib\ExtensionLoader;
 
 /**
  * Class Plugin
+ *
  * @package SwaggerBake
  */
 class Plugin extends BasePlugin
 {
-    public function bootstrap(PluginApplicationInterface $app) : void
+    /**
+     * @param \Cake\Core\PluginApplicationInterface $app PluginApplicationInterface
+     * @return void
+     */
+    public function bootstrap(PluginApplicationInterface $app): void
     {
         if (file_exists(CONFIG . 'swagger_bake.php')) {
             Configure::load('swagger_bake', 'default');
             AnnotationLoader::load();
             ExtensionLoader::load();
+
             return;
         }
 
@@ -31,6 +37,10 @@ class Plugin extends BasePlugin
         }
     }
 
+    /**
+     * @param \Cake\Console\CommandCollection $commands CommandCollection
+     * @return \Cake\Console\CommandCollection
+     */
     public function console(CommandCollection $commands): CommandCollection
     {
         $commands->add('swagger routes', Commands\RouteCommand::class);

@@ -1,16 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
-use phpDocumentor\Reflection\DocBlock;
-use ReflectionClass;
-use ReflectionException;
-use SwaggerBake\Lib\Annotation\SwagForm;
 use SwaggerBake\Lib\Annotation\SwagDto;
+use SwaggerBake\Lib\Annotation\SwagForm;
 use SwaggerBake\Lib\Annotation\SwagRequestBody;
 use SwaggerBake\Lib\Annotation\SwagRequestBodyContent;
-use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -18,54 +14,73 @@ use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\OpenApi\Xml;
-use SwaggerBake\Lib\Utility\DocBlockUtility;
+use SwaggerBake\Lib\Swagger;
 
 /**
  * Class OperationRequestBody
+ *
  * @package SwaggerBake\Lib\Operation
  */
 class OperationRequestBody
 {
-    /** @var Configuration  */
-    private $config;
+    /**
+     * @var \SwaggerBake\Lib\Swagger
+     */
+    private $swagger;
 
-    /** @var Operation  */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Operation
+     */
     private $operation;
 
-    /** @var DocBlock  */
-    private $doc;
-
-    /** @var RouteDecorator  */
+    /**
+     * @var \SwaggerBake\Lib\Decorator\RouteDecorator
+     */
     private $route;
 
-    /** @var array  */
+    /**
+     * @var array
+     */
     private $annotations;
 
-    /** @var Schema|null  */
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Schema|null
+     */
     private $schema;
 
+    /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
+    private $config;
+
+    /**
+     * @param \SwaggerBake\Lib\Swagger $swagger Swagger
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
+     * @param array $annotations Array of annotation objects
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema
+     */
     public function __construct(
-        Configuration $config,
+        Swagger $swagger,
         Operation $operation,
-        DocBlock $doc,
         array $annotations,
         RouteDecorator $route,
         ?Schema $schema
     ) {
-        $this->config = $config;
+        $this->swagger = $swagger;
         $this->operation = $operation;
-        $this->doc = $doc;
         $this->annotations = $annotations;
         $this->route = $route;
         $this->schema = $schema;
+        $this->config = $swagger->getConfig();
     }
 
     /**
      * Gets an Operation with RequestBody
      *
-     * @return Operation
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    public function getOperationWithRequestBody() : Operation
+    public function getOperationWithRequestBody(): Operation
     {
         if (!in_array($this->operation->getHttpMethod(), ['POST','PATCH','PUT'])) {
             return $this->operation;
@@ -85,7 +100,7 @@ class OperationRequestBody
      *
      * @return void
      */
-    private function assignSwagRequestBodyAnnotation() : void
+    private function assignSwagRequestBodyAnnotation(): void
     {
         $swagRequestBodies = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagRequestBody;
@@ -101,8 +116,7 @@ class OperationRequestBody
 
         $requestBody
             ->setDescription($swagRequestBody->description)
-            ->setRequired($swagRequestBody->required)
-        ;
+            ->setRequired($swagRequestBody->required);
 
         $this->operation->setRequestBody($requestBody);
     }
@@ -112,7 +126,7 @@ class OperationRequestBody
      *
      * @return void
      */
-    private function assignSwagRequestBodyContentAnnotations() : void
+    private function assignSwagRequestBodyContentAnnotations(): void
     {
         $swagRequestBodyContents = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagRequestBodyContent;
@@ -126,11 +140,30 @@ class OperationRequestBody
 
         $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
 
-        $requestBody->pushContent(
-            (new Content())
-                ->setMimeType($swagRequestBodyContent->mimeType)
-                ->setSchema($swagRequestBodyContent->refEntity)
-        );
+        $mimeTypes = $this->config->getRequestAccepts();
+        if (!empty($swagRequestBodyContent->mimeTypes)) {
+            $mimeTypes = $swagRequestBodyContent->mimeTypes;
+        }
+
+        if (!empty($swagRequestBodyContent->refEntity)) {
+            $pieces = explode('/', $swagRequestBodyContent->refEntity);
+            $entity = end($pieces);
+            $schema = $this->getSchemaWithWritablePropertiesOnly(
+                $this->swagger->getSchemaByName($entity)
+            );
+        }
+
+        foreach ($mimeTypes as $mimeType) {
+            $content = (new Content())->setMimeType($mimeType);
+
+            if (isset($schema)) {
+                $content->setSchema($schema);
+            } else {
+                $content->setSchema($swagRequestBodyContent->refEntity);
+            }
+
+            $requestBody->pushContent($content);
+        }
 
         $this->operation->setRequestBody($requestBody);
     }
@@ -140,7 +173,7 @@ class OperationRequestBody
      *
      * @return void
      */
-    private function assignSwagFormAnnotations() : void
+    private function assignSwagFormAnnotations(): void
     {
         $swagForms = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagForm;
@@ -177,10 +210,11 @@ class OperationRequestBody
 
     /**
      * Adds @SwagDto annotations to the Operations Request Body
+     *
      * @return void
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
-    private function assignSwagDto() : void
+    private function assignSwagDto(): void
     {
         $swagDtos = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagDto;
@@ -219,16 +253,20 @@ class OperationRequestBody
      *
      * @return void
      */
-    private function assignSchema() : void
+    private function assignSchema(): void
     {
-        if (!$this->schema) {
+        $ignoreSchemas = array_filter($this->annotations, function ($annotation) {
+            return $annotation instanceof SwagRequestBody && $annotation->ignoreCakeSchema === true;
+        });
+
+        if (!empty($ignoreSchemas) || !$this->schema) {
             return;
         }
 
         $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
+        $requestBody->setRequired($this->isCrudAction());
 
         foreach ($this->config->getRequestAccepts() as $mimeType) {
-
             if ($mimeType === 'application/x-www-form-urlencoded') {
                 $requestBody = $this->getRequestBodyWithFormSchema($requestBody);
                 continue;
@@ -238,19 +276,7 @@ class OperationRequestBody
                 continue;
             }
 
-            $schema = clone $this->schema;
-            $schemaProperties = array_filter($schema->getProperties(), function ($property) {
-                return $property->isReadOnly() === false;
-            });
-
-            foreach ($schemaProperties as $schemaProperty) {
-                if ($this->route->getAction() == 'edit' && $schemaProperty->isRequirePresenceOnUpdate()) {
-                    $schemaProperty->setRequired(true);
-                } elseif ($this->route->getAction() == 'add' && $schemaProperty->isRequirePresenceOnCreate()) {
-                    $schemaProperty->setRequired(true);
-                }
-                $schema->pushProperty($schemaProperty);
-            }
+            $schema = $this->getSchemaWithWritablePropertiesOnly($this->schema);
 
             if ($mimeType == 'application/xml') {
                 $schema->setXml(
@@ -271,19 +297,11 @@ class OperationRequestBody
     /**
      * Adds Schema to the Operations Request Body as application/x-www-form-urlencoded
      *
-     * @param RequestBody $requestBody
-     * @return RequestBody
+     * @param \SwaggerBake\Lib\OpenApi\RequestBody $requestBody RequestBody
+     * @return \SwaggerBake\Lib\OpenApi\RequestBody
      */
-    private function getRequestBodyWithFormSchema(RequestBody $requestBody) : RequestBody
+    private function getRequestBodyWithFormSchema(RequestBody $requestBody): RequestBody
     {
-        $ignoreSchemas = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagRequestBody && $annotation->ignoreCakeSchema === true;
-        });
-
-        if (!empty($ignoreSchemas) || !isset($this->schema)) {
-            return $requestBody;
-        }
-
         $properties = [];
         if ($requestBody->getContentByType('application/x-www-form-urlencoded')) {
             $properties = $requestBody
@@ -292,20 +310,9 @@ class OperationRequestBody
                 ->getProperties();
         }
 
-        $schema = clone $this->schema;
-        $schemaProperties = array_filter($schema->getProperties(), function ($property) {
-            return $property->isReadOnly() === false;
-        });
+        $schema = $this->getSchemaWithWritablePropertiesOnly($this->schema);
 
-        foreach ($schemaProperties as $schemaProperty) {
-            if ($this->route->getAction() == 'edit' && $schemaProperty->isRequirePresenceOnUpdate()) {
-                $schemaProperty->setRequired(true);
-            } elseif ($this->route->getAction() == 'add' && $schemaProperty->isRequirePresenceOnCreate()) {
-                $schemaProperty->setRequired(true);
-            }
-        }
-
-        $properties = array_merge($schemaProperties, $properties);
+        $properties = array_merge($schema->getProperties(), $properties);
 
         $schema->setProperties($properties);
 
@@ -316,5 +323,47 @@ class OperationRequestBody
         );
 
         return $requestBody;
+    }
+
+    /**
+     * Returns new Schema instance with only writable properties
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
+     * @return \SwaggerBake\Lib\OpenApi\Schema
+     */
+    private function getSchemaWithWritablePropertiesOnly(Schema $schema): Schema
+    {
+        $newSchema = clone $schema;
+        $newSchema->setProperties([]);
+
+        $schemaProperties = array_filter($schema->getProperties(), function ($property) {
+            return $property->isReadOnly() === false;
+        });
+
+        $httpMethods = $this->route->getMethods();
+
+        foreach ($schemaProperties as $schemaProperty) {
+            $requireOnUpdate = $schemaProperty->isRequirePresenceOnUpdate();
+            $requireOnCreate = $schemaProperty->isRequirePresenceOnCreate();
+
+            if (count(array_intersect($httpMethods, ['PUT','PATCH'])) > 1 && $requireOnUpdate) {
+                $schemaProperty->setRequired(true);
+            } elseif (count(array_intersect($httpMethods, ['POST'])) > 1 && $requireOnCreate) {
+                $schemaProperty->setRequired(true);
+            }
+            $newSchema->pushProperty($schemaProperty);
+        }
+
+        return $newSchema;
+    }
+
+    /**
+     * Does the route represent a CRUD action (add, edit, view, delete, index)?
+     *
+     * @return bool
+     */
+    private function isCrudAction(): bool
+    {
+        return in_array($this->route->getAction(), ['add','edit','view','delete','index']);
     }
 }
