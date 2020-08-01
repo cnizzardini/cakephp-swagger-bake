@@ -23,17 +23,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("example",  type = "mixed"),
  * })
  *
- * Example: Define a string field that will be exploded on
- *
- * `@Swag\SwagQuery(name="field", type="string", explode=true, description="Explodes on commas")`
- *
- * ```yaml
- *         field:
- *           description: Explodes on commas
- *           type: string
- *           explode: true
- * ```
- *
  * Read OpenAPI specification for exact usage of the attributes:
  * @see https://swagger.io/specification/ search for "Parameter Object"
  * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"

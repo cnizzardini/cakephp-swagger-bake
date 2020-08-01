@@ -21,20 +21,6 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
  * @Attribute("example",  type = "mixed"),
  * })
  *
- * Example: Defining a path parameter
- *
- * `@Swag\SwagPathParameter(name="id", type="integer", format="int64", description="ID")`
- *
- * ```yaml
- *         parameters:
- *           - name: id
- *             required: true
- *             schema:
- *               description: ID
- *               type: integer
- *               format: int64
- * ```
- *
  * Read OpenAPI specification for exact usage of the attributes:
  * @see https://swagger.io/specification/ search for "Parameter Object"
  * @see https://swagger.io/docs/specification/describing-parameters/#path-parameters

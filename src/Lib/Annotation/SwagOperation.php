@@ -14,29 +14,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("showPut", type="bool")
  * })
  *
- * Example: Hide an operation from OpenAPI output and Swagger/Redoc views
- *
- * `@Swag\SwagOperation(isVisible=false)`
- *
- * Example: Change default tag names of an operation. By default the controllers name is used as the tag.
- *
- * `@Swag\SwagOperation(tagNames={"Custom","Tags"})`
- *
- * ```yaml
- *   get:
- *     tags:
- *       - Custom
- *       - Tags
- * ```
- *
- * Example: Show HTTP PUT operations on controller::edit() actions. By default on PATCH is displayed.
- *
- * `@Swag\SwagOperation(showPut=true)`
- *
- * ```yaml
- *   put:
- *     summary: PUT method
- * ```
  * @see https://swagger.io/docs/specification/paths-and-operations/
  */
 class SwagOperation

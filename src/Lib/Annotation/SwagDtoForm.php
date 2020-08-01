@@ -34,7 +34,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("enum", type = "array"),
  * })
  *
- *
  * Read OpenAPI specification for exact usage of the attributes:
  * @see https://swagger.io/specification/ search for "Schema Object"
  * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"

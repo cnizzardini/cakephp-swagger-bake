@@ -22,64 +22,6 @@ use Cake\Log\Log;
  * @Attribute("schemaItems", type = "array")
  * })
  *
- * Example: Defining a $ref schema and summary
- *
- * `@Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="My summary")`
- *
- * ```yaml
- *      responses:
- *        '200':                                    # note: default is 200
- *          content:
- *            application/json:                     # note: uses your default mime type since none was specified
- *              schema:
- *                description: My summary
- *                type: object                      # note: `object` is default when using refEntity
- *                $ref: '#/components/schemas/Actor'
- * ```
- *
- * Example: Defining an array of objects schema
- *
- * `@Swag\SwagResponseSchema(schemaItems={"$ref"="#/components/schemas/Film"})`
- *
- * ```yaml
- *      responses:
- *        '200':
- *          content:
- *            application/json:
- *              schema:
- *                type: array                       # note: `array` is default when using schemaItems
- *                items:
- *                  $ref: '#/components/schemas/Actor'
- * ```
- *
- * Example: Defining an HTTP 400-410 exception schema in XML
- *
- * `@Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", mimeTypes={"application/xml"}, statusCode="40x")`
- *
- * ```yaml
- *      responses:
- *        '40x':
- *          content:
- *            application/xml:
- *              schema:
- *                type: object
- *                items:
- *                  $ref: '#/components/schemas/Exception'
- * ```
- *
- * Example: Defining a `text/plain` response with `date-time` format.
- *
- * `@Swag\SwagResponseSchema(mimeTypes={"text/plain"}, schemaFormat="date-time")`
- *
- * ```yaml
- *      responses:
- *        '200':
- *          content:
- *            text/plain:
- *              schema:
- *                type: string                      # note: `string` is default when using `text/plain` mime type
- *                format: date-time
- * ```
  * @see https://swagger.io/docs/specification/describing-responses/
  * @see https://swagger.io/specification/
  * @todo remove httpCode in future version

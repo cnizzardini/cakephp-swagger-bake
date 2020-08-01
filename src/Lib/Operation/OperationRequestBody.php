@@ -255,7 +255,11 @@ class OperationRequestBody
      */
     private function assignSchema(): void
     {
-        if (!$this->schema) {
+        $ignoreSchemas = array_filter($this->annotations, function ($annotation) {
+            return $annotation instanceof SwagRequestBody && $annotation->ignoreCakeSchema === true;
+        });
+
+        if (!empty($ignoreSchemas) || !$this->schema) {
             return;
         }
 
@@ -297,14 +301,6 @@ class OperationRequestBody
      */
     private function getRequestBodyWithFormSchema(RequestBody $requestBody): RequestBody
     {
-        $ignoreSchemas = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagRequestBody && $annotation->ignoreCakeSchema === true;
-        });
-
-        if (!empty($ignoreSchemas) || !isset($this->schema)) {
-            return $requestBody;
-        }
-
         $properties = [];
         if ($requestBody->getContentByType('application/x-www-form-urlencoded')) {
             $properties = $requestBody
