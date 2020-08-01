@@ -123,6 +123,7 @@ class SwagResponseSchema
         }
 
         if (isset($values['mimeType'])) {
+            $values['mimeTypes'] == $values['mimeTypes'] ?? [];
             array_push($values['mimeTypes'], $values['mimeType']);
             $msg = 'SwaggerBake: `mimeType` is deprecated, use `mimeTypes` in SwagResponseSchema';
             Log::warning($msg);
