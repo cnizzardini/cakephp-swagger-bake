@@ -99,6 +99,14 @@ class Parameter implements JsonSerializable
             }
         }
 
+        // reduce JSON clutter if these values are equal to their defaults
+        $defaults = ['deprecated' => false, 'allowEmptyValue' => false, 'explode' => false, 'allowReserved' => false];
+        foreach ($defaults as $name => $value) {
+            if ($this->{$name} === $value) {
+                unset($vars[$name]);
+            }
+        }
+
         return $vars;
     }
 

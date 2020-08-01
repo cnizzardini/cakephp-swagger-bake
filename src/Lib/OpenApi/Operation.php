@@ -88,6 +88,9 @@ class Operation implements JsonSerializable
         if (empty($vars['externalDocs'])) {
             unset($vars['externalDocs']);
         }
+        if (empty($this->requestBody) || count($this->requestBody->getContent()) === 0) {
+            unset($vars['requestBody']);
+        }
 
         return $vars;
     }
