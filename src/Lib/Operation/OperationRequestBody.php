@@ -264,6 +264,7 @@ class OperationRequestBody
         }
 
         $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
+        $requestBody->setRequired($this->isCrudAction());
 
         foreach ($this->config->getRequestAccepts() as $mimeType) {
             if ($mimeType === 'application/x-www-form-urlencoded') {
@@ -354,5 +355,15 @@ class OperationRequestBody
         }
 
         return $newSchema;
+    }
+
+    /**
+     * Does the route represent a CRUD action (add, edit, view, delete, index)?
+     *
+     * @return bool
+     */
+    private function isCrudAction(): bool
+    {
+        return in_array($this->route->getAction(), ['add','edit','view','delete','index']);
     }
 }

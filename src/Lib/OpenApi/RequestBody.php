@@ -40,6 +40,12 @@ class RequestBody implements JsonSerializable
     {
         $vars = get_object_vars($this);
         unset($vars['ignoreCakeSchema']);
+        if ($this->required == false) {
+            unset($vars['required']);
+        }
+        if (empty($this->description)) {
+            unset($vars['description']);
+        }
 
         return $vars;
     }
