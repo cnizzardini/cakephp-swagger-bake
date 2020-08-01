@@ -25,7 +25,7 @@ See the [Extension README](src/Lib/Extension/README.md) for details on extension
 
 You can improve this documentation by submitting PRs.
 
-### :bookmark: `@SwagPaginator`
+### :bookmark: [`@SwagPaginator`](#swagpaginator)
 Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
 query parameters: 
 
