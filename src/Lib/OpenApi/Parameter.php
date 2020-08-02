@@ -15,6 +15,8 @@ use LogicException;
  */
 class Parameter implements JsonSerializable
 {
+    public const IN = ['query','cookie','header','path','body'];
+
     /**
      * @var string
      **/
@@ -144,7 +146,7 @@ class Parameter implements JsonSerializable
     public function setIn(string $in)
     {
         $in = strtolower($in);
-        if (!in_array($in, ['query','cookie','header','path','body'])) {
+        if (!in_array($in, self::IN)) {
             throw new InvalidArgumentException("Invalid type for in. Given $in");
         }
         $this->in = $in;

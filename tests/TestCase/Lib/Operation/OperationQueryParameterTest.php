@@ -2,37 +2,41 @@
 
 namespace SwaggerBake\Test\TestCase\Lib\Operation;
 
+use Cake\Controller\Controller;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagPaginator;
 use SwaggerBake\Lib\Annotation\SwagQuery;
 use SwaggerBake\Lib\OpenApi\Operation;
+use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\Operation\OperationQueryParameter;
 
 class OperationQueryParameterTest extends TestCase
 {
-    public function testGetOperationWithQueryParameters()
+    public function testSwagQueryParameters()
     {
-        $operation = (new OperationQueryParameter())
-            ->getOperationWithQueryParameters(
-                (new Operation())->setHttpMethod('GET'),
-                [
-                    new SwagQuery([
-                        'name' => 'testName',
-                        'type' => 'string',
-                        'description' => 'test desc',
-                        'required' => true,
-                        'enum' => ['one','two'],
-                        'allowReserved' => true,
-                        'allowEmptyValue' => true,
-                        'deprecated' => true,
-                        'format' => 'date-time',
-                        'example' => 'test example'
-                    ]),
-                ]
-            );
+        $operationQueryParam = new OperationQueryParameter(
+            (new Operation())->setHttpMethod('GET'),
+            [
+                new SwagQuery([
+                    'name' => 'testName',
+                    'type' => 'string',
+                    'description' => 'test desc',
+                    'required' => true,
+                    'enum' => ['one','two'],
+                    'allowReserved' => true,
+                    'allowEmptyValue' => true,
+                    'deprecated' => true,
+                    'format' => 'date-time',
+                    'example' => 'test example'
+                ]),
+            ],
+            new Controller()
+        );
 
-        $param = $operation->getParameters()[0];
+        $operation = $operationQueryParam->getOperationWithQueryParameters();
+
+        $param = $operation->getParameterByTypeAndName('query', 'testName');
         $this->assertEquals('testName', $param->getName());
         $this->assertEquals('test desc', $param->getDescription());
         $this->assertTrue($param->isAllowReserved());
@@ -46,36 +50,42 @@ class OperationQueryParameterTest extends TestCase
         $this->assertEquals('date-time', $schema->getFormat());
     }
 
-    public function testGetOperationWithAllAnnotations()
+    public function testSwagPaginatorAndSwagQueryAndSwagDto()
     {
-        $operation = (new OperationQueryParameter())
-            ->getOperationWithQueryParameters(
-                (new Operation())->setHttpMethod('GET'),
-                [
-                    new SwagPaginator(),
-                    new SwagQuery([
-                        'name' => 'test',
-                        'type' => 'string',
-                        'description' => '',
-                        'required' => false,
-                    ]),
-                    new SwagDto(['class' => '\SwaggerBakeTest\App\Dto\EmployeeData'])
-                ]
-            );
+        $operationQueryParam = new OperationQueryParameter(
+            (new Operation())->setHttpMethod('GET'),
+            [
+                new SwagPaginator([]),
+                new SwagQuery([
+                    'name' => 'test',
+                    'type' => 'string',
+                    'description' => '',
+                    'required' => false,
+                ]),
+                new SwagDto(['class' => '\SwaggerBakeTest\App\Dto\EmployeeData'])
+            ],
+            new Controller()
+        );
+
+        $operation = $operationQueryParam->getOperationWithQueryParameters();
 
         $parameters = $operation->getParameters();
         $this->assertCount(10, $parameters);
+    }
 
-        $param = reset($parameters);
-        $this->assertEquals('page', $param->getName());
-        $this->assertEquals('query', $param->getIn());
+    public function testSwagPaginatorSortEnum()
+    {
+        $enums = ['A','B'];
+        $operationQueryParam = new OperationQueryParameter(
+            (new Operation())->setHttpMethod('GET'),
+            [
+                new SwagPaginator(['sortEnum'=> $enums]),
+            ],
+            new Controller()
+        );
 
-        $param  = $parameters[4];
-        $this->assertEquals('test', $param->getName());
-        $this->assertEquals('query', $param->getIn());
-
-        $param = end($parameters);
-        $this->assertEquals('date', $param->getName());
-        $this->assertEquals('query', $param->getIn());
+        $operation = $operationQueryParam->getOperationWithQueryParameters();
+        $parameter = $operation->getParameterByTypeAndName('query', 'sort');
+        $this->assertEquals($enums, $parameter->getSchema()->getEnum());
     }
 }

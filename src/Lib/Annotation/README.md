@@ -38,17 +38,15 @@ You can improve this documentation by submitting PRs.
 
 ### @SwagPaginator
 Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
-query parameters: 
-
-- page
-- limit
-- sort
-- direction
+query parameters: page, limit, sort, and direction. When specify `@SwagPaginator` with no arguments, 
+Paginate.sortableFields will be used to populate this list by default. The actions associated Schema properties will be 
+used if no sortable fields were defined. You can override the defaults using the `sort` attribute. Otherwise, a simple 
+text input is rendered (`useSortTextField=true`). 
 
 ```php
 use SwaggerBake\Lib\Annotation as Swag;
 /**
- * @Swag\SwagPaginator
+ * @Swag\SwagPaginator(sort={"id","name"}, useSortTextInput=false)
  */
 public function index() {
     $employees = $this->paginate($this->Employees);
@@ -63,28 +61,26 @@ OpenAPI:
       parameters:
         - name: page
           in: query
-          required: false
           schema:
-            description: ''
             type: integer
         - name: limit
           in: query
-          required: false
           schema:
-            description: ''
             type: integer
         - name: sort
           in: query
-          required: false
           schema:
-            description: ''
             type: string
+            enum:
+              - id
+              - name
         - name: direction
           in: query
-          required: false
           schema:
-            description: ''
             type: string
+            enum: 
+              - asc
+              - desc
 ```
 
 ### @SwagSearch
@@ -413,10 +409,11 @@ see all supported properties and additional examples.
 ```php
 /**
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="Summary", statusCode="200")
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", mimeTypes={"application/xml"}, statusCode="40x")
  */
 public function view() {}
 ```
+
+OpenAPI:
 
 ```yaml
      responses:
@@ -427,6 +424,18 @@ public function view() {}
                description: My summary
                type: object                      # note: `object` is default when using refEntity
                $ref: '#/components/schemas/Actor'
+```
+
+Defining a single mimeType and 400-409 status code range:
+
+```php
+/**
+ * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", mimeTypes={"application/xml"}, statusCode="40x")
+ */
+```
+OpenAPI:
+
+```yaml
        '40x':
          content:
            application/xml:
@@ -434,6 +443,26 @@ public function view() {}
                type: object
                items:
                  $ref: '#/components/schemas/Exception'
+```
+
+Defining an array of objects:
+
+```php
+/**
+ * @Swag\SwagResponseSchema(schemaItems={"$ref"="#/components/schemas/Actor"})
+ */
+```
+
+OpenAPI:
+
+```yaml
+       '200':
+         content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 $ref: '#/components/schemas/Actor'
 ```
 
 ### @SwagPath
