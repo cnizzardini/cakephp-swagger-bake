@@ -91,6 +91,9 @@ class Operation implements JsonSerializable
         if (empty($this->requestBody) || count($this->requestBody->getContent()) === 0) {
             unset($vars['requestBody']);
         }
+        if (!empty($vars['parameters'])) {
+            $vars['parameters'] = array_values($vars['parameters']);
+        }
 
         return $vars;
     }
@@ -195,12 +198,36 @@ class Operation implements JsonSerializable
     }
 
     /**
+     * @param string $type where it is (i.e. query, header, path)
+     * @param string $name name of the parameter
+     * @return \SwaggerBake\Lib\OpenApi\Parameter
+     */
+    public function getParameterByTypeAndName($type, $name): Parameter
+    {
+        if (!in_array($type, Parameter::IN)) {
+            throw new InvalidArgumentException(
+                "Invalid parameter type `$type`, must be one: " . implode(', ', Parameter::IN)
+            );
+        }
+
+        $index = "$type:$name";
+
+        if (!isset($this->parameters[$index])) {
+            throw new InvalidArgumentException("Parameter $index not found");
+        }
+
+        return $this->parameters[$index];
+    }
+
+    /**
      * @param \SwaggerBake\Lib\OpenApi\Parameter[] $parameters Array of Parameter objects
      * @return $this
      */
     public function setParameters(array $parameters)
     {
-        $this->parameters = $parameters;
+        foreach ($parameters as $parameter) {
+            $this->pushParameter($parameter);
+        }
 
         return $this;
     }
@@ -211,7 +238,7 @@ class Operation implements JsonSerializable
      */
     public function pushParameter(Parameter $parameter)
     {
-        $this->parameters[] = $parameter;
+        $this->parameters[$parameter->getIn() . ':' . $parameter->getName()] = $parameter;
 
         return $this;
     }
