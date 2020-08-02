@@ -38,9 +38,10 @@ You can improve this documentation by submitting PRs.
 
 ### @SwagPaginator
 Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
-query parameters: page, limit, sort, and direction. Paginate.sortableFields will be used to populate this list by 
-default. The actions associated Schema properties will be used if no sortable fields were defined. You can override the 
-defaults using the `sort` attribute. Otherwise, a simple text input is rendered (`useSortTextField=true`). 
+query parameters: page, limit, sort, and direction. When specify `@SwagPaginator` with no arguments, 
+Paginate.sortableFields will be used to populate this list by default. The actions associated Schema properties will be 
+used if no sortable fields were defined. You can override the defaults using the `sort` attribute. Otherwise, a simple 
+text input is rendered (`useSortTextField=true`). 
 
 ```php
 use SwaggerBake\Lib\Annotation as Swag;
