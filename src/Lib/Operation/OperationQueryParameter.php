@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
+use Cake\Controller\Controller;
 use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagPaginator;
 use SwaggerBake\Lib\Annotation\SwagQuery;
@@ -20,46 +21,88 @@ use SwaggerBake\Lib\OpenApi\Schema;
 class OperationQueryParameter
 {
     /**
+     * @var \SwaggerBake\Lib\OpenApi\Operation
+     */
+    private $operation;
+
+    /**
+     * Array of annotations
+     *
+     * @var array
+     */
+    private $annotations;
+
+    /**
+     * @var \Cake\Controller\Controller
+     */
+    private $controller;
+
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Schema
+     */
+    private $schema;
+
+    /**
      * Adds query parameters to the Operation
      *
-     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param array $annotations Array of annotation objects
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation instance of the Operation
+     * @param array $annotations an array of annotation objects
+     * @param \Cake\Controller\Controller $controller instance of the Controller
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
      * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    public function getOperationWithQueryParameters(Operation $operation, array $annotations): Operation
+    public function __construct(
+        Operation $operation,
+        array $annotations,
+        Controller $controller,
+        ?Schema $schema = null
+    ) {
+        $this->operation = $operation;
+        $this->annotations = $annotations;
+        $this->controller = $controller;
+        $this->schema = $schema;
+    }
+
+    /**
+     * Adds query parameters to the Operation
+     *
+     * @return \SwaggerBake\Lib\OpenApi\Operation
+     */
+    public function getOperationWithQueryParameters(): Operation
     {
-        if ($operation->getHttpMethod() != 'GET') {
-            return $operation;
+        if ($this->operation->getHttpMethod() != 'GET') {
+            return $this->operation;
         }
 
-        $operation = $this->withSwagPaginator($operation, $annotations);
-        $operation = $this->withSwagQuery($operation, $annotations);
+        $this->definePagination();
+        $this->defineQueryParametersFromAnnotations();
+
         try {
-            $operation = $this->withSwagDto($operation, $annotations);
+            $this->defineDataTransferObjectFromAnnotations();
         } catch (\ReflectionException $e) {
             throw new SwaggerBakeRunTimeException('ReflectionException: ' . $e->getMessage());
         }
 
-        return $operation;
+        return $this->operation;
     }
 
     /**
      * Adds CakePHP Paginator query parameters to the Operation
      *
-     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param array $annotations Array of annotation objects
-     * @see https://book.cakephp.org/4/en/controllers/components/pagination.html
-     * @return \SwaggerBake\Lib\OpenApi\Operation
+     * @return void
      */
-    private function withSwagPaginator(Operation $operation, array $annotations): Operation
+    private function definePagination()
     {
-        $swagPaginator = array_filter($annotations, function ($annotation) {
+        $results = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagPaginator;
         });
 
-        if (empty($swagPaginator)) {
-            return $operation;
+        if (empty($results)) {
+            return;
         }
+
+        /** @var \SwaggerBake\Lib\Annotation\SwagPaginator $swagPaginator */
+        $swagPaginator = reset($results);
 
         $parameter = (new Parameter())
             ->setAllowEmptyValue(false)
@@ -77,63 +120,84 @@ class OperationQueryParameter
         foreach ($params as $name => $param) {
             $schema = (new Schema())->setType($param['type']);
             $schema->setEnum($param['enum'] ?? []);
-            $operation->pushParameter((clone $parameter)->setName($name)->setSchema($schema));
+            $this->operation->pushParameter((clone $parameter)->setName($name)->setSchema($schema));
         }
 
-        return $operation;
+        if ($swagPaginator->useSortTextInput === true) {
+            return;
+        }
+
+        $parameter = $this->operation->getParameterByTypeAndName('query', 'sort');
+
+        if (!empty($swagPaginator->sortEnum)) {
+            $schema = $parameter->getSchema()->setEnum($swagPaginator->sortEnum);
+            $this->operation->pushParameter($parameter->setSchema($schema));
+
+            return;
+        }
+
+        if (isset($this->controller->paginate['sortableFields'])) {
+            $schema = $parameter->getSchema()->setEnum($this->controller->paginate['sortableFields']);
+            $this->operation->pushParameter($parameter->setSchema($schema));
+
+            return;
+        }
+
+        if ($this->schema != null && is_array($this->schema->getProperties())) {
+            $enumList = [];
+            foreach ($this->schema->getProperties() as $property) {
+                $enumList[] = $property->getName();
+            }
+            $schema = $parameter->getSchema()->setEnum($enumList);
+            $this->operation->pushParameter($parameter->setSchema($schema));
+
+            return;
+        }
     }
 
     /**
      * Adds query parameters from SwagPaginator to the Operation
      *
-     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param array $annotations An array of annotation objects
-     * @return \SwaggerBake\Lib\OpenApi\Operation
+     * @return void
      */
-    private function withSwagQuery(Operation $operation, array $annotations): Operation
+    private function defineQueryParametersFromAnnotations(): void
     {
-        $swagQueries = array_filter($annotations, function ($annotation) {
+        $swagQueries = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagQuery;
         });
 
         $factory = new ParameterFromAnnotationFactory();
         foreach ($swagQueries as $annotation) {
-            $operation->pushParameter($factory->create($annotation));
+            $this->operation->pushParameter($factory->create($annotation));
         }
-
-        return $operation;
     }
 
     /**
      * Adds query parameters from SwagDto to the Operation
      *
-     * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param array $annotations An array of annotation objects
-     * @return \SwaggerBake\Lib\OpenApi\Operation
+     * @return void
      * @throws \ReflectionException
      */
-    private function withSwagDto(Operation $operation, array $annotations): Operation
+    private function defineDataTransferObjectFromAnnotations(): void
     {
-        $swagDtos = array_filter($annotations, function ($annotation) {
+        $swagDtos = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagDto;
         });
 
         if (empty($swagDtos)) {
-            return $operation;
+            return;
         }
 
         $dto = reset($swagDtos);
         $fqns = $dto->class;
 
         if (!class_exists($fqns)) {
-            return $operation;
+            return;
         }
 
         $parameters = (new DtoParser($fqns))->getParameters();
         foreach ($parameters as $parameter) {
-            $operation->pushParameter($parameter);
+            $this->operation->pushParameter($parameter);
         }
-
-        return $operation;
     }
 }

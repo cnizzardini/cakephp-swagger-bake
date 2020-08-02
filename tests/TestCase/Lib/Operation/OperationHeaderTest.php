@@ -29,7 +29,8 @@ class OperationHeaderTest extends TestCase
                 ]
             );
 
-        $param = $operation->getParameters()[0];
+        $param = $operation->getParameterByTypeAndName('header', 'X-HEADER');
+
         $this->assertEquals('X-HEADER', $param->getName());
         $this->assertEquals('header', $param->getIn());
         $this->assertEquals('test desc', $param->getDescription());

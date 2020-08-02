@@ -84,8 +84,8 @@ class OperationFromRouteFactory
         $operation = (new OperationSecurity($operation, $annotations, $route, new $fqns(), $this->swagger))
             ->getOperationWithSecurity();
 
-        $operation = (new OperationQueryParameter())
-            ->getOperationWithQueryParameters($operation, $annotations);
+        $operation = (new OperationQueryParameter($operation, $annotations, new $fqns(), $schema))
+            ->getOperationWithQueryParameters();
 
         $operation = (new OperationRequestBody($this->swagger, $operation, $annotations, $route, $schema))
             ->getOperationWithRequestBody();
