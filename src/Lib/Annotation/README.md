@@ -488,12 +488,14 @@ class Employee extends Entity {
 
 ### @SwagEntityAttribute
 Class level annotation for customizing Schema Attributes. [Read the comments](SwagEntityAttribute.php) 
-to see all supported OpenAPI properties.
+to see all supported OpenAPI properties. Note that the attribute does not have to exist in our entity. You can adhoc 
+attributes as needed or [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
 
 ```php
 /**
  * @Swag\SwagEntityAttribute(refEntity="example_one", type="string", minLength=5, maxLength=10)
  * @Swag\SwagEntityAttribute(refEntity="example_two", type="string", enum={"PG","R"}, required=true)
+ * @Swag\SwagEntityAttribute(refEntity="example_virtual_field", type="string", readOnly=true)
  */
 class Employee extends Entity {
 ```
@@ -511,4 +513,7 @@ OpenAPI:
             - PG
             - R
           required: true
+        example_virtual_field:
+          type: string
+          readOnly: true
 ```
