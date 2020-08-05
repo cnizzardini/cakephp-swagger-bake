@@ -493,9 +493,9 @@ attributes as needed or [Virtual Fields](https://book.cakephp.org/4/en/orm/entit
 
 ```php
 /**
- * @Swag\SwagEntityAttribute(refEntity="example_one", type="string", minLength=5, maxLength=10)
- * @Swag\SwagEntityAttribute(refEntity="example_two", type="string", enum={"PG","R"}, required=true)
- * @Swag\SwagEntityAttribute(refEntity="example_virtual_field", type="string", readOnly=true)
+ * @Swag\SwagEntityAttribute(name="example_one", type="string", minLength=5, maxLength=10)
+ * @Swag\SwagEntityAttribute(name="example_two", type="string", enum={"PG","R"}, required=true)
+ * @Swag\SwagEntityAttribute(name="example_virtual_field", type="string", readOnly=true)
  */
 class Employee extends Entity {
 ```
