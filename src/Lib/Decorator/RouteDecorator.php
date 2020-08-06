@@ -50,6 +50,13 @@ class RouteDecorator
     private $template;
 
     /**
+     * The controllers fully qualified namespace (e.g. \App\Controller\ActorsController)
+     *
+     * @var string|null
+     */
+    private $controllerFqn;
+
+    /**
      * @param \Cake\Routing\Route\Route $route Route
      */
     public function __construct(Route $route)
@@ -199,6 +206,25 @@ class RouteDecorator
     public function setTemplate(string $template)
     {
         $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getControllerFqn(): ?string
+    {
+        return $this->controllerFqn;
+    }
+
+    /**
+     * @param string $controllerFqn controller fqn
+     * @return $this
+     */
+    public function setControllerFqn(string $controllerFqn)
+    {
+        $this->controllerFqn = $controllerFqn;
 
         return $this;
     }

@@ -23,7 +23,7 @@ class EntityScanner
     /**
      * @var \SwaggerBake\Lib\RouteScanner
      */
-    private $cakeRoute;
+    private $routeScanner;
 
     /**
      * @var string
@@ -36,12 +36,12 @@ class EntityScanner
     private $config;
 
     /**
-     * @param \SwaggerBake\Lib\RouteScanner $cakeRoute CakeRoute
+     * @param \SwaggerBake\Lib\RouteScanner $routeScanner RouteScanner
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
-    public function __construct(RouteScanner $cakeRoute, Configuration $config)
+    public function __construct(RouteScanner $routeScanner, Configuration $config)
     {
-        $this->cakeRoute = $cakeRoute;
+        $this->routeScanner = $routeScanner;
         $this->prefix = $config->getPrefix();
         $this->config = $config;
     }
@@ -64,7 +64,7 @@ class EntityScanner
         $scanner = new TableScanner($connection);
         $tables = $scanner->listUnskipped();
         $collection = $connection->getSchemaCollection();
-        $routes = $this->cakeRoute->getRoutes();
+        $routes = $this->routeScanner->getRoutes();
         $tabularRoutes = $this->getTablesFromRoutes($routes);
 
         foreach ($tables as $tableName) {
@@ -97,9 +97,9 @@ class EntityScanner
     /**
      * @return \SwaggerBake\Lib\RouteScanner
      */
-    public function getCakeRoute(): RouteScanner
+    public function getRouteScanner(): RouteScanner
     {
-        return $this->cakeRoute;
+        return $this->routeScanner;
     }
 
     /**
