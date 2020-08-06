@@ -7,7 +7,7 @@ use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
-use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
@@ -84,7 +84,7 @@ class OperationResponseTest extends TestCase
         }
 
         if (empty($this->routes)) {
-            $cakeRoute = new CakeRoute($this->router, $this->config);
+            $cakeRoute = new RouteScanner($this->router, $this->config);
             $this->routes = $cakeRoute->getRoutes();
         }
     }

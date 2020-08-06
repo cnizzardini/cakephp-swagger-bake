@@ -16,7 +16,6 @@ use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Swagger;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
-use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
  * Class OperationFromRouteFactory
@@ -53,12 +52,11 @@ class OperationFromRouteFactory
         }
 
         $config = $this->swagger->getConfig();
+        $fqn = $route->getControllerFqn();
+        $controllerInstance = new $fqn();
 
-        $className = $route->getController() . 'Controller';
-        $fqns = NamespaceUtility::getControllerFullQualifiedNameSpace($className, $config);
-
-        $docBlock = $this->getDocBlock($fqns, $route->getAction());
-        $annotations = AnnotationUtility::getMethodAnnotations($fqns, $route->getAction());
+        $docBlock = $this->getDocBlock($route);
+        $annotations = AnnotationUtility::getMethodAnnotations($fqn, $route->getAction());
 
         if (!$this->isAllowed($route, $httpMethod, $annotations) || !$this->isVisible($annotations)) {
             return null;
@@ -81,10 +79,10 @@ class OperationFromRouteFactory
         $operation = (new OperationHeader())
             ->getOperationWithHeaders($operation, $annotations);
 
-        $operation = (new OperationSecurity($operation, $annotations, $route, new $fqns(), $this->swagger))
+        $operation = (new OperationSecurity($operation, $annotations, $route, $controllerInstance, $this->swagger))
             ->getOperationWithSecurity();
 
-        $operation = (new OperationQueryParameter($operation, $annotations, new $fqns(), $schema))
+        $operation = (new OperationQueryParameter($operation, $annotations, $controllerInstance, $schema))
             ->getOperationWithQueryParameters();
 
         $operation = (new OperationRequestBody($this->swagger, $operation, $annotations, $route, $schema))
@@ -109,20 +107,21 @@ class OperationFromRouteFactory
     /**
      * Gets an instance of DocBlock from the controllers method
      *
-     * @param string $fullyQualifiedNameSpace Fully qualified namespace of the controller
-     * @param string $methodName Controller action (method) name
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
      * @return \phpDocumentor\Reflection\DocBlock
      */
-    private function getDocBlock(string $fullyQualifiedNameSpace, string $methodName): DocBlock
+    private function getDocBlock(RouteDecorator $route): DocBlock
     {
         $emptyDocBlock = DocBlockFactory::createInstance()->create('/**  */');
 
-        if (!class_exists($fullyQualifiedNameSpace)) {
+        if (!class_exists($route->getControllerFqn())) {
             return $emptyDocBlock;
         }
 
+        $fqn = $route->getControllerFqn();
+
         try {
-            return DocBlockUtility::getMethodDocBlock(new $fullyQualifiedNameSpace(), $methodName) ?? $emptyDocBlock;
+            return DocBlockUtility::getMethodDocBlock(new $fqn(), $route->getAction()) ?? $emptyDocBlock;
         } catch (Exception $e) {
             return $emptyDocBlock;
         }

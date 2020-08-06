@@ -8,8 +8,8 @@ use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Routing\Router;
-use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**
@@ -63,8 +63,8 @@ class RouteCommand extends Command
         }
 
         $prefix = $config->getPrefix();
-        $cakeRoute = new CakeRoute(new Router(), $config);
-        $routes = $cakeRoute->getRoutes();
+        $routeScanner = new RouteScanner(new Router(), $config);
+        $routes = $routeScanner->getRoutes();
 
         if (empty($routes)) {
             $io->out();

@@ -16,16 +16,14 @@ use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
- * Class CakeModel
- *
- * @package SwaggerBake\Lib
+ * Finds all Entities associated with RESTful routes based on userland configurations
  */
-class CakeModel
+class EntityScanner
 {
     /**
-     * @var \SwaggerBake\Lib\CakeRoute
+     * @var \SwaggerBake\Lib\RouteScanner
      */
-    private $cakeRoute;
+    private $routeScanner;
 
     /**
      * @var string
@@ -38,12 +36,12 @@ class CakeModel
     private $config;
 
     /**
-     * @param \SwaggerBake\Lib\CakeRoute $cakeRoute CakeRoute
+     * @param \SwaggerBake\Lib\RouteScanner $routeScanner RouteScanner
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
-    public function __construct(CakeRoute $cakeRoute, Configuration $config)
+    public function __construct(RouteScanner $routeScanner, Configuration $config)
     {
-        $this->cakeRoute = $cakeRoute;
+        $this->routeScanner = $routeScanner;
         $this->prefix = $config->getPrefix();
         $this->config = $config;
     }
@@ -66,7 +64,7 @@ class CakeModel
         $scanner = new TableScanner($connection);
         $tables = $scanner->listUnskipped();
         $collection = $connection->getSchemaCollection();
-        $routes = $this->cakeRoute->getRoutes();
+        $routes = $this->routeScanner->getRoutes();
         $tabularRoutes = $this->getTablesFromRoutes($routes);
 
         foreach ($tables as $tableName) {
@@ -97,11 +95,11 @@ class CakeModel
     }
 
     /**
-     * @return \SwaggerBake\Lib\CakeRoute
+     * @return \SwaggerBake\Lib\RouteScanner
      */
-    public function getCakeRoute(): CakeRoute
+    public function getRouteScanner(): RouteScanner
     {
-        return $this->cakeRoute;
+        return $this->routeScanner;
     }
 
     /**

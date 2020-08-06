@@ -7,13 +7,12 @@ use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
 use InvalidArgumentException;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
+use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
- * Class CakeRoute
- *
- * @package SwaggerBake\Lib
+ * Finds all RESTful routes that can be included in OpenAPI output based on userland configurations
  */
-class CakeRoute
+class RouteScanner
 {
     /** @var string[]  */
     private const EXCLUDED_PLUGINS = [
@@ -36,40 +35,78 @@ class CakeRoute
     private $prefixLength = 0;
 
     /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
+    private $config;
+
+    /**
+     * Array of RouteDecorator instances
+     *
+     * @var \SwaggerBake\Lib\Decorator\RouteDecorator[]
+     */
+    private $routes;
+
+    /**
      * @param \Cake\Routing\Router $router Router
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
     public function __construct(Router $router, Configuration $config)
     {
         $this->router = $router;
+        $this->config = $config;
         $this->prefix = $config->getPrefix();
         $this->prefixLength = strlen($this->prefix);
+        $this->loadRoutes();
     }
 
     /**
-     * Gets an array of RouteDecorator objects
-     *
      * @return \SwaggerBake\Lib\Decorator\RouteDecorator[]
      */
     public function getRoutes(): array
     {
+        return $this->routes;
+    }
+
+    /**
+     * Reads RESTful routes from Cakes Router that matches the userland configured prefix
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function loadRoutes(): void
+    {
+        $namespaces = $this->config->getNamespaces();
+        $classes = NamespaceUtility::getClasses($namespaces['controllers'], 'Controller');
+
         if (empty($this->prefix) || !filter_var('http://foo.com' . $this->prefix, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException('route prefix is invalid');
         }
 
-        $filteredRoutes = array_filter($this->router::routes(), function ($route) {
-            return $this->isRouteAllowed($route);
-        });
-
         $routes = [];
 
-        foreach ($filteredRoutes as $route) {
-            $routes[$route->getName()] = new RouteDecorator($route);
+        foreach ($this->router::routes() as $route) {
+            if (!$this->isRouteAllowed($route)) {
+                continue;
+            }
+
+            $routeDecorator = new RouteDecorator($route);
+
+            $controller = $routeDecorator->getController();
+
+            $results = array_filter($classes, function ($fqn) use ($controller) {
+                return strstr($fqn, '\\' . $controller . 'Controller');
+            });
+
+            if (count($results) == 1) {
+                $routeDecorator->setControllerFqn('\\' . reset($results));
+            }
+
+            $routes[$route->getName()] = $routeDecorator;
         }
 
         ksort($routes);
 
-        return $routes;
+        $this->routes = $routes;
     }
 
     /**

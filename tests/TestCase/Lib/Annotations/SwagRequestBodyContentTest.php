@@ -7,8 +7,8 @@ use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\AnnotationLoader;
-use SwaggerBake\Lib\CakeModel;
-use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\EntityScanner;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
@@ -69,9 +69,9 @@ class SwagRequestBodyContentTest extends TestCase
 
     public function testSwagRequestBodyContent()
     {
-        $cakeRoute = new CakeRoute($this->router, $this->config);
+        $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
+        $swagger = new Swagger(new EntityScanner($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
         $operation = $arr['paths']['/swag-request-body-content/text-plain']['post'];
@@ -81,9 +81,9 @@ class SwagRequestBodyContentTest extends TestCase
 
     public function testMultipleMimeTypes()
     {
-        $cakeRoute = new CakeRoute($this->router, $this->config);
+        $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
+        $swagger = new Swagger(new EntityScanner($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
         $operation = $arr['paths']['/swag-request-body-content/multiple-mime-types']['post'];
@@ -93,9 +93,9 @@ class SwagRequestBodyContentTest extends TestCase
 
     public function testUseMimeTypesFromConfig()
     {
-        $cakeRoute = new CakeRoute($this->router, $this->config);
+        $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
+        $swagger = new Swagger(new EntityScanner($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
         $operation = $arr['paths']['/swag-request-body-content/use-config-defaults']['post'];

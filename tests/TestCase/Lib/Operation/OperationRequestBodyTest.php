@@ -9,8 +9,8 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagForm;
 use SwaggerBake\Lib\Annotation\SwagRequestBody;
-use SwaggerBake\Lib\CakeModel;
-use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\EntityScanner;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -59,8 +59,8 @@ class OperationRequestBodyTest extends TestCase
     public function testSwagFormGetOperationWithRequestBody()
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($this->router, $config);
-        $cakeModels = new CakeModel($cakeRoute, $config);
+        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeModels = new EntityScanner($cakeRoute, $config);
         $swagger = new Swagger($cakeModels);
 
         $routes = $cakeRoute->getRoutes();
@@ -91,8 +91,8 @@ class OperationRequestBodyTest extends TestCase
     public function testSwagDtoGetOperationWithRequestBody()
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($this->router, $config);
-        $cakeModels = new CakeModel($cakeRoute, $config);
+        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeModels = new EntityScanner($cakeRoute, $config);
         $swagger = new Swagger($cakeModels);
 
         $routes = $cakeRoute->getRoutes();
@@ -124,8 +124,8 @@ class OperationRequestBodyTest extends TestCase
     public function testSchemaGetOperationWithRequestBodyForm()
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($this->router, $config);
-        $cakeModels = new CakeModel($cakeRoute, $config);
+        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeModels = new EntityScanner($cakeRoute, $config);
         $swagger = new Swagger($cakeModels);
 
         $routes = $cakeRoute->getRoutes();
@@ -170,8 +170,8 @@ class OperationRequestBodyTest extends TestCase
     public function testIgnoreSchema()
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($this->router, $config);
-        $cakeModels = new CakeModel($cakeRoute, $config);
+        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeModels = new EntityScanner($cakeRoute, $config);
         $swagger = new Swagger($cakeModels);
 
         $routes = $cakeRoute->getRoutes();

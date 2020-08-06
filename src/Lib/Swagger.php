@@ -28,14 +28,14 @@ class Swagger
     private $array = [];
 
     /**
-     * @var \SwaggerBake\Lib\CakeModel
+     * @var \SwaggerBake\Lib\EntityScanner
      */
-    private $cakeModel;
+    private $entityScanner;
 
     /**
-     * @var \SwaggerBake\Lib\CakeRoute
+     * @var \SwaggerBake\Lib\RouteScanner
      */
-    private $cakeRoute;
+    private $routeScanner;
 
     /**
      * @var \SwaggerBake\Lib\Configuration
@@ -43,13 +43,13 @@ class Swagger
     private $config;
 
     /**
-     * @param \SwaggerBake\Lib\CakeModel $cakeModel CakeModel
+     * @param \SwaggerBake\Lib\EntityScanner $entityScanner EntityScanner
      */
-    public function __construct(CakeModel $cakeModel)
+    public function __construct(EntityScanner $entityScanner)
     {
-        $this->cakeModel = $cakeModel;
-        $this->cakeRoute = $cakeModel->getCakeRoute();
-        $this->config = $cakeModel->getConfig();
+        $this->entityScanner = $entityScanner;
+        $this->routeScanner = $entityScanner->getRouteScanner();
+        $this->config = $entityScanner->getConfig();
         $this->buildFromYml();
         $this->buildSchemasFromModels();
         $this->buildPathsFromRoutes();
@@ -186,7 +186,7 @@ class Swagger
     private function buildSchemasFromModels(): void
     {
         $schemaFactory = new SchemaFactory($this->config);
-        $entities = $this->cakeModel->getEntityDecorators();
+        $entities = $this->entityScanner->getEntityDecorators();
 
         foreach ($entities as $entity) {
             if ($this->getSchemaByName($entity->getName())) {
@@ -207,24 +207,21 @@ class Swagger
      */
     private function buildPathsFromRoutes(): void
     {
-        $routes = $this->cakeRoute->getRoutes();
+        $routes = $this->routeScanner->getRoutes();
         $operationFactory = new OperationFromRouteFactory($this);
 
         $ignorePaths = array_keys($this->array['paths']);
 
         foreach ($routes as $route) {
             $resource = $this->convertCakePathToOpenApiResource($route->getTemplate());
+
             if ($this->hasPathByResource($resource)) {
                 $path = $this->array['paths'][$resource];
             } else {
                 $path = (new PathFromRouteFactory($route, $this->config))->create();
             }
 
-            if (!$path instanceof Path) {
-                continue;
-            }
-
-            if (in_array($path->getResource(), $ignorePaths)) {
+            if (!$path instanceof Path || in_array($path->getResource(), $ignorePaths)) {
                 continue;
             }
 

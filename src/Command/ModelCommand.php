@@ -8,9 +8,9 @@ use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Routing\Router;
-use SwaggerBake\Lib\CakeModel;
-use SwaggerBake\Lib\CakeRoute;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\EntityScanner;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
@@ -60,9 +60,9 @@ class ModelCommand extends Command
             $config->set('prefix', $args->getOption('prefix'));
         }
 
-        $cakeRoute = new CakeRoute(new Router(), $config);
-        $cakeModel = new CakeModel($cakeRoute, $config);
-        $entities = $cakeModel->getEntityDecorators();
+        $routeScanner = new RouteScanner(new Router(), $config);
+        $entityScanner = new EntityScanner($routeScanner, $config);
+        $entities = $entityScanner->getEntityDecorators();
 
         if (empty($entities)) {
             $io->out();

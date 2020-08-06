@@ -7,8 +7,8 @@ use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\AnnotationLoader;
-use SwaggerBake\Lib\CakeModel;
-use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\EntityScanner;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
@@ -59,9 +59,9 @@ class SwagPathParameterTest extends TestCase
 
     public function testSwagQuery()
     {
-        $cakeRoute = new CakeRoute($this->router, $this->config);
+        $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new CakeModel($cakeRoute, $this->config));
+        $swagger = new Swagger(new EntityScanner($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
         $params = $arr['paths']['/operation-path/path-parameter/{id}']['get']['parameters'];

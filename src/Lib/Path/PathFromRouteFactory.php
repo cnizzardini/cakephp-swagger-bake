@@ -8,7 +8,6 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
-use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
  * Class PathFromRouteFactory
@@ -48,16 +47,15 @@ class PathFromRouteFactory
             return null;
         }
 
-        $controller = $this->route->getController() . 'Controller';
-        $fqns = NamespaceUtility::getControllerFullQualifiedNameSpace($controller, $this->config);
+        $fqn = $this->route->getControllerFqn();
 
-        if (is_null($fqns)) {
+        if (is_null($fqn)) {
             return null;
         }
 
         $path = (new Path())->setResource($this->getResourceName());
 
-        $swagPath = $this->getSwagPathAnnotation($fqns);
+        $swagPath = $this->getSwagPathAnnotation($fqn);
 
         if (is_null($swagPath)) {
             return $path;

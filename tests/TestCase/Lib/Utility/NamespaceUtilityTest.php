@@ -9,36 +9,9 @@ use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 class NamespaceUtilityTest extends TestCase
 {
-    public function testGetControllerFullQualifiedNameSpace()
+    public function testGetClasses()
     {
-        $fqns = NamespaceUtility::getControllerFullQualifiedNameSpace(
-            'DepartmentsController',
-            new Configuration([
-                'namespaces' => [
-                    'controllers' => ['\SwaggerBakeTest\App\\']
-                ]
-            ])
-        );
-        $this->assertEquals('\SwaggerBakeTest\App\Controller\DepartmentsController', $fqns);
-    }
-
-    public function testGetControllerFullQualifiedNameSpaceException()
-    {
-        $this->expectException(SwaggerBakeRunTimeException::class);
-        NamespaceUtility::getControllerFullQualifiedNameSpace('DepartmentsController', new Configuration());
-    }
-
-    public function testGetControllerFullQualifiedNameSpaceNull()
-    {
-        $fqns = NamespaceUtility::getControllerFullQualifiedNameSpace(
-            'NopeController',
-            new Configuration([
-                'namespaces' => [
-                    'tables' => ['\SwaggerBakeTest\App\\'],
-                ]
-            ])
-        );
-        $this->assertNull($fqns);
+        $this->assertNotEmpty(NamespaceUtility::getClasses(['\SwaggerBakeTest\App\\'],'Controller'));
     }
 
     public function testGetEntityFullyQualifiedNameSpace()

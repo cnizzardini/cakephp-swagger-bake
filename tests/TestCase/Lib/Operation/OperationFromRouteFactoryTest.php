@@ -5,7 +5,7 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -53,7 +53,7 @@ class OperationFromRouteFactoryTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
-        $cakeRoute = new CakeRoute($this->router, $config);
+        $cakeRoute = new RouteScanner($this->router, $config);
 
         $routes = $cakeRoute->getRoutes();
         $route = reset($routes);
@@ -73,7 +73,7 @@ class OperationFromRouteFactoryTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
-        $cakeRoute = new CakeRoute($this->router, $config);
+        $cakeRoute = new RouteScanner($this->router, $config);
 
         $routes = $cakeRoute->getRoutes();
         $operation = (new OperationFromRouteFactory($swagger))->create($routes['employees:edit'], 'PUT', null);
