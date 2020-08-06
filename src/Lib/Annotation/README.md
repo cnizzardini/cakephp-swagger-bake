@@ -38,10 +38,10 @@ You can improve this documentation by submitting PRs.
 
 ### @SwagPaginator
 Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
-query parameters: page, limit, sort, and direction. When specify `@SwagPaginator` with no arguments, 
-Paginate.sortableFields will be used to populate this list by default. The actions associated Schema properties will be 
-used if no sortable fields were defined. You can override the defaults using the `sort` attribute. Otherwise, a simple 
-text input is rendered (`useSortTextField=true`). 
+query parameters: page, limit, sort, and direction. When specified with no arguments, Paginate.sortableFields will be 
+used to populate sort options. If sortableFields is not defined the controller actions associated Schema properties will 
+be used. You can override the defaults using the `sort` attribute. Otherwise, a simple text input is rendered 
+(`useSortTextInput=true`). 
 
 ```php
 use SwaggerBake\Lib\Annotation as Swag;
@@ -488,8 +488,8 @@ class Employee extends Entity {
 
 ### @SwagEntityAttribute
 Class level annotation for customizing Schema Attributes. [Read the comments](SwagEntityAttribute.php) 
-to see all supported OpenAPI properties. Note that the attribute does not have to exist in our entity. You can adhoc 
-attributes as needed or [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
+to see all supported OpenAPI properties. Note that the attribute does not have to exist in your entity. You can add 
+adhoc attributes as needed or [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
 
 ```php
 /**
