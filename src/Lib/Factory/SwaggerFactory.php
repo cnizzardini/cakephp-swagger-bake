@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Router;
-use SwaggerBake\Lib\CakeModel;
-use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\EntityScanner;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Swagger;
@@ -26,20 +26,20 @@ class SwaggerFactory
     private $config;
 
     /**
-     * @var \SwaggerBake\Lib\CakeRoute
+     * @var \SwaggerBake\Lib\RouteScanner
      */
     private $cakeRoute;
 
     /**
      * @param \SwaggerBake\Lib\Configuration|null $config Configuration
-     * @param \SwaggerBake\Lib\CakeRoute|null $cakeRoute CakeRoute
+     * @param \SwaggerBake\Lib\RouteScanner|null $cakeRoute CakeRoute
      */
-    public function __construct(?Configuration $config = null, ?CakeRoute $cakeRoute = null)
+    public function __construct(?Configuration $config = null, ?RouteScanner $cakeRoute = null)
     {
         $this->config = $config ?? new Configuration();
         ValidateConfiguration::validate($this->config);
 
-        $this->cakeRoute = $cakeRoute ?? new CakeRoute(new Router(), $this->config);
+        $this->cakeRoute = $cakeRoute ?? new RouteScanner(new Router(), $this->config);
     }
 
     /**
@@ -58,6 +58,6 @@ class SwaggerFactory
             );
         }
 
-        return new Swagger(new CakeModel($this->cakeRoute, $this->config));
+        return new Swagger(new EntityScanner($this->cakeRoute, $this->config));
     }
 }

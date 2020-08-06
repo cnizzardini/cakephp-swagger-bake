@@ -7,8 +7,8 @@ use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\AnnotationLoader;
-use SwaggerBake\Lib\CakeModel;
-use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\EntityScanner;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
@@ -79,8 +79,8 @@ class SwaggerOperationTest extends TestCase
 
         if (!$this->swagger instanceof Swagger) {
             $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-            $cakeRoute = new CakeRoute($this->router, $configuration);
-            $this->swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+            $cakeRoute = new RouteScanner($this->router, $configuration);
+            $this->swagger = new Swagger(new EntityScanner($cakeRoute, $configuration));
         }
 
         AnnotationLoader::load();
@@ -172,8 +172,8 @@ class SwaggerOperationTest extends TestCase
         $config['yml'] = '/config/swagger-with-existing.yml';
         $configuration = new Configuration($config, SWAGGER_BAKE_TEST_APP);
 
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+        $cakeRoute = new RouteScanner($this->router, $configuration);
+        $swagger = new Swagger(new EntityScanner($cakeRoute, $configuration));
 
         $arr = json_decode($swagger->toString(), true);
 
@@ -189,8 +189,8 @@ class SwaggerOperationTest extends TestCase
         $config['yml'] = '/config/swagger-with-existing.yml';
         $configuration = new Configuration($config, SWAGGER_BAKE_TEST_APP);
 
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+        $cakeRoute = new RouteScanner($this->router, $configuration);
+        $swagger = new Swagger(new EntityScanner($cakeRoute, $configuration));
 
         $arr = json_decode($swagger->toString(), true);
         $securities = $arr['paths']['/departments']['get']['security'];
@@ -204,8 +204,8 @@ class SwaggerOperationTest extends TestCase
         $config['yml'] = '/config/swagger-with-existing.yml';
         $configuration = new Configuration($config, SWAGGER_BAKE_TEST_APP);
 
-        $cakeRoute = new CakeRoute($this->router, $configuration);
-        $swagger = new Swagger(new CakeModel($cakeRoute, $configuration));
+        $cakeRoute = new RouteScanner($this->router, $configuration);
+        $swagger = new Swagger(new EntityScanner($cakeRoute, $configuration));
 
         $arr = json_decode($swagger->toString(), true);
         $securities = $arr['paths']['/departments/{id}']['get']['security'];

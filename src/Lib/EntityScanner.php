@@ -16,14 +16,12 @@ use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
- * Class CakeModel
- *
- * @package SwaggerBake\Lib
+ * Finds all Entities associated with RESTful routes based on userland configurations
  */
-class CakeModel
+class EntityScanner
 {
     /**
-     * @var \SwaggerBake\Lib\CakeRoute
+     * @var \SwaggerBake\Lib\RouteScanner
      */
     private $cakeRoute;
 
@@ -38,10 +36,10 @@ class CakeModel
     private $config;
 
     /**
-     * @param \SwaggerBake\Lib\CakeRoute $cakeRoute CakeRoute
+     * @param \SwaggerBake\Lib\RouteScanner $cakeRoute CakeRoute
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
-    public function __construct(CakeRoute $cakeRoute, Configuration $config)
+    public function __construct(RouteScanner $cakeRoute, Configuration $config)
     {
         $this->cakeRoute = $cakeRoute;
         $this->prefix = $config->getPrefix();
@@ -97,9 +95,9 @@ class CakeModel
     }
 
     /**
-     * @return \SwaggerBake\Lib\CakeRoute
+     * @return \SwaggerBake\Lib\RouteScanner
      */
-    public function getCakeRoute(): CakeRoute
+    public function getCakeRoute(): RouteScanner
     {
         return $this->cakeRoute;
     }

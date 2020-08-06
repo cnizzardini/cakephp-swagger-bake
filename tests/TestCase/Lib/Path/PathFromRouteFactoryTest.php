@@ -5,7 +5,7 @@ namespace SwaggerBake\Test\TestCase\Lib\Path;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Path\PathFromRouteFactory;
@@ -48,7 +48,7 @@ class PathFromRouteFactoryTest extends TestCase
     public function testCreatePath()
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($this->router, $config);
+        $cakeRoute = new RouteScanner($this->router, $config);
 
         $routes = $cakeRoute->getRoutes();
         $route = reset($routes);

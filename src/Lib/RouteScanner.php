@@ -9,11 +9,9 @@ use InvalidArgumentException;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
 
 /**
- * Class CakeRoute
- *
- * @package SwaggerBake\Lib
+ * Finds all RESTful routes that can be included in OpenAPI output based on userland configurations
  */
-class CakeRoute
+class RouteScanner
 {
     /** @var string[]  */
     private const EXCLUDED_PLUGINS = [

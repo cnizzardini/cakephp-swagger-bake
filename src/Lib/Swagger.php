@@ -28,12 +28,12 @@ class Swagger
     private $array = [];
 
     /**
-     * @var \SwaggerBake\Lib\CakeModel
+     * @var \SwaggerBake\Lib\EntityScanner
      */
     private $cakeModel;
 
     /**
-     * @var \SwaggerBake\Lib\CakeRoute
+     * @var \SwaggerBake\Lib\RouteScanner
      */
     private $cakeRoute;
 
@@ -43,9 +43,9 @@ class Swagger
     private $config;
 
     /**
-     * @param \SwaggerBake\Lib\CakeModel $cakeModel CakeModel
+     * @param \SwaggerBake\Lib\EntityScanner $cakeModel CakeModel
      */
-    public function __construct(CakeModel $cakeModel)
+    public function __construct(EntityScanner $cakeModel)
     {
         $this->cakeModel = $cakeModel;
         $this->cakeRoute = $cakeModel->getCakeRoute();

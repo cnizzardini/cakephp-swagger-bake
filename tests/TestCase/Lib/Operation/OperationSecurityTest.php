@@ -8,7 +8,7 @@ use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Annotation\SwagSecurity;
-use SwaggerBake\Lib\CakeRoute;
+use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
@@ -63,7 +63,7 @@ class OperationSecurityTest extends TestCase
         );
 
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new CakeRoute($router, $configuration);
+        $cakeRoute = new RouteScanner($router, $configuration);
         $this->swagger = (new SwaggerFactory($configuration, $cakeRoute))->create();
     }
 
