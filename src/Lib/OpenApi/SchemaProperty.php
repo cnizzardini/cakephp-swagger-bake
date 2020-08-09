@@ -76,18 +76,24 @@ class SchemaProperty implements JsonSerializable
     private $requirePresenceOnUpdate = false;
 
     /**
+     * @var array
+     */
+    private $items;
+
+    /**
      * @return array
      */
     public function toArray(): array
     {
         $vars = get_object_vars($this);
-        // allows remove this items from JSON
+
+        // remove internal properties
         foreach (['name','required','requirePresenceOnCreate','requirePresenceOnUpdate'] as $v) {
             unset($vars[$v]);
         }
 
         // reduce JSON clutter by removing empty values
-        foreach (['example','description','enum','format'] as $v) {
+        foreach (['example','description','enum','format','items'] as $v) {
             if (empty($vars[$v])) {
                 unset($vars[$v]);
             }
@@ -345,5 +351,24 @@ class SchemaProperty implements JsonSerializable
     public function isTypeScalar(): bool
     {
         return in_array($this->type, ['integer','string','float','boolean','bool','int']);
+    }
+
+    /**
+     * @return array
+     */
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
+    /**
+     * @param array $items array of items
+     * @return $this
+     */
+    public function setItems(array $items)
+    {
+        $this->items = $items;
+
+        return $this;
     }
 }

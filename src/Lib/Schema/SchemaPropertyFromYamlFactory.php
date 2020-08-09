@@ -29,7 +29,8 @@ class SchemaPropertyFromYamlFactory
             ->setWriteOnly($yaml['writeOnly'] ?? false)
             ->setRequired($yaml['required'] ?? false)
             ->setEnum($yaml['enum'] ?? [])
-            ->setExample($yaml['example'] ?? '');
+            ->setExample($yaml['example'] ?? '')
+            ->setItems($yaml['items'] ?? []);
 
         $properties = [
             'maxLength',
