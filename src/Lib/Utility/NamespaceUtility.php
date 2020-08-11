@@ -7,7 +7,7 @@ use LogicException;
 use Mouf\Composer\ClassNameMapper;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use Symfony\Component\Cache\Simple\NullCache;
+use Cake\Cache\Engine\NullEngine;
 use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
 
 /**
@@ -101,7 +101,7 @@ class NamespaceUtility
             $namespace .= $ns;
 
 
-            $explorer = new GlobClassExplorer($namespace, new NullCache(), 0, $classNameMapper);
+            $explorer = new GlobClassExplorer($namespace, new NullEngine(), 0, $classNameMapper);
 
             $classes = array_merge(
                 $classes,
