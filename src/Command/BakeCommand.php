@@ -27,9 +27,12 @@ class BakeCommand extends Command
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         $parser
-            ->setDescription('SwaggerBake Installer')
+            ->setDescription('SwaggerBake OpenAPI JSON Generator')
+            ->addOption('config', [
+                'help' => 'Configuration (defaults to config/swagger_bake). Example: OtherApi.swagger_bake',
+            ])
             ->addOption('output', [
-                'help' => 'Outfile for swagger.json (defaults to config)',
+                'help' => 'Full path for OpenAPI json file (defaults to config value for SwaggerBake.json)',
             ]);
 
         return $parser;
@@ -44,7 +47,7 @@ class BakeCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $this->loadConfig();
+        $this->loadConfig($args->getOption('config') ?? 'swagger_bake');
 
         $io->out('Running...');
 

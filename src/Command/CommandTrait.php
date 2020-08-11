@@ -13,18 +13,18 @@ trait CommandTrait
     /**
      * Loads configuration
      *
+     * @param string $config your applications swagger_bake config
      * @return void
      * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
      */
-    public function loadConfig(): void
+    public function loadConfig(string $config = 'swagger_bake'): void
     {
-        if (!file_exists(CONFIG . 'swagger_bake.php')) {
+        if (!Configure::load($config, 'default')) {
             throw new SwaggerBakeRunTimeException(
-                'SwaggerBake configuration file `config/swagger_bake.php` is missing'
+                "SwaggerBake configuration file `$config` is missing"
             );
         }
 
-        Configure::load('swagger_bake', 'default');
         AnnotationLoader::load();
         ExtensionLoader::load();
     }
