@@ -1,7 +1,11 @@
 openapi: "3.0.0"
 info:
   version: 1.0.0
-  title: Thank You For Using SwaggerBake
+  title: SwaggerBake - A MixerAPI Project
+  description: |
+    For documentation please review the project [README](https://github.com/cnizzardini/cakephp-swagger-bake) and for
+    other great API related packages checkout [MixerAPI](http://mixerapi.com). To change this text edit your
+    `swagger.yaml` file.
   license:
     name: YOUR-LICENSE-HERE
 servers:
