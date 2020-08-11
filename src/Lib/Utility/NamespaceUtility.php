@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
+use Cake\Cache\Engine\NullEngine;
 use LogicException;
 use Mouf\Composer\ClassNameMapper;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use Cake\Cache\Engine\NullEngine;
 use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
 
 /**
@@ -99,7 +99,6 @@ class NamespaceUtility
 
             $namespace = str_replace('\\\\', '\\', $namespace);
             $namespace .= $ns;
-
 
             $explorer = new GlobClassExplorer($namespace, new NullEngine(), 0, $classNameMapper);
 
