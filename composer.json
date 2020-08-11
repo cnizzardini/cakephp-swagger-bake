@@ -11,7 +11,8 @@
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
         "doctrine/annotations": "^1.10",
-        "haydenpierce/class-finder": "^0.4.2"
+        "thecodingmachine/class-explorer": "^1.1",
+        "symfony/cache": "4.4.*"
     },
     "suggest": {
         "friendsofcake/search": "Easy model searching with @SwagSearch",

@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
-use HaydenPierce\ClassFinder\ClassFinder;
 use LogicException;
+use Mouf\Composer\ClassNameMapper;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use Symfony\Component\Cache\Simple\NullCache;
+use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
 
 /**
  * Class NamespaceUtility
@@ -84,6 +86,8 @@ class NamespaceUtility
     {
         $classes = [];
 
+        $classNameMapper = ClassNameMapper::createFromComposerFile(null, null, true);
+
         foreach ($namespaces as $namespace) {
             if (substr($namespace, 0, 1) === '\\') {
                 $namespace = substr($namespace, 1);
@@ -96,9 +100,12 @@ class NamespaceUtility
             $namespace = str_replace('\\\\', '\\', $namespace);
             $namespace .= $ns;
 
+
+            $explorer = new GlobClassExplorer($namespace, new NullCache(), 0, $classNameMapper);
+
             $classes = array_merge(
                 $classes,
-                ClassFinder::getClassesInNamespace($namespace, ClassFinder::RECURSIVE_MODE)
+                array_keys($explorer->getClassMap())
             );
         }
 
