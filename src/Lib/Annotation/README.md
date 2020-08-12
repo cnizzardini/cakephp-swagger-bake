@@ -346,6 +346,8 @@ and further explanations.
 public function index() {}
 ```
 
+OpenAPI:
+
 ```yaml
   put:
     tags:
@@ -398,7 +400,6 @@ OpenAPI:
                   maxLength: 45
 ```
 
-
 ### @SwagResponseSchema
 Method level annotation for defining response schema. [Read the comments](SwagResponseSchema.php) to 
 see all supported properties and additional examples.
@@ -433,6 +434,7 @@ Defining a single mimeType and 400-409 status code range:
  * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", mimeTypes={"application/xml"}, statusCode="40x")
  */
 ```
+
 OpenAPI:
 
 ```yaml
