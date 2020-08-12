@@ -104,30 +104,33 @@ class OperationQueryParameter
         /** @var \SwaggerBake\Lib\Annotation\SwagPaginator $swagPaginator */
         $swagPaginator = reset($results);
 
-        $parameter = (new Parameter())
-            ->setAllowEmptyValue(false)
-            ->setDeprecated(false)
-            ->setRequired(false)
-            ->setIn('query');
+        $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorPage');
+        $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorLimit');
+        $this->pushSortParameter($swagPaginator);
+        $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorDirection');
+    }
 
-        $params = [
-            'page' => ['type' => 'integer'],
-            'limit' => ['type' => 'integer'],
-            'sort' => ['type' => 'string'],
-            'direction' => ['type' => 'string', 'enum' => ['asc','desc']],
-        ];
-
-        foreach ($params as $name => $param) {
-            $schema = (new Schema())->setType($param['type']);
-            $schema->setEnum($param['enum'] ?? []);
-            $this->operation->pushParameter((clone $parameter)->setName($name)->setSchema($schema));
-        }
-
+    /**
+     * Pushes the sort parameter into the Operation based on SwagPaginator attributes
+     *
+     * @param \SwaggerBake\Lib\Annotation\SwagPaginator $swagPaginator SwagPaginator
+     * @return void
+     */
+    private function pushSortParameter(SwagPaginator $swagPaginator): void
+    {
         if ($swagPaginator->useSortTextInput === true) {
+            $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorSort');
+
             return;
         }
 
-        $parameter = $this->operation->getParameterByTypeAndName('query', 'sort');
+        $parameter = (new Parameter())
+            ->setName('sort')
+            ->setIn('query')
+            ->setSchema((new Schema())->setType('string'))
+            ->setAllowEmptyValue(false)
+            ->setDeprecated(false)
+            ->setRequired(false);
 
         if (!empty($swagPaginator->sortEnum)) {
             $schema = $parameter->getSchema()->setEnum($swagPaginator->sortEnum);
@@ -153,6 +156,8 @@ class OperationQueryParameter
 
             return;
         }
+
+        $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorSort');
     }
 
     /**

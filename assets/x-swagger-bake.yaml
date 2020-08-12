@@ -1,0 +1,31 @@
+# SwaggerBake Vendor Extensions
+x-swagger-bake:
+  components:
+    parameters:
+      paginatorPage:
+        name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      paginatorLimit:
+        name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      paginatorSort:
+        name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      paginatorDirection:
+        name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+            - asc
+            - desc

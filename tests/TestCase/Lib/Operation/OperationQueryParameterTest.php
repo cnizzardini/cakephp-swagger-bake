@@ -70,6 +70,7 @@ class OperationQueryParameterTest extends TestCase
         $operation = $operationQueryParam->getOperationWithQueryParameters();
 
         $parameters = $operation->getParameters();
+
         $this->assertCount(10, $parameters);
     }
 
