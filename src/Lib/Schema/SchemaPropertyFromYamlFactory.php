@@ -30,7 +30,8 @@ class SchemaPropertyFromYamlFactory
             ->setRequired($yaml['required'] ?? false)
             ->setEnum($yaml['enum'] ?? [])
             ->setExample($yaml['example'] ?? '')
-            ->setItems($yaml['items'] ?? []);
+            ->setItems($yaml['items'] ?? [])
+            ->setFormat($yaml['format'] ?? '');
 
         $properties = [
             'maxLength',
