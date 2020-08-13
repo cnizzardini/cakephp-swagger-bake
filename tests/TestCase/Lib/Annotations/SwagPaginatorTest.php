@@ -60,17 +60,14 @@ class SwagPaginatorTest extends TestCase
         $this->assertArrayHasKey('get', $arr['paths']['/departments']);
         $operation = $arr['paths']['/departments']['get'];
 
-        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return isset($param['name']) && $param['name'] == 'page' && $param['schema']['type'] == 'integer';
-        }));
-        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return isset($param['name']) && $param['name'] == 'limit' && $param['schema']['type'] == 'integer';
-        }));
+        foreach (['paginatorPage','paginatorLimit','paginatorDirection'] as $item) {
+            $this->assertCount(1, array_filter($operation['parameters'], function ($param) use ($item) {
+                return isset($param['$ref']) && $param['$ref'] == "#/x-swagger-bake/components/parameters/$item";
+            }), "$item paginator parameter not found");
+        }
+
         $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
             return isset($param['name']) && $param['name'] == 'sort' && $param['schema']['type'] == 'string';
-        }));
-        $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return isset($param['name']) && $param['name'] == 'direction' && $param['schema']['type'] == 'string';
-        }));
+        }), 'sort paginator parameter not found');
     }
 }
