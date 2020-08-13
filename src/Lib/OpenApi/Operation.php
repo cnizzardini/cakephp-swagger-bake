@@ -45,9 +45,7 @@ class Operation implements JsonSerializable
     private $operationId = '';
 
     /**
-     * Mixed array of either \SwaggerBake\Lib\OpenApi\Parameter or array for $ref items
-     *
-     * @var mixed
+     * @var \SwaggerBake\Lib\OpenApi\Parameter[]
      */
     private $parameters = [];
 
@@ -230,17 +228,6 @@ class Operation implements JsonSerializable
         foreach ($parameters as $parameter) {
             $this->pushParameter($parameter);
         }
-
-        return $this;
-    }
-
-    /**
-     * @param string $ref a ref string (e.g. '#/components/parameters/paginatorPage')
-     * @return $this
-     */
-    public function pushRefParameter(string $ref)
-    {
-        $this->parameters[$ref] = ['$ref' => $ref];
 
         return $this;
     }

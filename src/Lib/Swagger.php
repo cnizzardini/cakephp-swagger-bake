@@ -50,17 +50,7 @@ class Swagger
         $this->entityScanner = $entityScanner;
         $this->routeScanner = $entityScanner->getRouteScanner();
         $this->config = $entityScanner->getConfig();
-
-        $this->array = Yaml::parseFile($this->config->getYml());
-
-        $this->buildSchemaFromYml();
-        $this->buildPathsFromYml();
-
-        $this->array = array_merge(
-            $this->array,
-            Yaml::parseFile(__DIR__ . DS . '..' . DS . '..' . DS . 'assets' . DS . 'x-swagger-bake.yaml')
-        );
-
+        $this->buildFromYml();
         $this->buildSchemasFromModels();
         $this->buildPathsFromRoutes();
     }
@@ -272,34 +262,55 @@ class Swagger
     }
 
     /**
+     * Constructs the primary array used in this class from pre-defined swagger.yml
+     *
+     * @return void
+     */
+    private function buildFromYml(): void
+    {
+        $array = Yaml::parseFile($this->config->getYml());
+
+        $array = $this->buildSchemaFromYml($array);
+        $array = $this->buildPathsFromYml($array);
+
+        $this->array = $array;
+    }
+
+    /**
      * Build paths from YML
      *
      * @todo for now an array will work, but should apply proper Path objects in the future
-     * @return void
+     * @param array $yaml OpenApi YAML as an array
+     * @return array
      */
-    private function buildPathsFromYml(): void
+    private function buildPathsFromYml(array $yaml): array
     {
-        if (!isset($this->array['paths'])) {
-            $this->array['paths'] = [];
+        if (!isset($yaml['paths'])) {
+            $yaml['paths'] = [];
         }
+
+        return $yaml;
     }
 
     /**
      * Build schema from YML
      *
-     * @return void
+     * @param array $yaml OpenApi YAML as an array
+     * @return array
      */
-    private function buildSchemaFromYml(): void
+    private function buildSchemaFromYml(array $yaml): array
     {
-        if (!isset($this->array['components']['schemas'])) {
-            $this->array['components']['schemas'] = [];
+        if (!isset($yaml['components']['schemas'])) {
+            $yaml['components']['schemas'] = [];
         }
 
         $factory = new SchemaFromYamlFactory();
 
-        foreach ($this->array['components']['schemas'] as $schemaName => $schemaVar) {
-            $this->array['components']['schemas'][$schemaName] = $factory->create($schemaName, $schemaVar);
+        foreach ($yaml['components']['schemas'] as $schemaName => $schemaVar) {
+            $yaml['components']['schemas'][$schemaName] = $factory->create($schemaName, $schemaVar);
         }
+
+        return $yaml;
     }
 
     /**
