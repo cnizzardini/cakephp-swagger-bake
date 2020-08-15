@@ -361,9 +361,10 @@ $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 
 #### Using Your Own Layout and Templates
 
 You will need to use your own controller (see above). From there you can copy the [layouts](templates/layout) and 
-[templates](templates/Swagger) into your project and inform your controller action to use them instead. This can be 
-useful if you'd like to add additional functionality to SwaggerUI (or Redoc) using their APIs or if your project
-is not installed in your web servers document root (i.e. a sub-folder).
+[templates](templates/Swagger) into your project and inform your controller action to use them instead. Checkout out 
+the CakePHP documentation on [Views](https://book.cakephp.org/4/en/views.html) for specifics. This can be useful if 
+you'd like to add additional functionality to SwaggerUI (or Redoc) using their APIs or if your project is not 
+installed in your web servers document root (i.e. a sub-folder).
 
 Use [SwaggerController](src/Controller/SwaggerController.php) as your base.
 
