@@ -63,12 +63,13 @@ class EntityScanner
 
         $scanner = new TableScanner($connection);
         $tables = $scanner->listUnskipped();
+
         $collection = $connection->getSchemaCollection();
         $routes = $this->routeScanner->getRoutes();
-        $tabularRoutes = $this->getTablesFromRoutes($routes);
+        $tabularRoutes = $this->getTablesFromRoutes($routes, $tables);
 
         foreach ($tables as $tableName) {
-            $classShortName = Inflector::classify($tableName);
+            $classShortName = Inflector::classify(Inflector::tableize($tableName));
             $entityFqns = NamespaceUtility::getEntityFullyQualifiedNameSpace($classShortName, $this->config);
 
             if (empty($entityFqns)) {
@@ -119,17 +120,30 @@ class EntityScanner
     }
 
     /**
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator[] $routes An array of RouteDecorator objects
+     * @param \SwaggerBake\Lib\Decorator\RouteDecorator[] $routes an array of RouteDecorator objects
+     * @param string[] $tables a list of table names
      * @return string[]
      */
-    private function getTablesFromRoutes(array $routes): array
+    private function getTablesFromRoutes(array $routes, array $tables): array
     {
         $return = [];
+
         foreach ($routes as $route) {
             if (empty($route->getController())) {
                 continue;
             }
-            $return[] = Inflector::underscore($route->getController());
+
+            $conventionalName = Inflector::underscore($route->getController());
+            if (in_array($conventionalName, $tables)) {
+                $return[] = $conventionalName;
+                continue;
+            }
+
+            $singularName = Inflector::underscore(Inflector::singularize($route->getController()));
+            if (in_array($singularName, $tables)) {
+                $return[] = $singularName;
+                continue;
+            }
         }
 
         return array_unique($return);
