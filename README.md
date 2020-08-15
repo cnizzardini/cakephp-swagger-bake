@@ -358,6 +358,8 @@ This is easy to do. Just create your own route and controller, then reference th
 $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 'index']);
 ```
 
+To get started, copy [SwaggerController](src/Controller/SwaggerController.php) into your project.
+
 #### Using Your Own Layout and Templates
 
 You will need to use your own controller (see above). From there you can copy the [layouts](templates/layout) and 
@@ -365,8 +367,6 @@ You will need to use your own controller (see above). From there you can copy th
 the CakePHP documentation on [Views](https://book.cakephp.org/4/en/views.html) for specifics. This can be useful if 
 you'd like to add additional functionality to SwaggerUI (or Redoc) using their APIs or if your project is not 
 installed in your web servers document root (i.e. a sub-folder).
-
-Use [SwaggerController](src/Controller/SwaggerController.php) as your base.
 
 #### Generate Swagger On Your Terms
 
