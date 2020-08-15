@@ -30,11 +30,12 @@ and controllers.
 ## Table of Contents
 - [Installation](#installation)
 - [Setup](#setup)
+- [Getting Started](#getting-started)
 - [Automatic Documentation](#automatic-documentation)
 - [Doc Blocks](#doc-blocks)
 - [Annotations for Extended Functionality](#annotations-for-extended-functionality)
 - [Extending SwaggerBake](#extending-swaggerbake)
-- [Console Commands](#console-commands)
+- [Debug Commands](#debug-commands)
 - [Bake Theme](#bake-theme)
 - [...](#details)
 
@@ -81,8 +82,15 @@ Create a route for the SwaggerUI page in `config/routes.php`, example:
 $builder->connect('/my-swagger-ui', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
 ``` 
 
-If Hot Reload is enabled ([see config](assets/swagger_bake.php)) then you should be able to browse to the above 
-route. Otherwise you must first run `bin/cake swagger bake` to generate your swagger documentation. 
+## Getting Started
+
+- You can generate OpenAPI json from the command line at anytime with `bin/cake swagger bake`.
+
+- If Hot Reload is enabled ([see config](assets/swagger_bake.php)) OpenAPI will be generated each time you browse 
+to SwaggerUI (or Redoc) in your web browser.
+
+- Checkout the [debug commands](#debug-commands) for troubleshooting and the [bake theme](#bake-theme) for generating 
+RESTful controllers.
  
 ## Automatic Documentation
 
@@ -350,6 +358,13 @@ This is easy to do. Just create your own route and controller, then reference th
 $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 'index']);
 ```
 
+#### Using Your Own Layout and Templates
+
+You will need to use your own controller (see above). From there you can copy the [layouts](templates/layout) and 
+[templates](templates/Swagger) into your project and inform your controller action to use them instead. This can be 
+useful if you'd like to add additional functionality to SwaggerUI (or Redoc) using their APIs or if your project
+is not installed in your web servers document root (i.e. a sub-folder).
+
 Use [SwaggerController](src/Controller/SwaggerController.php) as your base.
 
 #### Generate Swagger On Your Terms
@@ -396,7 +411,7 @@ bin/cake swagger bake --config OtherApi.swagger_bake
 You can extend Swagger Bake further with events. Read the 
 [extension documentation](src/Lib/Extension#swaggerbake-extensions) for details.
 
-## Console Commands
+## Debug Commands
 
 In addition to `swagger bake` these console helpers provide insight into how your Swagger documentation is generated.
 
