@@ -35,6 +35,10 @@ class DataTypeConversion
             case 'time':
             case 'datetime':
                 return 'string';
+            case 'tinyint':
+            case 'boolean':
+            case 'bool':
+                return 'boolean';
         }
 
         return $type;
