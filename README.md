@@ -380,7 +380,7 @@ There a three options for generating swagger.json:
 
 ```php
 $swagger = (new \SwaggerBake\Lib\Factory\SwaggerFactory())->create();
-$swagger->toArray(); # returns swagger array
+$swagger->getArray(); # returns swagger array
 $swagger->toString(); # returns swagger json
 $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
 ```
