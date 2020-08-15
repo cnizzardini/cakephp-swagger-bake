@@ -20,6 +20,7 @@ class DataTypeConversion
     {
         switch ($type) {
             case 'int':
+            case 'integer':
             case 'smallinteger':
             case 'biginteger':
             case 'mediuminteger':
@@ -54,6 +55,7 @@ class DataTypeConversion
     {
         switch ($type) {
             case 'int':
+            case 'integer':
             case 'biginteger':
                 return 'int64';
             case 'smallinteger':

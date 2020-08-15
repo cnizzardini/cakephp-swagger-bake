@@ -21,6 +21,8 @@ class DataTypeConversionTest extends TestCase
     public function testToType()
     {
         $types = [
+            'int' => self::OA_TYPE_INTEGER,
+            'integer' => self::OA_TYPE_INTEGER,
             'smallinteger' => self::OA_TYPE_INTEGER,
             'biginteger' => self::OA_TYPE_INTEGER,
             'mediuminteger' => self::OA_TYPE_INTEGER,
@@ -51,6 +53,7 @@ class DataTypeConversionTest extends TestCase
     {
         $types = [
             'int' => self::OA_FORMAT_INT64,
+            'integer' => self::OA_FORMAT_INT64,
             'biginteger' => self::OA_FORMAT_INT64,
             'smallinteger' => self::OA_FORMAT_INT32,
             'mediuminteger' => self::OA_FORMAT_INT32,
