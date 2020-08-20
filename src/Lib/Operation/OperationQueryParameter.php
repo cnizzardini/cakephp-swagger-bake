@@ -75,7 +75,7 @@ class OperationQueryParameter
         }
 
         $this->definePagination();
-        $this->defineQueryParametersFromAnnotations();
+        $this->defineFromAnnotations();
 
         try {
             $this->defineDataTransferObjectFromAnnotations();
@@ -165,7 +165,7 @@ class OperationQueryParameter
      *
      * @return void
      */
-    private function defineQueryParametersFromAnnotations(): void
+    private function defineFromAnnotations(): void
     {
         $swagQueries = array_filter($this->annotations, function ($annotation) {
             return $annotation instanceof SwagQuery;

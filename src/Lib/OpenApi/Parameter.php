@@ -18,6 +18,13 @@ class Parameter implements JsonSerializable
     public const IN = ['query','cookie','header','path','body'];
 
     /**
+     * For referencing an OpenAPI YAML object. If set only ref will be returned
+     *
+     * @var string|null
+     */
+    private $ref;
+
+    /**
      * @var string
      **/
     private $name = '';
@@ -91,11 +98,16 @@ class Parameter implements JsonSerializable
     {
         $vars = $this->toArray();
 
+        if (!empty($this->ref)) {
+            return ['$ref' => $this->ref];
+        }
+
         if ($vars['in'] !== 'query') {
             unset($vars['allowReserved']);
         }
 
-        foreach (['style','description','schema','example'] as $property) {
+        // remove empty values from JSON
+        foreach (['style','description','schema','example','ref'] as $property) {
             if (empty($vars[$property])) {
                 unset($vars[$property]);
             }
@@ -110,6 +122,25 @@ class Parameter implements JsonSerializable
         }
 
         return $vars;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRef(): ?string
+    {
+        return $this->ref;
+    }
+
+    /**
+     * @param string $ref a ref string such (e.g. #/x-my-project/components/parameters/my-header)
+     * @return $this
+     */
+    public function setRef(string $ref)
+    {
+        $this->ref = $ref;
+
+        return $this;
     }
 
     /**

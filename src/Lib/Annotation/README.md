@@ -168,6 +168,7 @@ to see all supported OpenAPI properties.
  * @Swag\SwagQuery(name="one", required=true, description="example description")
  * @Swag\SwagQuery(name="two", type="string", explode=true)
  * @Swag\SwagQuery(name="three", enum={"A","B","C"}, deprecated=true)
+ * @Swag\SwagQuery(ref="#/x-my-project/components/parameters/my-parameter")
  */
 public function index() {}
 ```
@@ -196,6 +197,7 @@ OpenAPI:
               - A
               - B
               - C
+        - $ref: #/x-my-project/components/parameters/my-parameter
 ```
 
 ### @SwagForm
@@ -285,6 +287,7 @@ to see all supported OpenAPI properties.
 ```php
 /**
  * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="example")
+ * @Swag\SwagHeader(ref="#/x-my-project/components/parameters/my-header") 
  */
 public function index() {}
 ```
@@ -298,6 +301,7 @@ OpenAPI:
          description: summary
          schema:
            type: string
+       - $ref: #/x-my-project/components/parameters/my-header
 ```
 
 ### @SwagPathParameter
