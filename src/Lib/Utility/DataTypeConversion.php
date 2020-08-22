@@ -21,6 +21,7 @@ class DataTypeConversion
         switch ($type) {
             case 'int':
             case 'integer':
+            case 'tinyinteger':
             case 'smallinteger':
             case 'biginteger':
             case 'mediuminteger':
@@ -36,7 +37,6 @@ class DataTypeConversion
             case 'time':
             case 'datetime':
                 return 'string';
-            case 'tinyint':
             case 'boolean':
             case 'bool':
                 return 'boolean';
@@ -59,6 +59,7 @@ class DataTypeConversion
             case 'biginteger':
                 return 'int64';
             case 'smallinteger':
+            case 'tinyinteger':
             case 'mediuminteger':
                 return 'int32';
             case 'decimal':

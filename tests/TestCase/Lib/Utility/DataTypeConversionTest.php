@@ -23,6 +23,7 @@ class DataTypeConversionTest extends TestCase
         $types = [
             'int' => self::OA_TYPE_INTEGER,
             'integer' => self::OA_TYPE_INTEGER,
+            'tinyinteger' => self::OA_TYPE_INTEGER,
             'smallinteger' => self::OA_TYPE_INTEGER,
             'biginteger' => self::OA_TYPE_INTEGER,
             'mediuminteger' => self::OA_TYPE_INTEGER,
@@ -35,7 +36,6 @@ class DataTypeConversionTest extends TestCase
             'date' => self::OA_TYPE_STRING,
             'time' => self::OA_TYPE_STRING,
             'datetime' => self::OA_TYPE_STRING,
-            'tinyint' => self::OA_TYPE_BOOLEAN,
             'boolean' => self::OA_TYPE_BOOLEAN,
             'bool' => self::OA_TYPE_BOOLEAN,
         ];
@@ -55,6 +55,7 @@ class DataTypeConversionTest extends TestCase
             'int' => self::OA_FORMAT_INT64,
             'integer' => self::OA_FORMAT_INT64,
             'biginteger' => self::OA_FORMAT_INT64,
+            'tinyinteger' => self::OA_FORMAT_INT32,
             'smallinteger' => self::OA_FORMAT_INT32,
             'mediuminteger' => self::OA_FORMAT_INT32,
             'decimal' => self::OA_FORMAT_FLOAT,
