@@ -112,7 +112,7 @@ abstract class AbstractParameter
             throw new InvalidArgumentException('`name` or `ref` parameter is required');
         }
 
-        $name = $values['name'];
+        $name = $values['name'] ?? $values['ref'];
 
         if (isset($values['type']) && !in_array($values['type'], OpenApiDataType::TYPES)) {
             $type = $values['type'];
