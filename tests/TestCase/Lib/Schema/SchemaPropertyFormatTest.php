@@ -6,9 +6,7 @@ use Cake\TestSuite\TestCase;
 use Cake\Validation\Validator;
 use SwaggerBake\Lib\Decorator\PropertyDecorator;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
-use SwaggerBake\Lib\Schema\SchemaPropertyFactory;
 use SwaggerBake\Lib\Schema\SchemaPropertyFormat;
-use SwaggerBake\Lib\Utility\DataTypeConversion;
 
 class SchemaPropertyFormatTest extends TestCase
 {
