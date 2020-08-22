@@ -10,12 +10,20 @@ use SwaggerBake\Lib\Utility\OpenApiDataType;
 /**
  * Read OpenAPI specification for exact usage of the attributes:
  *
+ * @see http://spec.openapis.org/oas/v3.0.3#fixed-fields-9
  * @see https://swagger.io/specification/ search for "Parameter Object"
  * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
  */
 abstract class AbstractParameter
 {
     /**
+     * @var string
+     */
+    public $ref;
+
+    /**
+     * The name of the parameter. Parameter names are case sensitive.
+     *
      * @var string
      */
     public $name;
@@ -26,11 +34,15 @@ abstract class AbstractParameter
     public $type = 'string';
 
     /**
+     * A brief description of the parameter. This could contain examples of use.
+     *
      * @var string
      */
     public $description = '';
 
     /**
+     * Determines whether this parameter is mandatory.
+     *
      * @var bool
      */
     public $required = false;
@@ -41,26 +53,39 @@ abstract class AbstractParameter
     public $enum = [];
 
     /**
+     * Specifies that a parameter is deprecated and SHOULD be transitioned out of usage. Default value is false.
+     *
      * @var bool
      */
     public $deprecated = false;
 
     /**
+     * Sets the ability to pass empty-valued parameters. This is valid only for query parameters and allows
+     * sending a parameter with an empty value.
+     *
      * @var bool
      */
     public $allowEmptyValue = false;
 
     /**
+     * When this is true, parameter values of type array or object generate separate parameters for each value of
+     * the array or key-value pair of the map.
+     *
      * @var bool
      */
     public $explode = false;
 
     /**
+     * Describes how the parameter value will be serialized depending on the type of the parameter value.
+     *
      * @var string
      */
     public $style = '';
 
     /**
+     * Determines whether the parameter value SHOULD allow reserved characters, as defined by [RFC3986]
+     * :/?#[]@!$&'()*+,;= to be included without percent-encoding.
+     *
      * @var bool
      */
     public $allowReserved = false;
@@ -71,6 +96,9 @@ abstract class AbstractParameter
     public $format = '';
 
     /**
+     * Example of the parameter’s potential value. The example SHOULD match the specified schema and encoding
+     * properties if present.
+     *
      * @var mixed
      */
     public $example;
@@ -80,8 +108,8 @@ abstract class AbstractParameter
      */
     public function __construct(array $values)
     {
-        if (!isset($values['name'])) {
-            throw new InvalidArgumentException('Name parameter is required');
+        if (!isset($values['name']) && !isset($values['ref'])) {
+            throw new InvalidArgumentException('`name` or `ref` parameter is required');
         }
 
         $name = $values['name'];

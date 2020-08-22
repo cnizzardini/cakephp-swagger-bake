@@ -251,7 +251,14 @@ class Operation implements JsonSerializable
      */
     public function pushParameter(Parameter $parameter)
     {
-        $this->parameters[$parameter->getIn() . ':' . $parameter->getName()] = $parameter;
+        if (!empty($parameter->getRef())) {
+            $name = preg_replace('/^\W/', '', str_replace('/', '-', $parameter->getRef()));
+            $name = substr($name, 1);
+        } else {
+            $name = $parameter->getName();
+        }
+
+        $this->parameters[$parameter->getIn() . ':' . $name] = $parameter;
 
         return $this;
     }
