@@ -61,6 +61,7 @@ class BakersController extends AppController
         $baker = $this->Bakers->newEmptyEntity();
         $baker = $this->Bakers->patchEntity($baker, $this->request->getData());
         if ($this->Bakers->save($baker)) {
+            $this->set('baker', $baker);
             $this->viewBuilder()->setOption('serialize', 'baker');
             return;
         }
@@ -84,6 +85,7 @@ class BakersController extends AppController
         ]);
         $baker = $this->Bakers->patchEntity($baker, $this->request->getData());
         if ($this->Bakers->save($baker)) {
+            $this->set('baker', $baker);
             $this->viewBuilder()->setOption('serialize', 'baker');
             return;
         }
