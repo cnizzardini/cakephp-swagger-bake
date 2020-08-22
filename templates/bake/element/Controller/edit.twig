@@ -33,6 +33,7 @@
         ]);
         ${{ singularName }} = $this->{{ currentModelName }}->patchEntity(${{ singularName }}, $this->request->getData());
         if ($this->{{ currentModelName }}->save(${{ singularName }})) {
+            $this->set('{{ singularName }}', ${{ singularName }});
             $this->viewBuilder()->setOption('serialize', {{ compact|join(', ')|raw }});
             return;
         }
