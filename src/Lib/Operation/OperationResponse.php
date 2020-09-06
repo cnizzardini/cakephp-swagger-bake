@@ -193,7 +193,7 @@ class OperationResponse
 
             $response->pushContent(
                 (new Content())
-                    ->setSchema($schema)
+                    ->setSchema(clone $schema)
                     ->setMimeType($mimeType)
             );
         }
