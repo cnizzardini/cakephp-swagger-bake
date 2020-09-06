@@ -70,6 +70,7 @@ class OperationQueryParameterTest extends TestCase
         $operation = $operationQueryParam->getOperationWithQueryParameters();
 
         $parameters = $operation->getParameters();
+
         $this->assertCount(10, $parameters);
     }
 
@@ -87,5 +88,27 @@ class OperationQueryParameterTest extends TestCase
         $operation = $operationQueryParam->getOperationWithQueryParameters();
         $parameter = $operation->getParameterByTypeAndName('query', 'sort');
         $this->assertEquals($enums, $parameter->getSchema()->getEnum());
+    }
+
+    /**
+     * Tests Swag(ref="") parameters
+     */
+    public function testRefParameter()
+    {
+        $ref = '#/x-swagger-bake/components/parameters/paginatorPage';
+        $operationQueryParam = new OperationQueryParameter(
+            (new Operation())->setHttpMethod('GET'),
+            [
+                new SwagQuery(['ref'=> $ref]),
+            ],
+            new Controller()
+        );
+
+        $operation = $operationQueryParam->getOperationWithQueryParameters();
+        $key = 'x-swagger-bake-components-parameters-paginatorPage';
+        $parameter = $operation->getParameterByTypeAndName('query', $key);
+
+        $this->assertInstanceOf(Parameter::class, $parameter);
+        $this->assertEquals($ref, $parameter->getRef());
     }
 }

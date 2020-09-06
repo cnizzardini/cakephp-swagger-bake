@@ -20,7 +20,8 @@ class ParameterFromAnnotationFactory
     public function create(AbstractParameter $annotation): Parameter
     {
         $parameter = (new Parameter())
-            ->setName($annotation->name)
+            ->setRef($annotation->ref ?? '')
+            ->setName($annotation->name ?? '')
             ->setDescription($annotation->description)
             ->setRequired($annotation->required)
             ->setDeprecated($annotation->deprecated)
