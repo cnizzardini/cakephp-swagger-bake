@@ -450,6 +450,10 @@ bin/cake bake controller {Name} --theme SwaggerBake
   - App\Model\Entity class (for schemas only)
   - App\Controller class
   - Must be a valid route
+  - Three versions of schema will be created: 
+    - Default with all properties `#/components/schemas/Entity`
+    - Writeable properties `#/x-swagger-bake/components/schemas/Entity-Write`
+    - Readable properties `#/x-swagger-bake/components/schemas/Entity-Read`
 - Entity Attributes: 
   - Hidden attributes will not be visible
   - Primary Keys will be set to read only by default.

@@ -14,6 +14,7 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Decorator\EntityDecorator;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
@@ -36,6 +37,21 @@ class SchemaFactory
     private $config;
 
     /**
+     * @var string
+     */
+    public const WRITEABLE_PROPERTIES = 2;
+
+    /**
+     * @var string
+     */
+    public const READABLE_PROPERTIES = 4;
+
+    /**
+     * @var string
+     */
+    public const ALL_PROPERTIES = 6;
+
+    /**
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
     public function __construct(Configuration $config)
@@ -47,9 +63,10 @@ class SchemaFactory
      * Creates an instance of Schema for an EntityDecorator, returns null if the Entity is set to invisible
      *
      * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
+     * @param int $propertyType see public constants for options
      * @return \SwaggerBake\Lib\OpenApi\Schema|null
      */
-    public function create(EntityDecorator $entity): ?Schema
+    public function create(EntityDecorator $entity, int $propertyType = 6): ?Schema
     {
         $swagEntity = $this->getSwagEntityAnnotation($entity);
 
@@ -61,7 +78,7 @@ class SchemaFactory
 
         $docBlock = $this->getDocBlock($entity);
 
-        $properties = $this->getProperties($entity);
+        $properties = $this->getProperties($entity, $propertyType);
 
         $schema = (new Schema())
             ->setName($entity->getName())
@@ -88,9 +105,10 @@ class SchemaFactory
 
     /**
      * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
+     * @param int $propertyType see public constants for options
      * @return array
      */
-    private function getProperties(EntityDecorator $entity): array
+    private function getProperties(EntityDecorator $entity, int $propertyType): array
     {
         $return = [];
         $factory = new SchemaPropertyFactory($this->validator);
@@ -101,7 +119,18 @@ class SchemaFactory
 
         $return = array_merge($return, $this->getSwagPropertyAnnotations($entity));
 
-        return $return;
+        if ($propertyType === self::ALL_PROPERTIES) {
+            return $return;
+        }
+
+        return array_filter($return, function (SchemaProperty $property) use ($propertyType) {
+            if ($propertyType == self::READABLE_PROPERTIES && !$property->isWriteOnly()) {
+                return true;
+            }
+            if ($propertyType == self::WRITEABLE_PROPERTIES && !$property->isReadOnly()) {
+                return true;
+            }
+        });
     }
 
     /**

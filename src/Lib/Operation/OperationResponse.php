@@ -11,6 +11,7 @@ use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\OpenApi\Xml;
 
 /**
@@ -174,21 +175,54 @@ class OperationResponse
             return;
         }
 
-        $schema = clone $this->schema;
-
-        if ($action === 'index') {
-            $schema = (new Schema())
-                ->setType('array')
-                ->setItems(['$ref' => '#/components/schemas/' . $this->schema->getName()]);
-        }
-
         $response = (new Response())->setCode('200');
 
         foreach ($this->config->getResponseContentTypes() as $mimeType) {
-            $schema->setXml(null);
+            if ($action === 'index') {
+                $schema = (new Schema())
+                    ->setType('array')
+                    ->setItems(['$ref' => $this->schema->getReadSchemaRef()]);
+            } else {
+                $schema = $this->schema->getReadSchemaRef();
+            }
 
-            if ($mimeType == 'application/xml') {
-                $schema->setXml((new Xml())->setName('response'));
+            switch ($mimeType)
+            {
+                case 'application/xml':
+                    $schema = (clone $this->schema)->setXml((new Xml())->setName('response'));
+                    break;
+                /*                case 'application/hal+json':
+                                case 'application/vnd.hal+json':
+                                    if ($action === 'index') {
+                                        $schema = (new Schema())
+                                            ->setAllOf([
+                                                ['$ref' => '#/x-swagger-bake/components/schemas/HalJson-Collection'],
+                                                [
+                                                    'properties' => [
+                                                        (new SchemaProperty())
+                                                            ->setName('_embedded')
+                                                            ->setType('array')
+                                                            ->setItems(
+                                                                [
+                                                                    (new SchemaProperty())
+                                                                        ->setName($schema->getName())
+                                                                        ->setType('object')
+                                                                        ->setItems($schema->getProperties())
+                                                                ]
+                                                            )
+                                                    ]
+                                                ],
+                                            ])
+                                            ->setProperties([]);
+                                    } else {
+                                        $schema
+                                            ->setAllOf([
+                                                ['$ref' => '#/x-swagger-bake/components/schemas/HalJson-Item'],
+                                                ['properties' => $schema->getProperties()],
+                                            ])
+                                            ->setProperties([]);
+                                    }
+                                    break;*/
             }
 
             $response->pushContent(

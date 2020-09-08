@@ -107,7 +107,7 @@ class SwaggerOperationTest extends TestCase
         $schema =  $employee['responses'][200]['content']['application/json']['schema'];
 
         $this->assertEquals('array', $schema['type']);
-        $this->assertEquals('#/components/schemas/Employee', $schema['items']['$ref']);
+        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['items']['$ref']);
     }
 
     public function testDefaultRequestSchemaOnAddMethod()
@@ -117,8 +117,7 @@ class SwaggerOperationTest extends TestCase
         $employee = $arr['paths']['/employees']['post'];
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
 
-        $this->assertEquals('object', $schema['type']);
-        $this->assertCount(5, $schema['properties']);
+        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Write', $schema['$ref']);
     }
 
     public function testDefaultResponseSchemaOnAddMethod()
@@ -128,8 +127,7 @@ class SwaggerOperationTest extends TestCase
         $employee = $arr['paths']['/employees']['post'];
         $schema =  $employee['responses'][200]['content']['application/json']['schema'];
 
-        $this->assertEquals('object', $schema['type']);
-        $this->assertCount(6, $schema['properties']);
+        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['$ref']);
     }
 
     public function testDefaultRequestSchemaOnEditMethod()
@@ -139,8 +137,7 @@ class SwaggerOperationTest extends TestCase
         $employee = $arr['paths']['/employees/{id}']['patch'];
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
 
-        $this->assertEquals('object', $schema['type']);
-        $this->assertCount(5, $schema['properties']);
+        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Write', $schema['$ref']);
     }
 
     public function testDefaultResponseSchemaOnEditMethod()
@@ -150,8 +147,7 @@ class SwaggerOperationTest extends TestCase
         $employee = $arr['paths']['/employees/{id}']['patch'];
         $schema =  $employee['responses'][200]['content']['application/json']['schema'];
 
-        $this->assertEquals('object', $schema['type']);
-        $this->assertCount(6, $schema['properties']);
+        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['$ref']);
     }
 
     public function testExceptionResponseSchema()

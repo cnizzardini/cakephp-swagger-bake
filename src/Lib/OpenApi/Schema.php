@@ -26,7 +26,7 @@ class Schema implements JsonSerializable
     /**
      * @var string
      */
-    private $description = '';
+    private $description;
 
     /**
      * @var string
@@ -111,9 +111,16 @@ class Schema implements JsonSerializable
             $vars['$ref'] = $this->refEntity;
         }
 
-        // remove empty properties to avoid swagger.json clutter
+        // remove null or empty properties to avoid swagger.json clutter
         foreach (['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml'] as $v) {
             if (array_key_exists($v, $vars) && (empty($vars[$v]) || is_null($vars[$v]))) {
+                unset($vars[$v]);
+            }
+        }
+
+        // remove null properties only
+        foreach (['description'] as $v) {
+            if (array_key_exists($v, $vars) && is_null($vars[$v])) {
                 unset($vars[$v]);
             }
         }
@@ -443,5 +450,37 @@ class Schema implements JsonSerializable
         $this->xml = $xml;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWriteSchemaName(): string
+    {
+        return $this->name . '-Write';
+    }
+
+    /**
+     * @return string
+     */
+    public function getReadSchemaName(): string
+    {
+        return $this->name . '-Read';
+    }
+
+    /**
+     * @return string
+     */
+    public function getWriteSchemaRef(): string
+    {
+        return '#/x-swagger-bake/components/schemas/' . $this->getWriteSchemaName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getReadSchemaRef(): string
+    {
+        return '#/x-swagger-bake/components/schemas/' . $this->getReadSchemaName();
     }
 }
