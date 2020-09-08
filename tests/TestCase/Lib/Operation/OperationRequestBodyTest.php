@@ -121,52 +121,6 @@ class OperationRequestBodyTest extends TestCase
         $this->assertArrayHasKey('firstName', $properties);
     }
 
-    public function testSchemaGetOperationWithRequestBodyForm()
-    {
-        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
-        $cakeModels = new EntityScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels);
-
-        $routes = $cakeRoute->getRoutes();
-        $route = $routes['employees:add'];
-
-        $schema = (new Schema())
-            ->setType('object')
-            ->setName('Employee')
-            ->setProperties([
-                (new SchemaProperty())->setName('id')->setType('integer')->setReadOnly(true),
-                (new SchemaProperty())->setName('firstName')->setType('string')->setRequired(true),
-                (new SchemaProperty())->setName('otherField')->setType('string')
-            ])
-        ;
-
-        $operationRequestBody = new OperationRequestBody(
-            $swagger,
-            (new Operation())->setHttpMethod('POST'),
-            [],
-            $route,
-            $schema
-        );
-
-        $operation = $operationRequestBody->getOperationWithRequestBody();
-
-        $content = $operation
-            ->getRequestBody()
-            ->getContentByType('application/x-www-form-urlencoded')
-        ;
-
-        $schema = $content->getSchema();
-        $this->assertEquals('object', $schema->getType());
-
-        $properties = $schema->getProperties();
-        $this->assertArrayNotHasKey('id', $properties);
-        $this->assertArrayNotHasKey('modified', $properties);
-        $this->assertTrue($properties['firstName']->isRequired());
-        $this->assertEquals('firstName', $properties['firstName']->getName());
-        $this->assertEquals('otherField', $properties['otherField']->getName());
-    }
-
     public function testIgnoreSchema()
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);

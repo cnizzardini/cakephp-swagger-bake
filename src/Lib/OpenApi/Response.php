@@ -100,7 +100,7 @@ class Response implements JsonSerializable
      * @param string $mimeType Mime type i.e. application/json, application/xml
      * @return \SwaggerBake\Lib\OpenApi\Content|null
      */
-    public function getContentByMimeType($mimeType): ?Content
+    public function getContentByMimeType(string $mimeType): ?Content
     {
         return $this->content[$mimeType] ?? null;
     }

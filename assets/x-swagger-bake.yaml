@@ -29,3 +29,58 @@ x-swagger-bake:
           enum:
             - asc
             - desc
+    schemas:
+      HalJson-Item:
+        type: object
+        properties:
+          links:
+            type: object
+            properties:
+              self:
+                type: object
+                properties:
+                  href:
+                    type: string
+                    format: url
+                    example: /entity/:id
+      HalJson-Collection:
+        type: object
+        properties:
+          links:
+            type: object
+            properties:
+              self:
+                type: object
+                properties:
+                  href:
+                    type: string
+                    format: url
+                    example: /collection
+              next:
+                type: object
+                properties:
+                  href:
+                    type: string
+                    format: url
+                    example: /collection?page=:id
+              prev:
+                type: object
+                properties:
+                  href:
+                    type: string
+                    format: url
+                    example: /collection?page=:id
+              first:
+                type: object
+              properties:
+                href:
+                  type: string
+                  format: url
+                  example: /collection?page=:id
+            last:
+              type: object
+              properties:
+                href:
+                  type: string
+                  format: url
+                  example: /collection?page=:id

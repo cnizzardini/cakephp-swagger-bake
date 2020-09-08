@@ -267,62 +267,27 @@ class OperationRequestBody
         $requestBody->setRequired($this->isCrudAction());
 
         foreach ($this->config->getRequestAccepts() as $mimeType) {
-            if ($mimeType === 'application/x-www-form-urlencoded') {
-                $requestBody = $this->getRequestBodyWithFormSchema($requestBody);
-                continue;
-            }
 
             if ($requestBody->getContentByType($mimeType)) {
                 continue;
             }
 
-            $schema = $this->getSchemaWithWritablePropertiesOnly($this->schema);
+            $schema = clone $this->schema;
 
             if ($mimeType == 'application/xml') {
                 $schema->setXml(
-                    (new Xml())->setName(strtolower($this->schema->getName()))
+                    (new Xml())->setName(strtolower($schema->getName()))
                 );
             }
 
             $requestBody->pushContent(
                 (new Content())
                     ->setMimeType($mimeType)
-                    ->setSchema($schema)
+                    ->setSchema($schema->getWriteSchemaRef())
             );
         }
 
         $this->operation->setRequestBody($requestBody);
-    }
-
-    /**
-     * Adds Schema to the Operations Request Body as application/x-www-form-urlencoded
-     *
-     * @param \SwaggerBake\Lib\OpenApi\RequestBody $requestBody RequestBody
-     * @return \SwaggerBake\Lib\OpenApi\RequestBody
-     */
-    private function getRequestBodyWithFormSchema(RequestBody $requestBody): RequestBody
-    {
-        $properties = [];
-        if ($requestBody->getContentByType('application/x-www-form-urlencoded')) {
-            $properties = $requestBody
-                ->getContentByType('application/x-www-form-urlencoded')
-                ->getSchema()
-                ->getProperties();
-        }
-
-        $schema = $this->getSchemaWithWritablePropertiesOnly($this->schema);
-
-        $properties = array_merge($schema->getProperties(), $properties);
-
-        $schema->setProperties($properties);
-
-        $requestBody->pushContent(
-            (new Content())
-                ->setMimeType('application/x-www-form-urlencoded')
-                ->setSchema($schema)
-        );
-
-        return $requestBody;
     }
 
     /**
