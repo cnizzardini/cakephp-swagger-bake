@@ -7,6 +7,10 @@ use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
+use SwaggerBake\Lib\MediaType\Generic;
+use SwaggerBake\Lib\MediaType\HalJson;
+use SwaggerBake\Lib\MediaType\JsonLd;
+use SwaggerBake\Lib\MediaType\Xml as XmlMedia;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
@@ -161,7 +165,7 @@ class OperationResponse
     }
 
     /**
-     * Assigns Cake Models as Swagger Schema if possible. For index actions, an array of objects will be assigned.
+     * Assigns Cake Models as Swagger Schema if possible.
      *
      * @return void
      */
@@ -174,23 +178,10 @@ class OperationResponse
             return;
         }
 
-        $schema = clone $this->schema;
-
-        if ($action === 'index') {
-            $schema = (new Schema())
-                ->setType('array')
-                ->setItems(['$ref' => '#/components/schemas/' . $this->schema->getName()]);
-        }
-
         $response = (new Response())->setCode('200');
 
         foreach ($this->config->getResponseContentTypes() as $mimeType) {
-            $schema->setXml(null);
-
-            if ($mimeType == 'application/xml') {
-                $schema->setXml((new Xml())->setName('response'));
-            }
-
+            $schema = $this->getMimeTypeSchema($mimeType, $action);
             $response->pushContent(
                 (new Content())
                     ->setSchema($schema)
@@ -199,6 +190,32 @@ class OperationResponse
         }
 
         $this->operation->pushResponse($response);
+    }
+
+    /**
+     * Gets a schema based on mimetype
+     *
+     * @param string $mimeType a mime type (e.g. application/xml, application/json)
+     * @param string $action controller action (e.g. add, index, view, edit, delete)
+     * @return \SwaggerBake\Lib\OpenApi\Schema
+     */
+    private function getMimeTypeSchema(string $mimeType, string $action)
+    {
+        $schema = $this->schema instanceof Schema ? $this->schema : new Schema();
+
+        switch ($mimeType) {
+            case 'application/xml':
+                return (new XmlMedia($schema))->buildSchema($action);
+            case 'application/hal+json':
+            case 'application/vnd.hal+json':
+                return (new HalJson($schema))->buildSchema($action);
+            case 'application/ld+json':
+                return (new JsonLd($schema))->buildSchema($action);
+            case 'text/plain':
+                return (new Schema())->setType('string');
+        }
+
+        return (new Generic($schema))->buildSchema($action);
     }
 
     /**

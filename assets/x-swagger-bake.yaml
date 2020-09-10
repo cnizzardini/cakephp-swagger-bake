@@ -29,3 +29,119 @@ x-swagger-bake:
           enum:
             - asc
             - desc
+    schemas:
+      HalJson-Item:
+        type: object
+        properties:
+          links:
+            type: object
+            properties:
+              self:
+                type: object
+                properties:
+                  href:
+                    type: string
+                    format: url
+                    example: /entity/:id
+      HalJson-Collection:
+        type: object
+        properties:
+          links:
+            type: object
+            properties:
+              self:
+                type: object
+                properties:
+                  href:
+                    type: string
+                    format: url
+                    example: /collection
+              next:
+                type: object
+                properties:
+                  href:
+                    type: string
+                    format: url
+                    example: /collection?page=:id
+              prev:
+                type: object
+                properties:
+                  href:
+                    type: string
+                    format: url
+                    example: /collection?page=:id
+              first:
+                type: object
+                properties:
+                  href:
+                    type: string
+                    format: url
+                    example: /collection?page=:id
+              properties:
+                href:
+                  type: string
+                  format: url
+                  example: /collection?page=:id
+            last:
+              type: object
+              properties:
+                href:
+                  type: string
+                  format: url
+                  example: /collection?page=:id
+      JsonLd-Item:
+        type: object
+        properties:
+          '@id':
+            type: string
+            format: url
+            example: /entity/:id
+          '@type':
+            type: string
+            format: url
+            example: https://schema.org/Thing
+          '@context':
+            type: string
+            format: url
+            example: /context/Entity
+      JsonLd-Collection:
+        type: object
+        properties:
+          '@id':
+            type: string
+            format: url
+            example: /entity/:id
+          '@type':
+            type: string
+            format: url
+            example: https://schema.org/Thing
+          '@context':
+            type: string
+            format: url
+            example: /context/Entity
+          view:
+            type: object
+            properties:
+              '@id':
+                type: string
+                format: url
+                example: /index
+              '@type':
+                type: string
+                example: 'PartialCollectionView'
+              next:
+                type: string
+                format: url
+                example: /index?page=:number
+              prev:
+                type: string
+                format: url
+                example: /index?page=:number
+              first:
+                type: string
+                format: url
+                example: /index
+              last:
+                type: string
+                format: url
+                example: /index?page=:number

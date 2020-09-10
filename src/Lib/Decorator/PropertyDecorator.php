@@ -23,7 +23,7 @@ class PropertyDecorator
     private $type = '';
 
     /**
-     * @var string
+     * @var ?string
      */
     private $default = '';
 
@@ -79,10 +79,10 @@ class PropertyDecorator
     }
 
     /**
-     * @param string $default Default value for the property
+     * @param string|int $default Default value for the property
      * @return $this
      */
-    public function setDefault(string $default)
+    public function setDefault($default)
     {
         $this->default = $default;
 

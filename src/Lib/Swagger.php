@@ -150,6 +150,22 @@ class Swagger
     }
 
     /**
+     * Adds a Schema element to OpenAPI 3.0 spec
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema Schema
+     * @return $this
+     */
+    public function pushVendorSchema(Schema $schema)
+    {
+        $name = $schema->getName();
+        if (!isset($this->array['x-swagger-bake']['components']['schemas'][$name])) {
+            $this->array['x-swagger-bake']['components']['schemas'][$name] = $schema;
+        }
+
+        return $this;
+    }
+
+    /**
      * Returns a schema object by $name argument
      *
      * @param string $name Name of schema
@@ -202,11 +218,22 @@ class Swagger
             if ($this->getSchemaByName($entity->getName())) {
                 continue;
             }
+
             $schema = $schemaFactory->create($entity);
             if (!$schema) {
                 continue;
             }
             $this->pushSchema($schema);
+
+            $writeSchema = $schemaFactory->create($entity, $schemaFactory::WRITEABLE_PROPERTIES);
+            $this->pushVendorSchema(
+                $writeSchema->setName($schema->getWriteSchemaName())
+            );
+
+            $readSchema = $schemaFactory->create($entity, $schemaFactory::READABLE_PROPERTIES);
+            $this->pushVendorSchema(
+                $readSchema->setName($schema->getReadSchemaName())
+            );
         }
     }
 

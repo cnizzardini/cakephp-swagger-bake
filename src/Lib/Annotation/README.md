@@ -46,7 +46,8 @@ be used. You can override the defaults using the `sort` attribute. Otherwise, a 
 ```php
 use SwaggerBake\Lib\Annotation as Swag;
 /**
- * @Swag\SwagPaginator(sort={"id","name"}, useSortTextInput=false)
+ * @Swag\SwagPaginator # default without attributes should work fine in most cases 
+ * @Swag\SwagPaginator(sort={"id","name"}, useSortTextInput=false) # custom example
  */
 public function index() {
     $employees = $this->paginate($this->Employees);
@@ -84,13 +85,11 @@ OpenAPI:
 ```
 
 ### @SwagSearch
-Method level annotation for documenting search parameters using the popular 
-[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin. Note, you must import `@SwagSearch` from  
-`SwaggerBake\Lib\Extension\CakeSearch\Annotation`.
+Method level annotation for documenting search parameters using the popular [friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
 
 ```php
 /**
- * @SwagExt\CakeSearch\Annotation\SwagSearch(tableClass="\App\Model\Table\FilmsTable", collection="default")
+ * @SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch(tableClass="\App\Model\Table\FilmsTable", collection="default")
  */
 public function index()
 {
