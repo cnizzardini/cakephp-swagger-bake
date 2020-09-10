@@ -469,8 +469,8 @@ bin/cake bake controller {Name} --theme SwaggerBake
   - Will automatically set security on operations if a single [securityScheme](https://swagger.io/docs/specification/authentication/) 
   is defined in your swagger.yaml. If more than one security schema exists you will need to use `@SwagSecurity`.
   - `@SwagSecurity` takes precedence.
-- SwaggerBake has been developed primarily for application/json and application/x-www-form-urlencoded, but does have 
-some support for application/xml and *should* work with application/vnd.api+json.
+- SwaggerBake supports the following formats: application/json, application/x-www-form-urlencoded, application/xml, 
+application/hal+json, and application/ld+json
 
 SwaggerBake does not document schema associations. If your application includes associations on things like 
 GET requests, you can easily add them into your swagger documentation through the OpenAPI `allOf` property. Since 
