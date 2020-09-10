@@ -267,7 +267,6 @@ class OperationRequestBody
         $requestBody->setRequired($this->isCrudAction());
 
         foreach ($this->config->getRequestAccepts() as $mimeType) {
-
             if ($requestBody->getContentByType($mimeType)) {
                 continue;
             }

@@ -72,6 +72,11 @@ x-swagger-bake:
                     example: /collection?page=:id
               first:
                 type: object
+                properties:
+                  href:
+                    type: string
+                    format: url
+                    example: /collection?page=:id
               properties:
                 href:
                   type: string

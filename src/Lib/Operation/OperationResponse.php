@@ -7,11 +7,13 @@ use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
+use SwaggerBake\Lib\MediaType\Generic;
+use SwaggerBake\Lib\MediaType\HalJson;
+use SwaggerBake\Lib\MediaType\Xml as XmlMedia;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\OpenApi\Xml;
 
 /**
@@ -162,7 +164,7 @@ class OperationResponse
     }
 
     /**
-     * Assigns Cake Models as Swagger Schema if possible. For index actions, an array of objects will be assigned.
+     * Assigns Cake Models as Swagger Schema if possible.
      *
      * @return void
      */
@@ -178,61 +180,39 @@ class OperationResponse
         $response = (new Response())->setCode('200');
 
         foreach ($this->config->getResponseContentTypes() as $mimeType) {
-            if ($action === 'index') {
-                $schema = (new Schema())
-                    ->setType('array')
-                    ->setItems(['$ref' => $this->schema->getReadSchemaRef()]);
-            } else {
-                $schema = $this->schema->getReadSchemaRef();
-            }
-
-            switch ($mimeType)
-            {
-                case 'application/xml':
-                    $schema = (clone $this->schema)->setXml((new Xml())->setName('response'));
-                    break;
-                /*                case 'application/hal+json':
-                                case 'application/vnd.hal+json':
-                                    if ($action === 'index') {
-                                        $schema = (new Schema())
-                                            ->setAllOf([
-                                                ['$ref' => '#/x-swagger-bake/components/schemas/HalJson-Collection'],
-                                                [
-                                                    'properties' => [
-                                                        (new SchemaProperty())
-                                                            ->setName('_embedded')
-                                                            ->setType('array')
-                                                            ->setItems(
-                                                                [
-                                                                    (new SchemaProperty())
-                                                                        ->setName($schema->getName())
-                                                                        ->setType('object')
-                                                                        ->setItems($schema->getProperties())
-                                                                ]
-                                                            )
-                                                    ]
-                                                ],
-                                            ])
-                                            ->setProperties([]);
-                                    } else {
-                                        $schema
-                                            ->setAllOf([
-                                                ['$ref' => '#/x-swagger-bake/components/schemas/HalJson-Item'],
-                                                ['properties' => $schema->getProperties()],
-                                            ])
-                                            ->setProperties([]);
-                                    }
-                                    break;*/
-            }
-
+            $schema = $this->getMimeTypeSchema($mimeType, $action);
             $response->pushContent(
                 (new Content())
-                    ->setSchema(clone $schema)
+                    ->setSchema($schema)
                     ->setMimeType($mimeType)
             );
         }
 
         $this->operation->pushResponse($response);
+    }
+
+    /**
+     * Gets a schema based on mimetype
+     *
+     * @param string $mimeType a mime type (e.g. application/xml, application/json)
+     * @param string $action controller action (e.g. add, index, view, edit, delete)
+     * @return \SwaggerBake\Lib\OpenApi\Schema
+     */
+    private function getMimeTypeSchema(string $mimeType, string $action)
+    {
+        $schema = $this->schema instanceof Schema ? $this->schema : new Schema();
+
+        switch ($mimeType) {
+            case 'application/xml':
+                return (new XmlMedia($schema))->buildSchema($action);
+            case 'application/hal+json':
+            case 'application/vnd.hal+json':
+                return (new HalJson($schema))->buildSchema($action);
+            case 'text/plain':
+                return (new Schema())->setType('string');
+        }
+
+        return (new Generic($schema))->buildSchema($action);
     }
 
     /**

@@ -16,6 +16,11 @@ class Schema implements JsonSerializable
     /**
      * @var string
      */
+    public const SCHEMA = '#/x-swagger-bake/components/schemas/';
+
+    /**
+     * @var string
+     */
     private $name = '';
 
     /**
@@ -473,7 +478,7 @@ class Schema implements JsonSerializable
      */
     public function getWriteSchemaRef(): string
     {
-        return '#/x-swagger-bake/components/schemas/' . $this->getWriteSchemaName();
+        return self::SCHEMA . $this->getWriteSchemaName();
     }
 
     /**
@@ -481,6 +486,6 @@ class Schema implements JsonSerializable
      */
     public function getReadSchemaRef(): string
     {
-        return '#/x-swagger-bake/components/schemas/' . $this->getReadSchemaName();
+        return self::SCHEMA . $this->getReadSchemaName();
     }
 }
