@@ -4,13 +4,13 @@
  * # REQUIRED SETTINGS:
  * ################################
  *
- * @var string $prefix: The relative path that SwaggerBake will scan for your APIs routes (e.g. `/api/`)
+ * @var string $prefix: The route scope that SwaggerBake will scan for your APIs routes (e.g. `/api/`)
  *
  * @var string $yml: A base Swagger YML file, see example in assets (e.g. `/config/swagger.yml`).
  *
- * @var string $json: JSON file loaded by the Swagger UI client (e.g. `/webroot/swagger.json`).
+ * @var string $json: Web accessible file path the JSON file is written to (e.g. `/webroot/swagger.json`).
  *
- * @var string $webPath: The path browsers will use to access the JSON file (e.g. `/swagger.json`).
+ * @var string $webPath: The URL browsers will use to access the JSON file (e.g. `/swagger.json`).
  *
  * ################################
  * # RECOMMENDED SETTINGS:
