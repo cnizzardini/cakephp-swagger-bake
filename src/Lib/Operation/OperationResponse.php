@@ -9,6 +9,7 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\MediaType\Generic;
 use SwaggerBake\Lib\MediaType\HalJson;
+use SwaggerBake\Lib\MediaType\JsonLd;
 use SwaggerBake\Lib\MediaType\Xml as XmlMedia;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -208,6 +209,8 @@ class OperationResponse
             case 'application/hal+json':
             case 'application/vnd.hal+json':
                 return (new HalJson($schema))->buildSchema($action);
+            case 'application/ld+json':
+                return (new JsonLd($schema))->buildSchema($action);
             case 'text/plain':
                 return (new Schema())->setType('string');
         }

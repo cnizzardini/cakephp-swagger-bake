@@ -89,3 +89,59 @@ x-swagger-bake:
                   type: string
                   format: url
                   example: /collection?page=:id
+      JsonLd-Item:
+        type: object
+        properties:
+          '@id':
+            type: string
+            format: url
+            example: /entity/:id
+          '@type':
+            type: string
+            format: url
+            example: https://schema.org/Thing
+          '@context':
+            type: string
+            format: url
+            example: /context/Entity
+      JsonLd-Collection:
+        type: object
+        properties:
+          '@id':
+            type: string
+            format: url
+            example: /entity/:id
+          '@type':
+            type: string
+            format: url
+            example: https://schema.org/Thing
+          '@context':
+            type: string
+            format: url
+            example: /context/Entity
+          view:
+            type: object
+            properties:
+              '@id':
+                type: string
+                format: url
+                example: /index
+              '@type':
+                type: string
+                example: 'PartialCollectionView'
+              next:
+                type: string
+                format: url
+                example: /index?page=:number
+              prev:
+                type: string
+                format: url
+                example: /index?page=:number
+              first:
+                type: string
+                format: url
+                example: /index
+              last:
+                type: string
+                format: url
+                example: /index?page=:number
