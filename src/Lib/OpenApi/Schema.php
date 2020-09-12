@@ -468,6 +468,22 @@ class Schema implements JsonSerializable
     /**
      * @return string
      */
+    public function getAddSchemaName(): string
+    {
+        return $this->name . '-Add';
+    }
+
+    /**
+     * @return string
+     */
+    public function getEditSchemaName(): string
+    {
+        return $this->name . '-Edit';
+    }
+
+    /**
+     * @return string
+     */
     public function getReadSchemaName(): string
     {
         return $this->name . '-Read';
@@ -479,6 +495,22 @@ class Schema implements JsonSerializable
     public function getWriteSchemaRef(): string
     {
         return self::SCHEMA . $this->getWriteSchemaName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddSchemaRef(): string
+    {
+        return self::SCHEMA . $this->getAddSchemaName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getEditSchemaRef(): string
+    {
+        return self::SCHEMA . $this->getEditSchemaName();
     }
 
     /**

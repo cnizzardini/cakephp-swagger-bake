@@ -117,7 +117,7 @@ class SwaggerOperationTest extends TestCase
         $employee = $arr['paths']['/employees']['post'];
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
 
-        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Write', $schema['$ref']);
+        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Add', $schema['$ref']);
     }
 
     public function testDefaultResponseSchemaOnAddMethod()
@@ -137,7 +137,7 @@ class SwaggerOperationTest extends TestCase
         $employee = $arr['paths']['/employees/{id}']['patch'];
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
 
-        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Write', $schema['$ref']);
+        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Edit', $schema['$ref']);
     }
 
     public function testDefaultResponseSchemaOnEditMethod()

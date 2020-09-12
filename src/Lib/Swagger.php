@@ -225,14 +225,44 @@ class Swagger
             }
             $this->pushSchema($schema);
 
-            $writeSchema = $schemaFactory->create($entity, $schemaFactory::WRITEABLE_PROPERTIES);
-            $this->pushVendorSchema(
-                $writeSchema->setName($schema->getWriteSchemaName())
-            );
-
             $readSchema = $schemaFactory->create($entity, $schemaFactory::READABLE_PROPERTIES);
             $this->pushVendorSchema(
-                $readSchema->setName($schema->getReadSchemaName())
+                $readSchema->setName($readSchema->getReadSchemaName())
+            );
+
+            $writeSchema = $schemaFactory->create($entity, $schemaFactory::WRITEABLE_PROPERTIES);
+            $this->pushVendorSchema(
+                $writeSchema->setName($writeSchema->getWriteSchemaName())
+            );
+
+            $propertiesRequiredOnCreate = array_filter($writeSchema->getProperties(), function ($property) {
+                return $property->isRequirePresenceOnCreate() || $property->isRequired();
+            });
+
+            $addSchema = clone $writeSchema;
+            $this->pushVendorSchema(
+                $addSchema
+                    ->setName($schema->getAddSchemaName())
+                    ->setProperties([])
+                    ->setAllOf([
+                        ['$ref' => $schema->getWriteSchemaRef()]
+                    ])
+                    ->setRequired(array_keys($propertiesRequiredOnCreate))
+            );
+
+            $propertiesRequiredOnUpdate = array_filter($writeSchema->getProperties(), function ($property) {
+                return $property->isRequirePresenceOnUpdate() || $property->isRequired();
+            });
+
+            $editSchema = clone $writeSchema;
+            $this->pushVendorSchema(
+                $editSchema
+                    ->setName($schema->getEditSchemaName())
+                    ->setProperties([])
+                    ->setAllOf([
+                        ['$ref' => $schema->getWriteSchemaRef()]
+                    ])
+                    ->setRequired(array_keys($propertiesRequiredOnUpdate))
             );
         }
     }
