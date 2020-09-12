@@ -129,7 +129,7 @@ class SchemaFactory
                 if ($propertyType == self::READABLE_PROPERTIES && !$property->isWriteOnly()) {
                     return true;
                 }
-                if (self::WRITEABLE_PROPERTIES && !$property->isReadOnly()) {
+                if ($propertyType == self::WRITEABLE_PROPERTIES && !$property->isReadOnly()) {
                     return true;
                 }
             }

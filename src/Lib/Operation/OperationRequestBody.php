@@ -283,7 +283,7 @@ class OperationRequestBody
 
             if (in_array($this->operation->getHttpMethod(), ['POST'])) {
                 $content->setSchema($schema->getAddSchemaRef());
-            } else{
+            } else {
                 $content->setSchema($schema->getEditSchemaRef());
             }
 

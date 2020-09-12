@@ -245,7 +245,7 @@ class Swagger
                     ->setName($schema->getAddSchemaName())
                     ->setProperties([])
                     ->setAllOf([
-                        ['$ref' => $schema->getWriteSchemaRef()]
+                        ['$ref' => $schema->getWriteSchemaRef()],
                     ])
                     ->setRequired(array_keys($propertiesRequiredOnCreate))
             );
@@ -260,7 +260,7 @@ class Swagger
                     ->setName($schema->getEditSchemaName())
                     ->setProperties([])
                     ->setAllOf([
-                        ['$ref' => $schema->getWriteSchemaRef()]
+                        ['$ref' => $schema->getWriteSchemaRef()],
                     ])
                     ->setRequired(array_keys($propertiesRequiredOnUpdate))
             );
