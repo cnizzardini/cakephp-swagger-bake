@@ -123,14 +123,17 @@ class SchemaFactory
             return $return;
         }
 
-        return array_filter($return, function (SchemaProperty $property) use ($propertyType) {
-            if ($propertyType == self::READABLE_PROPERTIES && !$property->isWriteOnly()) {
-                return true;
+        return array_filter(
+            $return,
+            function (SchemaProperty $property) use ($propertyType) {
+                if ($propertyType == self::READABLE_PROPERTIES && !$property->isWriteOnly()) {
+                    return true;
+                }
+                if ($propertyType == self::WRITEABLE_PROPERTIES && !$property->isReadOnly()) {
+                    return true;
+                }
             }
-            if ($propertyType == self::WRITEABLE_PROPERTIES && !$property->isReadOnly()) {
-                return true;
-            }
-        });
+        );
     }
 
     /**
