@@ -6,7 +6,6 @@ namespace SwaggerBake\Lib\Operation;
 use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\MediaType\Generic;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\MediaType\JsonLd;
@@ -16,6 +15,7 @@ use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\Xml;
+use SwaggerBake\Lib\Route\RouteDecorator;
 
 /**
  * Class OperationResponse

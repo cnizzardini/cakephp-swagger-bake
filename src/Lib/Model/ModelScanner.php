@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Model;
 
 use Cake\Collection\Collection;
-use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
@@ -13,9 +12,9 @@ use MixerApi\Core\Model\ModelFactory;
 use MixerApi\Core\Utility\NamespaceUtility;
 use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
@@ -52,7 +51,7 @@ class ModelScanner
     /**
      * Gets an array of ModelDecorator instances
      *
-     * @return ModelDecorator[]
+     * @return \SwaggerBake\Lib\Model\ModelDecorator[]
      */
     public function getModelDecorators(): array
     {
@@ -123,7 +122,7 @@ class ModelScanner
     {
         $routes = $this->routeScanner->getRoutes();
 
-        $result = (new Collection($routes))->filter(function(RouteDecorator $route) use ($model) {
+        $result = (new Collection($routes))->filter(function (RouteDecorator $route) use ($model) {
             return $route->getController() == $model->getTable()->getAlias();
         });
 

@@ -11,8 +11,6 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
-use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
@@ -33,11 +31,6 @@ class SchemaFactory
     private $validator;
 
     /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
-
-    /**
      * @var string
      */
     public const WRITEABLE_PROPERTIES = 2;
@@ -53,19 +46,12 @@ class SchemaFactory
     public const ALL_PROPERTIES = 6;
 
     /**
-     * @param \SwaggerBake\Lib\Configuration $config Configuration
-     */
-    public function __construct(Configuration $config)
-    {
-        $this->config = $config;
-    }
-
-    /**
      * Creates an instance of Schema for an EntityDecorator, returns null if the Entity is set to invisible
      *
-     * @param \SwaggerBake\Lib\Model\ModelDecorator $model ModelDecorator
-     * @param int $propertyType see public constants for options
+     * @param \SwaggerBake\Lib\Model\ModelDecorator $modelDecorator ModelDecorator
+     * @param int $propertyType see public constants for o
      * @return \SwaggerBake\Lib\OpenApi\Schema|null
+     * @throws \ReflectionException
      */
     public function create(ModelDecorator $modelDecorator, int $propertyType = 6): ?Schema
     {
@@ -159,30 +145,6 @@ class SchemaFactory
     }
 
     /**
-     * @param string $className Name of the Table class
-     * @return string|null
-     */
-    private function getTableFromNamespaces(string $className): ?string
-    {
-        $namespaces = $this->config->getNamespaces();
-
-        if (!isset($namespaces['tables']) || !is_array($namespaces['tables'])) {
-            throw new SwaggerBakeRunTimeException(
-                'Invalid configuration, missing SwaggerBake.namespaces.tables'
-            );
-        }
-
-        foreach ($namespaces['tables'] as $namespace) {
-            $table = $namespace . 'Model\Table\\' . $className;
-            if (class_exists($table, true)) {
-                return $table;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Returns key-value pair of property name => SchemaProperty
      *
      * @param \MixerApi\Core\Model\Model $model Model
@@ -230,9 +192,9 @@ class SchemaFactory
      * Gets the Table classes Validator
      *
      * @param \MixerApi\Core\Model\Model $model Model
-     * @return \Cake\Validation\Validator|null
+     * @return \Cake\Validation\Validator
      */
-    private function getValidator(Model $model): ?Validator
+    private function getValidator(Model $model): Validator
     {
         try {
             $validator = $model->getTable()->validationDefault(new Validator());

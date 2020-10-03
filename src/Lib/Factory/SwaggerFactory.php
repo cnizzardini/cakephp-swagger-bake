@@ -5,8 +5,8 @@ namespace SwaggerBake\Lib\Factory;
 
 use Cake\Routing\Router;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;

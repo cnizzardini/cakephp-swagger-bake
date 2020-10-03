@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Operation;
 
 use SwaggerBake\Lib\Annotation\SwagPathParameter;
-use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\Route\RouteDecorator;
 
 /**
  * Class OperationPath

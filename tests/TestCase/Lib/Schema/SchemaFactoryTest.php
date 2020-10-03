@@ -46,7 +46,7 @@ class SchemaFactoryTest extends TestCase
         $connection = ConnectionManager::get('default');
         $department = (new ModelFactory($connection, new DepartmentsTable()))->create();
         $decorator = new ModelDecorator($department, new Controller());
-        $schema = (new SchemaFactory($this->configuration))->create($decorator);
+        $schema = (new SchemaFactory())->create($decorator);
         $this->assertInstanceOf(Schema::class, $schema);
     }
 
@@ -55,7 +55,7 @@ class SchemaFactoryTest extends TestCase
         $connection = ConnectionManager::get('default');
         $department = (new ModelFactory($connection, new DepartmentsTable()))->create();
         $decorator = new ModelDecorator($department, new Controller());
-        $schema = (new SchemaFactory($this->configuration))->create($decorator, SchemaFactory::WRITEABLE_PROPERTIES);
+        $schema = (new SchemaFactory())->create($decorator, SchemaFactory::WRITEABLE_PROPERTIES);
         $this->assertCount(1, $schema->getProperties());
     }
 }
