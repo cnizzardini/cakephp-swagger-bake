@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
@@ -72,6 +74,10 @@ class Swagger
      */
     public function getArray(): array
     {
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.beforeRender', $this->array)
+        );
+
         foreach ($this->array['paths'] as $method => $paths) {
             foreach ($paths as $pathId => $path) {
                 if ($path instanceof Path) {
