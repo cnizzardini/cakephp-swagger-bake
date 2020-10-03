@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Schema;
 
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 use phpDocumentor\Reflection\DocBlock;
@@ -99,6 +101,12 @@ class SchemaFactory
         if (!empty($requiredProperties)) {
             $schema->setRequired(array_keys($requiredProperties));
         }
+
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.Schema.created', $schema, [
+                'entity' => $entity,
+            ])
+        );
 
         return $schema;
     }
