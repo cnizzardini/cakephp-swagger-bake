@@ -16,6 +16,16 @@ EventManager::instance()
     });
 ```
 
+The `SwaggerBake.Schema.created` is dispatched each time a new Schema is
+created. Simply listen for the event: 
+
+```php
+EventManager::instance()
+    ->on('SwaggerBake.Schema.created', function (Event $event) {
+        // your code
+    });
+```
+
 ## Adding your Extension to the SwaggerBake project
 
 1. Your extension must implement ExtensionInterface. Read the interfaces comments and refer to the CakeSearch 

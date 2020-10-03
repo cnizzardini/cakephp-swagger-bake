@@ -169,6 +169,7 @@ class Extension implements ExtensionInterface
 
         /** @var \Search\Model\Behavior\SearchBehavior $search */
         $search = $table->getBehavior('Search');
+
         return $search->searchManager();
     }
 }
