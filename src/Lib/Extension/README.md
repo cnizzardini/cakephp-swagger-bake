@@ -26,6 +26,16 @@ EventManager::instance()
     });
 ```
 
+The `SwaggerBake.beforeRender` is dispatched once, just before SwaggerBake converts 
+data to an OpenAPI array or json.
+
+```php
+EventManager::instance()
+    ->on('SwaggerBake.beforeRender', function (Event $event) {
+        // your code
+    });
+```
+
 ## Adding your Extension to the SwaggerBake project
 
 1. Your extension must implement ExtensionInterface. Read the interfaces comments and refer to the CakeSearch 
