@@ -232,7 +232,7 @@ bin/cake swagger bake --config OtherApi.swagger_bake
 #### Event System
 
 You can extend Swagger Bake further with events. Read the 
-[extension documentation](src/docs/extensions.md#swaggerbake-extensions) for details.
+[extension documentation](docs/extensions.md#swaggerbake-extensions) for details.
 
 ## Debug Commands
 
