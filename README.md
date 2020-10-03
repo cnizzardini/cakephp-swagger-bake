@@ -149,15 +149,14 @@ SwaggerBake provides some optional Annotations for enhanced functionality. These
 | [@SwagQuery](docs/annotations.md#swagquery) | Adds query parameters |
 | [@SwagForm](docs/annotations.md#swagform) | Adds form parameters |
 | [@SwagDto](docs/annotations.md#swagdto) | Adds Data Transfer Objects (DTOs) |
-| [@SwagDto](docs/annotations.md#swagheader) | Adds header parameters |
+| [@SwagHeader](docs/annotations.md#swagheader) | Adds header parameters |
 | [@SwagPathParameter](docs/annotations.md#swagpathparameter) | Modifies path parameters |
 | [@SwagSecurity](docs/annotations.md#swagsecurity) | Adds/modifies authentication. Read below |
 | [@SwagOperation](docs/annotations.md#swagoperation) | Modifies OpenAPI operations (can be used to hide operations) |
-| [@SwagRequestBody](docs/annotations.mdswagrequestbody) | Describes OpenAPI request body |
+| [@SwagRequestBody](docs/annotations.md#swagrequestbody) | Describes OpenAPI request body |
 | [@SwagRequestBodyContent](docs/annotations.md#swagrequestbodycontent) | Describes OpenAPI request body content |
 | [@SwagResponseSchema](docs/annotations.md#swagresponseschema) | Describes OpenAPI response schema |
 | [@SwagPath](docs/annotations.md#swagpath) | Describes OpenAPI paths (can be used to hide paths) |
-| [@SwagEntity](docs/annotations.md#swagentity) | Describes OpenAPI Entity (can be used to hide entity schemas) |
 | [@SwagEntity](docs/annotations.md#swagentity) | Describes OpenAPI Entity (can be used to hide entity schemas) |
 | [@SwagEntityAttribute](docs/annotations.md#swagentityattribute) | Add/modify OpenAPI schema properties |
 
