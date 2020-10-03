@@ -9,8 +9,8 @@ use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\AnnotationLoader;
-use SwaggerBake\Lib\EntityScanner;
-use SwaggerBake\Lib\RouteScanner;
+use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
@@ -75,7 +75,7 @@ class SwaggerTest extends TestCase
 
         $cakeRoute = new RouteScanner($this->router, $config);
 
-        $swagger = new Swagger(new EntityScanner($cakeRoute, $config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
 
         $arr = json_decode($swagger->toString(), true);
 
@@ -91,7 +91,7 @@ class SwaggerTest extends TestCase
 
         $cakeRoute = new RouteScanner($this->router, $config);
 
-        $swagger = new Swagger(new EntityScanner($cakeRoute, $config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
         $arr = json_decode($swagger->toString(), true);
 
         $this->assertArrayHasKey('/departments', $arr['paths']);

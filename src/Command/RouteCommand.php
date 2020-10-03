@@ -9,7 +9,7 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Routing\Router;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\RouteScanner;
+use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**

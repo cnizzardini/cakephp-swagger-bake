@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SwaggerBake\Lib\Decorator;
+namespace SwaggerBake\Lib\Route;
 
 use Cake\Routing\Route\Route;
 

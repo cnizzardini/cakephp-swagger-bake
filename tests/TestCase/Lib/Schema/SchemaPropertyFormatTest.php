@@ -4,7 +4,7 @@ namespace SwaggerBake\Test\TestCase\Lib;
 
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validator;
-use SwaggerBake\Lib\Decorator\PropertyDecorator;
+use MixerApi\Core\Model\ModelProperty;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Schema\SchemaPropertyFormat;
 
@@ -33,7 +33,7 @@ class SchemaPropertyFormatTest extends TestCase
             $schemaPropertyFormat = new SchemaPropertyFormat(
                 (new Validator())->{$rule}('test_field'),
                 (new SchemaProperty())->setName('test_field')->setType($vars['type']),
-                (new PropertyDecorator())->setName('test_field')->setType($vars['type'])
+                (new ModelProperty())->setName('test_field')->setType($vars['type'])
             );
             $schemaProperty = $schemaPropertyFormat->withFormat();
             $this->assertEquals(

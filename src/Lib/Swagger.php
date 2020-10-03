@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib;
 
 use Cake\Utility\Inflector;
-use SwaggerBake\Lib\Decorator\RouteDecorator;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -28,12 +29,12 @@ class Swagger
     private $array = [];
 
     /**
-     * @var \SwaggerBake\Lib\EntityScanner
+     * @var \SwaggerBake\Lib\Model\ModelScanner
      */
-    private $entityScanner;
+    private $modelScanner;
 
     /**
-     * @var \SwaggerBake\Lib\RouteScanner
+     * @var \SwaggerBake\Lib\Route\RouteScanner
      */
     private $routeScanner;
 
@@ -43,13 +44,13 @@ class Swagger
     private $config;
 
     /**
-     * @param \SwaggerBake\Lib\EntityScanner $entityScanner EntityScanner
+     * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
      */
-    public function __construct(EntityScanner $entityScanner)
+    public function __construct(ModelScanner $modelScanner)
     {
-        $this->entityScanner = $entityScanner;
-        $this->routeScanner = $entityScanner->getRouteScanner();
-        $this->config = $entityScanner->getConfig();
+        $this->modelScanner = $modelScanner;
+        $this->routeScanner = $modelScanner->getRouteScanner();
+        $this->config = $modelScanner->getConfig();
 
         $this->array = Yaml::parseFile($this->config->getYml());
 
@@ -212,25 +213,26 @@ class Swagger
     private function buildSchemasFromModels(): void
     {
         $schemaFactory = new SchemaFactory($this->config);
-        $entities = $this->entityScanner->getEntityDecorators();
+        $models = $this->modelScanner->getModelDecorators();
 
-        foreach ($entities as $entity) {
-            if ($this->getSchemaByName($entity->getName())) {
+        foreach ($models as $model) {
+            $entityName = (new \ReflectionClass($model->getModel()->getEntity()))->getShortName();
+            if ($this->getSchemaByName($entityName)) {
                 continue;
             }
 
-            $schema = $schemaFactory->create($entity);
+            $schema = $schemaFactory->create($model);
             if (!$schema) {
                 continue;
             }
             $this->pushSchema($schema);
 
-            $writeSchema = $schemaFactory->create($entity, $schemaFactory::WRITEABLE_PROPERTIES);
+            $writeSchema = $schemaFactory->create($model, $schemaFactory::WRITEABLE_PROPERTIES);
             $this->pushVendorSchema(
                 $writeSchema->setName($schema->getWriteSchemaName())
             );
 
-            $readSchema = $schemaFactory->create($entity, $schemaFactory::READABLE_PROPERTIES);
+            $readSchema = $schemaFactory->create($model, $schemaFactory::READABLE_PROPERTIES);
             $this->pushVendorSchema(
                 $readSchema->setName($schema->getReadSchemaName())
             );

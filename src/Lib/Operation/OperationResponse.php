@@ -6,7 +6,7 @@ namespace SwaggerBake\Lib\Operation;
 use phpDocumentor\Reflection\DocBlock;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Decorator\RouteDecorator;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\MediaType\Generic;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\MediaType\JsonLd;
@@ -40,7 +40,7 @@ class OperationResponse
     private $doc;
 
     /**
-     * @var \SwaggerBake\Lib\Decorator\RouteDecorator
+     * @var \SwaggerBake\Lib\Route\RouteDecorator
      */
     private $route;
 
@@ -59,7 +59,7 @@ class OperationResponse
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
      * @param \phpDocumentor\Reflection\DocBlock $doc DocBlock
      * @param array $annotations An array of annotation objects
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema
      */
     public function __construct(

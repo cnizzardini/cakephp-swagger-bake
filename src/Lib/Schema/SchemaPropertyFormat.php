@@ -5,7 +5,7 @@ namespace SwaggerBake\Lib\Schema;
 
 use Cake\Validation\ValidationRule;
 use Cake\Validation\Validator;
-use SwaggerBake\Lib\Decorator\PropertyDecorator;
+use MixerApi\Core\Model\ModelProperty;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 /**
@@ -51,16 +51,16 @@ class SchemaPropertyFormat
     /**
      * @param \Cake\Validation\Validator $validator Validator
      * @param \SwaggerBake\Lib\OpenApi\SchemaProperty $schemaProperty SchemaProperty
-     * @param \SwaggerBake\Lib\Decorator\PropertyDecorator $propertyDecorator PropertyDecorator
+     * @param \MixerApi\Core\Model\ModelProperty $property Property
      */
     public function __construct(
         Validator $validator,
         SchemaProperty $schemaProperty,
-        PropertyDecorator $propertyDecorator
+        ModelProperty $property
     ) {
         $this->validator = $validator;
         $this->schemaProperty = $schemaProperty;
-        $this->propertyName = $propertyDecorator->getName();
+        $this->propertyName = $property->getName();
     }
 
     /**

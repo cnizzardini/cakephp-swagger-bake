@@ -7,7 +7,7 @@ use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagForm;
 use SwaggerBake\Lib\Annotation\SwagRequestBody;
 use SwaggerBake\Lib\Annotation\SwagRequestBodyContent;
-use SwaggerBake\Lib\Decorator\RouteDecorator;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\RequestBody;
@@ -34,7 +34,7 @@ class OperationRequestBody
     private $operation;
 
     /**
-     * @var \SwaggerBake\Lib\Decorator\RouteDecorator
+     * @var \SwaggerBake\Lib\Route\RouteDecorator
      */
     private $route;
 
@@ -57,7 +57,7 @@ class OperationRequestBody
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
      * @param array $annotations Array of annotation objects
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema
      */
     public function __construct(
