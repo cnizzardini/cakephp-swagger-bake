@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Operation;
 
 use SwaggerBake\Lib\Annotation\SwagPathParameter;
-use SwaggerBake\Lib\Decorator\RouteDecorator;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -22,7 +22,7 @@ class OperationPath
     private $operation;
 
     /**
-     * @var \SwaggerBake\Lib\Decorator\RouteDecorator
+     * @var \SwaggerBake\Lib\Route\RouteDecorator
      */
     private $route;
 
@@ -38,7 +38,7 @@ class OperationPath
 
     /**
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation instance of Operation
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route instance of RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $route instance of RouteDecorator
      * @param array $annotations array of annotation objects or empty array
      * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema instance of Schema or null
      */

@@ -7,8 +7,8 @@ use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\AnnotationLoader;
-use SwaggerBake\Lib\EntityScanner;
-use SwaggerBake\Lib\RouteScanner;
+use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
@@ -59,9 +59,9 @@ class SwagRequestBodyTest extends TestCase
 
     public function testSwagRequestBody()
     {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $routeScanner = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new EntityScanner($cakeRoute, $this->config));
+        $swagger = new Swagger(new ModelScanner($routeScanner, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
         $operation = $arr['paths']['/employees/custom-post']['post'];

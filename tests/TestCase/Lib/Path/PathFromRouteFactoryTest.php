@@ -5,7 +5,7 @@ namespace SwaggerBake\Test\TestCase\Lib\Path;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\RouteScanner;
+use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Path\PathFromRouteFactory;

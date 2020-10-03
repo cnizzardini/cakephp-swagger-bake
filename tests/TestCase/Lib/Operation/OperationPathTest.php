@@ -4,9 +4,9 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 
 use Cake\TestSuite\TestCase;
 use Cake\Routing\Route\Route;
-use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationPath;
+use SwaggerBake\Lib\Route\RouteDecorator;
 
 class OperationPathTest extends TestCase
 {

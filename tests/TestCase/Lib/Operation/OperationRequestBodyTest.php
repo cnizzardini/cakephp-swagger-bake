@@ -9,8 +9,8 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagForm;
 use SwaggerBake\Lib\Annotation\SwagRequestBody;
-use SwaggerBake\Lib\EntityScanner;
-use SwaggerBake\Lib\RouteScanner;
+use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -60,7 +60,7 @@ class OperationRequestBodyTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
-        $cakeModels = new EntityScanner($cakeRoute, $config);
+        $cakeModels = new ModelScanner($cakeRoute, $config);
         $swagger = new Swagger($cakeModels);
 
         $routes = $cakeRoute->getRoutes();
@@ -92,7 +92,7 @@ class OperationRequestBodyTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
-        $cakeModels = new EntityScanner($cakeRoute, $config);
+        $cakeModels = new ModelScanner($cakeRoute, $config);
         $swagger = new Swagger($cakeModels);
 
         $routes = $cakeRoute->getRoutes();
@@ -125,7 +125,7 @@ class OperationRequestBodyTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
-        $cakeModels = new EntityScanner($cakeRoute, $config);
+        $cakeModels = new ModelScanner($cakeRoute, $config);
         $swagger = new Swagger($cakeModels);
 
         $routes = $cakeRoute->getRoutes();

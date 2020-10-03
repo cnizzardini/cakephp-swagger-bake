@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace SwaggerBake\Lib;
+namespace SwaggerBake\Lib\Route;
 
 use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
 use InvalidArgumentException;
-use SwaggerBake\Lib\Decorator\RouteDecorator;
+use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
@@ -42,7 +42,7 @@ class RouteScanner
     /**
      * Array of RouteDecorator instances
      *
-     * @var \SwaggerBake\Lib\Decorator\RouteDecorator[]
+     * @var \SwaggerBake\Lib\Route\RouteDecorator[]
      */
     private $routes;
 
@@ -60,7 +60,7 @@ class RouteScanner
     }
 
     /**
-     * @return \SwaggerBake\Lib\Decorator\RouteDecorator[]
+     * @return \SwaggerBake\Lib\Route\RouteDecorator[]
      */
     public function getRoutes(): array
     {
@@ -93,8 +93,10 @@ class RouteScanner
 
             $controller = $routeDecorator->getController();
 
-            $results = array_filter($classes, function ($fqn) use ($controller) {
-                return strstr($fqn, '\\' . $controller . 'Controller');
+            $results = array_filter($classes, function ($fqn) use ($controller, $route) {
+                $prefix = !empty($route->defaults['prefix']) ? $route->defaults['prefix'] . '\\' : '';
+
+                return strstr($fqn, '\\' . $prefix . $controller . 'Controller');
             });
 
             if (count($results) == 1) {

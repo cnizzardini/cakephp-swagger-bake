@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Schema;
 
 use Cake\Validation\Validator;
-use SwaggerBake\Lib\Decorator\PropertyDecorator;
+use MixerApi\Core\Model\ModelProperty;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
 
@@ -33,10 +33,10 @@ class SchemaPropertyFactory
     /**
      * Creates an instance of SchemaProperty
      *
-     * @param \SwaggerBake\Lib\Decorator\PropertyDecorator $property PropertyDecorator
+     * @param \MixerApi\Core\Model\ModelProperty $property ModelProperty
      * @return \SwaggerBake\Lib\OpenApi\SchemaProperty
      */
-    public function create(PropertyDecorator $property): SchemaProperty
+    public function create(ModelProperty $property): SchemaProperty
     {
         $schemaProperty = new SchemaProperty();
         $schemaProperty
@@ -55,10 +55,10 @@ class SchemaPropertyFactory
     }
 
     /**
-     * @param \SwaggerBake\Lib\Decorator\PropertyDecorator $property PropertyDecorator
+     * @param \MixerApi\Core\Model\ModelProperty $property PropertyDecorator
      * @return bool
      */
-    private function isReadOnly(PropertyDecorator $property): bool
+    private function isReadOnly(ModelProperty $property): bool
     {
         if ($property->isPrimaryKey()) {
             return true;

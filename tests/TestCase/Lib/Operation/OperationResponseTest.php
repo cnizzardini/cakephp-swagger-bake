@@ -7,7 +7,7 @@ use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
-use SwaggerBake\Lib\RouteScanner;
+use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;

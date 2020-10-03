@@ -8,9 +8,10 @@ use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Routing\Router;
+use ReflectionClass;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\EntityScanner;
-use SwaggerBake\Lib\RouteScanner;
+use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
 use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
@@ -61,10 +62,10 @@ class ModelCommand extends Command
         }
 
         $routeScanner = new RouteScanner(new Router(), $config);
-        $entityScanner = new EntityScanner($routeScanner, $config);
-        $entities = $entityScanner->getEntityDecorators();
+        $modelScanner = new ModelScanner($routeScanner, $config);
+        $models = $modelScanner->getModelDecorators();
 
-        if (empty($entities)) {
+        if (empty($models)) {
             $io->out();
             $io->warning('No models were found that are associated with: ' . $config->getPrefix());
             $io->out('Have you added RESTful routes? Do you have models associated with those routes?');
@@ -74,10 +75,10 @@ class ModelCommand extends Command
 
         $header = ['Attribute','Data Type', 'Swagger Type','Default','Primary Key'];
 
-        foreach ($entities as $entity) {
-            $io->out('- ' . $entity->getName());
+        foreach ($models as $model) {
+            $io->out('- ' . (new ReflectionClass($model->getModel()->getEntity()))->getShortName());
             $output = [$header];
-            foreach ($entity->getProperties() as $property) {
+            foreach ($model->getModel()->getProperties() as $property) {
                 $output[] = [
                     $property->getName(),
                     $property->getType(),
