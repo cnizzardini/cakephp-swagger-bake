@@ -50,8 +50,15 @@ return [
         'hotReload' => \Cake\Core\Configure::read('debug'),
         /** optional configurations below:  **/
         /*
-        'requestAccepts' => ['application/x-www-form-urlencoded'],
-        'responseContentTypes' => ['application/json'],
+        'requestAccepts' => [
+            'application/x-www-form-urlencoded',
+            'application/json',
+            'application/xml'
+        ],
+        'responseContentTypes' => [
+            'application/json',
+            'application/xml'
+        ],
         'docType' => 'swagger',
         'exceptionSchema' => 'Exception',
         'namespaces' => [
