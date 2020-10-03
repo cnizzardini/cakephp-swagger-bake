@@ -44,8 +44,15 @@ class Configuration
                 'docType' => 'swagger',
                 'hotReload' => false,
                 'exceptionSchema' => 'Exception',
-                'requestAccepts' => ['application/x-www-form-urlencoded'],
-                'responseContentTypes' => ['application/json'],
+                'requestAccepts' => [
+                    'application/x-www-form-urlencoded',
+                    'application/json',
+                    'application/xml'
+                ],
+                'responseContentTypes' => [
+                    'application/json',
+                    'application/xml',
+                ],
                 'namespaces' => [
                     'controllers' => ['\App\\'],
                     'entities' => ['\App\\'],
