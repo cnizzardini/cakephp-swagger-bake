@@ -5,8 +5,8 @@ namespace SwaggerBake\Lib\Path;
 
 use SwaggerBake\Lib\Annotation\SwagPath;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Path;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**

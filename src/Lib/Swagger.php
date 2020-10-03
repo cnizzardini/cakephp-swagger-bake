@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib;
 
 use Cake\Utility\Inflector;
-use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -12,6 +11,7 @@ use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
 use SwaggerBake\Lib\Path\PathFromRouteFactory;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Schema\SchemaFactory;
 use SwaggerBake\Lib\Schema\SchemaFromYamlFactory;
 use Symfony\Component\Yaml\Yaml;
@@ -212,7 +212,7 @@ class Swagger
      */
     private function buildSchemasFromModels(): void
     {
-        $schemaFactory = new SchemaFactory($this->config);
+        $schemaFactory = new SchemaFactory();
         $models = $this->modelScanner->getModelDecorators();
 
         foreach ($models as $model) {
@@ -285,7 +285,7 @@ class Swagger
     /**
      * Gets the Schema associated with a Route
      *
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @return \SwaggerBake\Lib\OpenApi\Schema|null
      */
     private function getSchemaFromRoute(RouteDecorator $route): ?Schema

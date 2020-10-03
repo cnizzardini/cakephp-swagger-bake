@@ -5,9 +5,9 @@ namespace SwaggerBake\Lib\Operation;
 
 use Cake\Controller\Controller;
 use SwaggerBake\Lib\Annotation\SwagSecurity;
-use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\PathSecurity;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
 
 /**
