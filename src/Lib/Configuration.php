@@ -47,7 +47,7 @@ class Configuration
                 'requestAccepts' => [
                     'application/x-www-form-urlencoded',
                     'application/json',
-                    'application/xml'
+                    'application/xml',
                 ],
                 'responseContentTypes' => [
                     'application/json',
