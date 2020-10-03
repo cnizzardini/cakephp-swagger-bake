@@ -151,7 +151,7 @@ SwaggerBake provides some optional Annotations for enhanced functionality. These
 | [@SwagDto](docs/annotations.md#swagdto) | Adds Data Transfer Objects (DTOs) |
 | [@SwagDto](docs/annotations.md#swagheader) | Adds header parameters |
 | [@SwagPathParameter](docs/annotations.md#swagpathparameter) | Modifies path parameters |
-| [@SwagSecurity](docs/annotations.md#details) | Adds/modifies authentication. Read below |
+| [@SwagSecurity](docs/annotations.md#swagsecurity) | Adds/modifies authentication. Read below |
 | [@SwagOperation](docs/annotations.md#swagoperation) | Modifies OpenAPI operations (can be used to hide operations) |
 | [@SwagRequestBody](docs/annotations.mdswagrequestbody) | Describes OpenAPI request body |
 | [@SwagRequestBodyContent](docs/annotations.md#swagrequestbodycontent) | Describes OpenAPI request body content |
