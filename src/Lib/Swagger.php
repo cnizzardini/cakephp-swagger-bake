@@ -17,14 +17,11 @@ use SwaggerBake\Lib\Schema\SchemaFactory;
 use SwaggerBake\Lib\Schema\SchemaFromYamlFactory;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * Class Swagger
- *
- * @package SwaggerBake\Lib
- */
 class Swagger
 {
     /**
+     * OpenAPI array
+     *
      * @var array
      */
     private $array = [];
@@ -74,10 +71,6 @@ class Swagger
      */
     public function getArray(): array
     {
-        EventManager::instance()->dispatch(
-            new Event('SwaggerBake.beforeRender', $this->array)
-        );
-
         foreach ($this->array['paths'] as $method => $paths) {
             foreach ($paths as $pathId => $path) {
                 if ($path instanceof Path) {
@@ -111,12 +104,27 @@ class Swagger
     }
 
     /**
+     * @param array $array openapi array
+     * @return $this
+     */
+    public function setArray(array $array)
+    {
+        $this->array = $array;
+
+        return $this;
+    }
+
+    /**
      * Returns OpenAPI 3.0 spec as a JSON string
      *
      * @return false|string
      */
     public function toString()
     {
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.beforeRender', $this)
+        );
+
         return json_encode($this->getArray(), JSON_PRETTY_PRINT);
     }
 
