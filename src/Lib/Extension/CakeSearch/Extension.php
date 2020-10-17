@@ -115,11 +115,6 @@ class Extension implements ExtensionInterface
      */
     private function createParameter(FilterDecorator $filter): Parameter
     {
-        $parameter = new Parameter();
-        $parameter->setName($filter->getName())
-            ->setIn('query')
-            ->setDescription($filter->getComparison() . ' ' . $filter->getName());
-
         $schema = new Schema();
 
         switch ($filter->getComparison()) {
@@ -127,7 +122,10 @@ class Extension implements ExtensionInterface
                 $schema->setType('string');
         }
 
-        return $parameter->setSchema($schema);
+        return (new Parameter())
+            ->setName($filter->getName())
+            ->setIn('query')
+            ->setSchema($schema);
     }
 
     /**
