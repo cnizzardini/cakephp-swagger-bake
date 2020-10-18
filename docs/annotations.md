@@ -492,7 +492,7 @@ class Employee extends Entity {
 
 OpenAPI:
 
- ```yaml
+```yaml
         example_one:
           type: string
           minLength: 5
