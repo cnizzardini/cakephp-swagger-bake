@@ -62,6 +62,7 @@ class SwagEntityAttributeTest extends TestCase
         $employee = $arr['components']['schemas']['Employee'];
 
         $this->assertNotEmpty($employee['properties']['gender']['enum']);
+        $this->assertEquals('female', $employee['properties']['gender']['example']);
         $this->assertEquals(3, $employee['properties']['last_name']['minLength']);
         $this->assertEquals(59, $employee['properties']['last_name']['maxLength']);
         $this->assertEquals('/\W/', $employee['properties']['last_name']['pattern']);
