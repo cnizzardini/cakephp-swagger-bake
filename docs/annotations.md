@@ -42,7 +42,8 @@ be used. You can override the defaults using the `sort` attribute. Otherwise, a 
 use SwaggerBake\Lib\Annotation as Swag;
 /**
  * @Swag\SwagPaginator # default without attributes should work fine in most cases 
- * @Swag\SwagPaginator(sort={"id","name"}, useSortTextInput=false) # custom example
+ * @Swag\SwagPaginator(sortEnum={"id","name"}) # custom example
+ * @Swag\SwagPaginator(useSortTextInput=false) # force a text field instead of enum/dropdown
  */
 public function index() {
     $employees = $this->paginate($this->Employees);
