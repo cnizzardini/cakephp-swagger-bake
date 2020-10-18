@@ -139,6 +139,11 @@ abstract class AbstractSchemaProperty
     public $enum = [];
 
     /**
+     * @var mixed
+     */
+    public $example;
+
+    /**
      * @param array $values Annotation attributes as key-value pair
      */
     public function __construct(array $values)

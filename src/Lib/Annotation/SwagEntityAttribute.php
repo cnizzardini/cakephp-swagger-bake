@@ -32,6 +32,7 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("maxProperties",  type = "integer"),
  * @Attribute("minProperties", type = "integer"),
  * @Attribute("enum", type = "array"),
+ * @Attribute("example", type = "mixed"),
  * })
  *
  * Read OpenAPI specification for exact usage of the attributes:
