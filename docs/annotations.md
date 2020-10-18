@@ -478,7 +478,7 @@ class Employee extends Entity {
 
 ### @SwagEntityAttribute
 Class level annotation for customizing Schema Attributes. Note that the attribute does not have to exist in your entity. 
-You can add adhoc attributes as needed or 
+You can add adhoc attributes as needed and optionally combine with 
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
 
 ```php
