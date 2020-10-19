@@ -55,7 +55,7 @@ class SchemaPropertyFactory
     }
 
     /**
-     * @param \MixerApi\Core\Model\ModelProperty $property PropertyDecorator
+     * @param \MixerApi\Core\Model\ModelProperty $property ModelProperty
      * @return bool
      */
     private function isReadOnly(ModelProperty $property): bool

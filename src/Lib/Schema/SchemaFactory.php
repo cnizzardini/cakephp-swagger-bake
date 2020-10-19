@@ -48,7 +48,7 @@ class SchemaFactory
     public const ALL_PROPERTIES = 6;
 
     /**
-     * Creates an instance of Schema for an EntityDecorator, returns null if the Entity is set to invisible
+     * Creates an instance of Schema for an ModelDecorator, returns null if the Entity is set to invisible
      *
      * @param \SwaggerBake\Lib\Model\ModelDecorator $modelDecorator ModelDecorator
      * @param int $propertyType see public constants for o
@@ -130,7 +130,7 @@ class SchemaFactory
     }
 
     /**
-     * @param \Cake\Datasource\EntityInterface $entity EntityDecorator
+     * @param \Cake\Datasource\EntityInterface $entity EntityInterface
      * @return \phpDocumentor\Reflection\DocBlock|null
      */
     private function getDocBlock(EntityInterface $entity): ?DocBlock
@@ -180,7 +180,7 @@ class SchemaFactory
     /**
      * Returns instance of SwagEntity annotation, otherwise null
      *
-     * @param \Cake\Datasource\EntityInterface $entity EntityDecorator
+     * @param \Cake\Datasource\EntityInterface $entity EntityInterface
      * @return \SwaggerBake\Lib\Annotation\SwagEntity|null
      */
     private function getSwagEntityAnnotation(EntityInterface $entity): ?SwagEntity
