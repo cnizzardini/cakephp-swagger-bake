@@ -98,7 +98,7 @@ class SchemaFactory
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Schema.created', $schema, [
-                'entity' => $entity,
+                'modelDecorator' => $modelDecorator,
             ])
         );
 
