@@ -8,7 +8,6 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\Table;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use ReflectionClass;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 use SwaggerBake\Lib\Extension\ExtensionInterface;
@@ -116,11 +115,6 @@ class Extension implements ExtensionInterface
      */
     private function createParameter(FilterDecorator $filter): Parameter
     {
-        $parameter = new Parameter();
-        $parameter->setName($filter->getName())
-            ->setIn('query')
-            ->setDescription($filter->getComparison() . ' ' . $filter->getName());
-
         $schema = new Schema();
 
         switch ($filter->getComparison()) {
@@ -128,7 +122,10 @@ class Extension implements ExtensionInterface
                 $schema->setType('string');
         }
 
-        return $parameter->setSchema($schema);
+        return (new Parameter())
+            ->setName($filter->getName())
+            ->setIn('query')
+            ->setSchema($schema);
     }
 
     /**
@@ -139,20 +136,15 @@ class Extension implements ExtensionInterface
      */
     private function getFilterDecorators(Table $table, SwagSearch $swagSearch): array
     {
+        $decoratedFilters = [];
+
         $manager = $this->getSearchManager($table, $swagSearch);
 
-        $collections = $this->getCollections($manager);
+        $filters = $manager->getFilters($swagSearch->collection);
 
-        if (!isset($collections[$swagSearch->collection])) {
-            return [];
+        if (empty($filters)) {
+            return $decoratedFilters;
         }
-
-        $reflection = new ReflectionClass($collections[$swagSearch->collection]);
-        $property = $reflection->getProperty('_filters');
-        $property->setAccessible(true);
-        $filters = $property->getValue($collections[$swagSearch->collection]);
-
-        $decoratedFilters = [];
 
         foreach ($filters as $filter) {
             $decoratedFilters[] = (new FilterDecorator($filter));
@@ -165,7 +157,6 @@ class Extension implements ExtensionInterface
      * @param \Cake\ORM\Table $table Table
      * @param \SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch $swagSearch SwagSearch
      * @return \Search\Manager
-     * @throws \ReflectionException
      */
     private function getSearchManager(Table $table, SwagSearch $swagSearch): \Search\Manager
     {
@@ -173,26 +164,10 @@ class Extension implements ExtensionInterface
             'search' => [],
             'collection' => $swagSearch->collection,
         ]);
+
+        /** @var \Search\Model\Behavior\SearchBehavior $search */
         $search = $table->getBehavior('Search');
 
-        $reflection = new ReflectionClass($search);
-        $property = $reflection->getProperty('_manager');
-        $property->setAccessible(true);
-
-        return $property->getValue($search);
-    }
-
-    /**
-     * @param \Search\Manager $manager Search\Manager
-     * @return array
-     * @throws \ReflectionException
-     */
-    private function getCollections(\Search\Manager $manager): array
-    {
-        $reflection = new ReflectionClass($manager);
-        $property = $reflection->getProperty('_collections');
-        $property->setAccessible(true);
-
-        return $property->getValue($manager);
+        return $search->searchManager();
     }
 }

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
@@ -24,6 +26,8 @@ use Symfony\Component\Yaml\Yaml;
 class Swagger
 {
     /**
+     * OpenAPI array
+     *
      * @var array
      */
     private $array = [];
@@ -106,12 +110,27 @@ class Swagger
     }
 
     /**
+     * @param array $array openapi array
+     * @return $this
+     */
+    public function setArray(array $array)
+    {
+        $this->array = $array;
+
+        return $this;
+    }
+
+    /**
      * Returns OpenAPI 3.0 spec as a JSON string
      *
      * @return false|string
      */
     public function toString()
     {
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.beforeRender', $this)
+        );
+
         return json_encode($this->getArray(), JSON_PRETTY_PRINT);
     }
 
@@ -209,6 +228,7 @@ class Swagger
      * Builds schemas from cake models
      *
      * @return void
+     * @throws \ReflectionException
      */
     private function buildSchemasFromModels(): void
     {
@@ -227,17 +247,48 @@ class Swagger
             }
             $this->pushSchema($schema);
 
-            $writeSchema = $schemaFactory->create($model, $schemaFactory::WRITEABLE_PROPERTIES);
-            $this->pushVendorSchema(
-                $writeSchema->setName($schema->getWriteSchemaName())
-            );
-
             $readSchema = $schemaFactory->create($model, $schemaFactory::READABLE_PROPERTIES);
             $this->pushVendorSchema(
-                $readSchema->setName($schema->getReadSchemaName())
+                $readSchema->setName($readSchema->getReadSchemaName())
+            );
+
+            $writeSchema = $schemaFactory->create($model, $schemaFactory::WRITEABLE_PROPERTIES);
+            $this->pushVendorSchema(
+                $writeSchema->setName($writeSchema->getWriteSchemaName())
+            );
+
+            $propertiesRequiredOnCreate = array_filter($writeSchema->getProperties(), function ($property) {
+                return $property->isRequirePresenceOnCreate() || $property->isRequired();
+            });
+
+            $addSchema = clone $writeSchema;
+            $this->pushVendorSchema(
+                $addSchema
+                    ->setName($schema->getAddSchemaName())
+                    ->setProperties([])
+                    ->setAllOf([
+                        ['$ref' => $schema->getWriteSchemaRef()],
+                    ])
+                    ->setRequired(array_keys($propertiesRequiredOnCreate))
+            );
+
+            $propertiesRequiredOnUpdate = array_filter($writeSchema->getProperties(), function ($property) {
+                return $property->isRequirePresenceOnUpdate() || $property->isRequired();
+            });
+
+            $editSchema = clone $writeSchema;
+            $this->pushVendorSchema(
+                $editSchema
+                    ->setName($schema->getEditSchemaName())
+                    ->setProperties([])
+                    ->setAllOf([
+                        ['$ref' => $schema->getWriteSchemaRef()],
+                    ])
+                    ->setRequired(array_keys($propertiesRequiredOnUpdate))
             );
         }
     }
+
 
     /**
      * Builds paths from cake routes

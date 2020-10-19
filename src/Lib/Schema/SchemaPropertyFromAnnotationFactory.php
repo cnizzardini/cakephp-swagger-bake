@@ -43,6 +43,7 @@ class SchemaPropertyFromAnnotationFactory
             'uniqueItems',
             'maxProperties',
             'minProperties',
+            'example',
         ];
 
         foreach ($properties as $property) {

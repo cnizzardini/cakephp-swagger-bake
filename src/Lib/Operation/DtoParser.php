@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
-use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
@@ -126,13 +125,22 @@ class DtoParser
     private function getSwagDtoProperty(ReflectionProperty $reflectionProperty)
     {
         try {
-            $annotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, SwagDtoQuery::class);
+            $annotation = $this->annotationReader->getPropertyAnnotation(
+                $reflectionProperty,
+                SwagDtoQuery::class
+            );
             if ($annotation instanceof SwagDtoQuery && !empty($annotation->name)) {
                 return $annotation;
-            } elseif ($annotation instanceof SwagDtoForm && !empty($annotation->name)) {
+            }
+            $annotation = $this->annotationReader->getPropertyAnnotation(
+                $reflectionProperty,
+                SwagDtoForm::class
+            );
+            if ($annotation instanceof SwagDtoForm && !empty($annotation->name)) {
                 return $annotation;
             }
-        } catch (AnnotationException $e) {
+        } catch (\Exception $e) {
+            return null;
         }
 
         return null;

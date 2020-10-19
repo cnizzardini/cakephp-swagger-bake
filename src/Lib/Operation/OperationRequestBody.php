@@ -279,11 +279,15 @@ class OperationRequestBody
                 );
             }
 
-            $requestBody->pushContent(
-                (new Content())
-                    ->setMimeType($mimeType)
-                    ->setSchema($schema->getWriteSchemaRef())
-            );
+            $content = (new Content())->setMimeType($mimeType);
+
+            if (in_array($this->operation->getHttpMethod(), ['POST'])) {
+                $content->setSchema($schema->getAddSchemaRef());
+            } else {
+                $content->setSchema($schema->getEditSchemaRef());
+            }
+
+            $requestBody->pushContent($content);
         }
 
         $this->operation->setRequestBody($requestBody);

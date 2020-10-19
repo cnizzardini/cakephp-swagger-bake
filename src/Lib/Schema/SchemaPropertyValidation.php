@@ -161,6 +161,8 @@ class SchemaPropertyValidation
 
         if ($isPresenceRequired === true) {
             $this->schemaProperty->setRequired(true);
+            $this->schemaProperty->setRequirePresenceOnUpdate(true);
+            $this->schemaProperty->setRequirePresenceOnCreate(true);
         } elseif (is_string($isPresenceRequired)) {
             switch (strtoupper($isPresenceRequired)) {
                 case 'UPDATE':

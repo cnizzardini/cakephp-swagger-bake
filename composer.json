@@ -12,7 +12,7 @@
         "phpdocumentor/reflection-docblock": "^5.1",
         "doctrine/annotations": "^1.10",
         "thecodingmachine/class-explorer": "^1.1",
-        "mixerapi/core": "dev-master"
+        "mixerapi/core": "^0.1.0"
     },
     "suggest": {
         "friendsofcake/search": "Easy model searching with @SwagSearch",

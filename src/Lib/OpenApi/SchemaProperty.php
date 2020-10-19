@@ -31,9 +31,9 @@ class SchemaProperty implements JsonSerializable
     private $format = '';
 
     /**
-     * @var string
+     * @var mixed
      */
-    private $example = '';
+    private $example;
 
     /**
      * @var string
@@ -232,20 +232,20 @@ class SchemaProperty implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getExample(): string
+    public function getExample()
     {
         return $this->example;
     }
 
     /**
-     * @param string|int $example Example
+     * @param mixed $example An example value
      * @return $this
      */
     public function setExample($example)
     {
-        $this->example = (string)$example;
+        $this->example = $example;
 
         return $this;
     }
@@ -371,4 +371,6 @@ class SchemaProperty implements JsonSerializable
 
         return $this;
     }
+
+
 }

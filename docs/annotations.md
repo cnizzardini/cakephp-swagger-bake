@@ -27,11 +27,6 @@ annotations which support other Cake plugins. These can be imported individually
 - [@SwagEntity](#swagentity)
 - [@SwagEntityAttribute](#swagentityattribute)
 
-## Adding Annotations
-
-Annotations use the `doctrine/annotations` package. To add a new Annotation simply create a new class using one of the 
-existing annotations as an example. Then add the new annotation to `src/Lib/AnnotationLoader.php`.
-
 ## Usage
 
 You can improve this documentation by submitting PRs.
@@ -47,7 +42,8 @@ be used. You can override the defaults using the `sort` attribute. Otherwise, a 
 use SwaggerBake\Lib\Annotation as Swag;
 /**
  * @Swag\SwagPaginator # default without attributes should work fine in most cases 
- * @Swag\SwagPaginator(sort={"id","name"}, useSortTextInput=false) # custom example
+ * @Swag\SwagPaginator(sortEnum={"id","name"}) # custom example
+ * @Swag\SwagPaginator(useSortTextInput=false) # force a text field instead of enum/dropdown
  */
 public function index() {
     $employees = $this->paginate($this->Employees);
@@ -159,8 +155,7 @@ OpenAPI:
 ```
 
 ### @SwagQuery 
-Method level annotation for adding query parameters. [Read the comments](SwagQuery.php) 
-to see all supported OpenAPI properties.
+Method level annotation for adding query parameters.
 
 ```php
 /**
@@ -200,8 +195,7 @@ OpenAPI:
 ```
 
 ### @SwagForm
-Method level annotation for adding form data fields. [Read the comments](SwagForm.php) 
-to see all supported OpenAPI properties.
+Method level annotation for adding form data fields.
 
 ```php
 /**
@@ -256,8 +250,7 @@ public function index() {}
 ```
 
 ### @SwagDtoQuery
-Property level annotation for use in your SwagDto classes. [Read the comments](SwagDtoQuery.php) to 
-see all supported properties.
+Property level annotation for use in your SwagDto classes.
 
 ```php
 class ActorDto {
@@ -268,9 +261,7 @@ class ActorDto {
 ```
 
 ### @SwagDtoForm
-Property level annotation for use in your SwagDto classes. [Read the comments](SwagDtoForm.php) to 
-see all supported properties.
-
+Property level annotation for use in your SwagDto classes.
 ```php
 class ActorDto {
      /**
@@ -280,9 +271,7 @@ class ActorDto {
 ```
 
 ### @SwagHeader
-Method level annotation for adding header parameters. [Read the comments](SwagHeader.php) 
-to see all supported OpenAPI properties.
-
+Method level annotation for adding header parameters.
 ```php
 /**
  * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="example")
@@ -304,9 +293,8 @@ OpenAPI:
 ```
 
 ### @SwagPathParameter
-Method level annotation for modifying path parameters. [Read the comments](SwagPathParameter.php) 
-to see all supported OpenAPI properties. This is for modifying existing path parameters only. Path parameters must 
-first be defined in your routes file.
+Method level annotation for modifying path parameters. This is for modifying existing path parameters only. Path 
+parameters must first be defined in your routes file.
 
 ```php
 /**
@@ -339,8 +327,7 @@ public function index() {}
 ```
 
 ### @SwagOperation
-Method level annotation for OpenApi Operations. [Read the comments](SwagOperation.php) for examples 
-and further explanations.
+Method level annotation for OpenApi Operations. 
 
 ```php
 /**
@@ -404,8 +391,7 @@ OpenAPI:
 ```
 
 ### @SwagResponseSchema
-Method level annotation for defining response schema. [Read the comments](SwagResponseSchema.php) to 
-see all supported properties and additional examples.
+Method level annotation for defining response schema.
 
 - `mimeType` is deprecated in >= v1.5, use `mimeTypes` as an array.
 - `httpCode` is deprecated in >= v1.3, use `statusCode` 
@@ -492,9 +478,9 @@ class Employee extends Entity {
 ```
 
 ### @SwagEntityAttribute
-Class level annotation for customizing Schema Attributes. [Read the comments](SwagEntityAttribute.php) 
-to see all supported OpenAPI properties. Note that the attribute does not have to exist in your entity. You can add 
-adhoc attributes as needed or [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
+Class level annotation for customizing Schema Attributes. Note that the attribute does not have to exist in your entity. 
+You can add adhoc attributes as needed and optionally combine with 
+[Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
 
 ```php
 /**
@@ -507,7 +493,7 @@ class Employee extends Entity {
 
 OpenAPI:
 
- ```yaml
+```yaml
         example_one:
           type: string
           minLength: 5
@@ -522,3 +508,8 @@ OpenAPI:
           type: string
           readOnly: true
 ```
+
+## Adding Annotations
+
+Annotations use the `doctrine/annotations` package. To add a new Annotation simply create a new class using one of the 
+existing annotations as an example. Then add the new annotation to `src/Lib/AnnotationLoader.php`.

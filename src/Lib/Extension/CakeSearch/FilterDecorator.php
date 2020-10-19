@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Extension\CakeSearch;
 
 use ReflectionClass;
+use Search\Model\Filter\Base;
 
 /**
  * Class FilterDecorator
@@ -31,15 +32,10 @@ class FilterDecorator
      * @param \Search\Model\Filter\Base $filter Filter\Base
      * @throws \ReflectionException
      */
-    public function __construct(\Search\Model\Filter\Base $filter)
+    public function __construct(Base $filter)
     {
-        $reflection = new ReflectionClass($filter);
-        $property = $reflection->getProperty('_defaultConfig');
-        $property->setAccessible(true);
-        //$configs = $property->getValue($filter);
-
         $this->name = $filter->name();
-        $this->comparison = $reflection->getShortName();
+        $this->comparison = (new ReflectionClass($filter))->getShortName();
         $this->filter = $filter;
     }
 

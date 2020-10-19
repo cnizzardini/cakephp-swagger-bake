@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Schema;
 
 use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
+use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 use MixerApi\Core\Model\Model;
 use phpDocumentor\Reflection\DocBlock;
@@ -29,6 +32,11 @@ class SchemaFactory
      * @var \Cake\Validation\Validator
      */
     private $validator;
+
+    /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
+    private $config;
 
     /**
      * @var string
@@ -87,6 +95,12 @@ class SchemaFactory
         if (!empty($requiredProperties)) {
             $schema->setRequired(array_keys($requiredProperties));
         }
+
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.Schema.created', $schema, [
+                'entity' => $entity,
+            ])
+        );
 
         return $schema;
     }
