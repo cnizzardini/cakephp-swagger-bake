@@ -289,7 +289,6 @@ class Swagger
         }
     }
 
-
     /**
      * Builds paths from cake routes
      *
