@@ -199,11 +199,13 @@ class OperationRequestBody
 
         $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
 
-        $requestBody->pushContent(
-            (new Content())
-                ->setMimeType('application/x-www-form-urlencoded')
-                ->setSchema($schema)
-        );
+        foreach ($this->config->getRequestAccepts() as $mimeType) {
+            $requestBody->pushContent(
+                (new Content())
+                    ->setMimeType($mimeType)
+                    ->setSchema($schema)
+            );
+        }
 
         $this->operation->setRequestBody($requestBody);
     }
@@ -225,27 +227,29 @@ class OperationRequestBody
         }
 
         $dto = reset($swagDtos);
-        $fqns = $dto->class;
+        $fqn = $dto->class;
 
-        if (!class_exists($fqns)) {
+        if (!class_exists($fqn)) {
             return;
         }
 
         $requestBody = new RequestBody();
         $schema = (new Schema())->setType('object');
 
-        $properties = (new DtoParser($fqns))->getSchemaProperties();
+        $properties = (new DtoParser($fqn))->getSchemaProperties();
         foreach ($properties as $property) {
             $schema->pushProperty($property);
         }
 
-        $this->operation->setRequestBody(
+        foreach ($this->config->getRequestAccepts() as $mimeType) {
             $requestBody->pushContent(
                 (new Content())
-                    ->setMimeType('application/x-www-form-urlencoded')
-                    ->setSchema($schema)
-            )
-        );
+                    ->setMimeType($mimeType)
+                    ->setSchema($this->applyRootNodeToXmlSchema($schema, $mimeType))
+            );
+        }
+
+        $this->operation->setRequestBody($requestBody);
     }
 
     /**
@@ -272,12 +276,7 @@ class OperationRequestBody
             }
 
             $schema = clone $this->schema;
-
-            if ($mimeType == 'application/xml') {
-                $schema->setXml(
-                    (new Xml())->setName(strtolower($schema->getName()))
-                );
-            }
+            $schema = $this->applyRootNodeToXmlSchema($schema, $mimeType, $schema->getName());
 
             $content = (new Content())->setMimeType($mimeType);
 
@@ -333,5 +332,22 @@ class OperationRequestBody
     private function isCrudAction(): bool
     {
         return in_array($this->route->getAction(), ['add','edit','view','delete','index']);
+    }
+
+    /**
+     * Applies a root node to XML schemas (required for XML example in Swagger)
+     *
+     * @param Schema $schema
+     * @param string $mimeType
+     * @param string|null $name
+     * @return Schema
+     */
+    private function applyRootNodeToXmlSchema(Schema $schema, string $mimeType, ?string $name = 'request')
+    {
+        if ($mimeType !== 'application/xml') {
+            return $schema;
+        }
+
+        return $schema->setXml((new Xml())->setName($name));
     }
 }
