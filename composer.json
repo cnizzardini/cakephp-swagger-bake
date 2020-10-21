@@ -7,12 +7,12 @@
     "require": {
         "php": ">=7.2",
         "ext-json": "*",
-        "cakephp/cakephp": ">=4.0 <4.2",
+        "cakephp/cakephp": "~4.0",
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
         "doctrine/annotations": "^1.10",
         "thecodingmachine/class-explorer": "^1.1",
-        "mixerapi/core": "^0.1"
+        "mixerapi/core": "~1.0"
     },
     "suggest": {
         "friendsofcake/search": "Easy model searching with @SwagSearch",
@@ -58,8 +58,6 @@
         "wiki": "https://github.com/cnizzardini/cakephp-swagger-bake/wiki",
         "source": "https://github.com/cnizzardini/cakephp-swagger-bake"
     },
-    "prefer-stable": true,
-    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Chris Nizzardini",

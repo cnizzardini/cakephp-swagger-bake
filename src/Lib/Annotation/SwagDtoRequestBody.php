@@ -39,5 +39,4 @@ namespace SwaggerBake\Lib\Annotation;
  */
 class SwagDtoRequestBody extends AbstractSchemaProperty
 {
-
 }

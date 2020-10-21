@@ -337,10 +337,10 @@ class OperationRequestBody
     /**
      * Applies a root node to XML schemas (required for XML example in Swagger)
      *
-     * @param Schema $schema
-     * @param string $mimeType
-     * @param string|null $name
-     * @return Schema
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema Schema instance
+     * @param string $mimeType A mimetype such as application/xml
+     * @param string|null $name Name for the XML root node
+     * @return \SwaggerBake\Lib\OpenApi\Schema
      */
     private function applyRootNodeToXmlSchema(Schema $schema, string $mimeType, ?string $name = 'request')
     {
