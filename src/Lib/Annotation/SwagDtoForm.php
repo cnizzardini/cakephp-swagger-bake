@@ -42,6 +42,9 @@ namespace SwaggerBake\Lib\Annotation;
  */
 class SwagDtoForm extends AbstractSchemaProperty
 {
+    /**
+     * @param array $values Annotation values
+     */
     public function __construct(array $values)
     {
         parent::__construct($values);
