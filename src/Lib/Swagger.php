@@ -6,17 +6,23 @@ namespace SwaggerBake\Lib;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Utility\Inflector;
-use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
 use SwaggerBake\Lib\Path\PathFromRouteFactory;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Schema\SchemaFactory;
 use SwaggerBake\Lib\Schema\SchemaFromYamlFactory;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class Swagger
+ *
+ * @package SwaggerBake\Lib
+ */
 class Swagger
 {
     /**
@@ -27,12 +33,12 @@ class Swagger
     private $array = [];
 
     /**
-     * @var \SwaggerBake\Lib\EntityScanner
+     * @var \SwaggerBake\Lib\Model\ModelScanner
      */
-    private $entityScanner;
+    private $modelScanner;
 
     /**
-     * @var \SwaggerBake\Lib\RouteScanner
+     * @var \SwaggerBake\Lib\Route\RouteScanner
      */
     private $routeScanner;
 
@@ -42,13 +48,13 @@ class Swagger
     private $config;
 
     /**
-     * @param \SwaggerBake\Lib\EntityScanner $entityScanner EntityScanner
+     * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
      */
-    public function __construct(EntityScanner $entityScanner)
+    public function __construct(ModelScanner $modelScanner)
     {
-        $this->entityScanner = $entityScanner;
-        $this->routeScanner = $entityScanner->getRouteScanner();
-        $this->config = $entityScanner->getConfig();
+        $this->modelScanner = $modelScanner;
+        $this->routeScanner = $modelScanner->getRouteScanner();
+        $this->config = $modelScanner->getConfig();
 
         $this->array = Yaml::parseFile($this->config->getYml());
 
@@ -222,29 +228,31 @@ class Swagger
      * Builds schemas from cake models
      *
      * @return void
+     * @throws \ReflectionException
      */
     private function buildSchemasFromModels(): void
     {
-        $schemaFactory = new SchemaFactory($this->config);
-        $entities = $this->entityScanner->getEntityDecorators();
+        $schemaFactory = new SchemaFactory();
+        $models = $this->modelScanner->getModelDecorators();
 
-        foreach ($entities as $entity) {
-            if ($this->getSchemaByName($entity->getName())) {
+        foreach ($models as $model) {
+            $entityName = (new \ReflectionClass($model->getModel()->getEntity()))->getShortName();
+            if ($this->getSchemaByName($entityName)) {
                 continue;
             }
 
-            $schema = $schemaFactory->create($entity);
+            $schema = $schemaFactory->create($model);
             if (!$schema) {
                 continue;
             }
             $this->pushSchema($schema);
 
-            $readSchema = $schemaFactory->create($entity, $schemaFactory::READABLE_PROPERTIES);
+            $readSchema = $schemaFactory->create($model, $schemaFactory::READABLE_PROPERTIES);
             $this->pushVendorSchema(
                 $readSchema->setName($readSchema->getReadSchemaName())
             );
 
-            $writeSchema = $schemaFactory->create($entity, $schemaFactory::WRITEABLE_PROPERTIES);
+            $writeSchema = $schemaFactory->create($model, $schemaFactory::WRITEABLE_PROPERTIES);
             $this->pushVendorSchema(
                 $writeSchema->setName($writeSchema->getWriteSchemaName())
             );
@@ -327,7 +335,7 @@ class Swagger
     /**
      * Gets the Schema associated with a Route
      *
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @return \SwaggerBake\Lib\OpenApi\Schema|null
      */
     private function getSchemaFromRoute(RouteDecorator $route): ?Schema

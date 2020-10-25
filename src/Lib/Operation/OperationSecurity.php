@@ -5,9 +5,9 @@ namespace SwaggerBake\Lib\Operation;
 
 use Cake\Controller\Controller;
 use SwaggerBake\Lib\Annotation\SwagSecurity;
-use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\PathSecurity;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
 
 /**
@@ -28,7 +28,7 @@ class OperationSecurity
     private $annotations;
 
     /**
-     * @var \SwaggerBake\Lib\Decorator\RouteDecorator
+     * @var \SwaggerBake\Lib\Route\RouteDecorator
      */
     private $route;
 
@@ -45,7 +45,7 @@ class OperationSecurity
     /**
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
      * @param array $annotations Array of annotation objects
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @param \Cake\Controller\Controller $controller Controller
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      */

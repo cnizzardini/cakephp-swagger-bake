@@ -7,8 +7,8 @@ use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\AnnotationLoader;
-use SwaggerBake\Lib\EntityScanner;
-use SwaggerBake\Lib\RouteScanner;
+use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
@@ -79,7 +79,7 @@ class SwagOperationTest extends TestCase
         if (!$this->swagger instanceof Swagger) {
             $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
             $cakeRoute = new RouteScanner($this->router, $configuration);
-            $this->swagger = new Swagger(new EntityScanner($cakeRoute, $configuration));
+            $this->swagger = new Swagger(new ModelScanner($cakeRoute, $configuration));
         }
 
         AnnotationLoader::load();

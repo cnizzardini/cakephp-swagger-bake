@@ -10,6 +10,7 @@ use ReflectionClass;
 use ReflectionProperty;
 use SwaggerBake\Lib\Annotation\SwagDtoForm;
 use SwaggerBake\Lib\Annotation\SwagDtoQuery;
+use SwaggerBake\Lib\Annotation\SwagDtoRequestBody;
 use SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -96,9 +97,9 @@ class DtoParser
         $factory = new SchemaPropertyFromAnnotationFactory();
 
         foreach ($properties as $name => $reflectionProperty) {
-            $swagDtoForm = $this->getSwagDtoProperty($reflectionProperty);
-            if ($swagDtoForm instanceof SwagDtoForm) {
-                $schemaProperties[] = $factory->create($swagDtoForm);
+            $dto = $this->getSwagDtoProperty($reflectionProperty);
+            if ($dto instanceof SwagDtoForm || $dto instanceof SwagDtoRequestBody) {
+                $schemaProperties[] = $factory->create($dto);
                 continue;
             }
 
@@ -120,7 +121,7 @@ class DtoParser
      * Gets an instance of SwagDtoProperty, null otherwise
      *
      * @param \ReflectionProperty $reflectionProperty ReflectionProperty
-     * @return \SwaggerBake\Lib\Annotation\SwagDtoQuery|\SwaggerBake\Lib\Annotation\SwagDtoForm|null
+     * @return mixed
      */
     private function getSwagDtoProperty(ReflectionProperty $reflectionProperty)
     {
@@ -132,11 +133,20 @@ class DtoParser
             if ($annotation instanceof SwagDtoQuery && !empty($annotation->name)) {
                 return $annotation;
             }
+
             $annotation = $this->annotationReader->getPropertyAnnotation(
                 $reflectionProperty,
                 SwagDtoForm::class
             );
             if ($annotation instanceof SwagDtoForm && !empty($annotation->name)) {
+                return $annotation;
+            }
+
+            $annotation = $this->annotationReader->getPropertyAnnotation(
+                $reflectionProperty,
+                SwagDtoRequestBody::class
+            );
+            if ($annotation instanceof SwagDtoRequestBody && !empty($annotation->name)) {
                 return $annotation;
             }
         } catch (\Exception $e) {

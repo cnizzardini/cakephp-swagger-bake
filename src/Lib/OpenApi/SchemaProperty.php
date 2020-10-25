@@ -371,6 +371,4 @@ class SchemaProperty implements JsonSerializable
 
         return $this;
     }
-
-
 }

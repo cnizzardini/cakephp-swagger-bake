@@ -10,9 +10,9 @@ use Exception;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagOperation;
-use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
@@ -40,7 +40,7 @@ class OperationFromRouteFactory
     /**
      * Creates an instance of Operation
      *
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @param string $httpMethod Http method such i.e. PUT, POST, PATCH, GET, and DELETE
      * @param null|\SwaggerBake\Lib\OpenApi\Schema $schema Schema
      * @return \SwaggerBake\Lib\OpenApi\Operation|null
@@ -107,7 +107,7 @@ class OperationFromRouteFactory
     /**
      * Gets an instance of DocBlock from the controllers method
      *
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @return \phpDocumentor\Reflection\DocBlock
      */
     private function getDocBlock(RouteDecorator $route): DocBlock
@@ -152,7 +152,7 @@ class OperationFromRouteFactory
      * Is the route, http method, and annotation combination allowed? This primarily prevents HTTP PUT methods on
      * controller `edit()` actions from appearing in OpenAPI schema by default.
      *
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route instance of RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $route instance of RouteDecorator
      * @param string $httpMethod http method (PUT, POST, PATCH etc..)
      * @param array $annotations an array of annotation objects
      * @return bool
@@ -180,7 +180,7 @@ class OperationFromRouteFactory
      * Applies Operation::tags to the Operation
      *
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param \SwaggerBake\Lib\Decorator\RouteDecorator $route RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @param array $annotations An array of annotation objects
      * @return \SwaggerBake\Lib\OpenApi\Operation ]
      */

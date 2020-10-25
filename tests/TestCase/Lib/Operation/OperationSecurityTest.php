@@ -8,18 +8,15 @@ use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Annotation\SwagSecurity;
-use SwaggerBake\Lib\RouteScanner;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Decorator\RouteDecorator;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationSecurity;
+use SwaggerBake\Lib\Route\RouteDecorator;
+use SwaggerBake\Lib\Route\RouteScanner;
 
 class OperationSecurityTest extends TestCase
 {
-    /** @var OperationSecurity  */
-    private $operationSecurity;
-
     /** @var \SwaggerBake\Lib\Swagger  */
     private $swagger;
 

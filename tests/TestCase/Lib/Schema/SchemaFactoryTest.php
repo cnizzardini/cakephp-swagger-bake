@@ -2,15 +2,17 @@
 
 namespace SwaggerBake\Test\TestCase\Lib\Schema;
 
-use Cake\ORM\Entity;
+use Cake\Controller\Controller;
+use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use MixerApi\Core\Model\ModelFactory;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Decorator\EntityDecorator;
-use SwaggerBake\Lib\Decorator\PropertyDecorator;
+use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Schema\SchemaFactory;
 use SwaggerBakeTest\App\Model\Entity\Department;
+use SwaggerBakeTest\App\Model\Table\DepartmentsTable;
 
 class SchemaFactoryTest extends TestCase
 {
@@ -41,27 +43,19 @@ class SchemaFactoryTest extends TestCase
 
     public function testCreateSchema()
     {
-        $entityDecorator = new EntityDecorator(new Department());
-        $entityDecorator->setProperties([
-            (new PropertyDecorator())->setName('id')->setType('integer')->setIsPrimaryKey(true),
-            (new PropertyDecorator())->setName('name')->setType('string'),
-            (new PropertyDecorator())->setName('created')->setType('datetime'),
-            (new PropertyDecorator())->setName('modified')->setType('datetime'),
-        ]);
-        $schema = (new SchemaFactory($this->configuration))->create($entityDecorator);
+        $connection = ConnectionManager::get('default');
+        $department = (new ModelFactory($connection, new DepartmentsTable()))->create();
+        $decorator = new ModelDecorator($department, new Controller());
+        $schema = (new SchemaFactory())->create($decorator);
         $this->assertInstanceOf(Schema::class, $schema);
     }
 
     public function testWriteSchema()
     {
-        $entityDecorator = new EntityDecorator(new Department());
-        $entityDecorator->setProperties([
-            (new PropertyDecorator())->setName('id')->setType('integer')->setIsPrimaryKey(true),
-            (new PropertyDecorator())->setName('name')->setType('string'),
-            (new PropertyDecorator())->setName('created')->setType('datetime'),
-            (new PropertyDecorator())->setName('modified')->setType('datetime'),
-        ]);
-        $schema = (new SchemaFactory($this->configuration))->create($entityDecorator, SchemaFactory::WRITEABLE_PROPERTIES);
+        $connection = ConnectionManager::get('default');
+        $department = (new ModelFactory($connection, new DepartmentsTable()))->create();
+        $decorator = new ModelDecorator($department, new Controller());
+        $schema = (new SchemaFactory())->create($decorator, SchemaFactory::WRITEABLE_PROPERTIES);
         $this->assertCount(1, $schema->getProperties());
     }
 }

@@ -6,8 +6,6 @@ namespace SwaggerBake\Lib\Annotation;
 /**
  * Property level annotation for use in your SwagDto classes. Read the comments to see all supported properties.
  *
- * For use with application/x-www-form-urlencoded requests. Use this in your DTO class (e.g. App\Dto|MyDto)
- *
  * @Annotation
  * @Target({"PROPERTY"})
  * @Attributes({
@@ -38,18 +36,7 @@ namespace SwaggerBake\Lib\Annotation;
  * @see https://swagger.io/specification/ search for "Schema Object"
  * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
  * @see AbstractSchemaProperty
- * @deprecated
  */
-class SwagDtoForm extends AbstractSchemaProperty
+class SwagDtoRequestBody extends AbstractSchemaProperty
 {
-    /**
-     * @param array $values Annotation values
-     */
-    public function __construct(array $values)
-    {
-        parent::__construct($values);
-        deprecationWarning(
-            'This class annotation will be deprecated in a future version, please use SwagDtoRequestBody'
-        );
-    }
 }

@@ -3,18 +3,17 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Schema;
 
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
+use MixerApi\Core\Model\Model;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
-use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Decorator\EntityDecorator;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
@@ -34,11 +33,6 @@ class SchemaFactory
     private $validator;
 
     /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
-
-    /**
      * @var string
      */
     public const WRITEABLE_PROPERTIES = 2;
@@ -54,36 +48,30 @@ class SchemaFactory
     public const ALL_PROPERTIES = 6;
 
     /**
-     * @param \SwaggerBake\Lib\Configuration $config Configuration
-     */
-    public function __construct(Configuration $config)
-    {
-        $this->config = $config;
-    }
-
-    /**
-     * Creates an instance of Schema for an EntityDecorator, returns null if the Entity is set to invisible
+     * Creates an instance of Schema for an ModelDecorator, returns null if the Entity is set to invisible
      *
-     * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
-     * @param int $propertyType see public constants for options
+     * @param \SwaggerBake\Lib\Model\ModelDecorator $modelDecorator ModelDecorator
+     * @param int $propertyType see public constants for o
      * @return \SwaggerBake\Lib\OpenApi\Schema|null
+     * @throws \ReflectionException
      */
-    public function create(EntityDecorator $entity, int $propertyType = 6): ?Schema
+    public function create(ModelDecorator $modelDecorator, int $propertyType = 6): ?Schema
     {
-        $swagEntity = $this->getSwagEntityAnnotation($entity);
+        $model = $modelDecorator->getModel();
+        $swagEntity = $this->getSwagEntityAnnotation($model->getEntity());
 
         if ($swagEntity !== null && $swagEntity->isVisible === false) {
             return null;
         }
 
-        $this->validator = $this->getValidator($entity->getName());
+        $this->validator = $this->getValidator($model);
 
-        $docBlock = $this->getDocBlock($entity);
+        $docBlock = $this->getDocBlock($model->getEntity());
 
-        $properties = $this->getProperties($entity, $propertyType);
+        $properties = $this->getProperties($model, $propertyType);
 
         $schema = (new Schema())
-            ->setName($entity->getName())
+            ->setName((new ReflectionClass($model->getEntity()))->getShortName())
             ->setTitle($swagEntity !== null ? $swagEntity->description : null)
             ->setType('object')
             ->setProperties($properties);
@@ -104,7 +92,7 @@ class SchemaFactory
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Schema.created', $schema, [
-                'entity' => $entity,
+                'modelDecorator' => $modelDecorator,
             ])
         );
 
@@ -112,47 +100,43 @@ class SchemaFactory
     }
 
     /**
-     * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
+     * @param \MixerApi\Core\Model\Model $model Model
      * @param int $propertyType see public constants for options
      * @return array
      */
-    private function getProperties(EntityDecorator $entity, int $propertyType): array
+    private function getProperties(Model $model, int $propertyType): array
     {
         $return = [];
         $factory = new SchemaPropertyFactory($this->validator);
 
-        foreach ($entity->getProperties() as $attribute) {
-            $return[$attribute->getName()] = $factory->create($attribute);
+        foreach ($model->getProperties() as $property) {
+            $return[$property->getName()] = $factory->create($property);
         }
 
-        $return = array_merge($return, $this->getSwagPropertyAnnotations($entity));
+        $return = array_merge($return, $this->getSwagPropertyAnnotations($model));
 
         if ($propertyType === self::ALL_PROPERTIES) {
             return $return;
         }
 
-        return array_filter(
-            $return,
-            function (SchemaProperty $property) use ($propertyType) {
-                if ($propertyType == self::READABLE_PROPERTIES && !$property->isWriteOnly()) {
-                    return true;
-                }
-                if ($propertyType == self::WRITEABLE_PROPERTIES && !$property->isReadOnly()) {
-                    return true;
-                }
+        return array_filter($return, function (SchemaProperty $property) use ($propertyType) {
+            if ($propertyType == self::READABLE_PROPERTIES && !$property->isWriteOnly()) {
+                return true;
             }
-        );
+            if ($propertyType == self::WRITEABLE_PROPERTIES && !$property->isReadOnly()) {
+                return true;
+            }
+        });
     }
 
     /**
-     * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
+     * @param \Cake\Datasource\EntityInterface $entity EntityInterface
      * @return \phpDocumentor\Reflection\DocBlock|null
      */
-    private function getDocBlock(EntityDecorator $entity): ?DocBlock
+    private function getDocBlock(EntityInterface $entity): ?DocBlock
     {
         try {
-            $instance = $entity->getEntity();
-            $reflectionClass = new ReflectionClass(get_class($instance));
+            $reflectionClass = new ReflectionClass($entity);
         } catch (\Exception $e) {
             return null;
         }
@@ -169,40 +153,16 @@ class SchemaFactory
     }
 
     /**
-     * @param string $className Name of the Table class
-     * @return string|null
-     */
-    private function getTableFromNamespaces(string $className): ?string
-    {
-        $namespaces = $this->config->getNamespaces();
-
-        if (!isset($namespaces['tables']) || !is_array($namespaces['tables'])) {
-            throw new SwaggerBakeRunTimeException(
-                'Invalid configuration, missing SwaggerBake.namespaces.tables'
-            );
-        }
-
-        foreach ($namespaces['tables'] as $namespace) {
-            $table = $namespace . 'Model\Table\\' . $className;
-            if (class_exists($table, true)) {
-                return $table;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Returns key-value pair of property name => SchemaProperty
      *
-     * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
+     * @param \MixerApi\Core\Model\Model $model Model
      * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
      */
-    private function getSwagPropertyAnnotations(EntityDecorator $entity): array
+    private function getSwagPropertyAnnotations(Model $model): array
     {
         $return = [];
 
-        $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity->getEntity());
+        $annotations = AnnotationUtility::getClassAnnotationsFromInstance($model->getEntity());
 
         $swagEntityAttributes = array_filter($annotations, function ($annotation) {
             return $annotation instanceof SwagEntityAttribute;
@@ -220,12 +180,12 @@ class SchemaFactory
     /**
      * Returns instance of SwagEntity annotation, otherwise null
      *
-     * @param \SwaggerBake\Lib\Decorator\EntityDecorator $entity EntityDecorator
+     * @param \Cake\Datasource\EntityInterface $entity EntityInterface
      * @return \SwaggerBake\Lib\Annotation\SwagEntity|null
      */
-    private function getSwagEntityAnnotation(EntityDecorator $entity): ?SwagEntity
+    private function getSwagEntityAnnotation(EntityInterface $entity): ?SwagEntity
     {
-        $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity->getEntity());
+        $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity);
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof SwagEntity) {
@@ -239,15 +199,13 @@ class SchemaFactory
     /**
      * Gets the Table classes Validator
      *
-     * @param string $className Name of the Table class
-     * @return \Cake\Validation\Validator|null
+     * @param \MixerApi\Core\Model\Model $model Model
+     * @return \Cake\Validation\Validator
      */
-    private function getValidator(string $className): ?Validator
+    private function getValidator(Model $model): Validator
     {
         try {
-            $table = $this->getTableFromNamespaces(Inflector::pluralize($className) . 'Table');
-            $instance = new $table();
-            $validator = $instance->validationDefault(new Validator());
+            $validator = $model->getTable()->validationDefault(new Validator());
         } catch (\Exception $e) {
             return new Validator();
         }

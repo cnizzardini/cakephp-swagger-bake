@@ -4,10 +4,9 @@ namespace SwaggerBake\Test\TestCase\Lib;
 
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validator;
-use SwaggerBake\Lib\Decorator\PropertyDecorator;
+use MixerApi\Core\Model\ModelProperty;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Schema\SchemaPropertyFactory;
-use SwaggerBake\Lib\Schema\SchemaPropertyFormat;
 use SwaggerBake\Lib\Schema\SchemaPropertyValidation;
 
 class SchemaPropertyValidationTest extends TestCase
@@ -25,7 +24,7 @@ class SchemaPropertyValidationTest extends TestCase
         $schemaPropertyValidation = new SchemaPropertyValidation(
             $validator,
             (new SchemaProperty())->setName('test_field')->setType('integer'),
-            (new PropertyDecorator())->setName('test_field')->setType('integer')
+            (new ModelProperty())->setName('test_field')->setType('integer')
         );
 
         $schemaProperty = $schemaPropertyValidation->withValidations();
@@ -40,13 +39,13 @@ class SchemaPropertyValidationTest extends TestCase
         // length between
         $validator = (new Validator())->lengthBetween('test_field', [5,10]);
 
-        $propertyDecorator = (new PropertyDecorator())->setName('test_field')->setType('integer');
-        $schemaProperty = (new SchemaPropertyFactory($validator))->create($propertyDecorator);
+        $property = (new ModelProperty())->setName('test_field')->setType('integer');
+        $schemaProperty = (new SchemaPropertyFactory($validator))->create($property);
 
         $schemaPropertyValidation = new SchemaPropertyValidation(
             $validator,
             $schemaProperty,
-            $propertyDecorator
+            $property
         );
 
         $schemaProperty = $schemaPropertyValidation->withValidations();
@@ -64,7 +63,7 @@ class SchemaPropertyValidationTest extends TestCase
         $schemaPropertyValidation = new SchemaPropertyValidation(
             $validator,
             (new SchemaProperty())->setName('test_field')->setType('integer'),
-            (new PropertyDecorator())->setName('test_field')->setType('integer')
+            (new ModelProperty())->setName('test_field')->setType('integer')
         );
 
         $schemaProperty = $schemaPropertyValidation->withValidations();
@@ -82,7 +81,7 @@ class SchemaPropertyValidationTest extends TestCase
         $schemaPropertyValidation = new SchemaPropertyValidation(
             $validator,
             (new SchemaProperty())->setName('test_field')->setType('integer'),
-            (new PropertyDecorator())->setName('test_field')->setType('integer')
+            (new ModelProperty())->setName('test_field')->setType('integer')
         );
 
         $schemaProperty = $schemaPropertyValidation->withValidations();
@@ -103,7 +102,7 @@ class SchemaPropertyValidationTest extends TestCase
         $schemaPropertyValidation = new SchemaPropertyValidation(
             $validator,
             (new SchemaProperty())->setName('test_field'),
-            (new PropertyDecorator())->setName('test_field')
+            (new ModelProperty())->setName('test_field')
         );
 
         $schemaProperty = $schemaPropertyValidation->withValidations();
@@ -121,7 +120,7 @@ class SchemaPropertyValidationTest extends TestCase
         $schemaPropertyValidation = new SchemaPropertyValidation(
             $validator,
             (new SchemaProperty())->setName('test_field'),
-            (new PropertyDecorator())->setName('test_field')
+            (new ModelProperty())->setName('test_field')
         );
 
         $schemaProperty = $schemaPropertyValidation->withValidations();
@@ -139,7 +138,7 @@ class SchemaPropertyValidationTest extends TestCase
         $schemaPropertyValidation = new SchemaPropertyValidation(
             $validator,
             (new SchemaProperty())->setName('test_field'),
-            (new PropertyDecorator())->setName('test_field')
+            (new ModelProperty())->setName('test_field')
         );
 
         $schemaProperty = $schemaPropertyValidation->withValidations();
@@ -157,7 +156,7 @@ class SchemaPropertyValidationTest extends TestCase
         $schemaPropertyValidation = new SchemaPropertyValidation(
             $validator,
             (new SchemaProperty())->setName('test_field'),
-            (new PropertyDecorator())->setName('test_field')
+            (new ModelProperty())->setName('test_field')
         );
 
         $schemaProperty = $schemaPropertyValidation->withValidations();
@@ -178,7 +177,7 @@ class SchemaPropertyValidationTest extends TestCase
             $schemaPropertyValidation = new SchemaPropertyValidation(
                 $validator,
                 (new SchemaProperty())->setName('test_field')->setType('string'),
-                (new PropertyDecorator())->setName('test_field')->setType('string')
+                (new ModelProperty())->setName('test_field')->setType('string')
             );
 
             $schemaProperty = $schemaPropertyValidation->withValidations();
