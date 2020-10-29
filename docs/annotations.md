@@ -15,7 +15,7 @@ annotations which support other Cake plugins. These can be imported individually
 - [@SwagForm](#swagform)
 - [@SwagDto](#swagdto)
 - [@SwagDtoQuery](#swagdtoquery)
-- [@SwagDtoForm](#swagdtoform)
+- [@SwagDtoRequestBody](#swagdtorequestbody)
 - [@SwagHeader](#swagheader)
 - [@SwagPathParameter](#swagpathparameter)
 - [@SwagSecurity](#swagsecurity)
@@ -260,12 +260,12 @@ class ActorDto {
     private $example;
 ```
 
-### @SwagDtoForm
-Property level annotation for use in your SwagDto classes.
+### @SwagDtoRequestBody
+Formerly `@SwagDtoForm`. Property level annotation for use in your SwagDto classes.
 ```php
 class ActorDto {
      /**
-      * @SwagDtoForm(name="example", type="integer", required=true, minimum=10, maximum=100)
+      * @SwagDtoRequestBody(name="example", type="integer", required=true, minimum=10, maximum=100)
       */
     private $example;
 ```
