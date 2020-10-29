@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\MediaType;
 
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\Swagger;
 
 class Generic
 {
@@ -13,11 +15,18 @@ class Generic
     private $schema;
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
+     * @var \SwaggerBake\Lib\Swagger
      */
-    public function __construct(Schema $schema)
+    private $swagger;
+
+    /**
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
+     * @param \SwaggerBake\Lib\Swagger $swagger instance of Swagger
+     */
+    public function __construct(Schema $schema, Swagger $swagger)
     {
         $this->schema = $schema;
+        $this->swagger = $swagger;
     }
 
     /**
@@ -40,9 +49,35 @@ class Generic
      */
     private function collection(): Schema
     {
+        $openapi = $this->swagger->getArray();
+
+        if (!isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'])) {
+            return (new Schema())
+                ->setType('array')
+                ->setItems(['$ref' => $this->schema->getReadSchemaRef()]);
+        }
+
+        if (isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection']['x-data-element'])) {
+            $data = $openapi['x-swagger-bake']['components']['schemas']['Generic-Collection']['x-data-element'];
+        } else {
+            $data = 'data';
+        }
+
         return (new Schema())
-            ->setType('array')
-            ->setItems(['$ref' => $this->schema->getReadSchemaRef()]);
+            ->setAllOf([
+                ['$ref' => '#/x-swagger-bake/components/schemas/Generic-Collection'],
+            ])
+            ->setProperties([
+                (new SchemaProperty())
+                    ->setName($data)
+                    ->setType('array')
+                    ->setItems([
+                        'type' => 'object',
+                        'allOf' => [
+                            ['$ref' => $this->schema->getReadSchemaRef()],
+                        ],
+                    ]),
+            ]);
     }
 
     /**

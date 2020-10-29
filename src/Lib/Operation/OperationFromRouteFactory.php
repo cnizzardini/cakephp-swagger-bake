@@ -88,8 +88,15 @@ class OperationFromRouteFactory
         $operation = (new OperationRequestBody($this->swagger, $operation, $annotations, $route, $schema))
             ->getOperationWithRequestBody();
 
-        $operation = (new OperationResponse($config, $operation, $docBlock, $annotations, $route, $schema))
-            ->getOperationWithResponses();
+        $operation = (new OperationResponse(
+            $this->swagger,
+            $config,
+            $operation,
+            $docBlock,
+            $annotations,
+            $route,
+            $schema
+        ))->getOperationWithResponses();
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Operation.created', $operation, [

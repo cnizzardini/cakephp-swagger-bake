@@ -16,6 +16,7 @@ use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\Xml;
 use SwaggerBake\Lib\Route\RouteDecorator;
+use SwaggerBake\Lib\Swagger;
 
 /**
  * Class OperationResponse
@@ -24,6 +25,11 @@ use SwaggerBake\Lib\Route\RouteDecorator;
  */
 class OperationResponse
 {
+    /**
+     * @var \SwaggerBake\Lib\Swagger
+     */
+    private $swagger;
+
     /**
      * @var \SwaggerBake\Lib\Configuration
      */
@@ -40,14 +46,14 @@ class OperationResponse
     private $doc;
 
     /**
-     * @var \SwaggerBake\Lib\Route\RouteDecorator
-     */
-    private $route;
-
-    /**
      * @var array
      */
     private $annotations;
+
+    /**
+     * @var \SwaggerBake\Lib\Route\RouteDecorator
+     */
+    private $route;
 
     /**
      * @var \SwaggerBake\Lib\OpenApi\Schema|null
@@ -55,6 +61,7 @@ class OperationResponse
     private $schema;
 
     /**
+     * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
      * @param \phpDocumentor\Reflection\DocBlock $doc DocBlock
@@ -63,6 +70,7 @@ class OperationResponse
      * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema
      */
     public function __construct(
+        Swagger $swagger,
         Configuration $config,
         Operation $operation,
         DocBlock $doc,
@@ -70,6 +78,7 @@ class OperationResponse
         RouteDecorator $route,
         ?Schema $schema
     ) {
+        $this->swagger = $swagger;
         $this->config = $config;
         $this->operation = $operation;
         $this->doc = $doc;
@@ -205,7 +214,7 @@ class OperationResponse
 
         switch ($mimeType) {
             case 'application/xml':
-                return (new XmlMedia($schema))->buildSchema($action);
+                return (new XmlMedia($schema, $this->swagger))->buildSchema($action);
             case 'application/hal+json':
             case 'application/vnd.hal+json':
                 return (new HalJson($schema))->buildSchema($action);
@@ -215,7 +224,7 @@ class OperationResponse
                 return (new Schema())->setType('string');
         }
 
-        return (new Generic($schema))->buildSchema($action);
+        return (new Generic($schema, $this->swagger))->buildSchema($action);
     }
 
     /**
