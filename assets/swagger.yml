@@ -37,3 +37,42 @@ components:
           type: boolean
       xml:
         name: response
+x-swagger-bake:
+  components:
+    schemas:
+      Generic-Collection:
+        type: object
+        x-data-element: data
+        properties:
+          collection:
+            type: object
+            properties:
+              url:
+                type: string
+                format: url
+                example: /index
+              count:
+                type: integer
+                example: 20
+              total:
+                type: integer
+                example: 200
+              pages:
+                type: integer
+                example: 10
+              next:
+                type: string
+                format: url
+                example: /index?page=:number
+              prev:
+                type: string
+                format: url
+                example: /index?page=:number
+              first:
+                type: string
+                format: url
+                example: /index
+              last:
+                type: string
+                format: url
+                example: /index?page=:number
