@@ -9,6 +9,8 @@ use SwaggerBake\Lib\Swagger;
 
 class Generic
 {
+    use GenericTrait;
+
     /**
      * @var \SwaggerBake\Lib\OpenApi\Schema
      */
@@ -57,19 +59,13 @@ class Generic
                 ->setItems(['$ref' => $this->schema->getReadSchemaRef()]);
         }
 
-        if (isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection']['x-data-element'])) {
-            $data = $openapi['x-swagger-bake']['components']['schemas']['Generic-Collection']['x-data-element'];
-        } else {
-            $data = 'data';
-        }
-
         return (new Schema())
             ->setAllOf([
                 ['$ref' => '#/x-swagger-bake/components/schemas/Generic-Collection'],
             ])
             ->setProperties([
                 (new SchemaProperty())
-                    ->setName($data)
+                    ->setName($this->whichData($openapi))
                     ->setType('array')
                     ->setItems([
                         'type' => 'object',

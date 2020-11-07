@@ -66,6 +66,10 @@ class Swagger
         $this->buildSchemaFromYml();
         $this->buildPathsFromYml();
 
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.initialize', $this)
+        );
+
         $xSwaggerBake = Yaml::parseFile(self::ASSETS . 'x-swagger-bake.yaml');
 
         $this->array['x-swagger-bake'] = array_merge_recursive(
