@@ -9,6 +9,8 @@ use SwaggerBake\Lib\Swagger;
 
 class Xml
 {
+    use GenericTrait;
+
     /**
      * @var \SwaggerBake\Lib\OpenApi\Schema
      */
@@ -60,20 +62,6 @@ class Xml
                 ->setProperties([]);
         }
 
-        $dataElements = array_filter(
-            array_keys($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection']['properties']),
-            function ($property) {
-                return strstr('x-data-', $property);
-            }
-        );
-
-        if (count($dataElements) === 1) {
-            $dataElement = reset($dataElements);
-            $data = str_replace('x-data-', '', $dataElement);
-        } else {
-            $data = 'data';
-        }
-
         return (new Schema())
             ->setAllOf([
                 ['$ref' => '#/x-swagger-bake/components/schemas/Generic-Collection'],
@@ -81,7 +69,7 @@ class Xml
             ->setXml((new \SwaggerBake\Lib\OpenApi\Xml())->setName('response'))
             ->setProperties([
                 (new SchemaProperty())
-                    ->setName($data)
+                    ->setName($this->whichData($openapi))
                     ->setType('array')
                     ->setItems([
                         'type' => 'object',
