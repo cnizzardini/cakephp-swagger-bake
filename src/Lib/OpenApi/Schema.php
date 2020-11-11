@@ -44,7 +44,9 @@ class Schema implements JsonSerializable
     private $required = [];
 
     /**
-     * @var \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * A mixed array of Schema and SchemaProperty
+     *
+     * @var array
      */
     private $properties = [];
 
@@ -243,7 +245,9 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * A mixed array of Schema and SchemaProperty
+     *
+     * @return array
      */
     public function getProperties(): array
     {
@@ -251,7 +255,7 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\SchemaProperty[] $properties Array of SchemaProperty
+     * @param array $properties A mixed array of Schema and SchemaProperty
      * @return $this
      */
     public function setProperties(array $properties)
@@ -265,12 +269,30 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\SchemaProperty $property SchemaProperty
+     * @param mixed $property instance of SchemaProperty or Schema
      * @return $this
      */
-    public function pushProperty(SchemaProperty $property)
+    public function pushProperty($property)
     {
+        if (!$property instanceof SchemaProperty && !$property instanceof Schema) {
+            throw new \InvalidArgumentException(
+                'Must be instance of SchemaProperty or Schema'
+            );
+        }
+
         $this->properties[$property->getName()] = $property;
+
+        if (empty($property->getName())) {
+            throw new \LogicException(
+                'Name must be set on ' . get_class($property)
+            );
+        }
+
+        if ($property instanceof Schema) {
+            $this->properties[$property->getName()] = $property;
+
+            return $this;
+        }
 
         if ($property->isRequired()) {
             $this->required[$property->getName()] = $property->getName();
