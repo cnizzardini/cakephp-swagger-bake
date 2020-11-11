@@ -57,8 +57,7 @@ EventManager::instance()
 ## Custom Collection Schemas
 
 You can modify the schema of your `application/json` or `application/xml` collection responses with a custom collection 
-schema. Modify your base OpenAPI YAML file to include `#/x-swagger-bake/components/schemas/Generic-Collection`. 
-Example:
+schema. Modify your base OpenAPI YAML file to include `#/x-swagger-bake/components/schemas/Generic-Collection`. Example:
 
 ```
 x-swagger-bake:
@@ -101,6 +100,9 @@ x-swagger-bake:
                 format: url
                 example: /index?page=:number
 ```
+
+You would need to implement the sample schema in our application still. See 
+[MixerApi/CollectionView](https://github.com/mixerapi/collection-view) for a ready-made implementation.
 
 ## Adding your Extension to the SwaggerBake project
 
