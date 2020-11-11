@@ -7,12 +7,13 @@ use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
-use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
-use SwaggerBake\Lib\Operation\OperationResponse;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\Operation\OperationResponse;
+use SwaggerBake\Lib\Route\RouteScanner;
 
 class OperationResponseTest extends TestCase
 {
@@ -94,6 +95,7 @@ class OperationResponseTest extends TestCase
         $route = $this->routes['employees:index'];
 
         $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/** @throws Exception */'),
@@ -122,6 +124,7 @@ class OperationResponseTest extends TestCase
         ;
 
         $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/**  */'),
@@ -140,6 +143,7 @@ class OperationResponseTest extends TestCase
         $route = $this->routes['employees:add'];
 
         $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/**  */'),
@@ -163,6 +167,7 @@ class OperationResponseTest extends TestCase
         $route = $this->routes['employees:delete'];
 
         $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/**  */'),
@@ -180,6 +185,7 @@ class OperationResponseTest extends TestCase
         $route = $this->routes['employees:noresponsedefined'];
 
         $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/**  */'),
@@ -202,6 +208,7 @@ class OperationResponseTest extends TestCase
         $route = $this->routes['employees:index'];
 
         $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/** */'),
@@ -226,6 +233,7 @@ class OperationResponseTest extends TestCase
         $route = $this->routes['employees:index'];
 
         $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/** */'),
@@ -253,6 +261,7 @@ class OperationResponseTest extends TestCase
         $route = $this->routes['employees:textplain'];
 
         $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
             DocBlockFactory::createInstance()->create('/** */'),

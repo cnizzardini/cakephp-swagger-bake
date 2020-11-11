@@ -26,6 +26,11 @@ use Symfony\Component\Yaml\Yaml;
 class Swagger
 {
     /**
+     * @var string
+     */
+    private const ASSETS = __DIR__ . DS . '..' . DS . '..' . DS . 'assets' . DS;
+
+    /**
      * OpenAPI array
      *
      * @var array
@@ -61,9 +66,15 @@ class Swagger
         $this->buildSchemaFromYml();
         $this->buildPathsFromYml();
 
-        $this->array = array_merge(
-            $this->array,
-            Yaml::parseFile(__DIR__ . DS . '..' . DS . '..' . DS . 'assets' . DS . 'x-swagger-bake.yaml')
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.initialize', $this)
+        );
+
+        $xSwaggerBake = Yaml::parseFile(self::ASSETS . 'x-swagger-bake.yaml');
+
+        $this->array['x-swagger-bake'] = array_merge_recursive(
+            $xSwaggerBake['x-swagger-bake'],
+            $this->array['x-swagger-bake'] ?? []
         );
 
         $this->buildSchemasFromModels();

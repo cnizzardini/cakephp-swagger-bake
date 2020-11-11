@@ -4,20 +4,31 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\MediaType;
 
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\Swagger;
 
 class Xml
 {
+    use GenericTrait;
+
     /**
      * @var \SwaggerBake\Lib\OpenApi\Schema
      */
     private $schema;
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
+     * @var \SwaggerBake\Lib\Swagger
      */
-    public function __construct(Schema $schema)
+    private $swagger;
+
+    /**
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
+     * @param \SwaggerBake\Lib\Swagger $swagger instance of Swaggger
+     */
+    public function __construct(Schema $schema, Swagger $swagger)
     {
         $this->schema = $schema;
+        $this->swagger = $swagger;
     }
 
     /**
@@ -40,12 +51,33 @@ class Xml
      */
     private function collection(): Schema
     {
+        $openapi = $this->swagger->getArray();
+
+        if (!isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'])) {
+            return (new Schema())
+                ->setAllOf([
+                    ['$ref' => $this->schema->getReadSchemaRef()],
+                ])
+                ->setXml((new \SwaggerBake\Lib\OpenApi\Xml())->setName('response'))
+                ->setProperties([]);
+        }
+
         return (new Schema())
             ->setAllOf([
-                ['$ref' => $this->schema->getReadSchemaRef()],
+                ['$ref' => '#/x-swagger-bake/components/schemas/Generic-Collection'],
             ])
             ->setXml((new \SwaggerBake\Lib\OpenApi\Xml())->setName('response'))
-            ->setProperties([]);
+            ->setProperties([
+                (new SchemaProperty())
+                    ->setName($this->whichData($openapi))
+                    ->setType('array')
+                    ->setItems([
+                        'type' => 'object',
+                        'allOf' => [
+                            ['$ref' => $this->schema->getReadSchemaRef()],
+                        ],
+                    ]),
+            ]);
     }
 
     /**

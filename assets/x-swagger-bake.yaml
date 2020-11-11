@@ -62,33 +62,33 @@ x-swagger-bake:
                   href:
                     type: string
                     format: url
-                    example: /collection?page=:id
+                    example: /collection?page=:number
               prev:
                 type: object
                 properties:
                   href:
                     type: string
                     format: url
-                    example: /collection?page=:id
+                    example: /collection?page=:number
               first:
                 type: object
                 properties:
                   href:
                     type: string
                     format: url
-                    example: /collection?page=:id
+                    example: /collection?page=:number
               properties:
                 href:
                   type: string
                   format: url
-                  example: /collection?page=:id
+                  example: /collection?page=:number
             last:
               type: object
               properties:
                 href:
                   type: string
                   format: url
-                  example: /collection?page=:id
+                  example: /collection?page=:number
       JsonLd-Item:
         type: object
         properties:

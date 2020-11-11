@@ -142,6 +142,20 @@ class Schema implements JsonSerializable
     }
 
     /**
+     * Defines a vendor property, such as `x-my-property`
+     *
+     * @param string $name name of the attribute
+     * @param mixed $value value
+     * @return $this
+     */
+    public function setVendorProperty(string $name, $value)
+    {
+        $this->{$name} = $value;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getName(): string
