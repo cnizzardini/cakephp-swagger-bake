@@ -13,70 +13,50 @@ class DataTypeConversion
     /**
      * Returns the OpenApi data type from the CakePHP data type
      *
-     * @param string $type Data type
+     * @param string $cakeType Data type
      * @return string
      */
-    public static function toType(string $type): string
+    public static function toType(string $cakeType): string
     {
-        switch ($type) {
-            case 'int':
-            case 'integer':
-            case 'tinyinteger':
-            case 'smallinteger':
-            case 'biginteger':
-            case 'mediuminteger':
-                return 'integer';
-            case 'decimal':
-            case 'float':
-                return 'number';
-            case 'uuid':
-            case 'text':
-            case 'varchar':
-            case 'char':
-            case 'date':
-            case 'time':
-            case 'datetime':
-                return 'string';
-            case 'boolean':
-            case 'bool':
-                return 'boolean';
+        $typeMap = [
+            'integer' => ['int','integer','tinyinteger','smallinteger','biginteger','mediuminteger'],
+            'number' => ['decimal','float'],
+            'string' => ['uuid','text','varchar','char','date','time','datetime'],
+            'boolean' => ['bool','boolean'],
+        ];
+
+        foreach ($typeMap as $type => $types) {
+            if (in_array($cakeType, $types)) {
+                return $type;
+            }
         }
 
-        return $type;
+        return $cakeType;
     }
 
     /**
      * Returns a data format from CakePHP data type
      *
-     * @param string $type Data type
+     * @param string $cakeType Data type
      * @return string
      */
-    public static function toFormat(string $type): string
+    public static function toFormat(string $cakeType): string
     {
-        switch ($type) {
-            case 'int':
-            case 'integer':
-            case 'biginteger':
-                return 'int64';
-            case 'smallinteger':
-            case 'tinyinteger':
-            case 'mediuminteger':
-                return 'int32';
-            case 'decimal':
-            case 'float':
-                return 'float';
-            case 'uuid':
-                return 'uuid';
-            case 'text':
-            case 'varchar':
-            case 'char':
-                return 'string';
-            case 'date':
-                return 'date';
-            case 'time':
-                return 'time';
-            case 'datetime':
-                return 'date-time';
+        $typeMap = [
+            'int64' => ['int','integer','biginteger'],
+            'int32' => ['tinyinteger','smallinteger','mediuminteger'],
+            'float' => ['decimal','float'],
+            'uuid' => ['uuid'],
+            'string' => ['text','varchar','char'],
+            'date' => ['date'],
+            'time' => ['time'],
+            'date-time' => ['datetime'],
+        ];
+
+        foreach ($typeMap as $type => $types) {
+            if (in_array($cakeType, $types)) {
+                return $type;
+            }
         }
 
         return '';
