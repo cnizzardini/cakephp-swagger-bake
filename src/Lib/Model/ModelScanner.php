@@ -81,10 +81,12 @@ class ModelScanner
                 continue;
             }
 
-            $controllerFqn = $routeDecorator->getControllerFqn();
-            $controller = $controllerFqn ? new $controllerFqn() : null;
+            if ($routeDecorator) {
+                $controllerFqn = $routeDecorator->getControllerFqn();
+                $controller = $controllerFqn ? new $controllerFqn() : null;
+            }
 
-            $return[] = new ModelDecorator($model, $controller);
+            $return[] = new ModelDecorator($model, $controller ?? null);
         }
 
         return $return;
