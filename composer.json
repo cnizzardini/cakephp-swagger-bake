@@ -19,6 +19,7 @@
         "cakephp/authentication": "Automates OpenApi security schemes"
     },
     "require-dev": {
+        "php": "7.4.*",
         "phpunit/phpunit": "^8.0",
         "friendsofcake/search": "^6.0",
         "cakephp/authentication": "^2.0",
@@ -63,6 +64,17 @@
             "name": "Chris Nizzardini",
             "homepage": "http://github.com/cnizzardini",
             "role": "Developer"
+        }
+    ],
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/var/www/personal/cakephp-swagger-bake",
+            "options": {
+                "symlink": true
+            }
         }
     ]
 }
