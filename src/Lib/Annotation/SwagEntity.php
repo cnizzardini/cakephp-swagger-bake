@@ -21,7 +21,7 @@ class SwagEntity
     /**
      * @var bool
      **/
-    public $isVisible;
+    public $isVisible = true;
 
     /**
      * @var string|null

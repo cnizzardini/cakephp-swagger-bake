@@ -459,6 +459,12 @@ OpenAPI:
 ### @SwagPath
 Class level annotation for exposing controllers to Swagger UI. You can hide entire controllers with this annotation.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| isVisible | boolean `true` | Is the path and its operations visible in OpenAPI  |
+| title | string `""` | Overwrites the default title |
+| summary | string `""` | Overwrites the default summary (if any) |
+
 ```php
 /**
  * @Swag\SwagPath(isVisible=false, description="optional description", summary="operational summary")
@@ -469,6 +475,12 @@ class UsersController extends AppController {
 ### @SwagEntity
 Class level annotation for exposing entities to Swagger UI. By default, all entities with routes will display as Swagger 
 schema. You can hide a schema or display a schema that does not have an associated route.
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| isVisible | boolean `true` | Is the schema is visible in OpenAPI schema list (hidden schema appears in `/x-swagger-bake-bake/components/schemas/`)  |
+| title | string `""` | Overwrites the default title |
+| description | string `""` | Overwrites the default description (if any) |
 
 ```php
 /**

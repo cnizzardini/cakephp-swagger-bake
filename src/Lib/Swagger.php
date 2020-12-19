@@ -248,15 +248,18 @@ class Swagger
 
         foreach ($models as $model) {
             $entityName = (new \ReflectionClass($model->getModel()->getEntity()))->getShortName();
+
             if ($this->getSchemaByName($entityName)) {
                 continue;
             }
 
             $schema = $schemaFactory->create($model);
-            if (!$schema) {
-                continue;
+
+            if ($schema->isVisible()) {
+                $this->pushSchema($schema);
+            } else {
+                $this->pushVendorSchema($schema);
             }
-            $this->pushSchema($schema);
 
             $readSchema = $schemaFactory->create($model, $schemaFactory::READABLE_PROPERTIES);
             $this->pushVendorSchema(

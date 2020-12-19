@@ -21,7 +21,15 @@ class SwagEntityTest extends TestCase
         'plugin.SwaggerBake.EmployeeSalaries',
     ];
 
+    /**
+     * @var Router
+     */
     private $router;
+
+    /**
+     * @var Configuration
+     */
+    private $config;
 
     public function setUp(): void
     {
@@ -74,6 +82,7 @@ class SwagEntityTest extends TestCase
         $arr = json_decode($swagger->toString(), true);
 
         $this->assertArrayNotHasKey('EmployeeSalary', $arr['components']['schemas']);
+        $this->assertArrayHasKey('EmployeeSalary', $arr['x-swagger-bake']['components']['schemas']);
     }
 
     public function testEntityAttribute()

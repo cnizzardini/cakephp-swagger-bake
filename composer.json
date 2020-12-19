@@ -65,16 +65,5 @@
             "homepage": "http://github.com/cnizzardini",
             "role": "Developer"
         }
-    ],
-    "prefer-stable": true,
-    "minimum-stability": "dev",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "/var/www/personal/cakephp-swagger-bake",
-            "options": {
-                "symlink": true
-            }
-        }
     ]
 }
