@@ -96,6 +96,11 @@ class Schema implements JsonSerializable
     private $xml;
 
     /**
+     * @var bool
+     */
+    private $isVisible = true;
+
+    /**
      * @return array
      */
     public function toArray(): array
@@ -103,7 +108,7 @@ class Schema implements JsonSerializable
         $vars = get_object_vars($this);
 
         // always unset
-        foreach (['name','refEntity'] as $v) {
+        foreach (['name','refEntity','isVisible'] as $v) {
             unset($vars[$v]);
         }
 
@@ -312,10 +317,10 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param string $description Description
+     * @param ?string $description Description
      * @return $this
      */
-    public function setDescription(string $description)
+    public function setDescription(?string $description)
     {
         $this->description = $description;
 
@@ -555,5 +560,23 @@ class Schema implements JsonSerializable
     public function getReadSchemaRef(): string
     {
         return self::SCHEMA . $this->getReadSchemaName();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVisible(): bool
+    {
+        return $this->isVisible;
+    }
+
+    /**
+     * @param bool $isVisible
+     * @return Schema
+     */
+    public function setIsVisible(bool $isVisible): Schema
+    {
+        $this->isVisible = $isVisible;
+        return $this;
     }
 }

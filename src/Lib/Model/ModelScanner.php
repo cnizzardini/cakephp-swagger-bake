@@ -77,9 +77,6 @@ class ModelScanner
             }
 
             $routeDecorator = $this->getRouteDecorator($model);
-            if (!$this->hasVisibility($model, $routeDecorator)) {
-                continue;
-            }
 
             if ($routeDecorator) {
                 $controllerFqn = $routeDecorator->getControllerFqn();
@@ -129,27 +126,5 @@ class ModelScanner
         });
 
         return $result->first();
-    }
-
-    /**
-     * @param \MixerApi\Core\Model\Model $model Model instance
-     * @param \SwaggerBake\Lib\Route\RouteDecorator|null $routeDecorator RouteDecorator instance
-     * @return bool
-     */
-    private function hasVisibility(Model $model, ?RouteDecorator $routeDecorator): bool
-    {
-        $annotations = AnnotationUtility::getClassAnnotationsFromFqns(get_class($model->getEntity()));
-
-        $swagEntities = array_filter($annotations, function ($annotation) {
-            return $annotation instanceof SwagEntity;
-        });
-
-        if (empty($swagEntities)) {
-            return $routeDecorator !== null;
-        }
-
-        $swagEntity = reset($swagEntities);
-
-        return $swagEntity->isVisible;
     }
 }
