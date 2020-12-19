@@ -99,7 +99,7 @@ class Schema implements JsonSerializable
     /**
      * @var bool
      */
-    private $isVisible = true;
+    private $isPublic = true;
 
     /**
      * @return array
@@ -566,18 +566,18 @@ class Schema implements JsonSerializable
     /**
      * @return bool
      */
-    public function isVisible(): bool
+    public function isPublic(): bool
     {
-        return $this->isVisible;
+        return $this->isPublic;
     }
 
     /**
-     * @param bool $isVisible indicates visibility
+     * @param bool $isPublic indicates visibility
      * @return $this
      */
-    public function setIsVisible(bool $isVisible)
+    public function setIsPublic(bool $isPublic)
     {
-        $this->isVisible = $isVisible;
+        $this->isPublic = $isPublic;
 
         return $this;
     }

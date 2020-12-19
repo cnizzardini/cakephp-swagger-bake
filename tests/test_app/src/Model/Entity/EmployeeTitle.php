@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBakeTest\App\Model\Entity;
 
 use Cake\ORM\Entity;
+use SwaggerBake\Lib\Annotation\SwagEntity;
 
 /**
  * EmployeeTitle Entity

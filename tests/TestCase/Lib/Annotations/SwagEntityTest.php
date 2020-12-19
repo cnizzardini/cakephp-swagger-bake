@@ -19,6 +19,7 @@ class SwagEntityTest extends TestCase
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
         'plugin.SwaggerBake.EmployeeSalaries',
+        'plugin.SwaggerBake.DepartmentEmployees',
     ];
 
     /**
@@ -40,6 +41,7 @@ class SwagEntityTest extends TestCase
             $builder->resources('Employees', function (RouteBuilder $routes) {
                 $routes->resources('EmployeeSalaries');
             });
+            $builder->resources('DepartmentEmployees');
         });
         $this->router = $router;
 
@@ -73,7 +75,7 @@ class SwagEntityTest extends TestCase
         $this->assertArrayHasKey('Employee', $arr['components']['schemas']);
     }
 
-    public function testEntityInvisible()
+    public function testEntityIsVisibleFalse()
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
@@ -82,7 +84,19 @@ class SwagEntityTest extends TestCase
         $arr = json_decode($swagger->toString(), true);
 
         $this->assertArrayNotHasKey('EmployeeSalary', $arr['components']['schemas']);
-        $this->assertArrayHasKey('EmployeeSalary', $arr['x-swagger-bake']['components']['schemas']);
+        $this->assertArrayNotHasKey('EmployeeSalary', $arr['x-swagger-bake']['components']['schemas']);
+    }
+
+    public function testEntityIsPublicFalse()
+    {
+        $cakeRoute = new RouteScanner($this->router, $this->config);
+
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $this->assertArrayNotHasKey('DepartmentEmployee', $arr['components']['schemas']);
+        $this->assertArrayHasKey('DepartmentEmployee', $arr['x-swagger-bake']['components']['schemas']);
     }
 
     public function testEntityAttribute()

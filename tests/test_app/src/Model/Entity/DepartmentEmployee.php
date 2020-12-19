@@ -4,10 +4,11 @@ declare(strict_types=1);
 namespace SwaggerBakeTest\App\Model\Entity;
 
 use Cake\ORM\Entity;
+use SwaggerBake\Lib\Annotation\SwagEntity;
 
 /**
  * DepartmentEmployee Entity
- *
+ * @SwagEntity(isPublic=false)
  * @property int $employee_id
  * @property int $department_id
  * @property \Cake\I18n\FrozenDate $from_date

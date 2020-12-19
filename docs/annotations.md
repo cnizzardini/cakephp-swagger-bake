@@ -473,18 +473,25 @@ class UsersController extends AppController {
 ```
 
 ### @SwagEntity
-Class level annotation for exposing entities to Swagger UI. By default, all entities with routes will display as Swagger 
-schema. You can hide a schema or display a schema that does not have an associated route.
+Class level annotation for exposing entities to Swagger UI. 
 
 | Attribute | Type / Default | Description | 
 | ------------- | ------------- | ------------- |
-| isVisible | boolean `true` | Is the schema is visible in OpenAPI schema list (hidden schema appears in `/x-swagger-bake-bake/components/schemas/`)  |
+| isVisible | boolean `true` | All entities with routes are added to OpenAPI schema. To completely hide a schema from appearing anywhere in OpenAPI JSON output set to false |
+| isPublic | boolean `true` | To hide from the default via in Swagger 3.0 set to false. isVisible takes precedence (see isVisible vs isPublic below) |
 | title | string `""` | Overwrites the default title |
 | description | string `""` | Overwrites the default description (if any) |
 
+**isVisible vs isPublic:** 
+
+`isVisible` takes precedence over `isPublic`. If you've set `isVisible` to `false` then whatever you've defined for 
+`isPublic` becomes inert. If a schema is visible, but not public it be accessed via 
+`#/x-swagger-bake-bake/components/schemas/EntityName`. This is helpful if you want to reduce cluter in your Swagger 
+schemas, but still want the ability to reference it via `@SwagResponseSchema`
+
 ```php
 /**
- * @Swag\SwagEntity(isVisible=false, title="optional title", description="optional description")
+ * @Swag\SwagEntity(isVisible=true, isPublic=false, title="optional title", description="optional description")
  */
 class Employee extends Entity {
 ```

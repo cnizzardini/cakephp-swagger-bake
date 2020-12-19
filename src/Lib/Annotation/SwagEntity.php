@@ -12,6 +12,7 @@ namespace SwaggerBake\Lib\Annotation;
  * @Target({"CLASS"})
  * @Attributes({
  * @Attribute("isVisible", type="bool"),
+ * @Attribute("isPublic", type="bool"),
  * @Attribute("title", type="string"),
  * @Attribute("description", type="string"),
  * })
@@ -22,6 +23,11 @@ class SwagEntity
      * @var bool
      **/
     public $isVisible = true;
+
+    /**
+     * @var bool
+     **/
+    public $isPublic = true;
 
     /**
      * @var string|null

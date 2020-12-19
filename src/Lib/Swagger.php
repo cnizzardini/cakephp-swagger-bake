@@ -255,8 +255,11 @@ class Swagger
             }
 
             $schema = $schemaFactory->create($model);
+            if (!$schema) {
+                continue;
+            }
 
-            if ($schema->isVisible()) {
+            if ($schema->isPublic()) {
                 $this->pushSchema($schema);
             } else {
                 $this->pushVendorSchema($schema);

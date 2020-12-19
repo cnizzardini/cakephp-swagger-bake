@@ -10,10 +10,12 @@ use Cake\Datasource\ConnectionManager;
 use MixerApi\Core\Model\Model;
 use MixerApi\Core\Model\ModelFactory;
 use MixerApi\Core\Utility\NamespaceUtility;
+use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
+use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
  * Finds all Entities associated with RESTful routes based on userland configurations
@@ -75,6 +77,9 @@ class ModelScanner
             }
 
             $routeDecorator = $this->getRouteDecorator($model);
+            if (!$this->hasVisibility($model, $routeDecorator)) {
+                continue;
+            }
 
             if ($routeDecorator) {
                 $controllerFqn = $routeDecorator->getControllerFqn();
@@ -124,5 +129,27 @@ class ModelScanner
         });
 
         return $result->first();
+    }
+
+    /**
+     * @param \MixerApi\Core\Model\Model $model Model instance
+     * @param \SwaggerBake\Lib\Route\RouteDecorator|null $routeDecorator RouteDecorator instance
+     * @return bool
+     */
+    private function hasVisibility(Model $model, ?RouteDecorator $routeDecorator): bool
+    {
+        $annotations = AnnotationUtility::getClassAnnotationsFromFqns(get_class($model->getEntity()));
+
+        $swagEntities = array_filter($annotations, function ($annotation) {
+            return $annotation instanceof SwagEntity;
+        });
+
+        if (empty($swagEntities)) {
+            return $routeDecorator !== null;
+        }
+
+        $swagEntity = reset($swagEntities);
+
+        return $swagEntity->isVisible;
     }
 }
