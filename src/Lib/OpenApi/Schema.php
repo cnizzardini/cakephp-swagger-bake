@@ -10,6 +10,7 @@ use JsonSerializable;
  *
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/data-models/
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Schema implements JsonSerializable
 {
@@ -571,12 +572,13 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param bool $isVisible
-     * @return Schema
+     * @param bool $isVisible indicates visibility
+     * @return $this
      */
-    public function setIsVisible(bool $isVisible): Schema
+    public function setIsVisible(bool $isVisible)
     {
         $this->isVisible = $isVisible;
+
         return $this;
     }
 }

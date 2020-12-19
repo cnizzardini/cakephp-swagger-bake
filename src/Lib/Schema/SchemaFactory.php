@@ -58,7 +58,6 @@ class SchemaFactory
     public function create(ModelDecorator $modelDecorator, int $propertyType = 6): Schema
     {
         $model = $modelDecorator->getModel();
-        /** @var SwagEntity $swagEntity */
         $swagEntity = $this->getSwagEntityAnnotation($model->getEntity());
 
         $this->validator = $this->getValidator($model);
