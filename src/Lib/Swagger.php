@@ -22,6 +22,7 @@ use Symfony\Component\Yaml\Yaml;
  * Class Swagger
  *
  * @package SwaggerBake\Lib
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Swagger
 {

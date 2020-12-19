@@ -10,12 +10,10 @@ use Cake\Datasource\ConnectionManager;
 use MixerApi\Core\Model\Model;
 use MixerApi\Core\Model\ModelFactory;
 use MixerApi\Core\Utility\NamespaceUtility;
-use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
-use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
  * Finds all Entities associated with RESTful routes based on userland configurations
