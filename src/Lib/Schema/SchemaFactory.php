@@ -52,13 +52,17 @@ class SchemaFactory
      *
      * @param \SwaggerBake\Lib\Model\ModelDecorator $modelDecorator ModelDecorator
      * @param int $propertyType see public constants for o
-     * @return \SwaggerBake\Lib\OpenApi\Schema
+     * @return \SwaggerBake\Lib\OpenApi\Schema|null
      * @throws \ReflectionException
      */
-    public function create(ModelDecorator $modelDecorator, int $propertyType = 6): Schema
+    public function create(ModelDecorator $modelDecorator, int $propertyType = 6): ?Schema
     {
         $model = $modelDecorator->getModel();
         $swagEntity = $this->getSwagEntityAnnotation($model->getEntity());
+
+        if ($swagEntity !== null && $swagEntity->isVisible === false) {
+            return null;
+        }
 
         $this->validator = $this->getValidator($model);
 
@@ -71,7 +75,7 @@ class SchemaFactory
             ->setDescription($swagEntity->description)
             ->setType('object')
             ->setProperties($properties)
-            ->setIsVisible($swagEntity->isVisible);
+            ->setIsPublic($swagEntity->isPublic);
 
         if (empty($schema->getDescription())) {
             $schema->setDescription($docBlock ? $docBlock->getSummary() : null);
