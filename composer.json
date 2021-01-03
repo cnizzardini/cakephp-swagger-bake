@@ -7,7 +7,7 @@
     "require": {
         "php": ">=7.2",
         "ext-json": "*",
-        "cakephp/cakephp": "~4.0",
+        "cakephp/cakephp": "^4.0",
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
         "doctrine/annotations": "^1.10",
@@ -40,17 +40,16 @@
         }
     },
     "scripts": {
-        "check": [
+        "analyze": [
             "@test",
-            "@cs-check",
-            "@stan",
-            "@md"
+            "@phpcs",
+            "@phpstan"
         ],
-        "cs-check": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/",
-        "cs-fix": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/",
-        "stan": "phpstan analyse src/",
+        "phpcs": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/",
+        "phpcbf": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/",
+        "phpstan": "phpstan analyse src/",
         "test": "phpunit --colors=always",
-        "md": "phpmd src/ ansi phpmd.xml",
+        "phpmd": "phpmd src/ ansi phpmd.xml",
         "coverage": "phpunit --coverage-html coverage-reports/"
     },
     "support": {
