@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
+use Cake\Core\Exception\CakeException;
 use Exception;
 use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 
@@ -28,9 +29,52 @@ class ExceptionHandler
      */
     public function __construct(Throws $throw)
     {
-        $exceptionClass = $throw->getType()->__toString();
+        $exceptionClass = $this->findExceptionClass($throw);
         $this->message = trim($throw->getDescription()->getBodyTemplate());
 
+        $http404s = [
+            'MissingActionException',
+            'PageOutOfBoundsException',
+            'RecordNotFoundException',
+            'MissingControllerException',
+            'MissingRouteException',
+        ];
+
+        if (in_array($exceptionClass, $http404s)) {
+            $this->code = '404';
+        } else {
+            $fqnList = [
+                $exceptionClass,
+                '\\' . $exceptionClass,
+                "\Cake\Http\Exception\\" . $exceptionClass,
+                "\Cake\Datasource\Exception\\" . $exceptionClass,
+            ];
+
+            $results = array_filter($fqnList, function ($fqn) {
+                return class_exists($fqn);
+            });
+
+            foreach ($results as $exception) {
+                $instance = new $exception();
+                if ($instance instanceof CakeException && $instance->getCode() > 0) {
+                    $this->code = (string)$instance->getCode();
+                }
+                $this->assignMessage($instance);
+            }
+        }
+
+        $this->message = empty($this->message) ? 'Unknown Error' : $this->message;
+
+        $this->code = $this->code < 400 ? 500 : $this->code;
+    }
+
+    /**
+     * @param \phpDocumentor\Reflection\DocBlock\Tags\Throws $throw Throws
+     * @return string
+     */
+    private function findExceptionClass(Throws $throw): string
+    {
+        $exceptionClass = $throw->getType()->__toString();
         if (substr($exceptionClass, 0, 1) == '\\') {
             $exceptionClass = substr($exceptionClass, 1);
         }
@@ -40,27 +84,7 @@ class ExceptionHandler
             $exceptionClass = reset($pieces);
         }
 
-        $trying = [
-            $exceptionClass,
-            '\\' . $exceptionClass,
-            "\Cake\Http\Exception\\" . $exceptionClass,
-            "\Cake\Datasource\Exception\\" . $exceptionClass,
-        ];
-
-        try {
-            foreach ($trying as $try) {
-                if (class_exists($try)) {
-                    $instance = new $try();
-                    $this->code = $instance->getCode();
-                    $this->assignMessage($instance);
-                }
-            }
-        } catch (Exception $e) {
-        }
-
-        $this->message = empty($this->message) ? 'Unknown Error' : $this->message;
-
-        $this->code = $this->code < 400 ? 500 : $this->code;
+        return $exceptionClass;
     }
 
     /**

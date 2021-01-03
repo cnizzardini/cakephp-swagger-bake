@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-18.04 ]
-        php-versions: [ '7.3', '7.4' ]
+        php-versions: ['7.3', '7.4', '8.0']
 
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
@@ -29,35 +29,22 @@ jobs:
       - name: PHP Version
         run: php -v
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: ${{ matrix.php-versions }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ matrix.php-versions }}-php-
-
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: |
+          composer validate
+          composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Code Quality
-        if: ${{ matrix.php-versions }} == '7.4'
-        run: composer check
-
-      - name: PHP Unit
-        if: ${{ matrix.php-versions }} != '7.4'
+      - name: Test (!7.4)
+        if: ${{ matrix.php-versions != '7.4' }}
         run: vendor/bin/phpunit
 
-      - name: Upload coverage results to Coveralls
-        if: ${{ matrix.php-versions }} != '7.4'
+      - name: Test + Coverage + Static Analysis (7.4)
+        if: ${{ matrix.php-versions = '7.4' }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          composer analze
           export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
           composer global require twinh/php-coveralls
           php-coveralls --coverage_clover=clover.xml -v

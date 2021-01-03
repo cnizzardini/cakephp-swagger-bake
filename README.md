@@ -43,7 +43,7 @@ and controllers.
 
 SwaggerBake requires CakePHP4 and a few dependencies that will be automatically installed via composer.
 
-```
+```console
 composer require cnizzardini/cakephp-swagger-bake
 ```
 
@@ -426,12 +426,12 @@ local source to make developing easier:
 Undo these steps when you're done. Read the full composer documentation on loading from path here: 
 [https://getcomposer.org/doc/05-repositories.md#path](https://getcomposer.org/doc/05-repositories.md#path)
 
-## Coding Standards
+## Tests + Analysis
 
-Coding standards run as part of CI with Travis. You may run these locally with `composer check`.
+```console
+# unit tests only
+composer test
 
-## Unit Tests
-
-```sh
-vendor/bin/phpunit
+# unit tests and static analysis
+composer analyze
 ```
