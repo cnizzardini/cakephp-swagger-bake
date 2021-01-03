@@ -27,12 +27,6 @@ class NamespaceUtilityTest extends TestCase
         $this->assertEquals('\SwaggerBakeTest\App\Model\Entity\Department', $fqns);
     }
 
-    public function testGetEntityFullyQualifiedNameSpaceException()
-    {
-        $this->expectException(SwaggerBakeRunTimeException::class);
-        NamespaceUtility::getEntityFullyQualifiedNameSpace('Department', new Configuration());
-    }
-
     public function testGetEntityFullyQualifiedNameSpaceNull()
     {
         $fqns = NamespaceUtility::getEntityFullyQualifiedNameSpace(
@@ -57,12 +51,6 @@ class NamespaceUtilityTest extends TestCase
             ])
         );
         $this->assertEquals('\SwaggerBakeTest\App\Model\Table\DepartmentsTable', $fqns);
-    }
-
-    public function testGetTableFullyQualifiedNameSpaceException()
-    {
-        $this->expectException(SwaggerBakeRunTimeException::class);
-        NamespaceUtility::getTableFullyQualifiedNameSpace('DepartmentsTable', new Configuration());
     }
 
     public function testGetTableFullyQualifiedNameSpaceNull()

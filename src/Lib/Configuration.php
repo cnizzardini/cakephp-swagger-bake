@@ -59,7 +59,7 @@ class Configuration
                     'tables' => ['\App\\'],
                 ],
             ],
-            Configure::read('SwaggerBake')
+            Configure::read('SwaggerBake') ?? []
         );
     }
 
