@@ -44,7 +44,7 @@ jobs:
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          composer analze
+          composer analyze
           export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
           composer global require twinh/php-coveralls
           php-coveralls --coverage_clover=clover.xml -v
