@@ -35,16 +35,17 @@ jobs:
           composer validate
           composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Test (!7.4)
-        if: ${{ matrix.php-versions != '7.4' }}
+      - name: Test (7.3|7.4)
+        if: ${{ matrix.php-versions != '8.0' }}
         run: vendor/bin/phpunit
 
-      - name: Test + Coverage + Static Analysis (7.4)
-        if: ${{ matrix.php-versions == '7.4' }}
+      - name: Test + Coverage + Static Analysis (8.0 only)
+        if: ${{ matrix.php-versions == '8.0' }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           composer analyze
+          echo ${{ matrix.php-versions }}
           export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
-          composer global require twinh/php-coveralls
+          composer global require php-coveralls/php-coveralls
           php-coveralls --coverage_clover=clover.xml -v
