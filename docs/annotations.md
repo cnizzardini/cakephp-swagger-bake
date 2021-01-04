@@ -34,16 +34,16 @@ You can improve this documentation by submitting PRs.
 ### @SwagPaginator
 Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
 query parameters: page, limit, sort, and direction. When specified with no arguments, Paginate.sortableFields will be 
-used to populate sort options. If sortableFields is not defined the controller actions associated Schema properties will 
-be used. You can override the defaults using the `sort` attribute. Otherwise, a simple text input is rendered 
-(`useSortTextInput=true`). 
+used to populate the options list (for `index()` actions only). User supplied options can be given using sortEnum. 
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| sortEnum | array `[]` | A list of fields that can be sorted by. |
+| useSortTextInput | boolean `false` | Use an input box instead of dropdown for sortable field |
 
 ```php
-use SwaggerBake\Lib\Annotation as Swag;
 /**
- * @Swag\SwagPaginator # default without attributes should work fine in most cases 
- * @Swag\SwagPaginator(sortEnum={"id","name"}) # custom example
- * @Swag\SwagPaginator(useSortTextInput=false) # force a text field instead of enum/dropdown
+ * @Swag\SwagPaginator(sortEnum={"id","name"})
  */
 public function index() {
     $employees = $this->paginate($this->Employees);
@@ -81,11 +81,17 @@ OpenAPI:
 ```
 
 ### @SwagSearch
-Method level annotation for documenting search parameters using the popular [friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
+Method level annotation for documenting search parameters using the popular 
+[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| tableClass | string | Required FQN to the Table class |
+| collection | string `default` | The Cake Search collection _(see vendor documentation)_ |
 
 ```php
 /**
- * @SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch(tableClass="\App\Model\Table\FilmsTable", collection="default")
+ * @SwagExt\CakeSearch\Annotation\SwagSearch(tableClass="\App\Model\Table\FilmsTable", collection="default")
  */
 public function index()
 {
