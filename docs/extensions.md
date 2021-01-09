@@ -4,8 +4,7 @@ Extensions to SwaggerBake can be added through the use of events and OpenAPI ven
 
 ## Supported Events
 
-The `SwaggerBake.Operation.created` is dispatched each time a new [Operation](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/OpenApi/Operation.php) is 
-created. Simply listen for the event: 
+The `SwaggerBake.Operation.created` is dispatched each time a new [Operation](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/OpenApi/Operation.php) is created. Simply listen for the event: 
 
 ```php
 EventManager::instance()
@@ -15,8 +14,7 @@ EventManager::instance()
     });
 ```
 
-The `SwaggerBake.Schema.created` is dispatched each time a new [Schema](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/OpenApi/Schema.php) instance is 
-created. Simply listen for the event: 
+The `SwaggerBake.Schema.created` is dispatched each time a new [Schema](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/OpenApi/Schema.php) instance is created. Simply listen for the event: 
 
 ```php
 EventManager::instance()
@@ -26,8 +24,7 @@ EventManager::instance()
     });
 ```
 
-The `SwaggerBake.initialize` is dispatched once, just before [Swagger](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/Swagger.php) begins building OpenAPI 
-from your routes, models, and annotations.
+The `SwaggerBake.initialize` is dispatched once, just before [Swagger](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/Swagger.php) begins building OpenAPI from your routes, models, and annotations.
 
 ```php
 EventManager::instance()
@@ -40,8 +37,7 @@ EventManager::instance()
     });
 ```
 
-The `SwaggerBake.beforeRender` is dispatched once, just before [Swagger](src/Lib/Swagger.php) converts data to an 
-OpenAPI array or json. 
+The `SwaggerBake.beforeRender` is dispatched once, just before [Swagger](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/Swagger.php) converts data to an OpenAPI array or json. 
 
 ```php
 EventManager::instance()
