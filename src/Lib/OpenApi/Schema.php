@@ -109,7 +109,7 @@ class Schema implements JsonSerializable
         $vars = get_object_vars($this);
 
         // always unset
-        foreach (['name','refEntity','isVisible'] as $v) {
+        foreach (['name','refEntity','isPublic'] as $v) {
             unset($vars[$v]);
         }
 
