@@ -38,8 +38,6 @@ class SwaggerUiComponent extends Component
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
         parent::__construct($registry, $config);
-        $this->config = new Configuration();
-        $this->swagger = (new SwaggerFactory())->create();
     }
 
     /**
@@ -48,6 +46,9 @@ class SwaggerUiComponent extends Component
      */
     public function beforeFilter(Event $event): void
     {
+        $this->config = new Configuration();
+        $this->swagger = (new SwaggerFactory())->create();
+
         if ($this->config->isHotReload()) {
             $output = $this->config->getJson();
             $this->swagger->writeFile($output);
