@@ -86,7 +86,7 @@ class SwaggerOperationTest extends TestCase
         AnnotationLoader::load();
     }
 
-    public function testCrudOperationsExist()
+    public function testCrudOperationsExist(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -98,7 +98,7 @@ class SwaggerOperationTest extends TestCase
 
     }
 
-    public function testDefaultResponseSchemaOnIndexMethod()
+    public function testDefaultResponseSchemaOnIndexMethod(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -110,7 +110,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['items']['$ref']);
     }
 
-    public function testDefaultRequestSchemaOnAddMethod()
+    public function testDefaultRequestSchemaOnAddMethod(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -120,7 +120,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Add', $schema['$ref']);
     }
 
-    public function testDefaultResponseSchemaOnAddMethod()
+    public function testDefaultResponseSchemaOnAddMethod(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -130,7 +130,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['$ref']);
     }
 
-    public function testDefaultRequestSchemaOnEditMethod()
+    public function testDefaultRequestSchemaOnEditMethod(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -140,7 +140,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Edit', $schema['$ref']);
     }
 
-    public function testDefaultResponseSchemaOnEditMethod()
+    public function testDefaultResponseSchemaOnEditMethod(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -150,7 +150,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['$ref']);
     }
 
-    public function testExceptionResponseSchema()
+    public function testExceptionResponseSchema(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -162,7 +162,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertArrayHasKey(500, $responses);
     }
 
-    public function testYmlPathOperationTakesPrecedence()
+    public function testYmlPathOperationTakesPrecedence(): void
     {
         $config = $this->config;
         $config['yml'] = '/config/swagger-with-existing.yml';
@@ -179,7 +179,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('phpunit test string', $arr['paths']['/employee-salaries']['get']['description']);
     }
 
-    public function testSecuritySchemeFromAuthenticationComponent()
+    public function testSecuritySchemeFromAuthenticationComponent(): void
     {
         $config = $this->config;
         $config['yml'] = '/config/swagger-with-existing.yml';
@@ -194,7 +194,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('BearerAuth', array_keys($security)[0]);
     }
 
-    public function testSecuritySchemeMultipleSwagSecurity()
+    public function testSecuritySchemeMultipleSwagSecurity(): void
     {
         $config = $this->config;
         $config['yml'] = '/config/swagger-with-existing.yml';

@@ -33,7 +33,7 @@ and controllers.
 - [Getting Started](#getting-started)
 - [Automatic Documentation](#automatic-documentation)
 - [Doc Blocks](#doc-blocks)
-- [Annotations for Extended Functionality](#annotations-for-extended-functionality)
+- [Annotations](#annotations)
 - [Extending SwaggerBake](#extending-swaggerbake)
 - [Debug Commands](#debug-commands)
 - [Bake Theme](#bake-theme)
@@ -120,7 +120,7 @@ SwaggerBake will parse your [DocBlocks](https://docs.phpdoc.org/latest/guides/do
 first line reads as the Operation Summary and the second as the Operation Description, `@see`, `@deprecated`, and 
 `@throws` are also supported. Throw tags use the Exception classes HTTP status code. For instance, a 
 `MethodNotAllowedException` displays as a 405 response in Swagger UI, while a standard PHP Exception displays as a 500 
-code.
+code. You must use the FQN for exceptions.
 
 ```php
 /**
@@ -130,13 +130,13 @@ code.
  * 
  * @see https://book.cakephp.org/4/en/index.html The link and this description appear in Swagger
  * @deprecated
- * @throws BadRequestException An optional bad request description here
- * @throws Exception
+ * @throws \Cake\Http\Exception\BadRequestException An optional bad request description here
+ * @throws \Exception
  */
 public function index() {}
 ```
 
-## Annotations for Extended Functionality
+## Annotations
 
 SwaggerBake provides some optional Annotations for enhanced functionality. These can be imported individually from 
 `SwaggerBake\Lib\Annotation` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Annotation as Swag`.
