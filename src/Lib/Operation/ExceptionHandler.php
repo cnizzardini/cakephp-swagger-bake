@@ -50,7 +50,7 @@ class ExceptionHandler
             $httpCode = 404;
         }
 
-        $this->code = (string) $httpCode;
+        $this->code = (string)$httpCode;
         $this->message = $message ?? $this->message;
     }
 
