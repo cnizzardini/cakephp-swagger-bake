@@ -16,7 +16,7 @@ use Cake\Log\Log;
  * @Attribute("statusCode", type = "string"),
  * @Attribute("description", type = "string"),
  * @Attribute("mimeType", type = "string"),
- * @Attribute("mimeTypes", type = "string"),
+ * @Attribute("mimeTypes", type = "array"),
  * @Attribute("schemaType", type = "string"),
  * @Attribute("schemaFormat", type = "string"),
  * @Attribute("schemaItems", type = "array")
