@@ -143,7 +143,7 @@ class Swagger
             new Event('SwaggerBake.beforeRender', $this)
         );
 
-        return json_encode($this->getArray(), JSON_PRETTY_PRINT);
+        return json_encode($this->getArray(), $this->config->get('jsonOptions'));
     }
 
     /**

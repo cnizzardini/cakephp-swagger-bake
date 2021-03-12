@@ -77,6 +77,10 @@ class SwaggerTest extends TestCase
 
         $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
 
+        $jsonString = $swagger->toString();
+        $this->assertStringContainsString('"\/departments"', $jsonString);
+        $this->assertStringContainsString("\n", $jsonString);
+
         $arr = json_decode($swagger->toString(), true);
 
         $this->assertArrayHasKey('/pets', $arr['paths']);
@@ -96,5 +100,26 @@ class SwaggerTest extends TestCase
 
         $this->assertArrayHasKey('/departments', $arr['paths']);
         $this->assertArrayHasKey('Department', $arr['components']['schemas']);
+    }
+
+    public function testCustomJsonOptions()
+    {
+        $vars = $this->config;
+        $vars['jsonOptions'] = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+        $config = new Configuration($vars, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new RouteScanner($this->router, $config);
+
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
+        $jsonString = $swagger->toString();
+
+        $this->assertStringNotContainsString('"\/departments"', $jsonString);
+        $this->assertStringContainsString('"/departments"', $jsonString);
+        $this->assertStringNotContainsString("\n", $jsonString);
+
+        $arr = json_decode($swagger->toString(), true);
+
+        $this->assertArrayHasKey('/pets', $arr['paths']);
+        $this->assertArrayHasKey('Pets', $arr['components']['schemas']);
     }
 }
