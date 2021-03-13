@@ -173,10 +173,6 @@ OpenAPI schema.
 | [SwaggerBake.initialize](docs/events.md) | Dispatched during initialization phase on SwaggerBake |
 | [SwaggerBake.beforeRender](docs/events.md) | Dispatched before SwaggerBake outputs OpenAPI JSON |
 
-## Extensions
-
-
-
 ## Extending SwaggerBake
 
 It's possible to write extensions for SwaggerBake. Read the [extensions documentation](docs/extensions.md). There are 
