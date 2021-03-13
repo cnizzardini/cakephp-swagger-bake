@@ -163,6 +163,22 @@ OpenAPI:
 ### @SwagQuery 
 Method level annotation for adding query parameters.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the query parameter |
+| type | string `string` | Data type |
+| description | string `""` | Description of the parameter |
+| required | bool `false` | Is this parameter required? |
+| enum | array `[]` | An enumerated list of accepted values |
+| deprecated | bool `false` | Is this parameter deprecated? |
+| allowReserved | bool `false` | Allow reserved URI characters? |
+| allowEmptyValue | bool `false` | Allow empty values? |
+| explode | bool `false` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| style | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| format | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+
+
 ```php
 /**
  * @Swag\SwagQuery(name="one", required=true, description="example description")
