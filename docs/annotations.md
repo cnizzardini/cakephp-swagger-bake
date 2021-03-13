@@ -203,6 +203,30 @@ OpenAPI:
 ### @SwagForm
 Method level annotation for adding form data fields.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the schema property |
+| type | string `string` | Date type such as integer, string, etc... |
+| format | string `""` | Date format such as int32, date-time, etc... |
+| description | string `""` | Description of the property |
+| readOnly | bool `false` | Is the property read only? |
+| writeOnly | bool `false` | Is the property write only? |
+| required | bool `false` | Is the property required? |
+| multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
+
 ```php
 /**
  * @Swag\SwagForm(name="one", type="string", description="example", required=true, enum={"A","B"})
@@ -268,6 +292,31 @@ class ActorDto {
 
 ### @SwagDtoRequestBody
 Formerly `@SwagDtoForm`. Property level annotation for use in your SwagDto classes.
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the schema property |
+| type | string `string` | Date type such as integer, string, etc... |
+| format | string `""` | Date format such as int32, date-time, etc... |
+| description | string `""` | Description of the property |
+| readOnly | bool `false` | Is the property read only? |
+| writeOnly | bool `false` | Is the property write only? |
+| required | bool `false` | Is the property required? |
+| multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
+
 ```php
 class ActorDto {
      /**
@@ -325,6 +374,11 @@ OpenAPI:
 Method level annotation for adding authentication requirements. This annotation takes precedence over settings that 
 SwaggerBake gathers from AuthenticationComponent. See the main documentation for more information.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the security option |
+| scopes | array | Security Scopes |
+
 ```php
 /**
  * @Swag\SwagSecurity(name="BearerAuth", scopes={"Read","Write"})
@@ -334,6 +388,12 @@ public function index() {}
 
 ### @SwagOperation
 Method level annotation for OpenApi Operations. 
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| isVisible | bool `true` | Is the operation visible? |
+| tagNames | array `[]` | https://swagger.io/docs/specification/grouping-operations-with-tags/ |
+| showPut | bool `false` | Add PUT operations to OpenAPI? By default on PATCH operations are shown |
 
 ```php
 /**
@@ -354,6 +414,12 @@ OpenAPI:
 ### @SwagRequestBody
 Method level annotation for describing request body. Set ignoreCakeSchema for full control over request body.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| description | string `""` | Description of the request body |
+| required | bool `true` | Is the request body required? |
+| ignoreCakeSchema | bool `false` | Ignore cake schema |
+
 ```php
 /**
  * @Swag\SwagRequestBody(description="my description", required=true, ignoreCakeSchema=true)
@@ -366,7 +432,10 @@ Method level annotation for describing custom content in request body. The `mime
 all mimeTypes defined as `requestAccepts` in your swagger_bake.php will be used. This will only show writeable 
 properties.
 
-- `mimeType` has been deprecated in >= v1.5, use array form with `mimeTypes`
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| refEntity | string `""` | The OpenAPI entity |
+| mimeTypes | array `[]` | An array of strings of mime types to support |
 
 ```php
 /**
@@ -399,8 +468,16 @@ OpenAPI:
 ### @SwagResponseSchema
 Method level annotation for defining response schema.
 
-- `mimeType` is deprecated in >= v1.5, use `mimeTypes` as an array.
-- `httpCode` is deprecated in >= v1.3, use `statusCode` 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| refEntity | string `""` | The OpenAPI entity |
+| statusCode | string `200` | Response code |
+| mimeTypes | array `[]` | An array of mime types the response can be |
+| description | string `null` | Description of the response |
+| schemaType | string `null` |  |
+| schemaFormat | string `null` |  |
+| schemaItems | array `[]` |  |
+
 
 ```php
 /**
@@ -506,6 +583,31 @@ class Employee extends Entity {
 Class level annotation for customizing Schema Attributes. Note that the attribute does not have to exist in your entity. 
 You can add adhoc attributes as needed and optionally combine with 
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the schema property |
+| type | string `string` | Date type such as integer, string, etc... |
+| format | string `""` | Date format such as int32, date-time, etc... |
+| description | string `""` | Description of the property |
+| readOnly | bool `false` | Is the property read only? |
+| writeOnly | bool `false` | Is the property write only? |
+| required | bool `false` | Is the property required? |
+| multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
+| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 
 ```php
 /**
