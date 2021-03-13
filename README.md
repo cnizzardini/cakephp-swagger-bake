@@ -163,19 +163,24 @@ SwaggerBake provides some optional Annotations for enhanced functionality. These
 
 ## Event System
 
-SwaggerBake comes with an [event system](docs/extensions.md#supported-events) to allow for further control over your 
+SwaggerBake comes with an [event system](docs/events.md) to allow for further control over your 
 OpenAPI schema.
 
 | Event | Description | 
 | ------------- | ------------- |
-| [SwaggerBake.Operation.created](docs/extensions.md#supported-events) | Dispatched each time an OpenAPI Path > Operation is created |
-| [SwaggerBake.Schema.created](docs/extensions.md#supported-events) | Dispatched each time an OpenAPI Schema is created |
-| [SwaggerBake.initialize](docs/extensions.md#supported-events) | Dispatched during initialization phase on SwaggerBake |
-| [SwaggerBake.beforeRender](docs/extensions.md#supported-events) | Dispatched before SwaggerBake outputs OpenAPI JSON |
+| [SwaggerBake.Operation.created](docs/events.md) | Dispatched each time an OpenAPI Path > Operation is created |
+| [SwaggerBake.Schema.created](docs/events.md) | Dispatched each time an OpenAPI Schema is created |
+| [SwaggerBake.initialize](docs/events.md) | Dispatched during initialization phase on SwaggerBake |
+| [SwaggerBake.beforeRender](docs/events.md) | Dispatched before SwaggerBake outputs OpenAPI JSON |
+
+## Extensions
+
+
 
 ## Extending SwaggerBake
 
-There are several options to extend functionality.
+It's possible to write extensions for SwaggerBake. Read the [extensions documentation](docs/extensions.md). There are 
+several other options to extend functionality documented below:
 
 #### Using Your Own SwaggerUI
 

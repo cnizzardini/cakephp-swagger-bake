@@ -2,53 +2,16 @@
 
 Extensions to SwaggerBake can be added through the use of events and OpenAPI vendor extensions.
 
-## Supported Events
+See the [CakeSearch extension](https://github.com/cnizzardini/cakephp-swagger-bake/tree/master/src/Lib/Extension) for an example. You may submit extensions as PRs to this project.
 
-The `SwaggerBake.Operation.created` is dispatched each time a new [Operation](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/OpenApi/Operation.php) is created. Simply listen for the event: 
+1. Your extension must implement ExtensionInterface. Read the interfaces comments and refer to the CakeSearch
+   extension for additional insight.
 
-```php
-EventManager::instance()
-    ->on('SwaggerBake.Operation.created', function (Event $event) {
-        /** @var \SwaggerBake\Lib\OpenApi\Operation $operation */
-        $operation = $event->getSubject();
-    });
-```
+2. Add your extension to the `EXTENSIONS` constant in `src/Lib/ExtensionLoader.php`.
 
-The `SwaggerBake.Schema.created` is dispatched each time a new [Schema](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/OpenApi/Schema.php) instance is created. Simply listen for the event: 
+3. Create necessary unit tests `tests/TestCase/Lib/Extension`.
 
-```php
-EventManager::instance()
-    ->on('SwaggerBake.Schema.created', function (Event $event) {
-        /** @var \SwaggerBake\Lib\OpenApi\Schema $schema */
-        $schema = $event->getSubject();
-    });
-```
-
-The `SwaggerBake.initialize` is dispatched once, just before [Swagger](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/Swagger.php) begins building OpenAPI from your routes, models, and annotations.
-
-```php
-EventManager::instance()
-    ->on('SwaggerBake.initialize', function (Event $event) {
-        /** @var \SwaggerBake\Lib\Swagger $swagger */
-        $swagger = $event->getSubject();
-        $array = $swagger->getArray();
-        $array['title'] = 'A new title';
-        $swagger->setArray($array);
-    });
-```
-
-The `SwaggerBake.beforeRender` is dispatched once, just before [Swagger](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/Swagger.php) converts data to an OpenAPI array or json. 
-
-```php
-EventManager::instance()
-    ->on('SwaggerBake.beforeRender', function (Event $event) {
-        /** @var \SwaggerBake\Lib\Swagger $swagger */
-        $swagger = $event->getSubject();
-        $array = $swagger->getArray();
-        $array['title'] = 'A new title';
-        $swagger->setArray($array);
-    });
-```
+4. Submit your PR!
 
 ## Custom Collection Schemas
 
@@ -99,16 +62,3 @@ x-swagger-bake:
 
 You would need to implement the sample schema in our application still. See 
 [MixerApi/CollectionView](https://github.com/mixerapi/collection-view) for a ready-made implementation.
-
-## Adding your Extension to the SwaggerBake project
-
-See the [CakeSearch extension](https://github.com/cnizzardini/cakephp-swagger-bake/tree/master/src/Lib/Extension) for an example. You may submit extensions as PRs to this project.
-
-1. Your extension must implement ExtensionInterface. Read the interfaces comments and refer to the CakeSearch 
-extension for additional insight.
-
-2. Add your extension to the `EXTENSIONS` constant in `src/Lib/ExtensionLoader.php`.
-
-3. Create necessary unit tests `tests/TestCase/Lib/Extension`.
-
-4. Submit your PR!
