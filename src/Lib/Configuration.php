@@ -33,32 +33,35 @@ class Configuration
     {
         $this->root = $root;
 
+        $defaultConfig = [
+            'docType' => 'swagger',
+            'hotReload' => false,
+            'exceptionSchema' => 'Exception',
+            'requestAccepts' => [
+                'application/x-www-form-urlencoded',
+                'application/json',
+                'application/xml',
+            ],
+            'responseContentTypes' => [
+                'application/json',
+                'application/xml',
+            ],
+            'namespaces' => [
+                'controllers' => ['\App\\'],
+                'entities' => ['\App\\'],
+                'tables' => ['\App\\'],
+            ],
+            'jsonOptions' => JSON_PRETTY_PRINT,
+        ];
+
         if (!empty($config)) {
-            $this->configs = $config;
+            $this->configs = $config + $defaultConfig;
 
             return;
         }
 
         $this->configs = array_merge(
-            [
-                'docType' => 'swagger',
-                'hotReload' => false,
-                'exceptionSchema' => 'Exception',
-                'requestAccepts' => [
-                    'application/x-www-form-urlencoded',
-                    'application/json',
-                    'application/xml',
-                ],
-                'responseContentTypes' => [
-                    'application/json',
-                    'application/xml',
-                ],
-                'namespaces' => [
-                    'controllers' => ['\App\\'],
-                    'entities' => ['\App\\'],
-                    'tables' => ['\App\\'],
-                ],
-            ],
+            $defaultConfig,
             Configure::read('SwaggerBake') ?? []
         );
     }
