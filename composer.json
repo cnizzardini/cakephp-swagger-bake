@@ -25,7 +25,8 @@
         "cakephp/cakephp-codesniffer": "^4.2",
         "phpstan/phpstan": "^0.12.32",
         "phpmd/phpmd": "^2.8",
-        "cakephp/bake": "^2.1"
+        "cakephp/bake": "^2.1",
+        "php-coveralls/php-coveralls": "^2.4"
     },
     "autoload": {
         "psr-4": {
