@@ -400,6 +400,15 @@ OpenAPI:
 Method level annotation for modifying path parameters. This is for modifying existing path parameters only. Path 
 parameters must first be defined in your routes file.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the query parameter |
+| type | string `string` | Data type |
+| description | string `""` | Description of the parameter |
+| allowReserved | bool `false` | Allow reserved URI characters? |
+| format | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+
 ```php
 /**
  * @Swag\SwagPathParameter(name="id", type="integer", format="int64", description="ID")
