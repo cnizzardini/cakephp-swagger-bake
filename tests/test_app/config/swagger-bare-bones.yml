@@ -4,8 +4,6 @@ info:
   title: Swagger Bakery
   license:
     name: MIT
-servers:
-  - url: /api
 components:
   securitySchemes:
     BearerAuth:

@@ -320,7 +320,7 @@ class Swagger
         $ignorePaths = array_keys($this->array['paths']);
 
         foreach ($routes as $route) {
-            $resource = $this->convertCakePathToOpenApiResource($route->getTemplate());
+            $resource = $route->templateToOpenApiPath();
 
             if ($this->hasPathByResource($resource)) {
                 $path = $this->array['paths'][$resource];
@@ -397,36 +397,6 @@ class Swagger
         foreach ($this->array['components']['schemas'] as $schemaName => $schemaVar) {
             $this->array['components']['schemas'][$schemaName] = $factory->create($schemaName, $schemaVar);
         }
-    }
-
-    /**
-     * Converts Cake path parameters to OpenApi Spec
-     *
-     * @example /actor/:id to /actor/{id}
-     * @param string $resource Resource name
-     * @return string
-     */
-    private function convertCakePathToOpenApiResource(string $resource): string
-    {
-        $pieces = array_map(
-            function ($piece) {
-                if (substr($piece, 0, 1) == ':') {
-                    return '{' . str_replace(':', '', $piece) . '}';
-                }
-
-                return $piece;
-            },
-            explode('/', $resource)
-        );
-
-        if ($this->config->getPrefix() == '/') {
-            return implode('/', $pieces);
-        }
-
-        return substr(
-            implode('/', $pieces),
-            strlen($this->config->getPrefix())
-        );
     }
 
     /**

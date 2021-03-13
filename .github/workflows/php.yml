@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        operating-system: [ ubuntu-18.04 ]
-        php-versions: ['7.3', '7.4', '8.0']
+        operating-system: [ ubuntu-20.04 ]
+        php-versions: ['7.2', '7.3', '7.4', '8.0']
 
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
@@ -24,7 +24,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, intl
+          extensions: mbstring, intl, xdebug
 
       - name: PHP Version
         run: php -v
@@ -35,7 +35,7 @@ jobs:
           composer validate
           composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Test (7.3|8.0)
+      - name: Test (7.2|7.3|8.0)
         if: ${{ matrix.php-versions != '7.4' }}
         run: vendor/bin/phpunit
 
@@ -47,5 +47,4 @@ jobs:
           composer analyze
           echo ${{ matrix.php-versions }}
           export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
-          composer global require php-coveralls/php-coveralls
-          php-coveralls --coverage_clover=clover.xml -v
+          vendor/bin/php-coveralls --coverage_clover=clover.xml -v

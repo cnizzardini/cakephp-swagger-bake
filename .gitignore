@@ -49,3 +49,4 @@ nbproject/*
 # Sass preprocessor
 .sass-cache/
 /composer.lock
+/clover.xml

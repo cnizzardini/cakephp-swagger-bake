@@ -13,7 +13,7 @@ class OperationPathTest extends TestCase
     public function testGetOperationWithHeaders()
     {
         $routeDecorator = new RouteDecorator(
-            new Route('/api/employees/:id', [
+            new Route('//employees/:id', [
                 '_method' => ['GET'],
                 'plugin' => '',
                 'controller' => 'Employees',
