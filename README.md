@@ -34,6 +34,7 @@ and controllers.
 - [Automatic Documentation](#automatic-documentation)
 - [Doc Blocks](#doc-blocks)
 - [Annotations](#annotations)
+- [Events](#annotations)
 - [Extending SwaggerBake](#extending-swaggerbake)
 - [Debug Commands](#debug-commands)
 - [Bake Theme](#bake-theme)
@@ -160,6 +161,18 @@ SwaggerBake provides some optional Annotations for enhanced functionality. These
 | [@SwagEntity](docs/annotations.md#swagentity) | Describes OpenAPI Entity (can be used to hide entity schemas) |
 | [@SwagEntityAttribute](docs/annotations.md#swagentityattribute) | Add/modify OpenAPI schema properties |
 
+## Event System
+
+SwaggerBake comes with an [event system](docs/extensions.md#supported-events) to allow for further control over your 
+OpenAPI schema.
+
+| Event | Description | 
+| ------------- | ------------- |
+| [SwaggerBake.Operation.created](docs/extensions.md#supported-events) | Dispatched each time an OpenAPI Path > Operation is created |
+| [SwaggerBake.Schema.created](docs/extensions.md#supported-events) | Dispatched each time an OpenAPI Schema is created |
+| [SwaggerBake.initialize](docs/extensions.md#supported-events) | Dispatched during initialization phase on SwaggerBake |
+| [SwaggerBake.beforeRender](docs/extensions.md#supported-events) | Dispatched before SwaggerBake outputs OpenAPI JSON |
+
 ## Extending SwaggerBake
 
 There are several options to extend functionality.
@@ -228,11 +241,6 @@ When running `bin/cake swagger bake` you will need to specify your plugins swagg
 ```bash
 bin/cake swagger bake --config OtherApi.swagger_bake
 ```
-
-#### Event System
-
-You can extend Swagger Bake further with events. Read the 
-[extension documentation](docs/extensions.md#swaggerbake-extensions) for details.
 
 ## Debug Commands
 
