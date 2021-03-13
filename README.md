@@ -34,7 +34,7 @@ and controllers.
 - [Automatic Documentation](#automatic-documentation)
 - [Doc Blocks](#doc-blocks)
 - [Annotations](#annotations)
-- [Events](#annotations)
+- [Events](#event-system)
 - [Extending SwaggerBake](#extending-swaggerbake)
 - [Debug Commands](#debug-commands)
 - [Bake Theme](#bake-theme)
