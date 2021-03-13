@@ -288,6 +288,10 @@ best practice. Using them with SwaggerBake greatly reduces the amount of annotat
 using a DTO in place of SwagQuery or SwagForm. SwagDto uses either SwagDtoProperty or your existing Doc Blocks to 
 build swagger query and post parameters.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| class | string | FQN of the DTO class |
+
 ```php
 /**
  * @Swag\SwagDto(class="\App\Dto\ActorDto")
