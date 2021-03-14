@@ -5,6 +5,8 @@ namespace SwaggerBake\Lib\Operation;
 
 use Cake\Core\Exception\CakeException;
 use phpDocumentor\Reflection\DocBlock\Tags\Throws;
+use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Swagger;
 
 /**
  * Class ExceptionHandler
@@ -14,6 +16,16 @@ use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 class ExceptionHandler
 {
     /**
+     * @var Swagger
+     */
+    private $swagger;
+
+    /**
+     * @var Configuration
+     */
+    private $config;
+
+    /**
      * @var string
      */
     private $message = 'Application Error';
@@ -21,13 +33,24 @@ class ExceptionHandler
     /**
      * @var string
      */
-    private $code = '500';
+    private $code;
+
+    /**
+     * @var string
+     */
+    private $schema;
+
 
     /**
      * @param \phpDocumentor\Reflection\DocBlock\Tags\Throws $throw Throws
+     * @param \SwaggerBake\Lib\Swagger $swagger Swagger
+     * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
-    public function __construct(Throws $throw)
+    public function __construct(Throws $throw, Swagger $swagger, Configuration $config)
     {
+        $this->swagger = $swagger;
+        $this->config = $config;
+
         $httpCode = 500;
         $exceptionClass = $throw->getType()->__toString();
         $message = $throw->getDescription()->getBodyTemplate();
@@ -50,14 +73,35 @@ class ExceptionHandler
             $httpCode = 404;
         }
 
+        $this->schema = $this->whichSchema($exceptionClass);
         $this->code = (string)$httpCode;
         $this->message = $message ?? $this->message;
     }
 
     /**
-     * @return string|int
+     * Search in x-swagger-bake/components/app-exceptions for custom exception schema, otherwise return default.
+     *
+     * @param string $exceptionClass FQN of exception
+     * @return string
      */
-    public function getCode()
+    private function whichSchema(string $exceptionClass): string
+    {
+        $array = $this->swagger->getArray();
+        if (isset($array['x-swagger-bake']['components']['schemas']['app-exceptions'])) {
+            foreach ($array['x-swagger-bake']['components']['schemas']['app-exceptions'] as $name => $exception) {
+                if ($exception['x-exception-fqn'] === $exceptionClass) {
+                    return '#/x-swagger-bake/components/schemas/app-exceptions/' . $name;
+                }
+            }
+        }
+
+        return '#/components/schemas/' . $this->config->getExceptionSchema();
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode(): string
     {
         return $this->code;
     }
@@ -68,5 +112,13 @@ class ExceptionHandler
     public function getMessage(): string
     {
         return $this->message;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSchema(): string
+    {
+        return $this->schema;
     }
 }

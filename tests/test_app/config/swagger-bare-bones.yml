@@ -11,6 +11,47 @@ components:
       scheme: bearer
 x-swagger-bake:
   components:
+    schemas:
+      app-exceptions:
+        ValidationException:
+          x-exception-fqn: '\MixerApi\ExceptionRender\ValidationException'
+          type: object
+          properties:
+            exception:
+              type: string
+              example: ValidationException
+            message:
+              type: string
+              example: Error saving resource `Schema`
+            url:
+              type: string
+              example: /url/path
+            code:
+              type: integer
+              example: 500
+            violations:
+              type: array
+              items:
+                $ref: '#/x-swagger-bake/components/schemas/app-exceptions/Violation'
+        Violation:
+          type: object
+          properties:
+            propertyPath:
+              type: string
+              example: property_name
+            messages:
+              type: array
+              items:
+                $ref: '#/x-swagger-bake/components/schemas/app-exceptions/ViolationMessage'
+        ViolationMessage:
+          type: object
+          properties:
+            rule:
+              type: string
+              example: _rule_name
+            message:
+              type: string
+              example: error message
     parameters:
       paginatorPage:
         name: page
