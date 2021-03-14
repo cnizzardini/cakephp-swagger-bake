@@ -35,7 +35,10 @@ and controllers.
 - [Doc Blocks](#doc-blocks)
 - [Annotations](#annotations)
 - [Events](#event-system)
-- [Extending SwaggerBake](#extending-swaggerbake)
+- [Customizing Exception Responses](#customizing-exception-responses)
+- [Extending Views and Controllers](#extending-views-and-controllers)
+- [Generating OpenAPI](#generating-openapi)
+- [Multiple Instances of SwaggerBake](#multiple-instances-of-swagger-bake)
 - [Debug Commands](#debug-commands)
 - [Bake Theme](#bake-theme)
 - [...](#details)
@@ -111,9 +114,7 @@ build the following from your existing routes and models without additional effo
 
 [See details](#details) for how CakePHP conventions are interpreted into OpenAPI 3.0 schema.
 
-SwaggerBake works with your existing YML definitions and will not overwrite anything. By default, it uses 
-components > schemas > Exception as your Swagger documentations Exception schema. See the default 
-[swagger.yml](assets/swagger.yml) and `exceptionSchema` in [swagger_bake.php](assets/swagger_bake.php) for more info.
+SwaggerBake works with your existing YML definitions and will not overwrite anything. 
 
 ## Doc Blocks
 
@@ -190,7 +191,44 @@ OpenAPI schema.
 | [SwaggerBake.initialize](docs/events.md) | Dispatched during initialization phase on SwaggerBake |
 | [SwaggerBake.beforeRender](docs/events.md) | Dispatched before SwaggerBake outputs OpenAPI JSON |
 
-## Extending SwaggerBake
+## Customizing Exception Responses
+
+By default, SwaggerBake uses components > schemas > Exception as your Swagger documentations Exception schema. See the 
+default [swagger.yml](assets/swagger.yml) and `exceptionSchema` in [swagger_bake.php](assets/swagger_bake.php) for more 
+info.
+
+You can provide custom schemas for exceptions by adding schema to your YAML at 
+`#/x-swagger-bake/components/schemas/app-exceptions` and referencing the FQN of the exception with `x-exception-fqn`, 
+example:
+
+```yaml
+x-swagger-bake:
+  components:
+    schemas:
+      app-exceptions:
+        ValidationException:
+          x-exception-fqn: '\MixerApi\ExceptionRender\ValidationException'
+          type: object
+          properties:
+            exception:
+              type: string
+              example: ValidationException
+            message:
+              type: string
+              example: Error saving resource `Schema`
+            url:
+              type: string
+              example: /url/path
+            code:
+              type: integer
+              example: 500
+            violations:
+              type: array
+              items:
+                $ref: '#/x-swagger-bake/components/schemas/app-exceptions/Violation'
+```
+
+## Extending Views and Controllers
 
 It's possible to write extensions for SwaggerBake. Read the [extensions documentation](docs/extensions.md). There are 
 several other options to extend functionality documented below:
@@ -221,7 +259,7 @@ the CakePHP documentation on [Views](https://book.cakephp.org/4/en/views.html) f
 you'd like to add additional functionality to SwaggerUI (or Redoc) using their APIs or if your project is not 
 installed in your web servers document root (i.e. a sub-folder).
 
-#### Generate Swagger On Your Terms
+## Generating OpenAPI
 
 There a three options for generating swagger.json:
 
@@ -238,7 +276,7 @@ $swagger->toString(); # returns swagger json
 $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
 ```
 
-#### Multiple Instances of Swagger Bake
+## Multiple Instances of Swagger Bake
 
 If your application has multiple APIs that are split into plugins you can generate unique OpenAPI schema, Swagger UI, 
 and Redoc for each plugin. Setup a new `swagger_bake.php` and `swagger.yaml` in `plugins/OtherApi/config`. These 
