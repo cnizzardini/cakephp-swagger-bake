@@ -72,13 +72,12 @@ class SchemaFactory
 
         $schema = (new Schema())
             ->setName((new ReflectionClass($model->getEntity()))->getShortName())
-            ->setTitle($swagEntity !== null ? $swagEntity->description : null)
+            ->setDescription($swagEntity->description)
             ->setType('object')
-            ->setProperties($properties);
+            ->setProperties($properties)
+            ->setIsPublic($swagEntity->isPublic);
 
-        if ($swagEntity !== null && isset($swagEntity->description)) {
-            $schema->setDescription($swagEntity->description);
-        } else {
+        if (empty($schema->getDescription())) {
             $schema->setDescription($docBlock ? $docBlock->getSummary() : null);
         }
 
@@ -178,12 +177,12 @@ class SchemaFactory
     }
 
     /**
-     * Returns instance of SwagEntity annotation, otherwise null
+     * Returns instance of SwagEntity annotation
      *
      * @param \Cake\Datasource\EntityInterface $entity EntityInterface
-     * @return \SwaggerBake\Lib\Annotation\SwagEntity|null
+     * @return \SwaggerBake\Lib\Annotation\SwagEntity
      */
-    private function getSwagEntityAnnotation(EntityInterface $entity): ?SwagEntity
+    private function getSwagEntityAnnotation(EntityInterface $entity): SwagEntity
     {
         $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity);
 
@@ -193,7 +192,7 @@ class SchemaFactory
             }
         }
 
-        return null;
+        return new SwagEntity([]);
     }
 
     /**

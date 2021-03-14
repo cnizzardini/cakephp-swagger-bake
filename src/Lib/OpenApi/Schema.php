@@ -10,6 +10,7 @@ use JsonSerializable;
  *
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/data-models/
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Schema implements JsonSerializable
 {
@@ -44,7 +45,9 @@ class Schema implements JsonSerializable
     private $required = [];
 
     /**
-     * @var \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * A mixed array of Schema and SchemaProperty
+     *
+     * @var array
      */
     private $properties = [];
 
@@ -94,6 +97,11 @@ class Schema implements JsonSerializable
     private $xml;
 
     /**
+     * @var bool
+     */
+    private $isPublic = true;
+
+    /**
      * @return array
      */
     public function toArray(): array
@@ -101,7 +109,7 @@ class Schema implements JsonSerializable
         $vars = get_object_vars($this);
 
         // always unset
-        foreach (['name','refEntity'] as $v) {
+        foreach (['name','refEntity','isPublic'] as $v) {
             unset($vars[$v]);
         }
 
@@ -243,7 +251,9 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * A mixed array of Schema and SchemaProperty
+     *
+     * @return array
      */
     public function getProperties(): array
     {
@@ -251,7 +261,7 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\SchemaProperty[] $properties Array of SchemaProperty
+     * @param array $properties A mixed array of Schema and SchemaProperty
      * @return $this
      */
     public function setProperties(array $properties)
@@ -265,12 +275,30 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\SchemaProperty $property SchemaProperty
+     * @param mixed $property instance of SchemaProperty or Schema
      * @return $this
      */
-    public function pushProperty(SchemaProperty $property)
+    public function pushProperty($property)
     {
+        if (!$property instanceof SchemaProperty && !$property instanceof Schema) {
+            throw new \InvalidArgumentException(
+                'Must be instance of SchemaProperty or Schema'
+            );
+        }
+
         $this->properties[$property->getName()] = $property;
+
+        if (empty($property->getName())) {
+            throw new \LogicException(
+                'Name must be set on ' . get_class($property)
+            );
+        }
+
+        if ($property instanceof Schema) {
+            $this->properties[$property->getName()] = $property;
+
+            return $this;
+        }
 
         if ($property->isRequired()) {
             $this->required[$property->getName()] = $property->getName();
@@ -290,10 +318,10 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param string $description Description
+     * @param ?string $description Description
      * @return $this
      */
-    public function setDescription(string $description)
+    public function setDescription(?string $description)
     {
         $this->description = $description;
 
@@ -533,5 +561,24 @@ class Schema implements JsonSerializable
     public function getReadSchemaRef(): string
     {
         return self::SCHEMA . $this->getReadSchemaName();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublic(): bool
+    {
+        return $this->isPublic;
+    }
+
+    /**
+     * @param bool $isPublic indicates visibility
+     * @return $this
+     */
+    public function setIsPublic(bool $isPublic)
+    {
+        $this->isPublic = $isPublic;
+
+        return $this;
     }
 }

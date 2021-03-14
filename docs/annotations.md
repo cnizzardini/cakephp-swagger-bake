@@ -34,16 +34,16 @@ You can improve this documentation by submitting PRs.
 ### @SwagPaginator
 Method level annotation for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html) 
 query parameters: page, limit, sort, and direction. When specified with no arguments, Paginate.sortableFields will be 
-used to populate sort options. If sortableFields is not defined the controller actions associated Schema properties will 
-be used. You can override the defaults using the `sort` attribute. Otherwise, a simple text input is rendered 
-(`useSortTextInput=true`). 
+used to populate the options list (for `index()` actions only). User supplied options can be given using sortEnum. 
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| sortEnum | array `[]` | A list of fields that can be sorted by. |
+| useSortTextInput | boolean `false` | Use an input box instead of dropdown for sortable field |
 
 ```php
-use SwaggerBake\Lib\Annotation as Swag;
 /**
- * @Swag\SwagPaginator # default without attributes should work fine in most cases 
- * @Swag\SwagPaginator(sortEnum={"id","name"}) # custom example
- * @Swag\SwagPaginator(useSortTextInput=false) # force a text field instead of enum/dropdown
+ * @Swag\SwagPaginator(sortEnum={"id","name"})
  */
 public function index() {
     $employees = $this->paginate($this->Employees);
@@ -81,11 +81,17 @@ OpenAPI:
 ```
 
 ### @SwagSearch
-Method level annotation for documenting search parameters using the popular [friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
+Method level annotation for documenting search parameters using the popular 
+[friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| tableClass | string | Required FQN to the Table class |
+| collection | string `default` | The Cake Search collection _(see vendor documentation)_ |
 
 ```php
 /**
- * @SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch(tableClass="\App\Model\Table\FilmsTable", collection="default")
+ * @SwagExt\CakeSearch\Annotation\SwagSearch(tableClass="\App\Model\Table\FilmsTable", collection="default")
  */
 public function index()
 {
@@ -157,6 +163,22 @@ OpenAPI:
 ### @SwagQuery 
 Method level annotation for adding query parameters.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the query parameter |
+| type | string `string` | Data type |
+| description | string `""` | Description of the parameter |
+| required | bool `false` | Is this parameter required? |
+| enum | array `[]` | An enumerated list of accepted values |
+| deprecated | bool `false` | Is this parameter deprecated? |
+| allowReserved | bool `false` | Allow reserved URI characters? |
+| allowEmptyValue | bool `false` | Allow empty values? |
+| explode | bool `false` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| style | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| format | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+
+
 ```php
 /**
  * @Swag\SwagQuery(name="one", required=true, description="example description")
@@ -196,6 +218,30 @@ OpenAPI:
 
 ### @SwagForm
 Method level annotation for adding form data fields.
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the schema property |
+| type | string `string` | Date type such as integer, string, etc... |
+| format | string `""` | Date format such as int32, date-time, etc... |
+| description | string `""` | Description of the property |
+| readOnly | bool `false` | Is the property read only? |
+| writeOnly | bool `false` | Is the property write only? |
+| required | bool `false` | Is the property required? |
+| multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
 
 ```php
 /**
@@ -242,6 +288,10 @@ best practice. Using them with SwaggerBake greatly reduces the amount of annotat
 using a DTO in place of SwagQuery or SwagForm. SwagDto uses either SwagDtoProperty or your existing Doc Blocks to 
 build swagger query and post parameters.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| class | string | FQN of the DTO class |
+
 ```php
 /**
  * @Swag\SwagDto(class="\App\Dto\ActorDto")
@@ -251,6 +301,21 @@ public function index() {}
 
 ### @SwagDtoQuery
 Property level annotation for use in your SwagDto classes.
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the query parameter |
+| type | string `string` | Data type |
+| description | string `""` | Description of the parameter |
+| required | bool `false` | Is this parameter required? |
+| enum | array `[]` | An enumerated list of accepted values |
+| deprecated | bool `false` | Is this parameter deprecated? |
+| allowReserved | bool `false` | Allow reserved URI characters? |
+| allowEmptyValue | bool `false` | Allow empty values? |
+| explode | bool `false` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| style | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| format | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
 
 ```php
 class ActorDto {
@@ -262,6 +327,31 @@ class ActorDto {
 
 ### @SwagDtoRequestBody
 Formerly `@SwagDtoForm`. Property level annotation for use in your SwagDto classes.
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the schema property |
+| type | string `string` | Date type such as integer, string, etc... |
+| format | string `""` | Date format such as int32, date-time, etc... |
+| description | string `""` | Description of the property |
+| readOnly | bool `false` | Is the property read only? |
+| writeOnly | bool `false` | Is the property write only? |
+| required | bool `false` | Is the property required? |
+| multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
+
 ```php
 class ActorDto {
      /**
@@ -272,6 +362,20 @@ class ActorDto {
 
 ### @SwagHeader
 Method level annotation for adding header parameters.
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the query parameter |
+| type | string `string` | Data type |
+| description | string `""` | Description of the parameter |
+| required | bool `false` | Is this parameter required? |
+| enum | array `[]` | An enumerated list of accepted values |
+| deprecated | bool `false` | Is this parameter deprecated? |
+| explode | bool `false` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| style | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| format | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+
 ```php
 /**
  * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", description="example")
@@ -296,6 +400,15 @@ OpenAPI:
 Method level annotation for modifying path parameters. This is for modifying existing path parameters only. Path 
 parameters must first be defined in your routes file.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the query parameter |
+| type | string `string` | Data type |
+| description | string `""` | Description of the parameter |
+| allowReserved | bool `false` | Allow reserved URI characters? |
+| format | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+
 ```php
 /**
  * @Swag\SwagPathParameter(name="id", type="integer", format="int64", description="ID")
@@ -319,6 +432,11 @@ OpenAPI:
 Method level annotation for adding authentication requirements. This annotation takes precedence over settings that 
 SwaggerBake gathers from AuthenticationComponent. See the main documentation for more information.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the security option |
+| scopes | array | Security Scopes |
+
 ```php
 /**
  * @Swag\SwagSecurity(name="BearerAuth", scopes={"Read","Write"})
@@ -328,6 +446,12 @@ public function index() {}
 
 ### @SwagOperation
 Method level annotation for OpenApi Operations. 
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| isVisible | bool `true` | Is the operation visible? |
+| tagNames | array `[]` | https://swagger.io/docs/specification/grouping-operations-with-tags/ |
+| showPut | bool `false` | Add PUT operations to OpenAPI? By default on PATCH operations are shown |
 
 ```php
 /**
@@ -348,6 +472,12 @@ OpenAPI:
 ### @SwagRequestBody
 Method level annotation for describing request body. Set ignoreCakeSchema for full control over request body.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| description | string `""` | Description of the request body |
+| required | bool `true` | Is the request body required? |
+| ignoreCakeSchema | bool `false` | Ignore cake schema |
+
 ```php
 /**
  * @Swag\SwagRequestBody(description="my description", required=true, ignoreCakeSchema=true)
@@ -360,7 +490,10 @@ Method level annotation for describing custom content in request body. The `mime
 all mimeTypes defined as `requestAccepts` in your swagger_bake.php will be used. This will only show writeable 
 properties.
 
-- `mimeType` has been deprecated in >= v1.5, use array form with `mimeTypes`
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| refEntity | string `""` | The OpenAPI entity |
+| mimeTypes | array `[]` | An array of strings of mime types to support |
 
 ```php
 /**
@@ -393,8 +526,16 @@ OpenAPI:
 ### @SwagResponseSchema
 Method level annotation for defining response schema.
 
-- `mimeType` is deprecated in >= v1.5, use `mimeTypes` as an array.
-- `httpCode` is deprecated in >= v1.3, use `statusCode` 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| refEntity | string `""` | The OpenAPI entity |
+| statusCode | string `200` | Response code |
+| mimeTypes | array `[]` | An array of mime types the response can be |
+| description | string `null` | Description of the response |
+| schemaType | string `null` |  |
+| schemaFormat | string `null` |  |
+| schemaItems | array `[]` |  |
+
 
 ```php
 /**
@@ -459,6 +600,12 @@ OpenAPI:
 ### @SwagPath
 Class level annotation for exposing controllers to Swagger UI. You can hide entire controllers with this annotation.
 
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| isVisible | boolean `true` | Is the path and its operations visible in OpenAPI  |
+| title | string `""` | Overwrites the default title |
+| summary | string `""` | Overwrites the default summary (if any) |
+
 ```php
 /**
  * @Swag\SwagPath(isVisible=false, description="optional description", summary="operational summary")
@@ -467,12 +614,25 @@ class UsersController extends AppController {
 ```
 
 ### @SwagEntity
-Class level annotation for exposing entities to Swagger UI. By default, all entities with routes will display as Swagger 
-schema. You can hide a schema or display a schema that does not have an associated route.
+Class level annotation for exposing entities to Swagger UI. 
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| isVisible | boolean `true` | All entities with routes are added to OpenAPI schema. To completely hide a schema from appearing anywhere in OpenAPI JSON output set to false |
+| isPublic | boolean `true` | To hide from the default via in Swagger 3.0 set to false. isVisible takes precedence (see isVisible vs isPublic below) |
+| title | string `""` | Overwrites the default title |
+| description | string `""` | Overwrites the default description (if any) |
+
+**isVisible vs isPublic:** 
+
+`isVisible` takes precedence over `isPublic`. If you've set `isVisible` to `false` then whatever you've defined for 
+`isPublic` becomes inert. If a schema is visible, but not public it be accessed via 
+`#/x-swagger-bake-bake/components/schemas/EntityName`. This is helpful if you want to reduce cluter in your Swagger 
+schemas, but still want the ability to reference it via `@SwagResponseSchema`
 
 ```php
 /**
- * @Swag\SwagEntity(isVisible=false, title="optional title", description="optional description")
+ * @Swag\SwagEntity(isVisible=true, isPublic=false, title="optional title", description="optional description")
  */
 class Employee extends Entity {
 ```
@@ -481,6 +641,31 @@ class Employee extends Entity {
 Class level annotation for customizing Schema Attributes. Note that the attribute does not have to exist in your entity. 
 You can add adhoc attributes as needed and optionally combine with 
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the schema property |
+| type | string `string` | Date type such as integer, string, etc... |
+| format | string `""` | Date format such as int32, date-time, etc... |
+| description | string `""` | Description of the property |
+| readOnly | bool `false` | Is the property read only? |
+| writeOnly | bool `false` | Is the property write only? |
+| required | bool `false` | Is the property required? |
+| multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
+| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 
 ```php
 /**

@@ -27,7 +27,7 @@ class InstallCommandTest extends TestCase
 
     public function testExecute()
     {
-        $this->exec('swagger install --config_test ' . $this->configDir, ['Y','/api']);
+        $this->exec('swagger install --config_test ' . $this->configDir, ['Y','/']);
         $this->assertOutputContains('Installation Complete!');
         $this->assertFileExists($this->configDir . 'swagger.yml');
         $this->assertFileExists($this->configDir . 'swagger_bake.php');
@@ -42,7 +42,7 @@ class InstallCommandTest extends TestCase
 
     public function testExecuteFileCopyFails()
     {
-        $this->exec('swagger install --config_test /config/no-exists', ['Y','/api']);
+        $this->exec('swagger install --config_test /config/no-exists', ['Y','/']);
         $this->assertExitError();
     }
 

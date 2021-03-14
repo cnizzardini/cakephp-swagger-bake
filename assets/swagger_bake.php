@@ -24,6 +24,10 @@
  * # OPTIONAL SETTINGS:
  * ################################
  *
+ * @var int $jsonOptions: A bitmask of options passed as second parameter to json_encode function. Accepted values are
+ *      described at https://www.php.net/manual/en/function.json-encode.php
+ *      Default: JSON_PRETTY_PRINT
+ *
  * @var string[] $requestAccepts: Array of mime types accepted. Can be used if your application accepts JSON, XML etc...
  *      Default: application/x-www-form-urlencoded
  *
@@ -50,6 +54,7 @@ return [
         'hotReload' => \Cake\Core\Configure::read('debug'),
         /** optional configurations below:  **/
         /*
+        'jsonOptions' => JSON_PRETTY_PRINT,
         'requestAccepts' => [
             'application/x-www-form-urlencoded',
             'application/json',
@@ -65,7 +70,7 @@ return [
             'controllers' => ['\App\\'],
             'entities' => ['\App\\'],
             'tables' => ['\App\\']
-        ]
+        ],
         */
     ]
 ];

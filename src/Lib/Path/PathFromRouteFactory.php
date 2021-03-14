@@ -53,7 +53,7 @@ class PathFromRouteFactory
             return null;
         }
 
-        $path = (new Path())->setResource($this->getResourceName());
+        $path = (new Path())->setResource($this->route->templateToOpenApiPath());
 
         $swagPath = $this->getSwagPathAnnotation($fqn);
 
@@ -90,43 +90,5 @@ class PathFromRouteFactory
         }
 
         return reset($results);
-    }
-
-    /**
-     * Returns a routes resource (e.g. /api/model/action)
-     *
-     * @return string
-     */
-    private function getResourceName(): string
-    {
-        $pieces = $this->getRoutablePieces();
-
-        if ($this->config->getPrefix() == '/') {
-            return implode('/', $pieces);
-        }
-
-        return substr(
-            implode('/', $pieces),
-            strlen($this->config->getPrefix())
-        );
-    }
-
-    /**
-     * Splits the route (URL) into pieces with forward-slash "/" as  the separator after removing path variables
-     *
-     * @return string[]
-     */
-    private function getRoutablePieces(): array
-    {
-        return array_map(
-            function ($piece) {
-                if (substr($piece, 0, 1) == ':') {
-                    return '{' . str_replace(':', '', $piece) . '}';
-                }
-
-                return $piece;
-            },
-            explode('/', $this->route->getTemplate())
-        );
     }
 }

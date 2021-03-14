@@ -228,4 +228,25 @@ class RouteDecorator
 
         return $this;
     }
+
+    /**
+     * Converts a CakePHP route template to an OpenAPI path
+     *
+     * @return string
+     */
+    public function templateToOpenApiPath(): string
+    {
+        $pieces = array_map(
+            function ($piece) {
+                if (substr($piece, 0, 1) == ':') {
+                    return '{' . str_replace(':', '', $piece) . '}';
+                }
+
+                return $piece;
+            },
+            explode('/', $this->template)
+        );
+
+        return implode('/', $pieces);
+    }
 }
