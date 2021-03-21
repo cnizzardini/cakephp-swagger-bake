@@ -16,12 +16,12 @@ use SwaggerBake\Lib\Swagger;
 class ExceptionHandler
 {
     /**
-     * @var Swagger
+     * @var \SwaggerBake\Lib\Swagger
      */
     private $swagger;
 
     /**
-     * @var Configuration
+     * @var \SwaggerBake\Lib\Configuration
      */
     private $config;
 
@@ -39,8 +39,7 @@ class ExceptionHandler
      * @var string
      */
     private $schema;
-
-
+    
     /**
      * @param \phpDocumentor\Reflection\DocBlock\Tags\Throws $throw Throws
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
