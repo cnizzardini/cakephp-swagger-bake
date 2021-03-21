@@ -39,7 +39,7 @@ class ExceptionHandler
      * @var string
      */
     private $schema;
-    
+
     /**
      * @param \phpDocumentor\Reflection\DocBlock\Tags\Throws $throw Throws
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
