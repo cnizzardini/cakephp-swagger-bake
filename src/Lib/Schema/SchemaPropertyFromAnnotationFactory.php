@@ -25,6 +25,7 @@ class SchemaPropertyFromAnnotationFactory
             ->setName($attribute->name)
             ->setDescription($attribute->description ?? '')
             ->setType($attribute->type)
+            ->setFormat($attribute->format ?? '')
             ->setReadOnly($attribute->readOnly ?? false)
             ->setWriteOnly($attribute->writeOnly ?? false)
             ->setRequired($attribute->required ?? false)
