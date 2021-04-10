@@ -5,15 +5,16 @@ namespace SwaggerBake\Lib\Schema;
 
 use Cake\Validation\Validator;
 use MixerApi\Core\Model\ModelProperty;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Tags\Property as PropertyTag;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
 
 /**
- * Class SchemaPropertyFactory
+ * Creates an instance of SchemaProperty using your Cake projects Schema, Validation Rules, and `@property` tag in
+ * the Entity for the description.
  *
- * @package SwaggerBake\Lib\Schema
- *
- * Creates an instance of SchemaProperty using your Cake projects Schema and Validation Rules
+ * @internal
  */
 class SchemaPropertyFactory
 {
@@ -23,11 +24,18 @@ class SchemaPropertyFactory
     private $validator;
 
     /**
-     * @param \Cake\Validation\Validator $validator Validator
+     * @var \phpDocumentor\Reflection\DocBlock|null
      */
-    public function __construct(Validator $validator)
+    private $docBlock;
+
+    /**
+     * @param \Cake\Validation\Validator $validator Validator
+     * @param \phpDocumentor\Reflection\DocBlock|null $docBlock a DocBlock instance of the Entity
+     */
+    public function __construct(Validator $validator, ?DocBlock $docBlock = null)
     {
         $this->validator = $validator;
+        $this->docBlock = $docBlock;
     }
 
     /**
@@ -51,6 +59,12 @@ class SchemaPropertyFactory
         $schemaProperty = (new SchemaPropertyFormat($this->validator, $schemaProperty, $property))
             ->withFormat();
 
+        $propertyTag = $this->findPropertyTag($property);
+        if ($propertyTag instanceof PropertyTag) {
+            $description = $propertyTag->getDescription();
+            $schemaProperty->setDescription($description->getBodyTemplate());
+        }
+
         return $schemaProperty;
     }
 
@@ -72,5 +86,26 @@ class SchemaPropertyFactory
         }
 
         return false;
+    }
+
+    /**
+     * @param \MixerApi\Core\Model\ModelProperty $property instance of ModelProperty
+     * @return \phpDocumentor\Reflection\DocBlock\Tags\Property|null
+     */
+    private function findPropertyTag(ModelProperty $property): ?PropertyTag
+    {
+        if (!$this->docBlock instanceof DocBlock) {
+            return null;
+        }
+
+        /** @var \phpDocumentor\Reflection\DocBlock\Tags\Property[] $results */
+        $results = array_filter(
+            $this->docBlock->getTagsByName('property'),
+            function (PropertyTag $tag) use ($property) {
+                return $tag->getVariableName() === $property->getName();
+            }
+        );
+
+        return !empty($results) ? reset($results) : null;
     }
 }
