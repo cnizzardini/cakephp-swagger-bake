@@ -137,6 +137,23 @@ code. You must use the FQN for exceptions.
 public function index() {}
 ```
 
+For Entities, the description from `@property` is supported:
+
+```php
+/**
+ * City Entity
+ *
+ * @property string $name Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+ * incididunt ut labore et dolore magna aliqua. 
+ *
+ * - some
+ * - bullets
+ *
+ * Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+ * magna aliqua.
+ */
+```
+
 ## Annotations
 
 SwaggerBake provides some optional Annotations for enhanced functionality. These can be imported individually from 
@@ -286,7 +303,8 @@ bin/cake bake controller {Name} --theme SwaggerBake
     - Writeable properties `#/x-swagger-bake/components/schemas/Entity-Write`
     - Readable properties `#/x-swagger-bake/components/schemas/Entity-Read`
 - Entity Attributes: 
-  - Hidden attributes will not be visible
+  - Reads descriptions from `@property` doc block tags.
+  - Hidden attributes will not be visible.
   - Primary Keys will be set to read only by default.
   - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention.
 - CRUD Responses
