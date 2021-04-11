@@ -157,15 +157,17 @@ class OperationResponse
         });
 
         foreach ($throws as $throw) {
-            $exception = new ExceptionHandler($throw);
+            $exception = new ExceptionHandler($throw, $this->swagger, $this->config);
 
-            $response = (new Response())->setCode($exception->getCode())->setDescription($exception->getMessage());
+            $response = (new Response())
+                ->setCode($exception->getCode())
+                ->setDescription($exception->getMessage());
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
                 $response->pushContent(
                     (new Content())
                         ->setMimeType($mimeType)
-                        ->setSchema('#/components/schemas/' . $this->config->getExceptionSchema())
+                        ->setSchema($exception->getSchema())
                 );
             }
 

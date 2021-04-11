@@ -19,11 +19,9 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
- * Class SchemaFactory
- *
- * @package SwaggerBake\Lib\Factory
- *
  * Creates an instance of SwaggerBake\Lib\OpenApi\Schema per OpenAPI specifications
+ *
+ * @internal
  */
 class SchemaFactory
 {
@@ -68,7 +66,7 @@ class SchemaFactory
 
         $docBlock = $this->getDocBlock($model->getEntity());
 
-        $properties = $this->getProperties($model, $propertyType);
+        $properties = $this->getProperties($model, $propertyType, $docBlock);
 
         $schema = (new Schema())
             ->setName((new ReflectionClass($model->getEntity()))->getShortName())
@@ -101,12 +99,13 @@ class SchemaFactory
     /**
      * @param \MixerApi\Core\Model\Model $model Model
      * @param int $propertyType see public constants for options
+     * @param \phpDocumentor\Reflection\DocBlock|null $docBlock DocBlock instance
      * @return array
      */
-    private function getProperties(Model $model, int $propertyType): array
+    private function getProperties(Model $model, int $propertyType, ?DocBlock $docBlock): array
     {
         $return = [];
-        $factory = new SchemaPropertyFactory($this->validator);
+        $factory = new SchemaPropertyFactory($this->validator, $docBlock);
 
         foreach ($model->getProperties() as $property) {
             $return[$property->getName()] = $factory->create($property);

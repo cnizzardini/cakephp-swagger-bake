@@ -7,13 +7,13 @@ use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
-use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
-use SwaggerBake\Lib\Operation\OperationResponse;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\Operation\OperationResponse;
+use SwaggerBake\Lib\Route\RouteScanner;
 
 class OperationResponseTest extends TestCase
 {
