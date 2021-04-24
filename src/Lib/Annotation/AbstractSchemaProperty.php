@@ -10,6 +10,7 @@ use InvalidArgumentException;
  *
  * @see https://swagger.io/specification/ search for "Parameter Object"
  * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
+ * @SuppressWarnings(PHPMD.TooManyFields)
  */
 abstract class AbstractSchemaProperty
 {

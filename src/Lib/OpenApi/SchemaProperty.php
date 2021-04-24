@@ -11,34 +11,15 @@ use JsonSerializable;
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/data-models/
  */
-class SchemaProperty implements JsonSerializable
+class SchemaProperty implements JsonSerializable, SchemaInterface
 {
     use JsonSchemaTrait;
-
-    /**
-     * @var string
-     */
-    private $name = '';
-
-    /**
-     * @var string
-     */
-    private $type = '';
-
-    /**
-     * @var string
-     */
-    private $format = '';
+    use SchemaTrait;
 
     /**
      * @var mixed
      */
     private $example;
-
-    /**
-     * @var string
-     */
-    private $description = '';
 
     /**
      * @var bool
@@ -54,11 +35,6 @@ class SchemaProperty implements JsonSerializable
      * @var bool
      */
     private $required = false;
-
-    /**
-     * @var array
-     */
-    private $enum = [];
 
     /**
      * @var bool
@@ -115,63 +91,6 @@ class SchemaProperty implements JsonSerializable
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name Name
-     * @return $this
-     */
-    public function setName(string $name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type Type
-     * @return $this
-     */
-    public function setType(string $type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFormat(): string
-    {
-        return $this->format;
-    }
-
-    /**
-     * @param string $format Format
-     * @return $this
-     */
-    public function setFormat(string $format)
-    {
-        $this->format = $format;
-
-        return $this;
     }
 
     /**
@@ -246,44 +165,6 @@ class SchemaProperty implements JsonSerializable
     public function setExample($example)
     {
         $this->example = $example;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description Description
-     * @return $this
-     */
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getEnum(): array
-    {
-        return $this->enum;
-    }
-
-    /**
-     * @param array $enum Enumerated values
-     * @return $this
-     */
-    public function setEnum(array $enum)
-    {
-        $this->enum = $enum;
 
         return $this;
     }
