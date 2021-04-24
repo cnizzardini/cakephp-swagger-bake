@@ -12,32 +12,19 @@ use JsonSerializable;
  * @see https://swagger.io/docs/specification/data-models/
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class Schema implements JsonSerializable
+class Schema implements JsonSerializable, SchemaInterface
 {
+    use SchemaTrait;
+
     /**
      * @var string
      */
     public const SCHEMA = '#/x-swagger-bake/components/schemas/';
 
     /**
-     * @var string
-     */
-    private $name = '';
-
-    /**
      * @var string|null
      */
     private $title;
-
-    /**
-     * @var string
-     */
-    private $description;
-
-    /**
-     * @var string
-     */
-    private $type = '';
 
     /**
      * @var string[]
@@ -80,16 +67,6 @@ class Schema implements JsonSerializable
      * @var array
      */
     private $not = [];
-
-    /**
-     * @var array
-     */
-    private $enum = [];
-
-    /**
-     * @var string
-     */
-    private $format;
 
     /**
      * @var \SwaggerBake\Lib\OpenApi\Xml|null
@@ -164,25 +141,6 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name Name
-     * @return $this
-     */
-    public function setName(string $name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getTitle(): ?string
@@ -197,25 +155,6 @@ class Schema implements JsonSerializable
     public function setTitle(?string $title)
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type Type
-     * @return $this
-     */
-    public function setType(string $type)
-    {
-        $this->type = $type;
 
         return $this;
     }
@@ -275,55 +214,24 @@ class Schema implements JsonSerializable
     }
 
     /**
-     * @param mixed $property instance of SchemaProperty or Schema
+     * @param \SwaggerBake\Lib\OpenApi\SchemaInterface $property instance of SchemaInterface
      * @return $this
      */
-    public function pushProperty($property)
+    public function pushProperty(SchemaInterface $property)
     {
-        if (!$property instanceof SchemaProperty && !$property instanceof Schema) {
-            throw new \InvalidArgumentException(
-                'Must be instance of SchemaProperty or Schema'
-            );
-        }
-
-        $this->properties[$property->getName()] = $property;
-
         if (empty($property->getName())) {
             throw new \LogicException(
                 'Name must be set on ' . get_class($property)
             );
         }
 
-        if ($property instanceof Schema) {
-            $this->properties[$property->getName()] = $property;
+        $this->properties[$property->getName()] = $property;
 
-            return $this;
-        }
-
-        if ($property->isRequired()) {
+        if ($property instanceof SchemaProperty && $property->isRequired()) {
             $this->required[$property->getName()] = $property->getName();
         } elseif (isset($this->required[$property->getName()])) {
             unset($this->required[$property->getName()]);
         }
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param ?string $description Description
-     * @return $this
-     */
-    public function setDescription(?string $description)
-    {
-        $this->description = $description;
 
         return $this;
     }
@@ -438,44 +346,6 @@ class Schema implements JsonSerializable
     public function setNot(array $not)
     {
         $this->not = $not;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getEnum(): array
-    {
-        return $this->enum;
-    }
-
-    /**
-     * @param array $enum Enumerated list
-     * @return $this
-     */
-    public function setEnum(array $enum)
-    {
-        $this->enum = $enum;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFormat(): ?string
-    {
-        return $this->format;
-    }
-
-    /**
-     * @param string $format Format
-     * @return $this
-     */
-    public function setFormat(string $format)
-    {
-        $this->format = $format;
 
         return $this;
     }

@@ -3,14 +3,13 @@
 
     <description>SwaggerBake Ruleset</description>
     <!-- Warnings may be suppressed using the @SuppressWarning(PHPMD) annotation -->
-
     <!-- Rues are imported individually to allow for easy configuration -->
     <!-- Property names and values can be found here: http://phpmd.org/rules/index.html -->
 
     <rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
         <properties>
             <property name="ignore-whitespace" value="true" />
-            <property name="minimum" value="150" />
+            <property name="minimum" value="100" />
         </properties>
     </rule>
 
@@ -18,7 +17,7 @@
 
     <rule ref="rulesets/design.xml/CouplingBetweenObjects">
         <properties>
-            <property name="maximum" value="50" />
+            <property name="maximum" value="25" />
         </properties>
     </rule>
     <rule ref="rulesets/design.xml/DepthOfInheritance" />
@@ -46,19 +45,24 @@
     <rule ref="rulesets/controversial.xml/CamelCaseMethodName" />
     <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
         <properties>
-            <property name="reportLevel" value="15" />
+            <property name="reportLevel" value="12" />
         </properties>
     </rule>
-    <rule ref="rulesets/codesize.xml/ExcessiveClassComplexity">
-        <properties>
-            <property name="maximum" value="50" />
-        </properties>
-    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessiveClassComplexity" /> <!-- phpmd default is max: 50 -->
     <rule ref="rulesets/codesize.xml/ExcessiveClassLength">
         <properties>
-            <property name="maximum" value="1000" />
+            <property name="minimum" value="500" />
         </properties>
     </rule>
+    <rule ref="rulesets/codesize.xml/TooManyMethods" />
+    <rule ref="rulesets/codesize.xml/NPathComplexity" />
+    <rule ref="rulesets/controversial.xml/CamelCaseClassName" />
+    <rule ref="rulesets/controversial.xml/CamelCasePropertyName" />
+    <rule ref="rulesets/controversial.xml/CamelCaseVariableName" />
+    <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag" />
+    <rule ref="rulesets/codesize.xml/ExcessiveParameterList" />
+    <rule ref="rulesets/codesize.xml/ExcessivePublicCount" />
+    <rule ref="rulesets/codesize.xml/TooManyFields" />
 
     <!--
         Removed for CakePHPs sake:
@@ -79,16 +83,8 @@
         </properties>
     </rule>
     -->
-    <!-- <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag" /> -->
     <!-- <rule ref="rulesets/cleancode.xml/ElseExpression" /> -->
     <!-- <rule ref="rulesets/cleancode.xml/StaticAccess" /> -->
-    <!-- <rule ref="rulesets/controversial.xml/CamelCaseClassName" /> -->
-    <!-- <rule ref="rulesets/controversial.xml/CamelCasePropertyName"> -->
-    <!-- <rule ref="rulesets/controversial.xml/CamelCaseVariableName"> -->
-    <!-- <rule ref="rulesets/codesize.xml/ExcessiveParameterList" /> -->
-    <!-- <rule ref="rulesets/codesize.xml/ExcessivePublicCount" /> -->
-    <!-- <rule ref="rulesets/codesize.xml/NPathComplexity" /> -->
     <!-- <rule ref="rulesets/codesize.xml/TooManyFields" /> -->
-    <!-- <rule ref="rulesets/codesize.xml/TooManyMethods" /> -->
 
 </ruleset>
