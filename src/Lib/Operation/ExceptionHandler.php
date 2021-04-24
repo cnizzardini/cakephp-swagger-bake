@@ -88,7 +88,7 @@ class ExceptionHandler
         $array = $this->swagger->getArray();
         if (isset($array['x-swagger-bake']['components']['schemas']['app-exceptions'])) {
             foreach ($array['x-swagger-bake']['components']['schemas']['app-exceptions'] as $name => $exception) {
-                if ($exception['x-exception-fqn'] === $exceptionClass) {
+                if (isset($exception['x-exception-fqn']) && $exception['x-exception-fqn'] === $exceptionClass) {
                     return '#/x-swagger-bake/components/schemas/app-exceptions/' . $name;
                 }
             }
