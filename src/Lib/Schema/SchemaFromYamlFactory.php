@@ -48,9 +48,15 @@ class SchemaFromYamlFactory
         $yml['properties'] = $yml['properties'] ?? [];
 
         foreach ($yml['properties'] as $propertyName => $propertyVar) {
-            $schema->pushProperty(
-                $factory->create($propertyName, $propertyVar)
-            );
+            if (!empty($propertyVar['type']) && $propertyVar['type'] === 'object') {
+                $schema->pushProperty(
+                    $this->create($propertyName, $propertyVar)
+                );
+            } else {
+                $schema->pushProperty(
+                    $factory->create($propertyName, $propertyVar)
+                );
+            }
         }
 
         return $schema;

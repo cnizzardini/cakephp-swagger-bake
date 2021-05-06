@@ -31,6 +31,7 @@ class SchemaPropertyFromYamlFactory
             ->setEnum($yaml['enum'] ?? [])
             ->setExample($yaml['example'] ?? '')
             ->setItems($yaml['items'] ?? [])
+            ->setRefEntity($yaml['$ref'] ?? '')
             ->setFormat($yaml['format'] ?? '');
 
         $properties = [
