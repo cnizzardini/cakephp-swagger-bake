@@ -57,6 +57,11 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     private $items;
 
     /**
+     * @var string
+     */
+    private $refEntity;
+
+    /**
      * @return array
      */
     public function toArray(): array
@@ -64,12 +69,16 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
         $vars = get_object_vars($this);
 
         // remove internal properties
-        foreach (['name','required','requirePresenceOnCreate','requirePresenceOnUpdate'] as $v) {
+        foreach (['name','required','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity'] as $v) {
             unset($vars[$v]);
         }
 
+        if (!empty($this->refEntity)) {
+            $vars['$ref'] = $this->refEntity;
+        }
+
         // reduce JSON clutter by removing empty values
-        foreach (['example','description','enum','format','items'] as $v) {
+        foreach (['example','description','enum','format','items','type'] as $v) {
             if (empty($vars[$v])) {
                 unset($vars[$v]);
             }
@@ -249,6 +258,25 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     public function setItems(array $items)
     {
         $this->items = $items;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefEntity(): string
+    {
+        return $this->refEntity;
+    }
+
+    /**
+     * @param string $refEntity Reference YAML schema such as #/components/schema/MyEntity
+     * @return $this
+     */
+    public function setRefEntity(string $refEntity)
+    {
+        $this->refEntity = $refEntity;
 
         return $this;
     }
