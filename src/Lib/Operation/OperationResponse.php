@@ -219,9 +219,9 @@ class OperationResponse
                 return (new XmlMedia($schema, $this->swagger))->buildSchema($action);
             case 'application/hal+json':
             case 'application/vnd.hal+json':
-                return (new HalJson($schema))->buildSchema($action);
+                return (new HalJson($schema, $this->swagger))->buildSchema($action);
             case 'application/ld+json':
-                return (new JsonLd($schema))->buildSchema($action);
+                return (new JsonLd($schema, $this->swagger))->buildSchema($action);
             case 'text/plain':
                 return (new Schema())->setType('string');
         }

@@ -6,6 +6,7 @@ namespace SwaggerBake\Lib\MediaType;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBake\Lib\Utility\SchemaRefUtility;
 
 class Xml
 {
@@ -22,6 +23,13 @@ class Xml
     private $swagger;
 
     /**
+     * The OpenAPI $ref for the Schema
+     *
+     * @var string
+     */
+    private $ref;
+
+    /**
      * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
      * @param \SwaggerBake\Lib\Swagger $swagger instance of Swaggger
      */
@@ -29,6 +37,7 @@ class Xml
     {
         $this->schema = $schema;
         $this->swagger = $swagger;
+        $this->ref = SchemaRefUtility::whichRef($schema, $swagger, $this->schema->getReadSchemaRef());
     }
 
     /**

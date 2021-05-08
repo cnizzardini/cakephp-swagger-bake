@@ -6,6 +6,7 @@ namespace SwaggerBake\Lib\MediaType;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBake\Lib\Utility\SchemaRefUtility;
 
 class Generic
 {
@@ -22,6 +23,13 @@ class Generic
     private $swagger;
 
     /**
+     * The OpenAPI $ref for the Schema
+     *
+     * @var string
+     */
+    private $ref;
+
+    /**
      * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
      * @param \SwaggerBake\Lib\Swagger $swagger instance of Swagger
      */
@@ -29,6 +37,7 @@ class Generic
     {
         $this->schema = $schema;
         $this->swagger = $swagger;
+        $this->ref = SchemaRefUtility::whichRef($schema, $swagger, $this->schema->getReadSchemaRef());
     }
 
     /**
@@ -56,7 +65,7 @@ class Generic
         if (!isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'])) {
             return (new Schema())
                 ->setType('array')
-                ->setItems(['$ref' => $this->schema->getReadSchemaRef()]);
+                ->setItems(['$ref' => $this->ref]);
         }
 
         return (new Schema())
@@ -70,7 +79,7 @@ class Generic
                     ->setItems([
                         'type' => 'object',
                         'allOf' => [
-                            ['$ref' => $this->schema->getReadSchemaRef()],
+                            ['$ref' => $this->ref],
                         ],
                     ]),
             ]);
@@ -81,6 +90,6 @@ class Generic
      */
     private function item(): Schema
     {
-        return (new Schema())->setRefEntity($this->schema->getReadSchemaRef());
+        return (new Schema())->setRefEntity($this->ref);
     }
 }
