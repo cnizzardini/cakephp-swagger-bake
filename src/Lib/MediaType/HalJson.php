@@ -5,6 +5,8 @@ namespace SwaggerBake\Lib\MediaType;
 
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\Swagger;
+use SwaggerBake\Lib\Utility\SchemaRefUtility;
 
 class HalJson
 {
@@ -24,11 +26,26 @@ class HalJson
     private $schema;
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
+     * @var \SwaggerBake\Lib\Swagger
      */
-    public function __construct(Schema $schema)
+    private $swagger;
+
+    /**
+     * The OpenAPI $ref for the Schema
+     *
+     * @var string
+     */
+    private $ref;
+
+    /**
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
+     * @param \SwaggerBake\Lib\Swagger $swagger instance of Swagger
+     */
+    public function __construct(Schema $schema, Swagger $swagger)
     {
         $this->schema = $schema;
+        $this->swagger = $swagger;
+        $this->ref = SchemaRefUtility::whichRef($schema, $swagger, $this->schema->getReadSchemaRef());
     }
 
     /**
@@ -63,7 +80,7 @@ class HalJson
                         'type' => 'object',
                         'allOf' => [
                             ['$ref' => self::HAL_ITEM],
-                            ['$ref' => $this->schema->getReadSchemaRef()],
+                            ['$ref' => $this->ref],
                         ],
                     ]),
             ]);
@@ -77,7 +94,7 @@ class HalJson
         return (new Schema())
             ->setAllOf([
                 ['$ref' => self::HAL_ITEM],
-                ['$ref' => $this->schema->getReadSchemaRef()],
+                ['$ref' => $this->ref],
             ])
             ->setProperties([]);
     }
