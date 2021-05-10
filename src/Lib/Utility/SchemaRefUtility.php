@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
-use LogicException;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Swagger;
 
@@ -13,6 +12,8 @@ class SchemaRefUtility
      * Returns path to OpenAPI schema $ref such as #/components/Schemas/EntityName. This will first check if the
      * supplied $ref exists, if not it will return the OpenAPI default schema $ref.
      *
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema The Schema instance
+     * @param \SwaggerBake\Lib\Swagger $swagger The Swagger instance
      * @param string $ref The $ref to search for, such as #/x-swagger-bake/components/schemas/Entity-Read
      * @return string
      */
