@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Model;
 
 use Cake\Collection\Collection;
-use Cake\Core\Configure;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use MixerApi\Core\Model\Model;
@@ -63,30 +62,34 @@ class ModelScanner
             throw new SwaggerBakeRunTimeException('Unable to get Database Connection instance');
         }
 
-        $tables = NamespaceUtility::findClasses(Configure::read('App.namespace') . '\Model\Table');
+        $namespaces = $this->config->getNamespaces();
 
-        foreach ($tables as $table) {
-            try {
-                $model = (new ModelFactory($connection, new $table()))->create();
-            } catch (\Exception $e) {
-                continue;
+        foreach ($namespaces['tables'] as $tableNs) {
+            $tables = NamespaceUtility::findClasses($tableNs . 'Model\Table');
+
+            foreach ($tables as $table) {
+                try {
+                    $model = (new ModelFactory($connection, new $table()))->create();
+                } catch (\Exception $e) {
+                    continue;
+                }
+
+                if ($model === null) {
+                    continue;
+                }
+
+                $routeDecorator = $this->getRouteDecorator($model);
+                if (!$this->hasVisibility($model, $routeDecorator)) {
+                    continue;
+                }
+
+                if ($routeDecorator) {
+                    $controllerFqn = $routeDecorator->getControllerFqn();
+                    $controller = $controllerFqn ? new $controllerFqn() : null;
+                }
+
+                $return[] = new ModelDecorator($model, $controller ?? null);
             }
-
-            if ($model === null) {
-                continue;
-            }
-
-            $routeDecorator = $this->getRouteDecorator($model);
-            if (!$this->hasVisibility($model, $routeDecorator)) {
-                continue;
-            }
-
-            if ($routeDecorator) {
-                $controllerFqn = $routeDecorator->getControllerFqn();
-                $controller = $controllerFqn ? new $controllerFqn() : null;
-            }
-
-            $return[] = new ModelDecorator($model, $controller ?? null);
         }
 
         return $return;
