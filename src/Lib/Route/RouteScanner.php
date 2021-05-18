@@ -99,7 +99,7 @@ class RouteScanner
                 return strstr($fqn, '\\' . $prefix . $controller . 'Controller');
             });
 
-            if (count($results) >= 1) {
+            if (count($results) === 1) {
                 $routeDecorator->setControllerFqn('\\' . reset($results));
             }
 
