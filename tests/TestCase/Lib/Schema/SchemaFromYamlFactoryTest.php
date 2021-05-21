@@ -21,7 +21,7 @@ class SchemaFromYamlFactoryTest extends TestCase
         $attributes = $schema->getProperties()['attributes'];
         $this->assertTrue(isset($attributes->getProperties()['yitzo_country_code']));
 
-        /** @var Schema $attributes */
+        /** @var Schema $relationships */
         $relationships = $schema->getProperties()['relationships'];
         $this->assertTrue(isset($relationships->getProperties()['description']));
     }
