@@ -17,7 +17,7 @@ class SchemaFromYamlFactory
      * Create an instance of Schema from YAML
      *
      * @param string $name Name of the Schema (i.e. cake entity name)
-     * @param array $yml OpenApi YAML as an array
+     * @param array $yml The OpenApi Schema object as an array
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
     public function create(string $name, array $yml): Schema
