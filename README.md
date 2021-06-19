@@ -450,7 +450,7 @@ Make sure the route is properly defined in your `config/routes.php` file.
 
 #### HTTP DELETE issues with Swagger UI
 
-Swagger UI sends HTTP DELETE without an `accept` header. This results in an HTML response being generate which can be quite large and cause the UI to be slow to render. To get around this you can force an `accept` value on the header using the CakePHP middleware:
+Swagger UI sends HTTP DELETE without an `accept` header. This results in an HTML response being generated which can be quite large and cause the UI to be slow to render. To get around this you can force an `accept` value on the header using the CakePHP middleware:
 
 ```php
         $middlewareQueue
