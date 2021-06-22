@@ -468,6 +468,8 @@ public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
 	    });
 
 	// other middleware...
+	
+	return $middlewareQueue;
 }
 ```
 
