@@ -29,6 +29,9 @@ class RouteCommand extends Command
     {
         $parser
             ->setDescription('SwaggerBake Route Checker')
+            ->addOption('config', [
+                'help' => 'Configuration (defaults to config/swagger_bake). Example: OtherApi.swagger_bake',
+            ])
             ->addOption('prefix', [
                 'help' => 'The route prefix (uses value in configuration by default)',
             ]);
@@ -45,7 +48,7 @@ class RouteCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $this->loadConfig();
+        $this->loadConfig($args->getOption('config') ?? 'swagger_bake');
 
         $io->hr();
         $io->out('| SwaggerBake is checking your routes...');
