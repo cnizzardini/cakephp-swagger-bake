@@ -19,6 +19,10 @@ trait CommandTrait
      */
     public function loadConfig(string $config = 'swagger_bake'): void
     {
+        if ($config !== 'swagger_bake') {
+            Configure::delete('SwaggerBake');
+        }
+
         if (!Configure::load($config, 'default')) {
             throw new SwaggerBakeRunTimeException(
                 "SwaggerBake configuration file `$config` is missing"
