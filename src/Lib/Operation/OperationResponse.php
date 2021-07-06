@@ -130,7 +130,28 @@ class OperationResponse
                     continue;
                 }
 
-                $schema = $this->buildSchemaFromAnnotationAndMimeType($annotate, $mimeType);
+                if ($mimeType == 'text/plain') {
+                    $schema = (new Schema())->setType('string');
+
+                    if ($annotate->schemaFormat) {
+                        $schema->setFormat($annotate->schemaFormat);
+                    }
+                } else {
+                    if (count($annotate->schemaItems) > 0) {
+                        $ref = reset($annotate->schemaItems);
+                        $action = 'index';
+                    }
+
+                    $schema = $this->getMimeTypeSchema(
+                        $mimeType,
+                        $action ?? 'view',
+                        $ref ?? $annotate->refEntity
+                    );
+                }
+
+                if (!empty($annotation->schemaType)) {
+                    $schema->setFormat($annotate->schemaType);
+                }
 
                 $content->setSchema($schema);
 
@@ -208,11 +229,14 @@ class OperationResponse
      *
      * @param string $mimeType a mime type (e.g. application/xml, application/json)
      * @param string $action controller action (e.g. add, index, view, edit, delete)
+     * @param string|null $schema the openapi schema $ref or null
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function getMimeTypeSchema(string $mimeType, string $action)
+    private function getMimeTypeSchema(string $mimeType, string $action, ?string $schema = null)
     {
-        $schema = $this->schema instanceof Schema ? $this->schema : new Schema();
+        if (is_null($schema)) {
+            $schema = $this->schema instanceof Schema ? $this->schema : new Schema();
+        }
 
         switch ($mimeType) {
             case 'application/xml':
@@ -274,33 +298,5 @@ class OperationResponse
         }
 
         $this->operation->pushResponse($response);
-    }
-
-    /**
-     * Builds a Schema instance from SwagResponseSchema annotation and mime type
-     *
-     * @param \SwaggerBake\Lib\Annotation\SwagResponseSchema $annotation SwagResponseSchema
-     * @param string $mimeType mine type string (i.e application/json)
-     * @return \SwaggerBake\Lib\OpenApi\Schema
-     */
-    private function buildSchemaFromAnnotationAndMimeType(SwagResponseSchema $annotation, string $mimeType): Schema
-    {
-        $schema = new Schema();
-
-        if (!empty($annotation->refEntity)) {
-            $schema->setType('object')->setRefEntity($annotation->refEntity);
-        } elseif (!empty($annotation->schemaItems)) {
-            $schema->setType('array')->setItems($annotation->schemaItems);
-        }
-
-        if (!empty($annotation->schemaType)) {
-            $schema->setFormat($annotation->schemaType);
-        }
-
-        if (empty($schema->getType()) && $mimeType == 'text/plain') {
-            $schema->setType('string');
-        }
-
-        return $schema->setFormat($annotation->schemaFormat);
     }
 }
