@@ -27,13 +27,7 @@ class NamespaceUtility
      */
     public static function getEntityFullyQualifiedNameSpace(string $className, Configuration $config): ?string
     {
-        try {
-            $namespaces = $config->getNamespaces();
-        } catch (LogicException $e) {
-            throw new SwaggerBakeRunTimeException(
-                'Invalid configuration, missing SwaggerBake.namespaces.entities'
-            );
-        }
+        $namespaces = $config->getNamespaces();
 
         foreach ($namespaces['entities'] as $namespace) {
             $entity = $namespace . 'Model\Entity\\' . $className;
@@ -55,13 +49,7 @@ class NamespaceUtility
      */
     public static function getTableFullyQualifiedNameSpace(string $className, Configuration $config): ?string
     {
-        try {
-            $namespaces = $config->getNamespaces();
-        } catch (LogicException $e) {
-            throw new SwaggerBakeRunTimeException(
-                'Invalid configuration, missing SwaggerBake.namespaces.tables'
-            );
-        }
+        $namespaces = $config->getNamespaces();
 
         foreach ($namespaces['tables'] as $namespace) {
             $table = $namespace . 'Model\Table\\' . $className;
