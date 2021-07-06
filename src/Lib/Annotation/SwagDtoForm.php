@@ -38,12 +38,14 @@ namespace SwaggerBake\Lib\Annotation;
  * @see https://swagger.io/specification/ search for "Schema Object"
  * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
  * @see AbstractSchemaProperty
- * @deprecated
+ * @deprecated This class annotation will be deprecated in a future version, please use SwagDtoRequestBody
+ * @codeCoverageIgnore
  */
 class SwagDtoForm extends AbstractSchemaProperty
 {
     /**
      * @param array $values Annotation values
+     * @deprecated This class annotation will be deprecated in a future version, please use SwagDtoRequestBody
      */
     public function __construct(array $values)
     {
