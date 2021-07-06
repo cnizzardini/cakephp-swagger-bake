@@ -22,8 +22,10 @@ class ExtensionLoader
             $instance = new $extension();
 
             if (!$instance instanceof ExtensionInterface) {
+                // @codeCoverageIgnoreStart
                 triggerWarning("$extension must implement ExtensionInterface");
                 continue;
+                // @codeCoverageIgnoreEnd
             }
 
             if (!$instance->isSupported()) {
