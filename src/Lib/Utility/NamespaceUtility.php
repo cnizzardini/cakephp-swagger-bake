@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Utility;
 
 use Cake\Cache\Engine\NullEngine;
-use LogicException;
 use Mouf\Composer\ClassNameMapper;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
 
 /**
