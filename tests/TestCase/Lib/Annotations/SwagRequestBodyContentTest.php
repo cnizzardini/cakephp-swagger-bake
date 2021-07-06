@@ -6,6 +6,7 @@ namespace SwaggerBake\Test\TestCase\Lib\Annotations;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\Annotation\SwagRequestBodyContent;
 use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
@@ -18,7 +19,15 @@ class SwagRequestBodyContentTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
+    /**
+     * @var Router
+     */
     private $router;
+
+    /**
+     * @var Configuration
+     */
+    private $config;
 
     public function setUp(): void
     {
@@ -67,7 +76,7 @@ class SwagRequestBodyContentTest extends TestCase
         AnnotationLoader::load();
     }
 
-    public function testSwagRequestBodyContent()
+    public function test_swag_request_body_content(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
@@ -79,7 +88,7 @@ class SwagRequestBodyContentTest extends TestCase
         $this->assertArrayHasKey('schema', $operation['requestBody']['content']['text/plain']);
     }
 
-    public function testMultipleMimeTypes()
+    public function test_multiple_mime_types(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
@@ -91,7 +100,8 @@ class SwagRequestBodyContentTest extends TestCase
         $this->assertCount(2, $operation['requestBody']['content']);
     }
 
-    public function testUseMimeTypesFromConfig()
+
+    public function test_use_mime_types_from_config(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 

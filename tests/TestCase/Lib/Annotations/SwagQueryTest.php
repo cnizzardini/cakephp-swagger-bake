@@ -18,7 +18,15 @@ class SwagQueryTest extends TestCase
         'plugin.SwaggerBake.Departments',
     ];
 
+    /**
+     * @var Router
+     */
     private $router;
+
+    /**
+     * @var Configuration
+     */
+    private $config;
 
     public function setUp(): void
     {
@@ -49,7 +57,7 @@ class SwagQueryTest extends TestCase
         AnnotationLoader::load();
     }
 
-    public function testSwagQuery()
+    public function test_swag_query(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
