@@ -20,19 +20,12 @@ class ModelCommandTest extends TestCase
         $this->useCommandRunner();
     }
 
-    public function testExecute()
+    public function test_execute(): void
     {
         $this->exec('swagger models');
         $this->assertOutputContains('SwaggerBake is checking your models...');
         $this->assertOutputContains('- Department');
         $this->assertOutputContains('id');
         $this->assertOutputContains('name');
-    }
-
-    public function testExecuteNoModelsFoundErrorMessage()
-    {
-        $this->markTestSkipped('Difficulty testing since #224');
-        $this->exec('swagger models --prefix /nope');
-        $this->assertExitError();
     }
 }
