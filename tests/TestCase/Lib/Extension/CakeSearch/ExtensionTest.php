@@ -66,7 +66,7 @@ class ExtensionTest extends TestCase
         ExtensionLoader::load();
     }
 
-    public function testGetOperation()
+    public function test_get_operation(): void
     {
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
 
