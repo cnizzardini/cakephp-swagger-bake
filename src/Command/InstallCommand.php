@@ -33,7 +33,6 @@ class InstallCommand extends Command
                 ]);
         }
 
-
         return $parser;
     }
 
