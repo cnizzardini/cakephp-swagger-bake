@@ -39,11 +39,6 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     /**
      * @var bool
      */
-    private $deprecated = false;
-
-    /**
-     * @var bool
-     */
     private $requirePresenceOnCreate = false;
 
     /**
@@ -174,25 +169,6 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     public function setExample($example)
     {
         $this->example = $example;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDeprecated(): bool
-    {
-        return $this->deprecated;
-    }
-
-    /**
-     * @param bool $deprecated Deprecated
-     * @return $this
-     */
-    public function setDeprecated(bool $deprecated)
-    {
-        $this->deprecated = $deprecated;
 
         return $this;
     }
