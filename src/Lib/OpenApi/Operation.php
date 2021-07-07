@@ -317,6 +317,16 @@ class Operation implements JsonSerializable
     public function pushResponse(Response $response)
     {
         $code = $response->getCode();
+        $existingResponse = $this->getResponseByCode($response->getCode());
+
+        if ($existingResponse) {
+            $content = $existingResponse->getContent() + $response->getContent();
+            $existingResponse->setContent($content);
+            $this->responses[$code] = $existingResponse;
+
+            return $this;
+        }
+
         $this->responses[$code] = $response;
 
         return $this;
