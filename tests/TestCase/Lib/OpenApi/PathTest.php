@@ -14,12 +14,12 @@ class PathTest extends TestCase
             ->setDescription($desc = '1')
             ->setSummary($s = '2')
             ->setRef($r = 'r')
-            //->setOperations([(new Operation())->setHttpMethod('GET')])
+            ->setOperations([(new Operation())->setHttpMethod('GET')])
         ;
 
         $this->assertEquals($desc, $path->getDescription());
         $this->assertEquals($s, $path->getSummary());
         $this->assertEquals($r, $path->getRef());
-        //$this->assertInstanceOf(Operation::class, $path->getOperations()[0]);
+        $this->assertInstanceOf(Operation::class, $path->getOperations()['get']);
     }
 }
