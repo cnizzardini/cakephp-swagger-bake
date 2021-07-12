@@ -138,7 +138,7 @@ code. You must use the FQN for exceptions.
 public function index() {}
 ```
 
-For Entities, the description from `@property` is supported:
+For Entities, the description from `@property` is supported and will appear in OpenAPI and be usable by swagger/redoc for entity attribute descriptions:
 
 ```php
 /**
