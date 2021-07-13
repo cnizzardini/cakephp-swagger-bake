@@ -35,6 +35,7 @@ class ModelCommand extends Command
             ->setDescription('SwaggerBake Model Checker')
             ->addOption('config', [
                 'help' => 'Configuration (defaults to config/swagger_bake). Example: OtherApi.swagger_bake',
+                'default' => 'swagger_bake',
             ])
             ->addOption('prefix', [
                 'help' => 'The route prefix (uses value in configuration by default)',
@@ -52,7 +53,7 @@ class ModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $this->loadConfig($args->getOption('config') ?? 'swagger_bake');
+        $this->loadConfig($args->getOption('config'));
 
         $io->hr();
         $io->out('| SwaggerBake is checking your models...');

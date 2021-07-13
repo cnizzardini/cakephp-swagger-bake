@@ -21,7 +21,7 @@ class BakeCommandTest extends TestCase
         $this->useCommandRunner();
     }
 
-    public function testExecute()
+    public function test_execute(): void
     {
         $path = WWW_ROOT . DS . 'swagger.json';
         unlink($path);
@@ -30,9 +30,15 @@ class BakeCommandTest extends TestCase
         $this->assertOutputContains("Swagger File Created: $path");
     }
 
-    public function testExecuteWriteFailure()
+    public function test_write_failure(): void
     {
         $this->expectException(SwaggerBakeRunTimeException::class);
         $this->exec('swagger bake --output /etc/no-no/swagger.json');
+    }
+
+    public function test_config_not_found_exception(): void
+    {
+        $this->expectException(SwaggerBakeRunTimeException::class);
+        $this->exec('swagger bake --config nope');
     }
 }
