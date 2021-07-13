@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Command;
 
 use Cake\Core\Configure;
+use Cake\Core\Exception\CakeException;
 use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\ExtensionLoader;
@@ -23,9 +24,11 @@ trait CommandTrait
             Configure::delete('SwaggerBake');
         }
 
-        if (!Configure::load($config, 'default')) {
+        try {
+            Configure::load($config, 'default');
+        } catch (CakeException $e) {
             throw new SwaggerBakeRunTimeException(
-                "SwaggerBake configuration file `$config` is missing"
+                "SwaggerBake config file `$config` is missing or " . get_class($e) . ' ' . $e->getMessage()
             );
         }
 
