@@ -16,7 +16,8 @@ trait CommandTrait
      *
      * @param string $config your applications swagger_bake config
      * @return void
-     * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
+     * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException if config file not found
+     * @throws \RuntimeException if config var SwaggerBake not found
      */
     public function loadConfig(string $config = 'swagger_bake'): void
     {
@@ -31,6 +32,8 @@ trait CommandTrait
                 "SwaggerBake config file `$config` is missing or " . get_class($e) . ' ' . $e->getMessage()
             );
         }
+
+        Configure::readOrFail('SwaggerBake');
 
         AnnotationLoader::load();
         ExtensionLoader::load();
