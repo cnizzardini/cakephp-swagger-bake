@@ -10,6 +10,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Routing\Router;
 use ReflectionClass;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
@@ -32,6 +33,10 @@ class ModelCommand extends Command
     {
         $parser
             ->setDescription('SwaggerBake Model Checker')
+            ->addOption('config', [
+                'help' => 'Configuration (defaults to config/swagger_bake). Example: OtherApi.swagger_bake',
+                'default' => 'swagger_bake',
+            ])
             ->addOption('prefix', [
                 'help' => 'The route prefix (uses value in configuration by default)',
             ]);
@@ -48,7 +53,7 @@ class ModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $this->loadConfig();
+        $this->loadConfig($args->getOption('config'));
 
         $io->hr();
         $io->out('| SwaggerBake is checking your models...');
@@ -72,6 +77,10 @@ class ModelCommand extends Command
             $io->out();
             $this->abort();
         }
+
+        usort($models, function (ModelDecorator $a, ModelDecorator $b) {
+            return strcasecmp($a->getModel()->getSchema()->name(), $b->getModel()->getSchema()->name());
+        });
 
         $header = ['Attribute','Data Type', 'Swagger Type','Default','Primary Key'];
 

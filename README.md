@@ -23,9 +23,9 @@ and controllers.
 [Bake](#bake-theme).
 - Provides additional functionality through Annotations and Doc Blocks.
 
-[Demo Site](http://cakephpswaggerbake.cnizz.com/) | 
-[Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo) | 
-[Screenshot](assets/screenshot.png) 
+[Swagger Bake Demo](http://cakephpswaggerbake.cnizz.com/) | [Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo) | 
+[Swagger/MixerAPI Demo](https://demo.mixerapi.com/) | [Demo Code](https://github.com/mixerapi/demo)
+
 
 ## Table of Contents
 - [Installation](#installation)
@@ -138,7 +138,7 @@ code. You must use the FQN for exceptions.
 public function index() {}
 ```
 
-For Entities, the description from `@property` is supported:
+For Entities, the description from `@property` is supported and will appear in OpenAPI and be usable by swagger/redoc for entity attribute descriptions:
 
 ```php
 /**
@@ -447,6 +447,33 @@ UI. The library does not currently support adding this in for you.
 #### My route isn't displaying in Swagger UI
 
 Make sure the route is properly defined in your `config/routes.php` file.
+
+#### HTTP DELETE issues with Swagger UI
+
+Swagger UI sends HTTP DELETE without an `accept` header. If the record does not exist, an exception is generated. This results in an HTML response being generated which can be quite large and cause the UI to be slow to render. To get around this you can force an `accept` value on the header using the CakePHP middleware:
+
+```php
+# src/Application.php
+
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+	$middlewareQueue
+	    ->add(function(ServerRequestInterface $request, RequestHandlerInterface $handler){
+	        $accept = $request->getHeader('accept');
+	        if ($request->getMethod() === 'DELETE' && reset($accept) === '*/*') {
+	            $request = $request->withHeader('accept', 'application/json');
+	        }
+
+	        return $handler->handle($request);
+	    });
+
+	// other middleware...
+	
+	return $middlewareQueue;
+}
+```
+
+Read more about [CakePHP middleware](https://book.cakephp.org/4/en/controllers/middleware.html) in the official documentation.
 
 ## Reporting Issues
 

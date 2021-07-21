@@ -14,6 +14,10 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
  */
 class ValidateConfiguration
 {
+    public const YML_FILE_REQUIRED_ERROR_MSG = 'YML file is required, given ';
+
+    public const YML_FILE_NOT_FOUND_ERROR_MSG = 'YML file not found, try specifying full path, given';
+
     /**
      * Validates the supplied Configuration, if null is passed then it will create an instance of Configuration in the
      * local scope and validate that
@@ -27,11 +31,11 @@ class ValidateConfiguration
         $ymlFile = $config->getYml();
 
         if (empty($ymlFile) || !strstr($ymlFile, '.yml')) {
-            throw new LogicException('YML file is required, given ' . $ymlFile);
+            throw new LogicException(self::YML_FILE_REQUIRED_ERROR_MSG . $ymlFile);
         }
 
         if (!file_exists($ymlFile)) {
-            throw new LogicException('YML file not found, try specifying full path, given ' . $ymlFile);
+            throw new LogicException(self::YML_FILE_NOT_FOUND_ERROR_MSG . $ymlFile);
         }
 
         $prefix = $config->getPrefix();

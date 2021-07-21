@@ -5,32 +5,9 @@ namespace SwaggerBake\Lib\MediaType;
 
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
-use SwaggerBake\Lib\Swagger;
 
-class Xml
+class Xml extends AbstractMediaType
 {
-    use GenericTrait;
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Schema
-     */
-    private $schema;
-
-    /**
-     * @var \SwaggerBake\Lib\Swagger
-     */
-    private $swagger;
-
-    /**
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
-     * @param \SwaggerBake\Lib\Swagger $swagger instance of Swaggger
-     */
-    public function __construct(Schema $schema, Swagger $swagger)
-    {
-        $this->schema = $schema;
-        $this->swagger = $swagger;
-    }
-
     /**
      * Returns Xml schema
      *
@@ -56,7 +33,7 @@ class Xml
         if (!isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'])) {
             return (new Schema())
                 ->setAllOf([
-                    ['$ref' => $this->schema->getReadSchemaRef()],
+                    ['$ref' => $this->ref],
                 ])
                 ->setXml((new \SwaggerBake\Lib\OpenApi\Xml())->setName('response'))
                 ->setProperties([]);
@@ -74,7 +51,7 @@ class Xml
                     ->setItems([
                         'type' => 'object',
                         'allOf' => [
-                            ['$ref' => $this->schema->getReadSchemaRef()],
+                            ['$ref' => $this->ref],
                         ],
                     ]),
             ]);
@@ -87,7 +64,7 @@ class Xml
     {
         return (new Schema())
             ->setAllOf([
-                ['$ref' => $this->schema->getReadSchemaRef()],
+                ['$ref' => $this->ref],
             ])
             ->setXml((new \SwaggerBake\Lib\OpenApi\Xml())->setName('response'))
             ->setProperties([]);

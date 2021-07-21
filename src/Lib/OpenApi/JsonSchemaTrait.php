@@ -86,6 +86,11 @@ trait JsonSchemaTrait
     protected $maxProperties;
 
     /**
+     * @var bool
+     */
+    private $deprecated = false;
+
+    /**
      * @param array $vars Object properties as a key-value pair
      * @return array
      */

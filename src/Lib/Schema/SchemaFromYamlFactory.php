@@ -17,7 +17,7 @@ class SchemaFromYamlFactory
      * Create an instance of Schema from YAML
      *
      * @param string $name Name of the Schema (i.e. cake entity name)
-     * @param array $yml OpenApi YAML as an array
+     * @param array $yml The OpenApi Schema object as an array
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
     public function create(string $name, array $yml): Schema
@@ -48,9 +48,15 @@ class SchemaFromYamlFactory
         $yml['properties'] = $yml['properties'] ?? [];
 
         foreach ($yml['properties'] as $propertyName => $propertyVar) {
-            $schema->pushProperty(
-                $factory->create($propertyName, $propertyVar)
-            );
+            if (!empty($propertyVar['type']) && $propertyVar['type'] === 'object') {
+                $schema->pushProperty(
+                    $this->create($propertyName, $propertyVar)
+                );
+            } else {
+                $schema->pushProperty(
+                    $factory->create($propertyName, $propertyVar)
+                );
+            }
         }
 
         return $schema;

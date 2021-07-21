@@ -21,11 +21,17 @@ class InstallCommand extends Command
      */
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
-        $parser
-            ->setDescription('SwaggerBake Installer')
-            ->addOption('config_test', [
-                'help' => 'For testing purposes only (don\'t use)',
-            ]);
+        $parser->setDescription('SwaggerBake Installer');
+
+        if (defined('TEST')) {
+            $parser
+                ->addOption('config_test', [
+                    'help' => '(FOR TESTING ONLY) - Sets the CONFIG directory path',
+                ])
+                ->addOption('assets_test', [
+                    'help' => '(FOR TESTING ONLY) - Sets the assets directory path',
+                ]);
+        }
 
         return $parser;
     }
@@ -43,6 +49,12 @@ class InstallCommand extends Command
         $io->out('| SwaggerBake Install');
         $io->hr();
 
+        $assets = $args->getOption('assets_test') ?? __DIR__ . DS . '..' . DS . '..' . DS . 'assets';
+        if (!is_dir($assets)) {
+            $io->error('Unable to locate assets directory, please install manually');
+            $this->abort();
+        }
+
         $io->info('This will create, but not overwrite config/swagger.yml and config/swagger_bake.php');
 
         $io->out(
@@ -51,20 +63,16 @@ class InstallCommand extends Command
         );
 
         if (strtoupper($io->ask('Continue?', 'Y')) !== 'Y') {
-            return;
+            $io->out('Exiting install');
+            $this->abort();
         }
 
         $configDir = $args->getOption('config_test') ?? CONFIG;
 
-        $assets = __DIR__ . DS . '..' . DS . '..' . DS . 'assets';
-        if (!dir($assets)) {
-            $io->error('Unable to locate assets directory, please install manually');
-            $this->abort();
-        }
-
         if (file_exists($configDir . 'swagger.yml') || file_exists($configDir . 'swagger_bake.php')) {
             $answer = $io->ask('The installer found existing SwaggerBake config files. Overwrite?', 'Y');
             if (strtoupper($answer) !== 'Y') {
+                $io->out('Exiting install');
                 $this->abort();
             }
         }

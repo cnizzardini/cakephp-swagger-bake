@@ -30,6 +30,7 @@ class BakeCommand extends Command
             ->setDescription('SwaggerBake OpenAPI JSON Generator')
             ->addOption('config', [
                 'help' => 'Configuration (defaults to config/swagger_bake). Example: OtherApi.swagger_bake',
+                'default' => 'swagger_bake',
             ])
             ->addOption('output', [
                 'help' => 'Full path for OpenAPI json file (defaults to config value for SwaggerBake.json)',
@@ -47,7 +48,7 @@ class BakeCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $this->loadConfig($args->getOption('config') ?? 'swagger_bake');
+        $this->loadConfig($args->getOption('config'));
 
         $io->out('Running...');
 

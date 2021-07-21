@@ -6,6 +6,7 @@ namespace SwaggerBake\Test\TestCase\Lib\Annotations;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
@@ -18,7 +19,15 @@ class SwagDtoTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
+    /**
+     * @var Router
+     */
     private $router;
+
+    /**
+     * @var Configuration
+     */
+    private $config;
 
     public function setUp(): void
     {
@@ -63,7 +72,7 @@ class SwagDtoTest extends TestCase
         AnnotationLoader::load();
     }
 
-    public function testSwagDtoQuery()
+    public function test_swag_dto_query(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
@@ -79,7 +88,7 @@ class SwagDtoTest extends TestCase
         $this->assertEquals('date', $operation['parameters'][4]['name']);
     }
 
-    public function testSwagDtoPost()
+    public function test_swag_dto_post(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
@@ -94,5 +103,11 @@ class SwagDtoTest extends TestCase
         $this->assertArrayHasKey('title', $properties);
         $this->assertArrayHasKey('age', $properties);
         $this->assertArrayHasKey('date', $properties);
+    }
+
+    public function test_swag_dto_construct_throws_invalid_arg_exception(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new SwagDto([]);
     }
 }

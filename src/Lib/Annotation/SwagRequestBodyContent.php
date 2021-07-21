@@ -46,10 +46,12 @@ class SwagRequestBodyContent
         $values = array_merge(['refEntity' => '', 'mimeTypes' => []], $values);
 
         if (isset($values['mimeType'])) {
+            // @codeCoverageIgnoreStart
             array_push($values['mimeTypes'], $values['mimeType']);
             $msg = 'SwaggerBake: `mimeType` is deprecated, use `mimeTypes` in SwagRequestBodyContent';
             Log::warning($msg);
             deprecationWarning($msg);
+            // @codeCoverageIgnoreEnd
         }
 
         $this->refEntity = $values['refEntity'];

@@ -318,13 +318,15 @@ class Operation implements JsonSerializable
     {
         $code = $response->getCode();
         $existingResponse = $this->getResponseByCode($response->getCode());
-        if ($this->getResponseByCode($response->getCode())) {
+
+        if ($existingResponse) {
             $content = $existingResponse->getContent() + $response->getContent();
             $existingResponse->setContent($content);
             $this->responses[$code] = $existingResponse;
 
             return $this;
         }
+
         $this->responses[$code] = $response;
 
         return $this;

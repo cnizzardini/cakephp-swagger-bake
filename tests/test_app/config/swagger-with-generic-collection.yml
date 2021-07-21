@@ -1,0 +1,115 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Bakery
+  license:
+    name: MIT
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+x-swagger-bake:
+  components:
+    schemas:
+      Generic-Collection:
+        type: object
+        x-data-element: data # property or node that contains the collections items (records)
+        properties:
+          collection: # sample of a property holding pagination data
+            type: object
+            properties:
+              url:
+                type: string
+                format: url
+                example: /index
+              count:
+                type: integer
+                example: 20
+              total:
+                type: integer
+                example: 200
+              pages:
+                type: integer
+                example: 10
+              next:
+                type: string
+                format: url
+                example: /index?page=:number
+              prev:
+                type: string
+                format: url
+                example: /index?page=:number
+              first:
+                type: string
+                format: url
+                example: /index
+              last:
+                type: string
+                format: url
+                example: /index?page=:number
+      app-exceptions:
+        ValidationException:
+          x-exception-fqn: '\MixerApi\ExceptionRender\ValidationException'
+          type: object
+          properties:
+            exception:
+              type: string
+              example: ValidationException
+            message:
+              type: string
+              example: Error saving resource `Schema`
+            url:
+              type: string
+              example: /url/path
+            code:
+              type: integer
+              example: 500
+            violations:
+              type: array
+              items:
+                $ref: '#/x-swagger-bake/components/schemas/app-exceptions/Violation'
+        Violation:
+          type: object
+          properties:
+            propertyPath:
+              type: string
+              example: property_name
+            messages:
+              type: array
+              items:
+                $ref: '#/x-swagger-bake/components/schemas/app-exceptions/ViolationMessage'
+        ViolationMessage:
+          type: object
+          properties:
+            rule:
+              type: string
+              example: _rule_name
+            message:
+              type: string
+              example: error message
+    parameters:
+      paginatorPage:
+        name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      paginatorLimit:
+        name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      paginatorSort:
+        name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      paginatorDirection:
+        name: direction
+        in: query
+        required: false
+        schema:
+          type: string

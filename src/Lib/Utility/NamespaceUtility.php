@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Utility;
 
 use Cake\Cache\Engine\NullEngine;
-use LogicException;
 use Mouf\Composer\ClassNameMapper;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
 
 /**
@@ -27,13 +25,7 @@ class NamespaceUtility
      */
     public static function getEntityFullyQualifiedNameSpace(string $className, Configuration $config): ?string
     {
-        try {
-            $namespaces = $config->getNamespaces();
-        } catch (LogicException $e) {
-            throw new SwaggerBakeRunTimeException(
-                'Invalid configuration, missing SwaggerBake.namespaces.entities'
-            );
-        }
+        $namespaces = $config->getNamespaces();
 
         foreach ($namespaces['entities'] as $namespace) {
             $entity = $namespace . 'Model\Entity\\' . $className;
@@ -55,13 +47,7 @@ class NamespaceUtility
      */
     public static function getTableFullyQualifiedNameSpace(string $className, Configuration $config): ?string
     {
-        try {
-            $namespaces = $config->getNamespaces();
-        } catch (LogicException $e) {
-            throw new SwaggerBakeRunTimeException(
-                'Invalid configuration, missing SwaggerBake.namespaces.tables'
-            );
-        }
+        $namespaces = $config->getNamespaces();
 
         foreach ($namespaces['tables'] as $namespace) {
             $table = $namespace . 'Model\Table\\' . $className;

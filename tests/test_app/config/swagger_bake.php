@@ -9,6 +9,7 @@ return [
         'namespaces' => [
             'controllers' => ['\SwaggerBakeTest\App\\'],
             'entities' => ['\SwaggerBakeTest\App\\'],
+            'tables' => ['\SwaggerBakeTest\App\\'],
         ]
     ]
 ];

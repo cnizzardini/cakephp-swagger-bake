@@ -6,7 +6,7 @@ namespace SwaggerBake\Lib\MediaType;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
-class HalJson
+class HalJson extends AbstractMediaType
 {
     /**
      * @var string
@@ -17,19 +17,6 @@ class HalJson
      * @var string
      */
     public const HAL_COLLECTION = '#/x-swagger-bake/components/schemas/HalJson-Collection';
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Schema
-     */
-    private $schema;
-
-    /**
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
-     */
-    public function __construct(Schema $schema)
-    {
-        $this->schema = $schema;
-    }
 
     /**
      * Returns HAL+JSON schema
@@ -63,7 +50,7 @@ class HalJson
                         'type' => 'object',
                         'allOf' => [
                             ['$ref' => self::HAL_ITEM],
-                            ['$ref' => $this->schema->getReadSchemaRef()],
+                            ['$ref' => $this->ref],
                         ],
                     ]),
             ]);
@@ -77,7 +64,7 @@ class HalJson
         return (new Schema())
             ->setAllOf([
                 ['$ref' => self::HAL_ITEM],
-                ['$ref' => $this->schema->getReadSchemaRef()],
+                ['$ref' => $this->ref],
             ])
             ->setProperties([]);
     }

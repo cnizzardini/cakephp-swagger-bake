@@ -6,6 +6,7 @@ namespace SwaggerBake\Test\TestCase\Lib\Annotations;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\Annotation\SwagSecurity;
 use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
@@ -18,7 +19,15 @@ class SwagSecurityTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
+    /**
+     * @var Router
+     */
     private $router;
+
+    /**
+     * @var Configuration
+     */
+    private $config;
 
     public function setUp(): void
     {
@@ -57,13 +66,12 @@ class SwagSecurityTest extends TestCase
         AnnotationLoader::load();
     }
 
-    public function testSwagHeader()
+    public function test_swag_security(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
         $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
-
 
         $this->assertArrayHasKey('/employees/custom-get', $arr['paths']);
         $this->assertArrayHasKey('get', $arr['paths']['/employees/custom-get']);
@@ -74,5 +82,11 @@ class SwagSecurityTest extends TestCase
         $this->assertCount(1, array_filter($operation['security'], function ($param) {
             return isset($param['BearerAuth']);
         }));
+    }
+
+    public function test_constructor_invalid_arg_exception(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new SwagSecurity(['']);
     }
 }

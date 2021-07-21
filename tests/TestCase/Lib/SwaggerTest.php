@@ -22,7 +22,15 @@ class SwaggerTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
+    /**
+     * @var Router
+     */
     private $router;
+
+    /**
+     * @var array
+     */
+    private $config;
 
     public function setUp(): void
     {

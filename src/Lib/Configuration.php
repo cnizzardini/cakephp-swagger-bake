@@ -138,7 +138,12 @@ class Configuration
      */
     public function getNamespaces(): array
     {
-        return $this->get('namespaces');
+        $namespaces = $this->get('namespaces');
+        foreach ($namespaces as $k => $ns) {
+            $namespaces[$k] = array_unique($ns);
+        }
+
+        return $namespaces;
     }
 
     /**

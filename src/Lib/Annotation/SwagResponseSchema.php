@@ -123,11 +123,13 @@ class SwagResponseSchema
         }
 
         if (isset($values['mimeType'])) {
+            // @codeCoverageIgnoreStart
             $values['mimeTypes'] = $values['mimeTypes'] ?? [];
             array_push($values['mimeTypes'], $values['mimeType']);
             $msg = 'SwaggerBake: `mimeType` is deprecated, use `mimeTypes` in SwagResponseSchema';
             Log::warning($msg);
             deprecationWarning($msg);
+            // @codeCoverageIgnoreEnd
         }
 
         if (isset($values['statusCode'])) {

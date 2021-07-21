@@ -6,7 +6,7 @@ namespace SwaggerBake\Lib\MediaType;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
-class JsonLd
+class JsonLd extends AbstractMediaType
 {
     /**
      * @var string
@@ -17,19 +17,6 @@ class JsonLd
      * @var string
      */
     public const JSONLD_COLLECTION = '#/x-swagger-bake/components/schemas/JsonLd-Collection';
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Schema
-     */
-    private $schema;
-
-    /**
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
-     */
-    public function __construct(Schema $schema)
-    {
-        $this->schema = $schema;
-    }
 
     /**
      * Returns JSON-LD schema
@@ -63,7 +50,7 @@ class JsonLd
                         'type' => 'object',
                         'allOf' => [
                             ['$ref' => self::JSONLD_ITEM],
-                            ['$ref' => $this->schema->getReadSchemaRef()],
+                            ['$ref' => $this->ref],
                         ],
                     ]),
             ]);
@@ -77,7 +64,7 @@ class JsonLd
         return (new Schema())
             ->setAllOf([
                 ['$ref' => self::JSONLD_ITEM],
-                ['$ref' => $this->schema->getReadSchemaRef()],
+                ['$ref' => $this->ref],
             ])
             ->setProperties([]);
     }
