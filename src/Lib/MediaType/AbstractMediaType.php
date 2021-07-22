@@ -5,10 +5,14 @@ namespace SwaggerBake\Lib\MediaType;
 
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Swagger;
-use SwaggerBake\Lib\Utility\SchemaRefUtility;
 
 abstract class AbstractMediaType
 {
+    /**
+     * @var \SwaggerBake\Lib\OpenApi\Schema|string
+     */
+    protected $schema;
+
     /**
      * @var \SwaggerBake\Lib\Swagger
      */
@@ -30,8 +34,12 @@ abstract class AbstractMediaType
         $this->swagger = $swagger;
 
         if ($schema instanceof Schema) {
-            $this->ref = SchemaRefUtility::whichRef($schema, $swagger, $schema->getReadSchemaRef());
+            $read = $schema->getReadSchemaName();
+            $name = $schema->getName();
+            $this->schema = $swagger->getSchemaByName($read) ?? $swagger->getSchemaByName($name);
+            $this->ref = $this->schema->getRefPath();
         } elseif (is_string($schema)) {
+            $this->schema = $schema;
             $this->ref = $schema;
         } else {
             throw new \InvalidArgumentException(

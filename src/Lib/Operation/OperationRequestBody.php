@@ -15,7 +15,6 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\OpenApi\Xml;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
-use SwaggerBake\Lib\Utility\SchemaRefUtility;
 
 /**
  * Class OperationRequestBody
@@ -281,13 +280,23 @@ class OperationRequestBody
 
             $content = (new Content())->setMimeType($mimeType);
 
-            if (in_array($this->operation->getHttpMethod(), ['POST'])) {
+            if (
+                in_array($this->operation->getHttpMethod(), ['POST'])
+                &&
+                $this->swagger->getSchemaByName($schema->getAddSchemaName())
+            ) {
                 $content->setSchema(
-                    SchemaRefUtility::whichRef($schema, $this->swagger, $this->schema->getAddSchemaRef())
+                    $this->swagger->getSchemaByName($schema->getAddSchemaName())->getRefPath()
                 );
-            } else {
+            } elseif ($this->swagger->getSchemaByName($schema->getEditSchemaName())) {
                 $content->setSchema(
-                    SchemaRefUtility::whichRef($schema, $this->swagger, $this->schema->getEditSchemaRef())
+                    $this->swagger->getSchemaByName($schema->getEditSchemaName())->getRefPath()
+                );
+            }
+
+            if ($content->getSchema() === null) {
+                $content->setSchema(
+                    $this->swagger->getSchemaByName($schema->getName())->getRefPath()
                 );
             }
 

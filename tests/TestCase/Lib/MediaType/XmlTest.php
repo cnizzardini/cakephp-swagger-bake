@@ -51,7 +51,7 @@ class XmlTest extends TestCase
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
         $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
-        $schema = (new Xml('#/components/schemas/thing', $swagger))->buildSchema('index');
+        $schema = (new Xml('#/components/schemas/thing', $swagger))->buildSchema('array');
         $this->assertEquals(
             '#/x-swagger-bake/components/schemas/Generic-Collection',
             $schema->getAllOf()[0]['$ref']

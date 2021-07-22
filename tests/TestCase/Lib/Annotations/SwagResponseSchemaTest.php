@@ -85,25 +85,10 @@ class SwagResponseSchemaTest extends TestCase
         $schema = $operation['responses']['200']['content']['application/json']['schema'];
         $this->assertEquals('#/components/schemas/Pet', $schema['$ref']);
 
-        $this->assertArrayHasKey('400', $operation['responses']);
-        $this->assertEquals('deprecated httpCode still works', $operation['responses']['400']['description']);
-
         $this->assertArrayHasKey('404', $operation['responses']);
         $this->assertEquals('new statusCode', $operation['responses']['404']['description']);
 
         $this->assertArrayHasKey('5XX', $operation['responses']);
         $this->assertEquals('status code range', $operation['responses']['5XX']['description']);
-    }
-
-    public function testSchemaItems()
-    {
-        $arr = json_decode($this->swagger->toString(), true);
-
-        $operation = $arr['paths']['/employees/schema-items']['get'];
-
-        $schema = $operation['responses']['200']['content']['application/json']['schema'];
-
-        $this->assertEquals('array', $schema['type']);
-        $this->assertEquals('#/components/schemas/Pet', $schema['items']['$ref']);
     }
 }

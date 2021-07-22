@@ -528,18 +528,22 @@ Method level annotation for defining response schema.
 
 | Attribute | Type / Default | Description | 
 | ------------- | ------------- | ------------- |
-| refEntity | string `""` | The OpenAPI entity |
-| statusCode | string `200` | Response code |
-| mimeTypes | array `[]` | An array of mime types the response can be |
-| description | string `null` | Description of the response |
-| schemaType | string `null` |  |
-| schemaFormat | string `null` |  |
-| schemaItems | array `[]` |  |
-
+| refEntity | string `` | The OpenAPI entity (e.g. `"#/components/schemas/ModelName"` |
+| statusCode | string `200` | The HTTP response code |
+| mimeTypes | array `null` | An array of mime types the response can, if null settings from swagger_bake config are used. |
+| description | string `` | Description of the response |
+| schemaType | string `` | The schema response type, generally `"object"` or `"array"` |
+| schemaFormat | string `` | The schema format, generally only used for schemaType of string. |
+| ~~schemaItems~~ | removed | This was removed in v2.0 |
 
 ```php
 /**
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Actor", description="Summary", statusCode="200")
+ * @Swag\SwagResponseSchema(
+ *     schemaType="object", 
+ *     refEntity="#/components/schemas/Actor", 
+ *     description="Summary", 
+ *     statusCode="200"
+ * )
  */
 public function view() {}
 ```
@@ -561,7 +565,12 @@ Defining a single mimeType and 400-409 status code range:
 
 ```php
 /**
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Exception", mimeTypes={"application/xml"}, statusCode="40x")
+ * @Swag\SwagResponseSchema(
+ *     schemaType="object", 
+ *     refEntity="#/components/schemas/Exception",
+ *     mimeTypes={"application/xml","application/json"}, 
+ *     statusCode="40x"
+ * )
  */
 ```
 
@@ -581,7 +590,10 @@ Defining an array of objects:
 
 ```php
 /**
- * @Swag\SwagResponseSchema(schemaItems={"$ref"="#/components/schemas/Actor"})
+ * @Swag\SwagResponseSchema(
+ *     schemaType="array", 
+ *     refEntity="#/components/schemas/Actor"
+ * )
  */
 ```
 

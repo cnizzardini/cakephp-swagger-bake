@@ -6,7 +6,7 @@ namespace SwaggerBake\Lib\MediaType;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
-class JsonLd extends AbstractMediaType
+class JsonLd extends AbstractMediaType implements MediaTypeInterface
 {
     /**
      * @var string
@@ -19,18 +19,17 @@ class JsonLd extends AbstractMediaType
     public const JSONLD_COLLECTION = '#/x-swagger-bake/components/schemas/JsonLd-Collection';
 
     /**
-     * Returns JSON-LD schema
-     *
-     * @param string $action controller action (e.g. add, index, view, edit, delete)
-     * @return \SwaggerBake\Lib\OpenApi\Schema
+     * @inheritDoc
      */
-    public function buildSchema(string $action): Schema
+    public function buildSchema(string $schemaType): Schema
     {
-        if ($action == 'index') {
-            return $this->collection();
+        if (!in_array($schemaType, ['array', 'object'])) {
+            throw new \InvalidArgumentException(
+                "Argument must be array or object but was given schema type `$schemaType`"
+            );
         }
 
-        return $this->item();
+        return $schemaType === 'array' ? $this->collection() : $this->item();
     }
 
     /**

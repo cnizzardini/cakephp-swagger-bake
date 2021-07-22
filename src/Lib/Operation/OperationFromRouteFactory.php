@@ -92,11 +92,12 @@ class OperationFromRouteFactory
             $this->swagger,
             $config,
             $operation,
-            $docBlock,
             $annotations,
             $route,
             $schema
         ))->getOperationWithResponses();
+
+        $operation = (new OperationResponseException($this->swagger, $config, $operation, $docBlock))->getOperation();
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Operation.created', $operation, [
