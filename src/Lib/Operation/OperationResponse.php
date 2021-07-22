@@ -40,11 +40,6 @@ class OperationResponse
     private $operation;
 
     /**
-     * @var \phpDocumentor\Reflection\DocBlock
-     */
-    private $doc;
-
-    /**
      * @var array
      */
     private $annotations;
