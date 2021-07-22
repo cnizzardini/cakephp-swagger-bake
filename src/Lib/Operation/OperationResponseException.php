@@ -32,6 +32,12 @@ class OperationResponseException
      */
     private $doc;
 
+    /**
+     * @param \SwaggerBake\Lib\Swagger $swagger an instance of Swagger
+     * @param \SwaggerBake\Lib\Configuration $config an instance of Configuration
+     * @param \SwaggerBake\Lib\OpenApi\Operation $operation an instance of Operation
+     * @param \phpDocumentor\Reflection\DocBlock $doc an instance of DocBlock
+     */
     public function __construct(Swagger $swagger, Configuration $config, Operation $operation, DocBlock $doc)
     {
         $this->swagger = $swagger;
