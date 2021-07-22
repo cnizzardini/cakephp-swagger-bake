@@ -174,6 +174,7 @@ class Swagger
     {
         $name = $schema->getName();
         if (!isset($this->array['components']['schemas'][$name])) {
+            $schema->setRefPath('#/components/schemas/' . $name);
             $this->array['components']['schemas'][$name] = $schema;
         }
 
@@ -190,6 +191,7 @@ class Swagger
     {
         $name = $schema->getName();
         if (!isset($this->array['x-swagger-bake']['components']['schemas'][$name])) {
+            $schema->setRefPath('#/x-swagger-bake/components/schemas/' . $name);
             $this->array['x-swagger-bake']['components']['schemas'][$name] = $schema;
         }
 
@@ -206,6 +208,10 @@ class Swagger
     {
         if (isset($this->array['components']['schemas'][$name])) {
             return $this->array['components']['schemas'][$name];
+        }
+
+        if (isset($this->array['x-swagger-bake']['components']['schemas'][$name])) {
+            return $this->array['x-swagger-bake']['components']['schemas'][$name];
         }
 
         return null;
@@ -284,7 +290,7 @@ class Swagger
                     ->setName($schema->getAddSchemaName())
                     ->setProperties([])
                     ->setAllOf([
-                        ['$ref' => $schema->getWriteSchemaRef()],
+                        ['$ref' => $this->getSchemaByName($schema->getWriteSchemaName())->getRefPath()],
                     ])
                     ->setRequired(array_keys($propertiesRequiredOnCreate))
             );
@@ -299,7 +305,7 @@ class Swagger
                     ->setName($schema->getEditSchemaName())
                     ->setProperties([])
                     ->setAllOf([
-                        ['$ref' => $schema->getWriteSchemaRef()],
+                        ['$ref' => $this->getSchemaByName($schema->getWriteSchemaName())->getRefPath()],
                     ])
                     ->setRequired(array_keys($propertiesRequiredOnUpdate))
             );
@@ -394,7 +400,8 @@ class Swagger
         $factory = new SchemaFromYamlFactory();
 
         foreach ($this->array['components']['schemas'] as $schemaName => $schemaVar) {
-            $this->array['components']['schemas'][$schemaName] = $factory->create($schemaName, $schemaVar);
+            $schema = $factory->create($schemaName, $schemaVar)->setRefPath('#/components/schemas/' . $schemaName);
+            $this->array['components']['schemas'][$schemaName] = $schema;
         }
     }
 

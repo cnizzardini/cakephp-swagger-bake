@@ -6,7 +6,7 @@ namespace SwaggerBake\Lib\MediaType;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
-class HalJson extends AbstractMediaType
+class HalJson extends AbstractMediaType implements MediaTypeInterface
 {
     /**
      * @var string
@@ -19,24 +19,23 @@ class HalJson extends AbstractMediaType
     public const HAL_COLLECTION = '#/x-swagger-bake/components/schemas/HalJson-Collection';
 
     /**
-     * Returns HAL+JSON schema
-     *
-     * @param string $action controller action (e.g. add, index, view, edit, delete)
-     * @return \SwaggerBake\Lib\OpenApi\Schema
+     * @inheritDoc
      */
-    public function buildSchema(string $action): Schema
+    public function buildSchema(string $schemaType): Schema
     {
-        if ($action == 'index') {
-            return $this->collection();
+        if (!in_array($schemaType, ['array', 'object'])) {
+            throw new \InvalidArgumentException(
+                "Argument must be array or object but was given schema type `$schemaType`"
+            );
         }
 
-        return $this->item();
+        return $schemaType === 'array' ? $this->collection() : $this->item();
     }
 
     /**
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function collection(): Schema
+    protected function collection(): Schema
     {
         return (new Schema())
             ->setAllOf([

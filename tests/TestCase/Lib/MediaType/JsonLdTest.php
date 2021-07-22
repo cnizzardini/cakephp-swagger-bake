@@ -15,6 +15,11 @@ use SwaggerBake\Lib\Swagger;
 
 class JsonLdTest extends TestCase
 {
+    private const SCHEMA = '#/x-swagger-bake/components/schemas/';
+
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
@@ -74,7 +79,7 @@ class JsonLdTest extends TestCase
             $schema->getProperties()['member']->getItems()['allOf'][0]['$ref']
         );
         $this->assertEquals(
-            Schema::SCHEMA . 'Employee-Read',
+            self::SCHEMA . 'Employee-Read',
             $schema->getProperties()['member']->getItems()['allOf'][1]['$ref']
         );
     }
@@ -94,7 +99,7 @@ class JsonLdTest extends TestCase
             $schema->getAllOf()[0]['$ref']
         );
         $this->assertEquals(
-            Schema::SCHEMA . 'Employee-Read',
+            self::SCHEMA . 'Employee-Read',
             $schema->getAllOf()[1]['$ref']
         );
     }

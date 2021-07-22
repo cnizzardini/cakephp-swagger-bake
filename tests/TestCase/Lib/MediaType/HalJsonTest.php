@@ -16,6 +16,11 @@ use SwaggerBake\Lib\Swagger;
 
 class HalJsonTest extends TestCase
 {
+    private const SCHEMA = '#/x-swagger-bake/components/schemas/';
+
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
@@ -75,7 +80,7 @@ class HalJsonTest extends TestCase
             $schema->getProperties()['_embedded']->getItems()['allOf'][0]['$ref']
         );
         $this->assertEquals(
-            Schema::SCHEMA . 'Employee-Read',
+            self::SCHEMA . 'Employee-Read',
             $schema->getProperties()['_embedded']->getItems()['allOf'][1]['$ref']
         );
     }
@@ -95,7 +100,7 @@ class HalJsonTest extends TestCase
             $schema->getAllOf()[0]['$ref']
         );
         $this->assertEquals(
-            Schema::SCHEMA . 'Employee-Read',
+            self::SCHEMA . 'Employee-Read',
             $schema->getAllOf()[1]['$ref']
         );
     }

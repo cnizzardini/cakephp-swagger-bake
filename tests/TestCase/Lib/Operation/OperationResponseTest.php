@@ -90,7 +90,7 @@ class OperationResponseTest extends TestCase
         }
     }
 
-    public function testGetOperationWithAnnotatedResponse()
+    public function testGetOperationWithAnnotatedResponse(): void
     {
         $route = $this->routes['employees:index'];
 
@@ -98,7 +98,6 @@ class OperationResponseTest extends TestCase
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
-            DocBlockFactory::createInstance()->create('/** @throws Exception */'),
             [
                 new SwagResponseSchema([
                     'httpCode' => 200,
@@ -110,11 +109,10 @@ class OperationResponseTest extends TestCase
 
         $operation = $operationResponse->getOperationWithResponses();
 
-        $this->assertInstanceOf(Response::class, $operation->getResponseByCode(200));
-        $this->assertInstanceOf(Response::class, $operation->getResponseByCode(500));
+        $this->assertInstanceOf(Response::class, $operation->getResponseByCode('200'));
     }
 
-    public function testGetOperationWithSchemaResponse()
+    public function testGetOperationWithSchemaResponse(): void
     {
         $route = $this->routes['employees:add'];
 
@@ -127,7 +125,6 @@ class OperationResponseTest extends TestCase
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
-            DocBlockFactory::createInstance()->create('/**  */'),
             [],
             $route,
             $schema
@@ -135,10 +132,10 @@ class OperationResponseTest extends TestCase
 
         $operation = $operationResponse->getOperationWithResponses();
 
-        $this->assertInstanceOf(Response::class, $operation->getResponseByCode(200));
+        $this->assertInstanceOf(Response::class, $operation->getResponseByCode('200'));
     }
 
-    public function testAddOperationWithNoResponseDefined()
+    public function testAddOperationWithNoResponseDefined(): void
     {
         $route = $this->routes['employees:add'];
 
@@ -146,14 +143,13 @@ class OperationResponseTest extends TestCase
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
-            DocBlockFactory::createInstance()->create('/**  */'),
             [],
             $route,
             null
         );
 
         $operation = $operationResponse->getOperationWithResponses();
-        $response = $operation->getResponseByCode(200);
+        $response = $operation->getResponseByCode('200');
         $this->assertNotEmpty($response);
 
         $content = $response->getContentByMimeType('application/json');
@@ -162,7 +158,7 @@ class OperationResponseTest extends TestCase
         $this->assertNotEmpty($content->getSchema());
     }
 
-    public function testDeleteActionResponseWithHttp204()
+    public function testDeleteActionResponseWithHttp204(): void
     {
         $route = $this->routes['employees:delete'];
 
@@ -170,17 +166,16 @@ class OperationResponseTest extends TestCase
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
-            DocBlockFactory::createInstance()->create('/**  */'),
             [],
             $route,
             null
         );
 
         $operation = $operationResponse->getOperationWithResponses();
-        $this->assertNotEmpty($operation->getResponseByCode(204));
+        $this->assertNotEmpty($operation->getResponseByCode('204'));
     }
 
-    public function testNoResponseDefined()
+    public function testNoResponseDefined(): void
     {
         $route = $this->routes['employees:noresponsedefined'];
 
@@ -188,14 +183,13 @@ class OperationResponseTest extends TestCase
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
-            DocBlockFactory::createInstance()->create('/**  */'),
             [],
             $route,
             null
         );
 
         $operation = $operationResponse->getOperationWithResponses();
-        $response = $operation->getResponseByCode(200);
+        $response = $operation->getResponseByCode('200');
         $this->assertNotEmpty($response);
 
         $content = $response->getContentByMimeType('application/json');
@@ -203,7 +197,7 @@ class OperationResponseTest extends TestCase
         $this->assertNotEmpty($content->getSchema());
     }
 
-    public function testGetOperationWithSwagResponseSchemaRefEntity()
+    public function testGetOperationWithSwagResponseSchemaRefEntity(): void
     {
         $route = $this->routes['employees:index'];
 
@@ -211,9 +205,9 @@ class OperationResponseTest extends TestCase
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
-            DocBlockFactory::createInstance()->create('/** */'),
             [
                 new SwagResponseSchema([
+                    'schemaType' => 'array',
                     'refEntity' => '#/components/schema/Employee',
                 ]),
             ],
@@ -221,42 +215,15 @@ class OperationResponseTest extends TestCase
             null
         );
 
-        $operation = $operationResponse->getOperationWithResponses();
+        $content = $operationResponse
+            ->getOperationWithResponses()
+            ->getResponseByCode('200')
+            ->getContentByMimeType('application/json');
 
-        $content = $operation->getResponseByCode(200)->getContentByMimeType('application/json');
-
-        $this->assertEquals('#/components/schema/Employee', $content->getSchema()->getRefEntity());
-    }
-
-    public function testGetOperationWithSwagResponseSchemaItems()
-    {
-        $route = $this->routes['employees:index'];
-
-        $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
-            $this->config,
-            new Operation(),
-            DocBlockFactory::createInstance()->create('/** */'),
-            [
-                new SwagResponseSchema([
-                    'schemaItems' => [ '$ref' => '#/components/schema/Employee']
-                ]),
-            ],
-            $route,
-            null
-        );
-
-        $operation = $operationResponse->getOperationWithResponses();
-
-        $content = $operation->getResponseByCode(200)->getContentByMimeType('application/json');
-
-
-        $this->assertEquals('array', $content->getSchema()->getType());
-        $this->assertArrayHasKey('$ref', $content->getSchema()->getItems());
         $this->assertEquals('#/components/schema/Employee', $content->getSchema()->getItems()['$ref']);
     }
 
-    public function testGetOperationWithSwagResponseSchemaTextPlain()
+    public function testGetOperationWithSwagResponseSchemaTextPlain(): void
     {
         $route = $this->routes['employees:textplain'];
 
@@ -264,7 +231,6 @@ class OperationResponseTest extends TestCase
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
             new Operation(),
-            DocBlockFactory::createInstance()->create('/** */'),
             [
                 new SwagResponseSchema([
                     'mimeTypes' => ['text/plain'],
@@ -277,7 +243,7 @@ class OperationResponseTest extends TestCase
 
         $operation = $operationResponse->getOperationWithResponses();
 
-        $content = $operation->getResponseByCode(200)->getContentByMimeType('text/plain');
+        $content = $operation->getResponseByCode('200')->getContentByMimeType('text/plain');
 
         $this->assertEquals('string', $content->getSchema()->getType());
         $this->assertEquals('date-time', $content->getSchema()->getFormat());

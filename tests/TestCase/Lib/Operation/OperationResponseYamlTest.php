@@ -80,7 +80,6 @@ class OperationResponseYamlTest extends TestCase
             $swagger,
             $this->config,
             new Operation(),
-            DocBlockFactory::createInstance()->create('/** @throws Exception */'),
             [],
             $route,
             $swagger->getArray()['components']['schemas']['Employee']
