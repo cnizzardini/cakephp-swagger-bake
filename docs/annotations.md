@@ -534,6 +534,7 @@ Method level annotation for defining response schema.
 | description | string `` | Description of the response |
 | schemaType | string `` | The schema response type, generally `"object"` or `"array"` |
 | schemaFormat | string `` | The schema format, generally only used for schemaType of string. |
+| associations | array `null` | Adds associated tables to the response sample schema, see example below |
 | ~~schemaItems~~ | removed | This was removed in v2.0 |
 
 ```php
@@ -590,10 +591,7 @@ Defining an array of objects:
 
 ```php
 /**
- * @Swag\SwagResponseSchema(
- *     schemaType="array", 
- *     refEntity="#/components/schemas/Actor"
- * )
+ * @Swag\SwagResponseSchema(schemaType="array", refEntity="#/components/schemas/Actor")
  */
 ```
 
@@ -607,6 +605,22 @@ OpenAPI:
                type: array
                items:
                  $ref: '#/components/schemas/Actor'
+```
+
+To include all immediately associated tables (deep nested associations are not yet supported) for an object (resource/item):
+
+```php
+/**
+ * @Swag\SwagResponseSchema(schemaType="object", associations={})
+ */
+```
+
+As an array (collection) but white list specific tables (ignores all others):
+
+```php
+/**
+ * @Swag\SwagResponseSchema(schemaType="array", associations={"whiteList"={"Films"}})
+ */
 ```
 
 ### @SwagPath

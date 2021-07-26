@@ -6,22 +6,22 @@ namespace SwaggerBake\Lib\MediaType;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Swagger;
 
+/**
+ * Abstract class for MediaTypes
+ */
 abstract class AbstractMediaType
 {
+    protected Swagger $swagger;
+
     /**
      * @var \SwaggerBake\Lib\OpenApi\Schema|string
      */
     protected $schema;
 
     /**
-     * @var \SwaggerBake\Lib\Swagger
-     */
-    protected $swagger;
-
-    /**
      * The OpenAPI $ref for the Schema
      *
-     * @var string
+     * @var string|null
      */
     protected $ref;
 
@@ -36,10 +36,8 @@ abstract class AbstractMediaType
         if ($schema instanceof Schema) {
             $read = $schema->getReadSchemaName();
             $name = $schema->getName();
-            $this->schema = $swagger->getSchemaByName($read) ?? $swagger->getSchemaByName($name);
-            $this->ref = $this->schema->getRefPath();
+            $this->schema = $schema; //$swagger->getSchemaByName($read) ?? $swagger->getSchemaByName($name);
         } elseif (is_string($schema)) {
-            $this->schema = $schema;
             $this->ref = $schema;
         } else {
             throw new \InvalidArgumentException(
@@ -73,5 +71,18 @@ abstract class AbstractMediaType
         }
 
         return 'data';
+    }
+
+    /**
+     * @param string $schemaType must be array or object
+     */
+    protected function validateSchemaType(string $schemaType): void
+    {
+        if (!in_array($schemaType, ['array', 'object'])) {
+            throw new \InvalidArgumentException(
+                "Argument must be array or object but was given schemaType `$schemaType`. If you're using the " .
+                "SwagResponseSchema annotation, try defining schemaType."
+            );
+        }
     }
 }

@@ -5,6 +5,11 @@ namespace SwaggerBake\Lib\MediaType;
 
 use SwaggerBake\Lib\OpenApi\Schema;
 
+/**
+ * Describes MediaType classes
+ *
+ * @internal
+ */
 interface MediaTypeInterface
 {
     /**

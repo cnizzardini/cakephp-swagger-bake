@@ -49,19 +49,53 @@ class SchemaFactory
      * Creates an instance of Schema for an ModelDecorator, returns null if the Entity is set to invisible
      *
      * @param \SwaggerBake\Lib\Model\ModelDecorator $modelDecorator ModelDecorator
-     * @param int $propertyType see public constants for o
+     * @param int $propertyType see public constants for options
      * @return \SwaggerBake\Lib\OpenApi\Schema|null
      * @throws \ReflectionException
      */
     public function create(ModelDecorator $modelDecorator, int $propertyType = 6): ?Schema
     {
-        $model = $modelDecorator->getModel();
-        $swagEntity = $this->getSwagEntityAnnotation($model->getEntity());
+        $swagEntity = $this->getSwagEntityAnnotation($modelDecorator->getModel()->getEntity());
 
         if ($swagEntity !== null && $swagEntity->isVisible === false) {
             return null;
         }
 
+        $schema = $this
+            ->__create($modelDecorator->getModel(), $propertyType)
+            ->setDescription($swagEntity->description)
+            ->setIsPublic($swagEntity->isPublic);
+
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.Schema.created', $schema, [
+                'modelDecorator' => $modelDecorator,
+            ])
+        );
+
+        return $schema;
+    }
+
+    /**
+     * Same as create() except this does not check SwagEntity options or dispatch an event and will always create a
+     * Schema. Using create(), its possible null is returned based on SwagEntity options.
+     *
+     * @param \SwaggerBake\Lib\Model\ModelDecorator $modelDecorator ModelDecorator
+     * @param int $propertyType see public constants for options
+     * @return \SwaggerBake\Lib\OpenApi\Schema
+     * @throws \ReflectionException
+     */
+    public function createAlways(ModelDecorator $modelDecorator, int $propertyType = 6): Schema
+    {
+        return $this->__create($modelDecorator->getModel(), $propertyType);
+    }
+
+    /**
+     * @param Model $model Model instance
+     * @param int $propertyType see public constants for options
+     * @return Schema
+     */
+    private function __create(Model $model, int $propertyType = 6): Schema
+    {
         $this->validator = $this->getValidator($model);
 
         $docBlock = $this->getDocBlock($model->getEntity());
@@ -70,10 +104,8 @@ class SchemaFactory
 
         $schema = (new Schema())
             ->setName((new ReflectionClass($model->getEntity()))->getShortName())
-            ->setDescription($swagEntity->description)
             ->setType('object')
-            ->setProperties($properties)
-            ->setIsPublic($swagEntity->isPublic);
+            ->setProperties($properties);
 
         if (empty($schema->getDescription())) {
             $schema->setDescription($docBlock ? $docBlock->getSummary() : null);
@@ -86,12 +118,6 @@ class SchemaFactory
         if (!empty($requiredProperties)) {
             $schema->setRequired(array_keys($requiredProperties));
         }
-
-        EventManager::instance()->dispatch(
-            new Event('SwaggerBake.Schema.created', $schema, [
-                'modelDecorator' => $modelDecorator,
-            ])
-        );
 
         return $schema;
     }

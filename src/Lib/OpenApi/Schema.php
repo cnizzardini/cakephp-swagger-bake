@@ -266,7 +266,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param string[] $items Items
+     * @param array $items Items
      * @return $this
      */
     public function setItems(array $items)
