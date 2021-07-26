@@ -3,51 +3,31 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
+use InvalidArgumentException;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\MediaType\Generic;
-use SwaggerBake\Lib\MediaType\HalJson;
-use SwaggerBake\Lib\MediaType\JsonLd;
-use SwaggerBake\Lib\MediaType\Xml as XmlMedia;
-use SwaggerBake\Lib\OpenApi\Content;
-use SwaggerBake\Lib\OpenApi\Operation;
-use SwaggerBake\Lib\OpenApi\Response;
-use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\Xml;
+use SwaggerBake\Lib\MediaType\{Generic, HalJson, JsonLd};
+use SwaggerBake\Lib\OpenApi\{Content, Operation, Response, Schema, Xml as OpenApiXml};
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
 
 /**
- * Class OperationResponse
+ * Builds OpenAPI Operation Responses for CRUD actions and controller actions annotated with SwagResponseSchema
  *
- * @package SwaggerBake\Lib\Operation
+ * @internal
  */
 class OperationResponse
 {
-    /**
-     * @var \SwaggerBake\Lib\Swagger
-     */
-    private $swagger;
+    private Swagger $swagger;
 
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private Configuration $config;
 
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Operation
-     */
-    private $operation;
+    private Operation $operation;
 
-    /**
-     * @var array
-     */
-    private $annotations;
+    private array $annotations;
 
-    /**
-     * @var \SwaggerBake\Lib\Route\RouteDecorator
-     */
-    private $route;
+    private RouteDecorator $route;
 
     /**
      * @var \SwaggerBake\Lib\OpenApi\Schema|null
@@ -108,17 +88,9 @@ class OperationResponse
 
             foreach ($mimeTypes as $mimeType) {
                 $content = (new Content())->setMimeType($mimeType);
-
                 $response = (new Response())->setCode($annotate->statusCode)->setDescription($annotate->description);
 
-                // push basic response since no entity or format was defined
-                if (empty($annotate->schemaFormat) && empty($annotate->refEntity)) {
-                    $response->pushContent($content);
-                    $this->operation->pushResponse($response);
-                    continue;
-                }
-
-                // push text/plain
+                // push text/plain response and the continue to next mime/type
                 if ($mimeType == 'text/plain') {
                     $schema = (new Schema())->setType('string')->setFormat($annotate->schemaFormat ?? '');
                     $content->setSchema($schema);
@@ -127,19 +99,27 @@ class OperationResponse
                     continue;
                 }
 
+                // push basic response since no entity or format was defined and continue to next mime/type
+                if (empty($annotate->refEntity) && empty($annotate->associations)) {
+                    $response->pushContent($content);
+                    $this->operation->pushResponse($response);
+                    continue;
+                }
+
+                $assocSchema = null;
+                if (is_array($annotate->associations)) {
+                    $assocSchema = (new OperationResponseAssociation($this->swagger, $this->route, $this->schema))
+                        ->build($annotate);
+                }
+
                 try {
                     $schema = $this->getMimeTypeSchema(
                         $mimeType,
                         $annotate->schemaType,
-                        $ref ?? $annotate->refEntity
+                        $assocSchema ?? $annotate->refEntity
                     );
-                    $content->setSchema(
-                        $annotate->schemaFormat ? $schema->setFormat($annotate->schemaFormat) : $schema
-                    );
-                    $response->pushContent($content);
-                    $this->operation->pushResponse($response);
                 } catch (\Exception $e) {
-                    throw new \RuntimeException(
+                    throw new SwaggerBakeRunTimeException(
                         sprintf(
                             'Unable to build response schema for `%s`, error: %s',
                             $this->route->getTemplate(),
@@ -147,6 +127,12 @@ class OperationResponse
                         )
                     );
                 }
+
+                $content->setSchema(
+                    $annotate->schemaFormat ? $schema->setFormat($annotate->schemaFormat) : $schema
+                );
+                $response->pushContent($content);
+                $this->operation->pushResponse($response);
             }
         }
     }
@@ -158,26 +144,32 @@ class OperationResponse
      */
     private function assignFromCrudActions(): void
     {
-        if ($this->operation->hasSuccessResponseCode()) {
+        if ($this->operation->hasSuccessResponseCode() || !$this->schema) {
             return;
         }
 
         $action = strtolower($this->route->getAction());
-        $crudActions = [
+        $actionTypes = [
             'index' => 'array',
             'add' => 'object',
             'view' => 'object',
             'edit' => 'object',
         ];
 
-        if (!$this->schema || !array_key_exists($action, $crudActions)) {
+        if (!array_key_exists($action, $actionTypes)) {
             return;
+        }
+
+        $schemaType = $actionTypes[$action];
+
+        if (!$schemaMode = $this->swagger->getSchemaByName($this->schema->getName() . '-Read')) {
+            $schemaMode = $this->schema;
         }
 
         $response = (new Response())->setCode('200');
 
         foreach ($this->config->getResponseContentTypes() as $mimeType) {
-            $schema = $this->getMimeTypeSchema($mimeType, $crudActions[$action]);
+            $schema = $this->getMimeTypeSchema($mimeType, $schemaType, $schemaMode->getRefPath());
 
             $response->pushContent(
                 (new Content())
@@ -194,18 +186,25 @@ class OperationResponse
      *
      * @param string $mimeType a mime type (e.g. application/xml, application/json)
      * @param string $schemaType object or array
-     * @param string|null $schema the openapi schema $ref or null
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string string $schema the openapi schema $ref or null
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function getMimeTypeSchema(string $mimeType, string $schemaType, ?string $schema = null)
+    private function getMimeTypeSchema(string $mimeType, string $schemaType, $schema): Schema
     {
-        if (is_null($schema)) {
-            $schema = $this->schema instanceof Schema ? $this->schema : new Schema();
+        if (!is_string($schema) && !$schema instanceof Schema) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Argument `$schema` must be a string or instance of Schema but `%s` was given.',
+                    gettype($schema)
+                )
+            );
         }
 
         switch ($mimeType) {
             case 'application/xml':
-                return (new XmlMedia($schema, $this->swagger))->buildSchema($schemaType);
+                return (new Generic($schema, $this->swagger))
+                    ->buildSchema($schemaType)
+                    ->setXml((new OpenApiXml())->setName('response'));
             case 'application/hal+json':
             case 'application/vnd.hal+json':
                 return (new HalJson($schema, $this->swagger))->buildSchema($schemaType);
@@ -254,7 +253,7 @@ class OperationResponse
             $schema = (new Schema())->setDescription('');
 
             if ($mimeType == 'application/xml') {
-                $schema->setXml((new Xml())->setName('response'));
+                $schema->setXml((new OpenApiXml())->setName('response'));
             }
 
             $response->pushContent(

@@ -49,7 +49,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     /**
      * @var array
      */
-    private $items;
+    private $items = [];
 
     /**
      * @var string
@@ -239,9 +239,9 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRefEntity(): string
+    public function getRefEntity(): ?string
     {
         return $this->refEntity;
     }

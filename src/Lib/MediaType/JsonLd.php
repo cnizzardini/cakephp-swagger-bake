@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\MediaType;
 
-use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\OpenApi\{Schema, SchemaProperty};
 
+/**
+ * Builds sample response schema for JSON-LD
+ * @internal
+ */
 class JsonLd extends AbstractMediaType implements MediaTypeInterface
 {
     /**
@@ -23,11 +26,7 @@ class JsonLd extends AbstractMediaType implements MediaTypeInterface
      */
     public function buildSchema(string $schemaType): Schema
     {
-        if (!in_array($schemaType, ['array', 'object'])) {
-            throw new \InvalidArgumentException(
-                "Argument must be array or object but was given schema type `$schemaType`"
-            );
-        }
+        $this->validateSchemaType($schemaType);
 
         return $schemaType === 'array' ? $this->collection() : $this->item();
     }
@@ -37,6 +36,16 @@ class JsonLd extends AbstractMediaType implements MediaTypeInterface
      */
     private function collection(): Schema
     {
+        if ($this->schema) {
+            $items = [
+                'allOf' => [
+                    ['$ref' => self::JSONLD_ITEM]
+                ],
+                'type' => 'object',
+                'properties' => $this->recursion($this->schema->getProperties())
+            ];
+        }
+
         return (new Schema())
             ->setAllOf([
                 ['$ref' => self::JSONLD_COLLECTION],
@@ -45,7 +54,7 @@ class JsonLd extends AbstractMediaType implements MediaTypeInterface
                 (new SchemaProperty())
                     ->setName('member')
                     ->setType('array')
-                    ->setItems([
+                    ->setItems($items ?? [
                         'type' => 'object',
                         'allOf' => [
                             ['$ref' => self::JSONLD_ITEM],
@@ -60,11 +69,56 @@ class JsonLd extends AbstractMediaType implements MediaTypeInterface
      */
     private function item(): Schema
     {
+        if ($this->schema) {
+            return (new Schema())
+                ->setAllOf([
+                    ['$ref' => self::JSONLD_ITEM]
+                ])
+                ->setItems([
+                    'type' => 'object',
+                    'properties' => $this->recursion($this->schema->getProperties())
+                ])
+                ->setProperties([]);
+        }
+
         return (new Schema())
             ->setAllOf([
                 ['$ref' => self::JSONLD_ITEM],
                 ['$ref' => $this->ref],
             ])
             ->setProperties([]);
+    }
+
+    /**
+     * @todo this method needs to actually be recursive
+     * @param SchemaProperty[] $properties an array of SchemaProperty
+     * @return array
+     */
+    private function recursion(array $properties): array
+    {
+        foreach ($properties as $key => $property) {
+            if (!in_array($property->getType(), ['object','array'])) {
+                continue;
+            }
+
+            unset($properties[$key]);
+            $items = $property->getItems();
+            $items['allOf'][] = ['$ref' => self::JSONLD_ITEM];
+            if ($property->getRefEntity()) {
+                $items['allOf'][] = ['$ref' => $property->getRefEntity()];;
+            }
+
+            if ($property->getType() === 'object') {
+                $properties[$key] = $items;
+            } else {
+                if (isset($items['$ref'])) {
+                    $items['allOf'][] = ['$ref' => $items['$ref']];
+                    unset($items['$ref']);
+                }
+                $properties[$key]['items'] = $items;
+            }
+        }
+
+        return $properties;
     }
 }

@@ -36,7 +36,7 @@ class GenericTest extends TestCase
             'hotReload' => false,
             'exceptionSchema' => 'Exception',
             'requestAccepts' => ['application/x-www-form-urlencoded'],
-            'responseContentTypes' => ['application/hal+json'],
+            'responseContentTypes' => ['application/json'],
             'namespaces' => [
                 'controllers' => ['\SwaggerBakeTest\App\\'],
                 'entities' => ['\SwaggerBakeTest\App\\'],
