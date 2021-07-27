@@ -520,10 +520,17 @@ Undo these steps when you're done. Read the full composer documentation on loadi
 
 ## Tests + Analysis
 
+PHPUnit Test Suite:
 ```console
-# unit tests only
 composer test
+```
 
-# unit tests and static analysis
+PHPUnit, PHPCS, PHPSTAN, and PHPMD:
+```console
 composer analyze
+```
+
+[GrumPHP](https://github.com/phpro/grumphp) can be used to run tests and static analyzers in a pre-commit hook.
+```console
+composer grumphp-init
 ```
