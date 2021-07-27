@@ -25,10 +25,7 @@ use SwaggerBake\Lib\Utility\AnnotationUtility;
  */
 class SchemaFactory
 {
-    /**
-     * @var \Cake\Validation\Validator
-     */
-    private $validator;
+    private Validator $validator;
 
     /**
      * @var string
@@ -62,7 +59,7 @@ class SchemaFactory
         }
 
         $schema = $this
-            ->__create($modelDecorator->getModel(), $propertyType)
+            ->createSchema($modelDecorator->getModel(), $propertyType)
             ->setDescription($swagEntity->description)
             ->setIsPublic($swagEntity->isPublic);
 
@@ -86,15 +83,15 @@ class SchemaFactory
      */
     public function createAlways(ModelDecorator $modelDecorator, int $propertyType = 6): Schema
     {
-        return $this->__create($modelDecorator->getModel(), $propertyType);
+        return $this->createSchema($modelDecorator->getModel(), $propertyType);
     }
 
     /**
-     * @param Model $model Model instance
+     * @param \MixerApi\Core\Model\Model $model Model instance
      * @param int $propertyType see public constants for options
-     * @return Schema
+     * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function __create(Model $model, int $propertyType = 6): Schema
+    private function createSchema(Model $model, int $propertyType = 6): Schema
     {
         $this->validator = $this->getValidator($model);
 

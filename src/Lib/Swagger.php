@@ -210,11 +210,7 @@ class Swagger
             return $this->array['components']['schemas'][$name];
         }
 
-        if (isset($this->array['x-swagger-bake']['components']['schemas'][$name])) {
-            return $this->array['x-swagger-bake']['components']['schemas'][$name];
-        }
-
-        return null;
+        return $this->array['x-swagger-bake']['components']['schemas'][$name] ?? null;
     }
 
     /**

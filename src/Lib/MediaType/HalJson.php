@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\MediaType;
 
-use SwaggerBake\Lib\OpenApi\{Schema, SchemaProperty};
+use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 /**
  * Builds sample response schema for HAL+JSON
+ *
  * @internal
  */
 class HalJson extends AbstractMediaType implements MediaTypeInterface
@@ -39,10 +41,10 @@ class HalJson extends AbstractMediaType implements MediaTypeInterface
         if ($this->schema) {
             $items = [
                 'allOf' => [
-                    ['$ref' => self::HAL_ITEM]
+                    ['$ref' => self::HAL_ITEM],
                 ],
                 'type' => 'object',
-                'properties' => $this->recursion($this->schema->getProperties())
+                'properties' => $this->recursion($this->schema->getProperties()),
             ];
         }
 
@@ -72,11 +74,11 @@ class HalJson extends AbstractMediaType implements MediaTypeInterface
         if ($this->schema) {
             return (new Schema())
                 ->setAllOf([
-                    ['$ref' => self::HAL_ITEM]
+                    ['$ref' => self::HAL_ITEM],
                 ])
                 ->setItems([
                     'type' => 'object',
-                    'properties' => $this->recursion($this->schema->getProperties())
+                    'properties' => $this->recursion($this->schema->getProperties()),
                 ])
                 ->setProperties([]);
         }
@@ -91,7 +93,7 @@ class HalJson extends AbstractMediaType implements MediaTypeInterface
 
     /**
      * @todo this method needs to actually be recursive
-     * @param SchemaProperty[] $properties an array of SchemaProperty
+     * @param \SwaggerBake\Lib\OpenApi\SchemaProperty[] $properties an array of SchemaProperty
      * @return array
      */
     private function recursion(array $properties): array
@@ -106,7 +108,7 @@ class HalJson extends AbstractMediaType implements MediaTypeInterface
             $items['allOf'][] = ['$ref' => self::HAL_ITEM];
 
             if ($property->getRefEntity()) {
-                $items['allOf'][] = ['$ref' => $property->getRefEntity()];;
+                $items['allOf'][] = ['$ref' => $property->getRefEntity()];
             }
 
             if ($property->getType() === 'object') {

@@ -3,12 +3,14 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\MediaType;
 
-use SwaggerBake\Lib\OpenApi\{Schema, SchemaProperty};
+use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 /**
  * Builds a generic sample response schema for XML and JSON
  *
  * For XML, just add $schema->setXml((new \SwaggerBake\Lib\OpenApi\Xml())->setName('response'));
+ *
  * @internal
  */
 class Generic extends AbstractMediaType implements MediaTypeInterface
@@ -31,11 +33,10 @@ class Generic extends AbstractMediaType implements MediaTypeInterface
         $openapi = $this->swagger->getArray();
 
         if (isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'])) {
-
             if ($this->schema) {
                 $items = [
                     'type' => 'object',
-                    'properties' => $this->schema->getProperties()
+                    'properties' => $this->schema->getProperties(),
                 ];
             }
 
@@ -59,7 +60,7 @@ class Generic extends AbstractMediaType implements MediaTypeInterface
         if ($this->schema) {
             $items = [
                 'type' => 'object',
-                'properties' => $this->schema->getProperties()
+                'properties' => $this->schema->getProperties(),
             ];
         }
 
