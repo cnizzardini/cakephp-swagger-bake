@@ -8,7 +8,6 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use ReflectionClass;
 use ReflectionProperty;
-use SwaggerBake\Lib\Annotation\SwagDtoForm;
 use SwaggerBake\Lib\Annotation\SwagDtoQuery;
 use SwaggerBake\Lib\Annotation\SwagDtoRequestBody;
 use SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory;
@@ -98,7 +97,7 @@ class DtoParser
 
         foreach ($properties as $name => $reflectionProperty) {
             $dto = $this->getSwagDtoProperty($reflectionProperty);
-            if ($dto instanceof SwagDtoForm || $dto instanceof SwagDtoRequestBody) {
+            if ($dto instanceof SwagDtoRequestBody) {
                 $schemaProperties[] = $factory->create($dto);
                 continue;
             }
@@ -131,14 +130,6 @@ class DtoParser
                 SwagDtoQuery::class
             );
             if ($annotation instanceof SwagDtoQuery && !empty($annotation->name)) {
-                return $annotation;
-            }
-
-            $annotation = $this->annotationReader->getPropertyAnnotation(
-                $reflectionProperty,
-                SwagDtoForm::class
-            );
-            if ($annotation instanceof SwagDtoForm && !empty($annotation->name)) {
                 return $annotation;
             }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib;
 
 use Cake\Core\Configure;
-use Cake\Log\Log;
 use LogicException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -109,20 +108,6 @@ class Configuration
     public function getWebPath(): string
     {
         return $this->get('webPath');
-    }
-
-    /**
-     * @return bool
-     * @deprecated this method will be deprecated
-     * @SuppressWarnings(PHPMD)
-     */
-    public function getHotReload(): bool
-    {
-        $deprecationMsg = 'SwaggerBake: getHotReload() in Configuration will be deprecated, use isHotReload()';
-        Log::warning($deprecationMsg);
-        deprecationWarning($deprecationMsg);
-
-        return $this->isHotReload();
     }
 
     /**
