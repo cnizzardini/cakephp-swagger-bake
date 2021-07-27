@@ -19,6 +19,23 @@ use SwaggerBake\Lib\ExtensionLoader;
 class Plugin extends BasePlugin
 {
     /**
+     * Plugin name.
+     *
+     * @var string
+     */
+    protected $name = 'SwaggerBake';
+
+    /**
+     * @var bool
+     */
+    protected $routes = false;
+
+    /**
+     * @var bool
+     */
+    protected $middleware = false;
+
+    /**
      * @param \Cake\Core\PluginApplicationInterface $app PluginApplicationInterface
      * @return void
      */
