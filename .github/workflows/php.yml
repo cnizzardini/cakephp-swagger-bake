@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-20.04 ]
-        php-versions: ['7.2', '7.3', '7.4', '8.0']
+        php-versions: ['7.4', '8.0']
 
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
@@ -35,7 +35,7 @@ jobs:
           composer validate
           composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Test (7.2|7.3|8.0)
+      - name: Test (8.0)
         if: ${{ matrix.php-versions != '7.4' }}
         run: vendor/bin/phpunit
 

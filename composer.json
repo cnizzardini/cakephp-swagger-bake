@@ -26,7 +26,8 @@
         "phpstan/phpstan": "^0.12.32",
         "phpmd/phpmd": "^2.10",
         "cakephp/bake": "^2.1",
-        "php-coveralls/php-coveralls": "^2.4"
+        "php-coveralls/php-coveralls": "^2.4",
+        "phpro/grumphp-shim": "^1.4"
     },
     "autoload": {
         "psr-4": {
@@ -47,12 +48,14 @@
             "@phpstan",
             "@phpmd"
         ],
-        "phpcs": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/",
-        "phpcbf": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/",
+        "phpcs": "phpcs --colors -p --standard=phpcs.xml src/",
+        "phpcbf": "phpcbf --colors --standard=phpcs.xml src/",
         "phpstan": "phpstan analyse src/",
         "test": "phpunit --colors=always",
         "phpmd": "phpmd src/ ansi phpmd.xml",
-        "coverage": "phpunit --coverage-html coverage-reports/"
+        "coverage": "phpunit --coverage-html coverage-reports/",
+        "grumphp-init": "grumphp git:init",
+        "grumphp": "grumphp"
     },
     "support": {
         "issues": "https://github.com/cnizzardini/cakephp-swagger-bake/issues",

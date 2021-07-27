@@ -1,0 +1,24 @@
+grumphp:
+  tasks:
+
+    phpcs:
+      standard: "phpcs.xml"
+      #whitelist_patterns:
+      #  - /^plugins\/(.*)/
+      ignore_patterns:
+        - "*/tests/*"
+        - "*/assets/*"
+        - "*/templates/*"
+        - "*/config/*"
+
+    phpunit: ~
+
+    phpstan:
+      configuration: phpstan.neon
+      ignore_patterns:
+        - test
+        - bin
+        - config
+        - webroot
+        - assets
+        - templates

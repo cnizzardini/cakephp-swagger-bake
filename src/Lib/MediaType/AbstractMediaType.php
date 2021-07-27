@@ -75,13 +75,17 @@ abstract class AbstractMediaType
 
     /**
      * @param string $schemaType must be array or object
+     * @return void
      */
     protected function validateSchemaType(string $schemaType): void
     {
         if (!in_array($schemaType, ['array', 'object'])) {
             throw new \InvalidArgumentException(
-                "Argument must be array or object but was given schemaType `$schemaType`. If you're using the " .
-                "SwagResponseSchema annotation, try defining schemaType."
+                sprintf(
+                    'Argument must be array or object but was given schemaType `%s`. If you\'re using the ' .
+                    'SwagResponseSchema annotation, try defining schemaType.',
+                    $schemaType
+                )
             );
         }
     }

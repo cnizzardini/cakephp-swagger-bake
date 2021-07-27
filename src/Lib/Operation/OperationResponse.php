@@ -6,9 +6,15 @@ namespace SwaggerBake\Lib\Operation;
 use InvalidArgumentException;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\MediaType\{Generic, HalJson, JsonLd};
-use SwaggerBake\Lib\OpenApi\{Content, Operation, Response, Schema, Xml as OpenApiXml};
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\MediaType\Generic;
+use SwaggerBake\Lib\MediaType\HalJson;
+use SwaggerBake\Lib\MediaType\JsonLd;
+use SwaggerBake\Lib\OpenApi\Content;
+use SwaggerBake\Lib\OpenApi\Operation;
+use SwaggerBake\Lib\OpenApi\Response;
+use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\Xml as OpenApiXml;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
 
@@ -162,9 +168,7 @@ class OperationResponse
 
         $schemaType = $actionTypes[$action];
 
-        if (!$schemaMode = $this->swagger->getSchemaByName($this->schema->getName() . '-Read')) {
-            $schemaMode = $this->schema;
-        }
+        $schemaMode = $this->swagger->getSchemaByName($this->schema->getName() . '-Read') ?? $this->schema;
 
         $response = (new Response())->setCode('200');
 
@@ -186,7 +190,7 @@ class OperationResponse
      *
      * @param string $mimeType a mime type (e.g. application/xml, application/json)
      * @param string $schemaType object or array
-     * @param \SwaggerBake\Lib\OpenApi\Schema|string string $schema the openapi schema $ref or null
+     * @param mixed $schema \SwaggerBake\Lib\OpenApi\Schema|string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
     private function getMimeTypeSchema(string $mimeType, string $schemaType, $schema): Schema
