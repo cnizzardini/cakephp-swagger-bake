@@ -34,8 +34,6 @@ abstract class AbstractMediaType
         $this->swagger = $swagger;
 
         if ($schema instanceof Schema) {
-            $read = $schema->getReadSchemaName();
-            $name = $schema->getName();
             $this->schema = $schema; //$swagger->getSchemaByName($read) ?? $swagger->getSchemaByName($name);
         } elseif (is_string($schema)) {
             $this->ref = $schema;
