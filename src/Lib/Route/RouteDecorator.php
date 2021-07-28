@@ -14,10 +14,7 @@ use Cake\Routing\Route\Route;
  */
 class RouteDecorator
 {
-    /**
-     * @var \Cake\Routing\Route\Route
-     */
-    private $route;
+    private Route $route;
 
     /**
      * @var string|null

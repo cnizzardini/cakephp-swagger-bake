@@ -18,9 +18,11 @@ use InvalidArgumentException;
 class SwagDto
 {
     /**
+     * The DTO class that should be parsed for request body values
+     *
      * @var string
      */
-    public $class;
+    public string $class;
 
     /**
      * @param array $values Annotation attributes as key-value pair

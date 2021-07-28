@@ -206,19 +206,19 @@ class OperationResponse
 
         switch ($mimeType) {
             case 'application/xml':
-                return (new Generic($schema, $this->swagger))
-                    ->buildSchema($schemaType)
+                return (new Generic($this->swagger))
+                    ->buildSchema($schema, $schemaType)
                     ->setXml((new OpenApiXml())->setName('response'));
             case 'application/hal+json':
             case 'application/vnd.hal+json':
-                return (new HalJson($schema, $this->swagger))->buildSchema($schemaType);
+                return (new HalJson())->buildSchema($schema, $schemaType);
             case 'application/ld+json':
-                return (new JsonLd($schema, $this->swagger))->buildSchema($schemaType);
+                return (new JsonLd())->buildSchema($schema, $schemaType);
             case 'text/plain':
                 return (new Schema())->setType('string');
         }
 
-        return (new Generic($schema, $this->swagger))->buildSchema($schemaType);
+        return (new Generic($this->swagger))->buildSchema($schema, $schemaType);
     }
 
     /**

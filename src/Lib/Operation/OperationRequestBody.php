@@ -7,6 +7,7 @@ use SwaggerBake\Lib\Annotation\SwagDto;
 use SwaggerBake\Lib\Annotation\SwagForm;
 use SwaggerBake\Lib\Annotation\SwagRequestBody;
 use SwaggerBake\Lib\Annotation\SwagRequestBodyContent;
+use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\RequestBody;
@@ -23,35 +24,20 @@ use SwaggerBake\Lib\Swagger;
  */
 class OperationRequestBody
 {
-    /**
-     * @var \SwaggerBake\Lib\Swagger
-     */
-    private $swagger;
+    private Swagger $swagger;
 
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Operation
-     */
-    private $operation;
+    private Operation $operation;
 
-    /**
-     * @var \SwaggerBake\Lib\Route\RouteDecorator
-     */
-    private $route;
+    private RouteDecorator $route;
 
-    /**
-     * @var array
-     */
-    private $annotations;
+    private array $annotations;
 
     /**
      * @var \SwaggerBake\Lib\OpenApi\Schema|null
      */
     private $schema;
 
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     /**
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger

@@ -15,19 +15,19 @@ namespace SwaggerBake\Lib\Annotation;
 class SwagRequestBody
 {
     /**
-     * @var string
+     * Request body description
      */
-    public $description;
+    public string $description;
 
     /**
-     * @var bool
+     * @todo needs description
      */
-    public $required;
+    public bool $required;
 
     /**
-     * @var bool
+     * @todo needs description
      */
-    public $ignoreCakeSchema;
+    public bool $ignoreCakeSchema;
 
     /**
      * @param array $values Annotation attributes as key-value pair

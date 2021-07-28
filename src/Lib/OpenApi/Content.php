@@ -19,7 +19,7 @@ class Content implements JsonSerializable
     private $mimeType;
 
     /**
-     * @var string|\SwaggerBake\Lib\OpenApi\Schema
+     * @var \SwaggerBake\Lib\OpenApi\Schema|string
      */
     private $schema;
 
@@ -82,7 +82,7 @@ class Content implements JsonSerializable
     /**
      * Can be either a schema $ref string such as '#/components/schemas/Pet' or a Schema instance.
      *
-     * @param string|\SwaggerBake\Lib\OpenApi\Schema $schema Schema
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema Schema
      * @return $this
      */
     public function setSchema($schema)

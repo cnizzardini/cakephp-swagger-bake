@@ -19,10 +19,7 @@ use SwaggerBake\Lib\Utility\DocBlockUtility;
 
 class DtoParser
 {
-    /**
-     * @var string
-     */
-    private $fqns;
+    private AnnotationReader $annotationReader;
 
     /**
      * @var object
@@ -30,19 +27,14 @@ class DtoParser
     private $instance;
 
     /**
-     * @var \Doctrine\Common\Annotations\AnnotationReader
-     */
-    private $annotationReader;
-
-    /**
-     * @param string $fqns Fully qualified namespace of the DTO
+     * @param string $fqn Fully qualified namespace of the DTO
+     * @param \Doctrine\Common\Annotations\AnnotationReader|null $annotationReader if null an instance will be created
      * @throws \ReflectionException
      */
-    public function __construct(string $fqns)
+    public function __construct(string $fqn, ?AnnotationReader $annotationReader = null)
     {
-        $this->fqns = $fqns;
-        $this->instance = (new ReflectionClass($this->fqns))->newInstanceWithoutConstructor();
-        $this->annotationReader = new AnnotationReader();
+        $this->instance = (new ReflectionClass($fqn))->newInstanceWithoutConstructor();
+        $this->annotationReader = $annotationReader ?? new AnnotationReader();
     }
 
     /**

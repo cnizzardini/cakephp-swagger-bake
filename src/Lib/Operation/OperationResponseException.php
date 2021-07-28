@@ -12,25 +12,13 @@ use SwaggerBake\Lib\Swagger;
 
 class OperationResponseException
 {
-    /**
-     * @var \SwaggerBake\Lib\Swagger
-     */
-    private $swagger;
+    private Swagger $swagger;
 
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private Configuration $config;
 
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Operation
-     */
-    private $operation;
+    private Operation $operation;
 
-    /**
-     * @var \phpDocumentor\Reflection\DocBlock
-     */
-    private $doc;
+    private DocBlock $doc;
 
     /**
      * @param \SwaggerBake\Lib\Swagger $swagger an instance of Swagger
@@ -47,7 +35,7 @@ class OperationResponseException
     }
 
     /**
-     * Sets error Responses using throw tags from Dock Block
+     * Returns the Operation after setting error responses using throw tags from a controllers doc block's
      *
      * @return \SwaggerBake\Lib\OpenApi\Operation
      */

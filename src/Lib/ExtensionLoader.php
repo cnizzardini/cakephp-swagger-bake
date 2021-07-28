@@ -7,6 +7,9 @@ use SwaggerBake\Lib\Extension\ExtensionInterface;
 
 class ExtensionLoader
 {
+    /**
+     * @var string[]
+     */
     private const EXTENSIONS = [
         '\SwaggerBake\Lib\Extension\CakeSearch\Extension',
     ];

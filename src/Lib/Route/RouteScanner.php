@@ -19,25 +19,13 @@ class RouteScanner
         'DebugKit',
     ];
 
-    /**
-     * @var \Cake\Routing\Router
-     */
-    private $router;
+    private Router $router;
 
-    /**
-     * @var string
-     */
-    private $prefix;
+    private string $prefix;
 
-    /**
-     * @var int
-     */
-    private $prefixLength = 0;
+    private int $prefixLength;
 
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     /**
      * Array of RouteDecorator instances

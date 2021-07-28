@@ -326,7 +326,7 @@ class Swagger
             if ($this->hasPathByResource($resource)) {
                 $path = $this->array['paths'][$resource];
             } else {
-                $path = (new PathFromRouteFactory($route, $this->config))->create();
+                $path = (new PathFromRouteFactory($route))->create();
             }
 
             if (!$path instanceof Path || in_array($path->getResource(), $ignorePaths)) {

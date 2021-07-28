@@ -15,15 +15,9 @@ use InvalidArgumentException;
  */
 class SwagSearch
 {
-    /**
-     * @var string
-     */
-    public $tableClass;
+    public string $tableClass;
 
-    /**
-     * @var string
-     */
-    public $collection;
+    public string $collection;
 
     /**
      * @param array $values Key-value pair of annotation attributes

@@ -11,8 +11,10 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
  *
  * @internal
  */
-class HalJson extends AbstractMediaType implements MediaTypeInterface
+final class HalJson implements MediaTypeInterface
 {
+    use MediaTypeTrait;
+
     /**
      * @var string
      */
@@ -26,25 +28,27 @@ class HalJson extends AbstractMediaType implements MediaTypeInterface
     /**
      * @inheritDoc
      */
-    public function buildSchema(string $schemaType): Schema
+    public function buildSchema($schema, string $schemaType): Schema
     {
         $this->validateSchemaType($schemaType);
+        $this->validateSchema($schema);
 
-        return $schemaType === 'array' ? $this->collection() : $this->item();
+        return $schemaType === 'array' ? $this->collection($schema) : $this->item($schema);
     }
 
     /**
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema instance of Schema or an OpenAPI $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function collection(): Schema
+    private function collection($schema): Schema
     {
-        if ($this->schema) {
+        if ($schema instanceof Schema) {
             $items = [
                 'allOf' => [
                     ['$ref' => self::HAL_ITEM],
                 ],
                 'type' => 'object',
-                'properties' => $this->recursion($this->schema->getProperties()),
+                'properties' => $this->recursion($schema->getProperties()),
             ];
         }
 
@@ -60,25 +64,26 @@ class HalJson extends AbstractMediaType implements MediaTypeInterface
                         'type' => 'object',
                         'allOf' => [
                             ['$ref' => self::HAL_ITEM],
-                            ['$ref' => $this->ref],
+                            ['$ref' => $schema],
                         ],
                     ]),
             ]);
     }
 
     /**
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema instance of Schema or an OpenAPI $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function item(): Schema
+    private function item($schema): Schema
     {
-        if ($this->schema) {
+        if ($schema instanceof Schema) {
             return (new Schema())
                 ->setAllOf([
                     ['$ref' => self::HAL_ITEM],
                 ])
                 ->setItems([
                     'type' => 'object',
-                    'properties' => $this->recursion($this->schema->getProperties()),
+                    'properties' => $this->recursion($schema->getProperties()),
                 ])
                 ->setProperties([]);
         }
@@ -86,7 +91,7 @@ class HalJson extends AbstractMediaType implements MediaTypeInterface
         return (new Schema())
             ->setAllOf([
                 ['$ref' => self::HAL_ITEM],
-                ['$ref' => $this->ref],
+                ['$ref' => $schema],
             ])
             ->setProperties([]);
     }

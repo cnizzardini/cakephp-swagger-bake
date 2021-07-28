@@ -12,18 +12,18 @@ use InvalidArgumentException;
  * @Attribute("name", type = "string"),
  * @Attribute("scopes",  type = "array")
  * })
+ * @todo this may need more documentation and examples
  */
 class SwagSecurity
 {
-    /**
-     * @var string
-     */
-    public $name;
+    public string $name;
 
     /**
+     * The available scopes for the OAuth2 security scheme.
+     *
      * @var array
      */
-    public $scopes;
+    public array $scopes;
 
     /**
      * @param array $values Annotation attributes as key-value pair

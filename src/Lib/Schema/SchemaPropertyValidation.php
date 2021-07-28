@@ -16,20 +16,11 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
  */
 class SchemaPropertyValidation
 {
-    /**
-     * @var \Cake\Validation\Validator
-     */
-    private $validator;
+    private Validator $validator;
 
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\SchemaProperty
-     */
-    private $schemaProperty;
+    private SchemaProperty $schemaProperty;
 
-    /**
-     * @var string
-     */
-    private $propertyName;
+    private string $propertyName;
 
     /**
      * @param \Cake\Validation\Validator $validator Validator

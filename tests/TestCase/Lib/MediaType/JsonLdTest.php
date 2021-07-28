@@ -80,7 +80,7 @@ class JsonLdTest extends TestCase
             'associations' => ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
         ]));
 
-        $schema = (new JsonLd($schema, $swagger))->buildSchema('object');
+        $schema = (new JsonLd())->buildSchema($schema, 'object');
         $object = json_decode(json_encode($schema->jsonSerialize()));
 
         $this->assertTrue(isset($object->items->properties->department_employees->items->allOf));
@@ -115,7 +115,7 @@ class JsonLdTest extends TestCase
             'associations' => ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
         ]));
 
-        $schema = (new JsonLd($schema, $swagger))->buildSchema('array');
+        $schema = (new JsonLd())->buildSchema($schema, 'array');
         $object = json_decode(json_encode($schema->jsonSerialize()));
 
         $this->assertEquals(JsonLd::JSONLD_COLLECTION, $object->allOf[0]->{'$ref'});

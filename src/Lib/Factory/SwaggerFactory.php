@@ -20,15 +20,9 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class SwaggerFactory
 {
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private Configuration $config;
 
-    /**
-     * @var \SwaggerBake\Lib\Route\RouteScanner
-     */
-    private $routeScanner;
+    private RouteScanner $routeScanner;
 
     /**
      * @param \SwaggerBake\Lib\Configuration|null $config Configuration
