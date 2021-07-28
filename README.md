@@ -84,7 +84,10 @@ explanation. Then just add a route.
 Create a route for the SwaggerUI page in `config/routes.php`, example:
 
 ```php
-$builder->connect('/my-swagger-ui', ['controller' => 'Swagger', 'action' => 'index', 'plugin' => 'SwaggerBake']);
+$builder->connect(
+    '/my-swagger-ui', 
+    ['plugin' => 'SwaggerBake', 'controller' => 'Swagger', 'action' => 'index']
+);
 ``` 
 
 ## Getting Started
