@@ -41,7 +41,8 @@ and controllers.
 - [Multiple Instances of SwaggerBake](#multiple-instances-of-swagger-bake)
 - [Debug Commands](#debug-commands)
 - [Bake Theme](#bake-theme)
-- [...](#details)
+- [Details](#details)
+- [Misc Sections...](#supported-versions)
 
 ## Installation
 
@@ -181,8 +182,7 @@ SwaggerBake provides some optional Annotations for enhanced functionality. These
 
 ## Event System
 
-SwaggerBake comes with an [event system](docs/events.md) to allow for further control over your 
-OpenAPI schema.
+SwaggerBake comes with an [event system](docs/events.md) to allow for further control over your OpenAPI schema.
 
 | Event | Description | 
 | ------------- | ------------- |
@@ -270,7 +270,7 @@ There a three options for generating swagger.json:
 3. Call SwaggerBake programmatically: 
 
 ```php
-$swagger = (new \SwaggerBake\Lib\Factory\SwaggerFactory())->create();
+$swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create();
 $swagger->getArray(); # returns swagger array
 $swagger->toString(); # returns swagger json
 $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
@@ -327,8 +327,6 @@ bin/cake bake controller {Name} --theme SwaggerBake
 ```
 
 ## Details
-
-[OpenAPI Schema Support Roadmap](https://docs.google.com/spreadsheets/d/e/2PACX-1vRTWE7nsTouFdHZsG6OKlZ-1lHeJGI0wqNlRVEgiG4eCFY0dMxkBLaw313mU_a73U7emoRdFcGPUq94/pubhtml)
 
 - Swagger uses your existing swagger.yml as a base for adding additional paths and schema.
 - Generates JSON based on the OpenAPI 3 specification. I am still working on implementing the full spec.
@@ -403,10 +401,10 @@ The demo application includes this and many other examples of usage. Read more a
 
 This is built for CakePHP 4.x only. A cake-3.8 option is available, but not supported.
 
-| Version | Cake Version  | Supported | Unit Tests | Notes | 
-| ------------- | ------------- | ------------- | ------------- | ------------- | 
-| 1.* | 4.* | Yes  | Yes | Currently supported |
-| cake-3.8 | 3.8.* | No  | Yes | See branch cake-3.8. Completely untested and unsupported | 
+| Version | Cake Version  | PHP Version | Supported | 
+| ------------- | ------------- | ------------- |
+| 2.* | 4.* | >=7.4  | Yes | Yes |
+| 1.* | 4.* | >=7.2  | Yes | No | 
 
 ## Common Issues
 
