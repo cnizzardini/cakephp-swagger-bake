@@ -8,10 +8,7 @@ use MixerApi\Core\Model\Model;
 
 class ModelDecorator
 {
-    /**
-     * @var \MixerApi\Core\Model\Model
-     */
-    private $model;
+    private Model $model;
 
     /**
      * @var \Cake\Controller\Controller|null

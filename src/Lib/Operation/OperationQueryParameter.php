@@ -20,25 +20,14 @@ use SwaggerBake\Lib\OpenApi\Schema;
  */
 class OperationQueryParameter
 {
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Operation
-     */
-    private $operation;
+    private Operation $operation;
+
+    private array $annotations;
+
+    private Controller $controller;
 
     /**
-     * Array of annotations
-     *
-     * @var array
-     */
-    private $annotations;
-
-    /**
-     * @var \Cake\Controller\Controller
-     */
-    private $controller;
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Schema
+     * @var \SwaggerBake\Lib\OpenApi\Schema|null
      */
     private $schema;
 
@@ -48,7 +37,7 @@ class OperationQueryParameter
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation instance of the Operation
      * @param array $annotations an array of annotation objects
      * @param \Cake\Controller\Controller $controller instance of the Controller
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
+     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema instance of Schema or null
      * @return \SwaggerBake\Lib\OpenApi\Operation
      */
     public function __construct(

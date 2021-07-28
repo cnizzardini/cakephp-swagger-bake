@@ -5,6 +5,7 @@ namespace SwaggerBake\Lib\MediaType;
 
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\Swagger;
 
 /**
  * Builds a generic sample response schema for XML and JSON
@@ -13,33 +14,47 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
  *
  * @internal
  */
-class Generic extends AbstractMediaType implements MediaTypeInterface
+final class Generic implements MediaTypeInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function buildSchema(string $schemaType): Schema
-    {
-        $this->validateSchemaType($schemaType);
+    use MediaTypeTrait;
 
-        return $schemaType === 'array' ? $this->collection() : $this->item();
+    private Swagger $swagger;
+
+    /**
+     * @param \SwaggerBake\Lib\Swagger $swagger an instance of Swagger
+     */
+    public function __construct(Swagger $swagger)
+    {
+        $this->swagger = $swagger;
     }
 
     /**
+     * @inheritDoc
+     */
+    public function buildSchema($schema, string $schemaType): Schema
+    {
+        $this->validateSchemaType($schemaType);
+        $this->validateSchema($schema);
+
+        return $schemaType === 'array' ? $this->collection($schema) : $this->item($schema);
+    }
+
+    /**
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema instance of Schema or an OpenAPI $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    protected function collection(): Schema
+    private function collection($schema): Schema
     {
         $openapi = $this->swagger->getArray();
 
-        if (isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'])) {
-            if ($this->schema) {
-                $items = [
-                    'type' => 'object',
-                    'properties' => $this->schema->getProperties(),
-                ];
-            }
+        if ($schema instanceof Schema) {
+            $items = [
+                'type' => 'object',
+                'properties' => $schema->getProperties(),
+            ];
+        }
 
+        if (isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'])) {
             return (new Schema())
                 ->setAllOf([
                     ['$ref' => '#/x-swagger-bake/components/schemas/Generic-Collection'],
@@ -51,33 +66,54 @@ class Generic extends AbstractMediaType implements MediaTypeInterface
                         ->setItems($items ?? [
                             'type' => 'object',
                             'allOf' => [
-                                ['$ref' => $this->ref],
+                                ['$ref' => $schema],
                             ],
                         ]),
                 ]);
         }
 
-        if ($this->schema) {
-            $items = [
-                'type' => 'object',
-                'properties' => $this->schema->getProperties(),
-            ];
-        }
-
         return (new Schema())
             ->setType('array')
-            ->setItems($items ?? ['$ref' => $this->ref]);
+            ->setItems($items ?? ['$ref' => $schema]);
     }
 
     /**
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema instance of Schema or an OpenAPI $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    protected function item(): Schema
+    private function item($schema): Schema
     {
-        if ($this->schema) {
-            return $this->schema;
+        if ($schema instanceof Schema) {
+            return $schema;
         }
 
-        return (new Schema())->setRefEntity($this->ref);
+        return (new Schema())->setRefEntity($schema);
+    }
+
+    /**
+     * Determines the name of the element that contains the collections items
+     *
+     * @param array $openapi openapi array
+     * @return string
+     */
+    private function whichData(array $openapi): string
+    {
+        if (!isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'])) {
+            return 'data';
+        }
+
+        if ($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'] instanceof Schema) {
+            /** @var \SwaggerBake\Lib\OpenApi\Schema $schema */
+            $schema = $openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'];
+            $array = $schema->toArray();
+
+            return $array['x-data-element'] ?? 'data';
+        }
+
+        if (is_array($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'])) {
+            return $openapi['x-swagger-bake']['components']['schemas']['Generic-Collection']['x-data-element'];
+        }
+
+        return 'data';
     }
 }

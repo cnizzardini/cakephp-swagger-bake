@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Path;
 
 use SwaggerBake\Lib\Annotation\SwagPath;
-use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Utility\AnnotationUtility;
@@ -16,23 +15,13 @@ use SwaggerBake\Lib\Utility\AnnotationUtility;
  */
 class PathFromRouteFactory
 {
-    /**
-     * @var \SwaggerBake\Lib\Route\RouteDecorator
-     */
-    private $route;
-
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private RouteDecorator $route;
 
     /**
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
-     * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
-    public function __construct(RouteDecorator $route, Configuration $config)
+    public function __construct(RouteDecorator $route)
     {
-        $this->config = $config;
         $this->route = $route;
     }
 

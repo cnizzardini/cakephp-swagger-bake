@@ -17,30 +17,15 @@ use SwaggerBake\Lib\Swagger;
  */
 class OperationSecurity
 {
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Operation
-     */
-    private $operation;
+    private Operation $operation;
 
-    /**
-     * @var array
-     */
-    private $annotations;
+    private array $annotations;
 
-    /**
-     * @var \SwaggerBake\Lib\Route\RouteDecorator
-     */
-    private $route;
+    private RouteDecorator $route;
 
-    /**
-     * @var \Cake\Controller\Controller
-     */
-    private $controller;
+    private Controller $controller;
 
-    /**
-     * @var \SwaggerBake\Lib\Swagger
-     */
-    private $swagger;
+    private Swagger $swagger;
 
     /**
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation

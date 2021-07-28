@@ -13,20 +13,11 @@ use Search\Model\Filter\Base;
  */
 class FilterDecorator
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var string
-     */
-    private $comparison;
+    private string $comparison;
 
-    /**
-     * @var \Search\Model\Filter\Base
-     */
-    private $filter;
+    private Base $filter;
 
     /**
      * @param \Search\Model\Filter\Base $filter Filter\Base

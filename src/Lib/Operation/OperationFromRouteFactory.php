@@ -24,10 +24,7 @@ use SwaggerBake\Lib\Utility\DocBlockUtility;
  */
 class OperationFromRouteFactory
 {
-    /**
-     * @var \SwaggerBake\Lib\Swagger
-     */
-    private $swagger;
+    private Swagger $swagger;
 
     /**
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger

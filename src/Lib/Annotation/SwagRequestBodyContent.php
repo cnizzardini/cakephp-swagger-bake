@@ -17,18 +17,16 @@ class SwagRequestBodyContent
     /**
      * OpenApi Components.Schema
      *
-     * @var string
      * @example #/components/schemas/Actor
      */
-    public $refEntity;
+    public string $refEntity;
 
     /**
      * List of mimeTypes accepted as request bodies
      *
-     * @var array
      * @example {"application/json","application/xml"}
      */
-    public $mimeTypes;
+    public array $mimeTypes;
 
     /**
      * @param array $values Annotation attributes as key-value pair

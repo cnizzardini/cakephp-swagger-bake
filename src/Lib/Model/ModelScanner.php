@@ -21,20 +21,9 @@ use SwaggerBake\Lib\Utility\AnnotationUtility;
  */
 class ModelScanner
 {
-    /**
-     * @var \SwaggerBake\Lib\Route\RouteScanner
-     */
-    private $routeScanner;
+    private RouteScanner $routeScanner;
 
-    /**
-     * @var string
-     */
-    private $prefix;
-
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     /**
      * @param \SwaggerBake\Lib\Route\RouteScanner $routeScanner RouteScanner
@@ -43,7 +32,6 @@ class ModelScanner
     public function __construct(RouteScanner $routeScanner, Configuration $config)
     {
         $this->routeScanner = $routeScanner;
-        $this->prefix = $config->getPrefix();
         $this->config = $config;
     }
 
@@ -104,11 +92,13 @@ class ModelScanner
     }
 
     /**
+     * The user-defined `prefix` from the swagger_bake config file.
+     *
      * @return string
      */
     public function getPrefix(): string
     {
-        return $this->prefix;
+        return $this->config->getPrefix();
     }
 
     /**

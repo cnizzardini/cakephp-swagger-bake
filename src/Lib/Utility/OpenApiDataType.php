@@ -10,5 +10,8 @@ namespace SwaggerBake\Lib\Utility;
  */
 class OpenApiDataType
 {
+    /**
+     * @var string[]
+     */
     public const TYPES = ['array', 'boolean', 'integer', 'number', 'object', 'string'];
 }

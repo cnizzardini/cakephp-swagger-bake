@@ -23,31 +23,26 @@ namespace SwaggerBake\Lib\Annotation;
 class SwagResponseSchema
 {
     /**
-     * Schema.$ref
+     * Schema $ref
      *
-     * @var string
      * @example #/components/schema/EntityName
      */
-    public $refEntity;
+    public string $refEntity;
 
     /**
      * The http status code, can be alphanumeric (e.g. 200, 20x, 4xx)
-     *
-     * @var string
      */
-    public $statusCode;
+    public string $statusCode;
 
     /**
      * Response Schema description
-     *
-     * @var string
      */
-    public $description;
+    public string $description;
 
     /**
      * Response Content mime types
      *
-     * @var array
+     * @var array|null
      * @example mimeTypes={"application/json","application/xml"}
      */
     public $mimeTypes;
@@ -55,26 +50,22 @@ class SwagResponseSchema
     /**
      * The data type of the response schema, generally object or array
      *
-     * @var string
-     * @example object
-     * @example array
-     * @example string
+     * @example object, array, string
      */
-    public $schemaType;
+    public string $schemaType;
 
     /**
      * The date format of the schema, not generally applicable for object or array schemaType's
      *
-     * @var string
-     * @example date-time
-     * @example base64
+     * @example date-time, base64
      */
-    public $schemaFormat;
+    public string $schemaFormat;
 
     /**
      * Configuration for displaying a resources associations. If set to empt the defaults below will be used
      *
-     * @var array
+     * @var array|null
+     * @example {"table"="Actors", "whiteList"={"Films"}}
      * - table<string|null> - the base table name, default is to infer from the controller but if not found then an
      * exception will be thrown.
      * - whiteList<array|null> - a list of tables to show n the sample schema, defaults to all associations for the depth

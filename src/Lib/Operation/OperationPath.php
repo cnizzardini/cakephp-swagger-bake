@@ -16,20 +16,11 @@ use SwaggerBake\Lib\Route\RouteDecorator;
  */
 class OperationPath
 {
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Operation
-     */
-    private $operation;
+    private Operation $operation;
 
-    /**
-     * @var \SwaggerBake\Lib\Route\RouteDecorator
-     */
-    private $route;
+    private RouteDecorator $route;
 
-    /**
-     * @var array
-     */
-    private $annotations;
+    private array $annotations;
 
     /**
      * @var \SwaggerBake\Lib\OpenApi\Schema|null

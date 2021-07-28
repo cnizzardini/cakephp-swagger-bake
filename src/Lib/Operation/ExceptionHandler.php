@@ -15,30 +15,15 @@ use SwaggerBake\Lib\Swagger;
  */
 class ExceptionHandler
 {
-    /**
-     * @var \SwaggerBake\Lib\Swagger
-     */
-    private $swagger;
+    private Swagger $swagger;
 
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private Configuration $config;
 
-    /**
-     * @var string
-     */
-    private $message = 'Application Error';
+    private string $message = 'Application Error';
 
-    /**
-     * @var string
-     */
-    private $code;
+    private string $code;
 
-    /**
-     * @var string
-     */
-    private $schema;
+    private string $schema;
 
     /**
      * @param \phpDocumentor\Reflection\DocBlock\Tags\Throws $throw Throws
@@ -98,6 +83,8 @@ class ExceptionHandler
     }
 
     /**
+     * The HTTP status code associated with the exception
+     *
      * @return string
      */
     public function getCode(): string
@@ -106,6 +93,8 @@ class ExceptionHandler
     }
 
     /**
+     * The error message associated with the exception
+     *
      * @return string
      */
     public function getMessage(): string
@@ -114,6 +103,8 @@ class ExceptionHandler
     }
 
     /**
+     * The OpenAPI schema defining the exception
+     *
      * @return string
      */
     public function getSchema(): string

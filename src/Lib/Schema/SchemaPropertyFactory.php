@@ -18,10 +18,7 @@ use SwaggerBake\Lib\Utility\DataTypeConversion;
  */
 class SchemaPropertyFactory
 {
-    /**
-     * @var \Cake\Validation\Validator
-     */
-    private $validator;
+    private Validator $validator;
 
     /**
      * @var \phpDocumentor\Reflection\DocBlock|null

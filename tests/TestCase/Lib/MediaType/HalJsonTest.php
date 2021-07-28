@@ -8,7 +8,6 @@ use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
-use SwaggerBake\Lib\MediaType\AbstractMediaType;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Operation\OperationResponseAssociation;
@@ -81,7 +80,7 @@ class HalJsonTest extends TestCase
             'associations' => ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
         ]));
 
-        $schema = (new HalJson($schema, $swagger))->buildSchema('object');
+        $schema = (new HalJson())->buildSchema($schema, 'object');
         $object = json_decode(json_encode($schema->jsonSerialize()));
 
         $this->assertTrue(isset($object->items->properties->_embedded->items->allOf));
@@ -116,7 +115,7 @@ class HalJsonTest extends TestCase
             'associations' => ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
         ]));
 
-        $schema = (new HalJson($schema, $swagger))->buildSchema('array');
+        $schema = (new HalJson())->buildSchema($schema, 'array');
         $object = json_decode(json_encode($schema->jsonSerialize()));
 
         $this->assertEquals(HalJson::HAL_COLLECTION, $object->allOf[0]->{'$ref'});
