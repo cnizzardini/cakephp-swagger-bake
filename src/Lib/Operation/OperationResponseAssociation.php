@@ -166,7 +166,7 @@ class OperationResponseAssociation
      */
     private function buildAssociatedSchema(string $schemaName, string $tableName): Schema
     {
-        $schema = $this->swagger->getSchemaByName($schemaName) ?? $this->swagger->getSchemaByName($schemaName);
+        $schema = $this->swagger->getSchemaByName($schemaName);
 
         if (!$schema) {
             $assocTable = $this->locator->get($tableName);
