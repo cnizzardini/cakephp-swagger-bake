@@ -403,12 +403,12 @@ The demo application includes this and many other examples of usage. Read more a
 
 ## Supported Versions
 
-This is built for CakePHP 4.x only. A cake-3.8 option is available, but not supported.
+This is built for CakePHP 4.x only. 
 
-| Version | Cake Version  | PHP Version | Supported | 
-| ------------- | ------------- | ------------- |
-| 2.* | 4.* | >=7.4  | Yes | Yes |
-| 1.* | 4.* | >=7.2  | Yes | No | 
+| Version | Branch | Cake Version  | PHP Version | Supported | 
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| 2.* | master | 4.* | 7.4+  | Yes |
+| 1.* | v1 | 4.* | 7.2+  | No | 
 
 ## Common Issues
 
