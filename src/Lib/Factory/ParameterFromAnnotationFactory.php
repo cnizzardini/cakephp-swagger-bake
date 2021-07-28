@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 /**
+ * @SuppressWarnings(PHPMD)
  * @deprecated this class will be removed soon, use SwaggerBake\Lib\ParameterFromAnnotationFactory instead
  */
 trigger_deprecation(
