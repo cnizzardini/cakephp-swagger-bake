@@ -142,7 +142,8 @@ code. You must use the FQN for exceptions.
 public function index() {}
 ```
 
-For Entities, the description from `@property` is supported and will appear in OpenAPI and be usable by swagger/redoc for entity attribute descriptions:
+For Entities, the description from `@property` is supported and will appear in OpenAPI and be usable by swagger/redoc 
+for entity attribute descriptions:
 
 ```php
 /**
@@ -451,7 +452,9 @@ Make sure the route is properly defined in your `config/routes.php` file.
 
 #### HTTP DELETE issues with Swagger UI
 
-Swagger UI sends HTTP DELETE without an `accept` header. If the record does not exist, an exception is generated. This results in an HTML response being generated which can be quite large and cause the UI to be slow to render. To get around this you can force an `accept` value on the header using the CakePHP middleware:
+Swagger UI sends HTTP DELETE without an `accept` header. If the record does not exist, an exception is generated. 
+This results in an HTML response being generated which can be quite large and cause the UI to be slow to render. To 
+get around this you can force an `accept` value on the header using the CakePHP middleware:
 
 ```php
 # src/Application.php
@@ -474,7 +477,8 @@ public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
 }
 ```
 
-Read more about [CakePHP middleware](https://book.cakephp.org/4/en/controllers/middleware.html) in the official documentation.
+Read more about [CakePHP middleware](https://book.cakephp.org/4/en/controllers/middleware.html) in the official 
+documentation.
 
 ## Reporting Issues
 
