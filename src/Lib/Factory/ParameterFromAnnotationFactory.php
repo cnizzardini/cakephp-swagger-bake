@@ -1,49 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace SwaggerBake\Lib\Factory;
+/**
+ * @deprecated this class will be removed soon, use SwaggerBake\Lib\ParameterFromAnnotationFactory instead
+ */
+trigger_deprecation(
+    'SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory',
+    '2.0.0',
+    'this class will be removed soon, use SwaggerBake\Lib\ParameterFromAnnotationFactory instead'
+);
 
-use SwaggerBake\Lib\Annotation\AbstractParameter;
-use SwaggerBake\Lib\Annotation\SwagHeader;
-use SwaggerBake\Lib\Annotation\SwagQuery;
-use SwaggerBake\Lib\OpenApi\Parameter;
-use SwaggerBake\Lib\OpenApi\Schema;
-
-class ParameterFromAnnotationFactory
-{
-    /**
-     * Creates an instance of Parameter from an AbstractParameter annotation
-     *
-     * @param \SwaggerBake\Lib\Annotation\AbstractParameter $annotation Class extending AbstractParameter
-     * @return \SwaggerBake\Lib\OpenApi\Parameter
-     */
-    public function create(AbstractParameter $annotation): Parameter
-    {
-        $parameter = (new Parameter())
-            ->setRef($annotation->ref ?? '')
-            ->setName($annotation->name ?? '')
-            ->setDescription($annotation->description)
-            ->setRequired($annotation->required)
-            ->setDeprecated($annotation->deprecated)
-            ->setStyle($annotation->style)
-            ->setExplode($annotation->explode)
-            ->setExample($annotation->example)
-            ->setSchema(
-                (new Schema())
-                    ->setType($annotation->type)
-                    ->setEnum($annotation->enum)
-                    ->setFormat($annotation->format)
-            );
-
-        if ($annotation instanceof SwagQuery) {
-            $parameter
-                ->setIn('query')
-                ->setAllowReserved($annotation->allowReserved)
-                ->setAllowEmptyValue($annotation->allowEmptyValue);
-        } elseif ($annotation instanceof SwagHeader) {
-            $parameter->setIn('header');
-        }
-
-        return $parameter;
-    }
-}
+class_alias(
+    'SwaggerBake\Lib\ParameterFromAnnotationFactory',
+    'SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory'
+);
