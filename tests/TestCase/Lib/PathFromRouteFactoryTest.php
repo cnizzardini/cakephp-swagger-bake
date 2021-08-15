@@ -1,6 +1,6 @@
 <?php
 
-namespace SwaggerBake\Test\TestCase\Lib\Path;
+namespace SwaggerBake\Test\TestCase\Lib;
 
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
@@ -8,7 +8,7 @@ use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Path;
-use SwaggerBake\Lib\Path\PathFromRouteFactory;
+use SwaggerBake\Lib\PathFromRouteFactory;
 
 class PathFromRouteFactoryTest extends TestCase
 {

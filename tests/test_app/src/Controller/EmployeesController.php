@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBakeTest\App\Controller;
 
 use SwaggerBake\Lib\Annotation as Swag;
+use SwaggerBake\Lib\Attribute\OpenApiPath;
 use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 
 /**
@@ -14,6 +15,10 @@ use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
  *
  * @method \App\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
+#[OpenApiPath(
+    description: 'description here',
+    summary: 'summary here'
+)]
 class EmployeesController extends AppController
 {
     public function initialize() : void

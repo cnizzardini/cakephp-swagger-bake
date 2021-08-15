@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace SwaggerBakeTest\App\Controller;
 
-use SwaggerBake\Lib\Annotation as SwagAnnotation;
+use SwaggerBake\Lib\Attribute\OpenApiPath;
 
 /**
  * EmployeeTitles Controller
  * @SwagAnnotation\SwagPath(isVisible=false)
  */
+#[OpenApiPath(isVisible: false)]
 class EmployeeTitlesController extends AppController
 {
     /**

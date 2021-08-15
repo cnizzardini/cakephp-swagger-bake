@@ -5,7 +5,7 @@
     "license": "MIT",
     "keywords": ["cakephp swagger","cakephp4 swagger","cake swagger"],
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "ext-json": "*",
         "cakephp/cakephp": "^4.0",
         "symfony/yaml": "^5.0",

@@ -164,25 +164,25 @@ for entity attribute descriptions:
 
 SwaggerBake provides some optional Annotations for enhanced functionality. These can be imported individually from 
 `SwaggerBake\Lib\Annotation` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Annotation as Swag`.
-[Read the Annotations docs](docs/annotations.md#swaggerbake-annotations) for detailed examples.
+[Read the Annotations docs](docs/attributes.md#swaggerbake-annotations) for detailed examples.
 
 | Annotation | Description | 
 | ------------- | ------------- |
-| [@SwagPaginator](docs/annotations.md#swagpaginator) | Supports CakePHP Paginator Component |
-| [@SwagSearch](docs/annotations.md#swagsearch) | Supports Friends of Cake Search |
-| [@SwagQuery](docs/annotations.md#swagquery) | Adds query parameters |
-| [@SwagForm](docs/annotations.md#swagform) | Adds form parameters |
-| [@SwagDto](docs/annotations.md#swagdto) | Adds Data Transfer Objects (DTOs) |
-| [@SwagHeader](docs/annotations.md#swagheader) | Adds header parameters |
-| [@SwagPathParameter](docs/annotations.md#swagpathparameter) | Modifies path parameters |
-| [@SwagSecurity](docs/annotations.md#swagsecurity) | Adds/modifies authentication. Read below |
-| [@SwagOperation](docs/annotations.md#swagoperation) | Modifies OpenAPI operations (can be used to hide operations) |
-| [@SwagRequestBody](docs/annotations.md#swagrequestbody) | Describes OpenAPI request body |
-| [@SwagRequestBodyContent](docs/annotations.md#swagrequestbodycontent) | Describes OpenAPI request body content |
-| [@SwagResponseSchema](docs/annotations.md#swagresponseschema) | Describes OpenAPI response schema |
-| [@SwagPath](docs/annotations.md#swagpath) | Describes OpenAPI paths (can be used to hide paths) |
-| [@SwagEntity](docs/annotations.md#swagentity) | Describes OpenAPI Entity (can be used to hide entity schemas) |
-| [@SwagEntityAttribute](docs/annotations.md#swagentityattribute) | Add/modify OpenAPI schema properties |
+| [@SwagPaginator](docs/attributes.md#swagpaginator) | Supports CakePHP Paginator Component |
+| [@SwagSearch](docs/attributes.md#swagsearch) | Supports Friends of Cake Search |
+| [@SwagQuery](docs/attributes.md#swagquery) | Adds query parameters |
+| [@SwagForm](docs/attributes.md#swagform) | Adds form parameters |
+| [@SwagDto](docs/attributes.md#swagdto) | Adds Data Transfer Objects (DTOs) |
+| [@SwagHeader](docs/attributes.md#swagheader) | Adds header parameters |
+| [@SwagPathParameter](docs/attributes.md#swagpathparameter) | Modifies path parameters |
+| [@SwagSecurity](docs/attributes.md#swagsecurity) | Adds/modifies authentication. Read below |
+| [@SwagOperation](docs/attributes.md#swagoperation) | Modifies OpenAPI operations (can be used to hide operations) |
+| [@SwagRequestBody](docs/attributes.md#swagrequestbody) | Describes OpenAPI request body |
+| [@SwagRequestBodyContent](docs/attributes.md#swagrequestbodycontent) | Describes OpenAPI request body content |
+| [@SwagResponseSchema](docs/attributes.md#swagresponseschema) | Describes OpenAPI response schema |
+| [@SwagPath](docs/attributes.md#swagpath) | Describes OpenAPI paths (can be used to hide paths) |
+| [@SwagEntity](docs/attributes.md#swagentity) | Describes OpenAPI Entity (can be used to hide entity schemas) |
+| [@SwagEntityAttribute](docs/attributes.md#swagentityattribute) | Add/modify OpenAPI schema properties |
 
 ## Event System
 

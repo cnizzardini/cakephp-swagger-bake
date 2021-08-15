@@ -1,20 +1,16 @@
 <?php
 
+namespace SwaggerBake\Test\TestCase\Lib\Attribute;
 
-namespace SwaggerBake\Test\TestCase\Lib\Annotations;
-
-
-use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
-class SwagPathTest extends TestCase
+class OpenApiPathTest extends TestCase
 {
     /** @var string[]  */
     public $fixtures = [
@@ -22,11 +18,9 @@ class SwagPathTest extends TestCase
         'plugin.SwaggerBake.EmployeeTitles',
     ];
 
-    /** @var Router  */
-    private $router;
+    private Router $router;
 
-    /** @var array  */
-    private $config;
+    private array $config;
 
     public function setUp(): void
     {
@@ -55,11 +49,9 @@ class SwagPathTest extends TestCase
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
         ];
-
-        AnnotationLoader::load();
     }
 
-    public function testPath()
+    public function test_summary_and_description(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
 
@@ -74,7 +66,7 @@ class SwagPathTest extends TestCase
         $this->assertEquals('description here', $employees['description']);
     }
 
-    public function testPathInvisible()
+    public function test_invisible(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
 

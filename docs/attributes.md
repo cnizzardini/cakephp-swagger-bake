@@ -1,13 +1,13 @@
-# SwaggerBake Annotations
+# SwaggerBake Attributes
 
-SwaggerBake provides some optional Annotations for enhanced functionality. There are core annotations and extended 
-annotations which support other Cake plugins. These can be imported individually or set to an alias as seen below.
+SwaggerBake provides some optional [Attributes](https://www.php.net/manual/en/language.attributes.overview.php) for 
+enhanced functionality. It is helpful to understand the [OpenApi specification](https://spec.openapis.org/oas/latest.html) 
+when reading this documentation.
 
-- `use SwaggerBake\Lib\Annotation as Swag;`
-- `use SwaggerBake\Lib\Extension as SwagExt;`
+- `use SwaggerBake\Lib\Attribute as OpenApi;`
+- `use SwaggerBake\Lib\Extension as OpenApiExt;`
 
 ## Table of Contents
-- [Adding Annotations](#adding-annotations)
 - [Usage](#usage)
 - [@SwagPaginator](#swagpaginator)
 - [@SwagSearch](#swagsearch)
@@ -23,7 +23,7 @@ annotations which support other Cake plugins. These can be imported individually
 - [@SwagRequestBody](#swagrequestbody)
 - [@SwagRequestBodyContent](#swagrequestbodycontent)
 - [@SwagResponseSchema](#swagresponseschema)
-- [@SwagPath](#swagpath)
+- [@OpenApiPath](#path)
 - [@SwagEntity](#swagentity)
 - [@SwagEntityAttribute](#swagentityattribute)
 
@@ -623,20 +623,22 @@ As an array (collection) but white list specific tables (ignores all others):
  */
 ```
 
-### @SwagPath
-Class level annotation for exposing controllers to Swagger UI. You can hide entire controllers with this annotation.
+### OpenApiPath
+Class level attribute to define scalar [Path](https://spec.openapis.org/oas/latest.html#fixed-fields-6) values. 
 
-| Attribute | Type / Default | Description | 
-| ------------- | ------------- | ------------- |
-| isVisible | boolean `true` | Is the path and its operations visible in OpenAPI  |
-| title | string `""` | Overwrites the default title |
-| summary | string `""` | Overwrites the default summary (if any) |
+| Property | Type / Default | OA Spec | Description | 
+| ------------- | ------------- | ------------- | ------------- |
+| isVisible | boolean `true` | No | Is the path and its operations visible in OpenAPI  |
+| ref | string `""` | Yes | An OpenAPI ref such as `#/paths/my-path` |
+| description | string `""` | Yes | Overwrites the default description |
+| summary | string `""` | Yes | Overwrites the default summary (if any) |
+
+A common use-case for this is to hide a controller from appearing in your OpenApi (the default behavior). For instance, 
+you may have a bespoke endpoint that you don't want to publish.
 
 ```php
-/**
- * @Swag\SwagPath(isVisible=false, description="optional description", summary="operational summary")
- */
-class UsersController extends AppController {
+#[OpenApiPath(isVisible: false)]
+class UsersController extends AppController
 ```
 
 ### @SwagEntity
