@@ -18,13 +18,13 @@ when reading this documentation.
 - [@SwagDtoRequestBody](#swagdtorequestbody)
 - [@SwagHeader](#swagheader)
 - [@SwagPathParameter](#swagpathparameter)
-- [@SwagSecurity](#swagsecurity)
-- [@SwagOperation](#swagoperation)
 - [@SwagRequestBody](#swagrequestbody)
 - [@SwagRequestBodyContent](#swagrequestbodycontent)
 - [@SwagResponseSchema](#swagresponseschema)
-- [@OpenApiPath](#path)
-- [@SwagEntity](#swagentity)
+- [OpenApiPath](#OpenApiPath)
+- [OpenApiOperation](#OpenApiOperation)
+- [OpenApiSchema](#OpenApiSchema)
+- [OpenApiSecurity](#OpenApiSecurity)
 - [@SwagEntityAttribute](#swagentityattribute)
 
 ## Usage
@@ -428,36 +428,39 @@ OpenAPI:
               format: int64
 ```
 
-### @SwagSecurity
-Method level annotation for adding authentication requirements. This annotation takes precedence over settings that 
-SwaggerBake gathers from AuthenticationComponent. See the main documentation for more information.
+### OpenApiSecurity
+Method level attribute for documenting security requirements on an Operation. This attribute takes precedence over 
+settings inferred from AuthenticationComponent. See the main documentation for more information. You may define 
+multiple.
 
-| Attribute | Type / Default | Description | 
-| ------------- | ------------- | ------------- |
-| name | string | Name of the security option |
-| scopes | array | Security Scopes |
+| Property | Type / Default | OA Spec | Description | 
+| ------------- | ------------- | ------------- | ------------- |
+| name | string | Yes | Name of the security option (required) |
+| scopes | array `[]` | Yes | Security Scopes |
+
+Here is an example of documenting that an index endpoint requires BearerAuth security with read scope. The `name` 
+should match what is defined in your YAML [Security Scheme Object](https://spec.openapis.org/oas/latest.html#security-scheme-object).
 
 ```php
-/**
- * @Swag\SwagSecurity(name="BearerAuth", scopes={"Read","Write"})
- */
-public function index() {}
+#[OpenApiSecurity(name: 'BearerAuth', scopes: ['read'])]
+#[OpenApiSecurity(name: 'ApiKey')]
+public function index()
 ```
 
-### @SwagOperation
-Method level annotation for OpenApi Operations. 
+### OpenApiOperation
+Method level attribute for OpenApi Operations. 
 
-| Attribute | Type / Default | Description | 
-| ------------- | ------------- | ------------- |
-| isVisible | bool `true` | Is the operation visible? |
-| tagNames | array `[]` | https://swagger.io/docs/specification/grouping-operations-with-tags/ |
-| showPut | bool `false` | Add PUT operations to OpenAPI? By default on PATCH operations are shown |
+| Property | Type / Default | OA Spec |Description | 
+| ------------- | ------------- | ------------- | ------------- |
+| isVisible | bool `true` | No | Setting this to false will prevent the operation from appearing in OpenApi output |
+| tagNames | array `[]` | Yes | Sets tag names |
+| isPut | bool `false` | No | Changes the HTTP Method to an HTTP PUT on controller `edit()` actions/methods |
+
+A common use-case is to hide an operation from appearing in your OpenAPI, example:
 
 ```php
-/**
- * @Swag\SwagOperation(isVisible=true, tagNames={"Custom","Tags"}, showPut=true)
- */
-public function index() {}
+#[OpenApiOperation(isVisible: false)]
+public function index()
 ```
 
 OpenAPI:
@@ -624,7 +627,7 @@ As an array (collection) but white list specific tables (ignores all others):
 ```
 
 ### OpenApiPath
-Class level attribute to define scalar [Path](https://spec.openapis.org/oas/latest.html#fixed-fields-6) values. 
+Class level attribute to define scalar [Path](https://spec.openapis.org/oas/latest.html#path-item-object) values. 
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
@@ -641,28 +644,26 @@ you may have a bespoke endpoint that you don't want to publish.
 class UsersController extends AppController
 ```
 
-### @SwagEntity
-Class level annotation for exposing entities to Swagger UI. 
+### OpenApiSchema
+Class level attribute for exposing entities to Swagger UI. 
 
-| Attribute | Type / Default | Description | 
-| ------------- | ------------- | ------------- |
-| isVisible | boolean `true` | All entities with routes are added to OpenAPI schema. To completely hide a schema from appearing anywhere in OpenAPI JSON output set to false |
-| isPublic | boolean `true` | To hide from the default via in Swagger 3.0 set to false. isVisible takes precedence (see isVisible vs isPublic below) |
-| title | string `""` | Overwrites the default title |
-| description | string `""` | Overwrites the default description (if any) |
+| Property | Type / Default | OA Spec | Description | 
+| ------------- | ------------- | ------------- | ------------- |
+| isVisible | boolean `true` | No | All entities with routes are added to OpenAPI schema. To completely hide a schema from appearing anywhere in OpenAPI JSON output set to false |
+| isPublic | boolean `true` | No | To hide from the default via in Swagger 3.0 set to false. isVisible takes precedence (see isVisible vs isPublic below) |
+| title | string `""` | Yes | Overwrites the default title |
+| description | string `""` | Yes | Overwrites the default description (if any) |
 
 **isVisible vs isPublic:** 
 
 `isVisible` takes precedence over `isPublic`. If you've set `isVisible` to `false` then whatever you've defined for 
 `isPublic` becomes inert. If a schema is visible, but not public it be accessed via 
 `#/x-swagger-bake-bake/components/schemas/EntityName`. This is helpful if you want to reduce cluter in your Swagger 
-schemas, but still want the ability to reference it via `@SwagResponseSchema`
+schemas, but still want the ability to reference it via `OpenApiResponseSchema`
 
 ```php
-/**
- * @Swag\SwagEntity(isVisible=true, isPublic=false, title="optional title", description="optional description")
- */
-class Employee extends Entity {
+ #[OpenApiSchema(isVisble: true, isPublic: false, title: 'optional title', description: 'optional description')]
+class Employee extends Entity
 ```
 
 ### @SwagEntityAttribute

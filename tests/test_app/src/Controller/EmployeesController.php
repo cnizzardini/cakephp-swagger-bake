@@ -5,16 +5,10 @@ namespace SwaggerBakeTest\App\Controller;
 
 use SwaggerBake\Lib\Annotation as Swag;
 use SwaggerBake\Lib\Attribute\OpenApiPath;
+use SwaggerBake\Lib\Attribute\OpenApiOperation;
+use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
 
-/**
- * Employees Controller
- *
- * @Swag\SwagPath(description="description here", summary="summary here")
- * @property \App\Model\Table\EmployeesTable $Employees
- *
- * @method \App\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
 #[OpenApiPath(
     description: 'description here',
     summary: 'summary here'
@@ -33,13 +27,12 @@ class EmployeesController extends AppController
     /**
      * Gets Employees
      *
-     * @Swag\SwagOperation(tagNames={"Employees","CustomTag"})
      * @return \Cake\Http\Response|null|void Renders view
      */
+    #[OpenApiOperation(tagNames: ['Employees','CustomTag'])]
     public function index()
     {
         $employees = $this->paginate($this->Employees);
-
         $this->set(compact('employees'));
         $this->viewBuilder()->setOption('serialize', ['employees']);
     }
@@ -85,11 +78,11 @@ class EmployeesController extends AppController
     /**
      * Edit method
      *
-     * @Swag\SwagOperation(showPut=true)
      * @param string|null $id Employee id.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[OpenApiOperation(isPut: true)]
     public function edit($id = null)
     {
         $employee = $this->Employees->get($id, [
@@ -126,13 +119,13 @@ class EmployeesController extends AppController
      * @Swag\SwagPaginator
      * @Swag\SwagQuery(name="queryParamName", type="string", required=false)
      * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
-     * @Swag\SwagSecurity(name="BearerAuth")
      * @Swag\SwagResponseSchema(refEntity="", description="hello world", httpCode=200)
      * @throws \Cake\Http\Exception\BadRequestException
      * @throws \Cake\Http\Exception\UnauthorizedException
      * @throws \Cake\Http\Exception\ForbiddenException
      * @throws \Exception
      */
+    #[OpenApiSecurity(name: 'BearerAuth')]
     public function customGet()
     {
         $hello = 'world';

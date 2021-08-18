@@ -24,20 +24,11 @@ class SwaggerOperationTest extends TestCase
         'plugin.SwaggerBake.EmployeeSalaries',
     ];
 
-    /**
-     * @var Router
-     */
-    private $router;
+    private Router $router;
 
-    /**
-     * @var array
-     */
-    private $config;
+    private array $config;
 
-    /**
-     * @var Swagger
-     */
-    private $swagger;
+    private Swagger $swagger;
 
     public function setUp(): void
     {
@@ -77,16 +68,14 @@ class SwaggerOperationTest extends TestCase
             ]
         ];
 
-        if (!$this->swagger instanceof Swagger) {
-            $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-            $cakeRoute = new RouteScanner($this->router, $configuration);
-            $this->swagger = new Swagger(new ModelScanner($cakeRoute, $configuration));
-        }
+        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new RouteScanner($this->router, $configuration);
+        $this->swagger = new Swagger(new ModelScanner($cakeRoute, $configuration));
 
         AnnotationLoader::load();
     }
 
-    public function testCrudOperationsExist(): void
+    public function test_crud_operations_exist(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -98,7 +87,7 @@ class SwaggerOperationTest extends TestCase
 
     }
 
-    public function testDefaultResponseSchemaOnIndexMethod(): void
+    public function test_default_response_schema_on_index_method(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -110,7 +99,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['items']['$ref']);
     }
 
-    public function testDefaultRequestSchemaOnAddMethod(): void
+    public function test_default_request_schema_on_add_method(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -120,7 +109,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Add', $schema['$ref']);
     }
 
-    public function testDefaultResponseSchemaOnAddMethod(): void
+    public function test_default_response_schema_on_add_method(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -130,7 +119,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['$ref']);
     }
 
-    public function testDefaultRequestSchemaOnEditMethod(): void
+    public function test_default_request_schema_on_edit_method(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -140,7 +129,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Edit', $schema['$ref']);
     }
 
-    public function testDefaultResponseSchemaOnEditMethod(): void
+    public function test_default_response_schema_on_edit_method(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -150,7 +139,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['$ref']);
     }
 
-    public function testExceptionResponseSchema(): void
+    public function test_exception_response_schema(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
@@ -162,7 +151,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertArrayHasKey(500, $responses);
     }
 
-    public function testYmlPathOperationTakesPrecedence(): void
+    public function test_yml_path_operation_takes_precedence(): void
     {
         $config = $this->config;
         $config['yml'] = '/config/swagger-with-existing.yml';
@@ -179,7 +168,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('phpunit test string', $arr['paths']['/employee-salaries']['get']['description']);
     }
 
-    public function testSecuritySchemeFromAuthenticationComponent(): void
+    public function test_security_scheme_from_authentication_component(): void
     {
         $config = $this->config;
         $config['yml'] = '/config/swagger-with-existing.yml';
@@ -191,10 +180,11 @@ class SwaggerOperationTest extends TestCase
         $arr = json_decode($swagger->toString(), true);
         $securities = $arr['paths']['/departments']['get']['security'];
         $security = reset($securities);
+
         $this->assertEquals('BearerAuth', array_keys($security)[0]);
     }
 
-    public function testSecuritySchemeMultipleSwagSecurity(): void
+    public function test_multiple_security_schemes(): void
     {
         $config = $this->config;
         $config['yml'] = '/config/swagger-with-existing.yml';

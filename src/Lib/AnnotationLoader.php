@@ -23,17 +23,14 @@ class AnnotationLoader
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagDto::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagDtoRequestBody::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagDtoQuery::class);
-        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagEntity::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagEntityAttribute::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagForm::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagHeader::class);
-        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagOperation::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagPaginator::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagQuery::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagRequestBody::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagRequestBodyContent::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagResponseSchema::class);
-        AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagSecurity::class);
         AnnotationRegistry::loadAnnotationClass(SwagAnnotation\SwagPathParameter::class);
     }
 }

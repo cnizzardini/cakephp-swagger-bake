@@ -9,12 +9,13 @@ use Cake\Datasource\ConnectionManager;
 use MixerApi\Core\Model\Model;
 use MixerApi\Core\Model\ModelFactory;
 use MixerApi\Core\Utility\NamespaceUtility;
-use SwaggerBake\Lib\Annotation\SwagEntity;
+use ReflectionClass;
+use SwaggerBake\Lib\Attribute\AttributeInstance;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
-use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
  * Finds all Entities associated with RESTful routes based on userland configurations
@@ -131,18 +132,13 @@ class ModelScanner
      */
     private function hasVisibility(Model $model, ?RouteDecorator $routeDecorator): bool
     {
-        $annotations = AnnotationUtility::getClassAnnotationsFromFqns(get_class($model->getEntity()));
+        $reflection = new ReflectionClass(get_class($model->getEntity()));
+        $schema = (new AttributeInstance($reflection, OpenApiSchema::class))->createOne();
 
-        $swagEntities = array_filter($annotations, function ($annotation) {
-            return $annotation instanceof SwagEntity;
-        });
-
-        if (empty($swagEntities)) {
+        if (!$schema instanceof OpenApiSchema) {
             return $routeDecorator !== null;
         }
 
-        $swagEntity = reset($swagEntities);
-
-        return $swagEntity->isVisible;
+        return $schema->isVisible;
     }
 }

@@ -14,7 +14,7 @@ use SwaggerBake\Lib\Route\RouteDecorator;
  *
  * @package SwaggerBake\Lib\Operation
  */
-class OperationPath
+class OperationPathParameter
 {
     private Operation $operation;
 

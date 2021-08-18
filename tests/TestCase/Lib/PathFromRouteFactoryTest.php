@@ -12,9 +12,16 @@ use SwaggerBake\Lib\PathFromRouteFactory;
 
 class PathFromRouteFactoryTest extends TestCase
 {
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
+
+    private Router $router;
+
+    private array $config;
 
     public function setUp(): void
     {
@@ -45,7 +52,7 @@ class PathFromRouteFactoryTest extends TestCase
         ];
     }
 
-    public function testCreatePath()
+    public function test(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
@@ -53,7 +60,7 @@ class PathFromRouteFactoryTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = reset($routes);
 
-        $path = (new PathFromRouteFactory($route, $config))->create();
+        $path = (new PathFromRouteFactory($route))->create();
         $this->assertInstanceOf(Path::class, $path);
         $this->assertEquals('/employees', $path->getResource());
     }

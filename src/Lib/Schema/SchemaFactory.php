@@ -11,8 +11,9 @@ use MixerApi\Core\Model\Model;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
-use SwaggerBake\Lib\Annotation\SwagEntity;
 use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
+use SwaggerBake\Lib\Attribute\AttributeInstance;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
@@ -52,16 +53,17 @@ class SchemaFactory
      */
     public function create(ModelDecorator $modelDecorator, int $propertyType = 6): ?Schema
     {
-        $swagEntity = $this->getSwagEntityAnnotation($modelDecorator->getModel()->getEntity());
+        $reflection = new ReflectionClass($modelDecorator->getModel()->getEntity());
+        $openApiSchema = (new AttributeInstance($reflection, OpenApiSchema::class))->createOne();
 
-        if ($swagEntity !== null && $swagEntity->isVisible === false) {
+        if ($openApiSchema instanceof OpenApiSchema && $openApiSchema->isVisible === false) {
             return null;
         }
 
         $schema = $this
             ->createSchema($modelDecorator->getModel(), $propertyType)
-            ->setDescription($swagEntity->description)
-            ->setIsPublic($swagEntity->isPublic);
+            ->setIsPublic($openApiSchema->isPublic ?? true)
+            ->setDescription($openApiSchema->description);
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Schema.created', $schema, [
@@ -196,25 +198,6 @@ class SchemaFactory
         }
 
         return $return;
-    }
-
-    /**
-     * Returns instance of SwagEntity annotation
-     *
-     * @param \Cake\Datasource\EntityInterface $entity EntityInterface
-     * @return \SwaggerBake\Lib\Annotation\SwagEntity
-     */
-    private function getSwagEntityAnnotation(EntityInterface $entity): SwagEntity
-    {
-        $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity);
-
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof SwagEntity) {
-                return $annotation;
-            }
-        }
-
-        return new SwagEntity([]);
     }
 
     /**
