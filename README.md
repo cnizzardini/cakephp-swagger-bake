@@ -18,7 +18,7 @@ and controllers.
 - Integrates with: 
 [Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html), 
 [friendsofcake/search](https://github.com/FriendsOfCake/search), 
-[Authentication](https://book.cakephp.org/authentication/2/en/index.html), 
+[Authentication](https://book.cakephp.org/4/en/tutorials-and-examples/cms/authentication.html), 
 [Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html), and 
 [Bake](#bake-theme).
 - Provides additional functionality through Annotations and Doc Blocks.
