@@ -67,8 +67,8 @@ class OperationSecurityTest extends TestCase
 
     public function test_from_security_attribute(): void
     {
-        $mock = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mock->expects($this->once())
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
             ->method(
                 'getAttributes'
             )
@@ -84,7 +84,7 @@ class OperationSecurityTest extends TestCase
 
         $operationSecurity = new OperationSecurity(
             new Operation(),
-            $mock,
+            $mockReflectionMethod,
             $this->routeDecorator,
             new Controller(),
             $this->swagger

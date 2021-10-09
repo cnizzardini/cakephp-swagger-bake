@@ -4,7 +4,6 @@ namespace SwaggerBake\Test\TestCase\Lib\MediaType;
 
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\MediaType\Generic;
 use SwaggerBake\Lib\Model\ModelScanner;
@@ -43,8 +42,6 @@ class GenericTest extends TestCase
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
         ], SWAGGER_BAKE_TEST_APP);
-
-        AnnotationLoader::load();
     }
 
     public function test_collection(): void

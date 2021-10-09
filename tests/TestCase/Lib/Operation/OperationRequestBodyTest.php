@@ -5,27 +5,29 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use phpDocumentor\Reflection\DocBlockFactory;
-use SwaggerBake\Lib\Annotation\SwagDto;
-use SwaggerBake\Lib\Annotation\SwagForm;
-use SwaggerBake\Lib\Annotation\SwagRequestBody;
+use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
+use SwaggerBake\Lib\Attribute\OpenApiDto;
+use SwaggerBake\Lib\Attribute\OpenApiForm;
+use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
-use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationRequestBody;
 use SwaggerBake\Lib\Swagger;
 
 class OperationRequestBodyTest extends TestCase
 {
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 
-    private $router;
-    private $config;
+    private Router $router;
+
+    private array $config;
 
     public function setUp(): void
     {
@@ -56,7 +58,7 @@ class OperationRequestBodyTest extends TestCase
         ];
     }
 
-    public function testSwagFormGetOperationWithRequestBody()
+    public function test_open_api_form(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
@@ -66,14 +68,37 @@ class OperationRequestBodyTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
 
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->any())
+            ->method(
+                'getAttributes'
+            )
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+                        new ReflectionAttribute(OpenApiForm::class, [
+                            'name' => 'test',
+                            'type' => 'string',
+                            'required' => false,
+                        ])
+                    ]),
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+
+                    ]),
+                )
+            );
+
         $operationRequestBody = new OperationRequestBody(
             $swagger,
             (new Operation())->setHttpMethod('POST'),
-            [
-                new SwagForm(['name' => 'test', 'type' => 'string', 'description' => '', 'required' => false])
-            ],
             $route,
-            null
+            $mockReflectionMethod
         );
 
         $operation = $operationRequestBody->getOperationWithRequestBody();
@@ -88,7 +113,7 @@ class OperationRequestBodyTest extends TestCase
         $this->assertArrayHasKey('test', $properties);;
     }
 
-    public function testSwagDtoGetOperationWithRequestBody()
+    public function test_open_api_dto(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
@@ -98,14 +123,35 @@ class OperationRequestBodyTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
 
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->any())
+            ->method(
+                'getAttributes'
+            )
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+                        new ReflectionAttribute(OpenApiDto::class, [
+                            'class' => '\SwaggerBakeTest\App\Dto\EmployeeData',
+                        ])
+                    ]),
+                    $this->returnValue([
+
+                    ]),
+                )
+            );
+
         $operationRequestBody = new OperationRequestBody(
             $swagger,
             (new Operation())->setHttpMethod('POST'),
-            [
-                new SwagDto(['class' => '\SwaggerBakeTest\App\Dto\EmployeeData'])
-            ],
             $route,
-            null
+            $mockReflectionMethod
         );
 
         $operation = $operationRequestBody->getOperationWithRequestBody();
@@ -117,11 +163,11 @@ class OperationRequestBodyTest extends TestCase
         $this->assertEquals('object', $schema->getType());
 
         $properties = $schema->getProperties();
-        $this->assertArrayHasKey('lastName', $properties);
-        $this->assertArrayHasKey('firstName', $properties);
+        $this->assertArrayHasKey('last_name', $properties);
+        $this->assertArrayHasKey('first_name', $properties);
     }
 
-    public function testIgnoreSchema()
+    public function test_ignore_schema(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
@@ -131,17 +177,39 @@ class OperationRequestBodyTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
 
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->any())
+            ->method(
+                'getAttributes'
+            )
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+                        new ReflectionAttribute(OpenApiRequestBody::class, [
+                            'ignoreCakeSchema' => true,
+                        ])
+                    ]),
+                )
+            );
+
         $operationRequestBody = new OperationRequestBody(
             $swagger,
             (new Operation())->setHttpMethod('POST'),
-            [
-                new SwagRequestBody(['ignoreSchema' => true])
-            ],
             $route,
-            null
+            $mockReflectionMethod,
+            $swagger->getArray()['components']['schemas']['Employee']
         );
 
         $operation = $operationRequestBody->getOperationWithRequestBody();
-        $this->assertEmpty($operation->getRequestBody()->getContent());
+        $this->assertEmpty($operation->getRequestBody());
     }
 }

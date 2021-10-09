@@ -2,37 +2,30 @@
 
 namespace SwaggerBakeTest\App\Dto;
 
-use SwaggerBake\Lib\Annotation as Swag;
+use SwaggerBake\Lib\Attribute\OpenApiDtoQuery;
+use SwaggerBake\Lib\Attribute\OpenApiDtoRequestBody;
 
 class EmployeeData
 {
-    /** @var string */
-    private $firstName;
+    #[OpenApiDtoRequestBody(name: 'first_name', description: 'testing')]
+    #[OpenApiDtoQuery(name: 'first_name', description: 'testing')]
+    private string $firstName;
 
-    /**
-     * Last name required
-     * @var string
-     * @required
-     */
-    private $lastName;
+    #[OpenApiDtoRequestBody(name: 'last_name', description: 'testing')]
+    #[OpenApiDtoQuery(name: 'last_name', description: 'testing')]
+    private string $lastName;
 
-    /**
-     * @Swag\SwagRequestBody(name="title", type="string", description="testing")
-     * @var string
-     */
-    private $title;
+    #[OpenApiDtoRequestBody(name: 'title', description: 'testing')]
+    #[OpenApiDtoQuery(name: 'title', description: 'testing')]
+    private string $title;
 
-    /**
-     * @Swag\SwagRequestBody(name="age", type="integer", format="int32" description="testing")
-     * @var integer
-     */
-    private $age;
+    #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', description: 'testing')]
+    #[OpenApiDtoQuery(name: 'age', type: 'integer', format: 'int32', description: 'testing')]
+    private string $age;
 
-    /**
-     * @Swag\SwagRequestBody(name="date", type="string", format="date", description="testing")
-     * @var string
-     */
-    private $date;
+    #[OpenApiDtoRequestBody(name: 'date', type: 'string', format: 'date', description: 'testing')]
+    #[OpenApiDtoQuery(name: 'date', type: 'string', format: 'date', description: 'testing')]
+    private string $date;
 
     /**
      * @return string

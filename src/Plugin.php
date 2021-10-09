@@ -8,7 +8,6 @@ use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
 use SwaggerBake\Command as Commands;
-use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Lib\ExtensionLoader;
 
 /**
@@ -43,7 +42,6 @@ class Plugin extends BasePlugin
     {
         if (file_exists(CONFIG . 'swagger_bake.php')) {
             Configure::load('swagger_bake', 'default');
-            AnnotationLoader::load();
             ExtensionLoader::load();
 
             return;

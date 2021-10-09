@@ -5,7 +5,7 @@ namespace SwaggerBake\Lib;
 
 use Exception;
 use ReflectionClass;
-use SwaggerBake\Lib\Attribute\AttributeInstance;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiPath;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Route\RouteDecorator;
@@ -49,7 +49,7 @@ class PathFromRouteFactory
             return $path;
         }
 
-        $openApiPath = (new AttributeInstance($reflection, OpenApiPath::class))->createOne();
+        $openApiPath = (new AttributeFactory($reflection, OpenApiPath::class))->createOneOrNull();
         if ($openApiPath instanceof OpenApiPath && !$openApiPath->isVisible) {
             return null;
         }

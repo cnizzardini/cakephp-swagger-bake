@@ -5,17 +5,12 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use phpDocumentor\Reflection\DocBlockFactory;
-use SwaggerBake\Lib\Annotation\SwagResponseSchema;
+use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
-use SwaggerBake\Lib\OpenApi\Operation;
-use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\Operation\OperationResponse;
 use SwaggerBake\Lib\Operation\OperationResponseAssociation;
-use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
 
 class OperationResponseAssociationTest extends TestCase
@@ -81,10 +76,10 @@ class OperationResponseAssociationTest extends TestCase
             $swagger->getSchemaByName('Employee'),
         );
 
-        $schema = $assoc->build(new SwagResponseSchema([
-            'schemaType' => 'object',
-            'associations' => []
-        ]));
+        $schema = $assoc->build(new OpenApiResponse(
+            schemaType: 'object',
+            associations: []
+        ));
 
         $this->assertInstanceOf(Schema::class, $schema);
         $this->assertArrayHasKey('department_employees', $schema->getProperties());
@@ -102,10 +97,10 @@ class OperationResponseAssociationTest extends TestCase
             $swagger->getSchemaByName('Employee'),
         );
 
-        $schema = $assoc->build(new SwagResponseSchema([
-            'schemaType' => 'object',
-            'associations' => ['whiteList' => ['EmployeeTitles']]
-        ]));
+        $schema = $assoc->build(new OpenApiResponse(
+            schemaType: 'object',
+            associations: ['whiteList' => ['EmployeeTitles']]
+        ));
 
         $this->assertInstanceOf(Schema::class, $schema);
         $this->assertArrayNotHasKey('department_employees', $schema->getProperties());
@@ -121,10 +116,10 @@ class OperationResponseAssociationTest extends TestCase
             null
         );
 
-        $schema = $assoc->build(new SwagResponseSchema([
-            'schemaType' => 'object',
-            'associations' => []
-        ]));
+        $schema = $assoc->build(new OpenApiResponse(
+            schemaType: 'object',
+            associations: []
+        ));
 
         $this->assertInstanceOf(Schema::class, $schema);
         $this->assertArrayHasKey('department_employees', $schema->getProperties());
@@ -140,9 +135,9 @@ class OperationResponseAssociationTest extends TestCase
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->routes['employees:view'],
             null
-        ))->build(new SwagResponseSchema([
-            'schemaType' => 'object',
-            'associations' => ['depth' => 0]
-        ]));
+        ))->build(new OpenApiResponse(
+            schemaType: 'object',
+            associations: ['depth' => 0]
+        ));
     }
 }

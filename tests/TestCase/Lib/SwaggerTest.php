@@ -8,7 +8,7 @@ use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\AnnotationLoader;
+
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
@@ -71,7 +71,7 @@ class SwaggerTest extends TestCase
             ]
         ];
 
-        AnnotationLoader::load();
+        
     }
 
     public function test_get_mixing_static_yaml_and_dynamic_openapi(): void

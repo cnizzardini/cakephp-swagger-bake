@@ -5,7 +5,7 @@ namespace SwaggerBake\Lib\Operation;
 
 use Cake\Controller\Controller;
 use ReflectionMethod;
-use SwaggerBake\Lib\Attribute\AttributeInstance;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\PathSecurity;
@@ -74,7 +74,7 @@ class OperationSecurity
             return;
         }
 
-        $securities = (new AttributeInstance($this->refMethod, OpenApiSecurity::class))->createMany();
+        $securities = (new AttributeFactory($this->refMethod, OpenApiSecurity::class))->createMany();
         if (empty($securities)) {
             return;
         }

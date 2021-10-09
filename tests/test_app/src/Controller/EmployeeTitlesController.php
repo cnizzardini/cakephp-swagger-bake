@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBakeTest\App\Controller;
 
-use SwaggerBake\Lib\Annotation\SwagPaginator;
+use SwaggerBake\Lib\Attribute\OpenApiPaginator;
 use SwaggerBake\Lib\Attribute\OpenApiPath;
 
 #[OpenApiPath(isVisible: false)]
@@ -14,6 +14,7 @@ class EmployeeTitlesController extends AppController
      * @SwagPaginator
      * @return \Cake\Http\Response|null|void Renders view
      */
+    #[OpenApiPaginator]
     public function index()
     {
         $this->paginate = [

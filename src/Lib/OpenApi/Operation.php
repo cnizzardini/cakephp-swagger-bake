@@ -204,7 +204,7 @@ class Operation implements JsonSerializable
      * @param string $name name of the parameter
      * @return \SwaggerBake\Lib\OpenApi\Parameter
      */
-    public function getParameterByTypeAndName($type, $name): Parameter
+    public function getParameterByTypeAndName(string $type, string $name): Parameter
     {
         if (!in_array($type, Parameter::IN)) {
             throw new InvalidArgumentException(
@@ -213,7 +213,6 @@ class Operation implements JsonSerializable
         }
 
         $index = "$type:$name";
-
         if (!isset($this->parameters[$index])) {
             throw new InvalidArgumentException("Parameter $index not found");
         }

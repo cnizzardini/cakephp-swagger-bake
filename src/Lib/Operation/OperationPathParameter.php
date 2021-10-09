@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
-use SwaggerBake\Lib\Annotation\SwagPathParameter;
+use ReflectionMethod;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
+use SwaggerBake\Lib\Attribute\OpenApiPathParam;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -20,7 +22,7 @@ class OperationPathParameter
 
     private RouteDecorator $route;
 
-    private array $annotations;
+    private ?ReflectionMethod $reflectionMethod;
 
     /**
      * @var \SwaggerBake\Lib\OpenApi\Schema|null
@@ -30,18 +32,18 @@ class OperationPathParameter
     /**
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation instance of Operation
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route instance of RouteDecorator
-     * @param array $annotations array of annotation objects or empty array
+     * @param \ReflectionMethod|null $reflectionMethod ReflectionMethod or null
      * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema instance of Schema or null
      */
     public function __construct(
         Operation $operation,
         RouteDecorator $route,
-        array $annotations = [],
+        ?ReflectionMethod $reflectionMethod = null,
         ?Schema $schema = null
     ) {
         $this->operation = $operation;
         $this->route = $route;
-        $this->annotations = $annotations;
+        $this->reflectionMethod = $reflectionMethod;
         $this->schema = $schema;
     }
 
@@ -99,27 +101,26 @@ class OperationPathParameter
     }
 
     /**
-     * Updates Path Parameters using values from SwagPathParameter annotation. The path parameter must already exist
+     * Updates Path Parameters using values from OpenApiPathParam attributes. The path parameter must already exist
      * having been added from routes. This will not add new parameters, only update existing ones.
      *
      * @return void
      */
     private function updatePathParametersUsingAnnotations(): void
     {
-        /**
-         * @var \SwaggerBake\Lib\Annotation\SwagPathParameter[] $swagPathParameters
-         */
-        $swagPathParameters = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagPathParameter;
-        });
-
-        if (empty($swagPathParameters)) {
+        if (!$this->reflectionMethod instanceof ReflectionMethod) {
             return;
         }
 
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiPathParam[] $openApiPathParams */
+        $openApiPathParams = (new AttributeFactory(
+            $this->reflectionMethod,
+            OpenApiPathParam::class
+        ))->createMany();
+
         $parameters = $this->operation->getParameters();
 
-        foreach ($swagPathParameters as $pathParameter) {
+        foreach ($openApiPathParams as $pathParameter) {
             $params = array_filter($this->operation->getParameters(), function ($parameter) use ($pathParameter) {
                 return $parameter->getIn() == 'path' && $pathParameter->name == $parameter->getName();
             });
@@ -127,14 +128,7 @@ class OperationPathParameter
             $keys = array_keys($params);
             $index = reset($keys);
 
-            $parameters[$index]
-                ->setName($pathParameter->name)
-                ->setExample($pathParameter->example)
-                ->setDescription($pathParameter->description)
-                ->setAllowReserved($pathParameter->allowReserved)
-                ->setSchema(
-                    (new Schema())->setType($pathParameter->type)->setFormat($pathParameter->format)
-                );
+            $parameters[$index] = $pathParameter->createParameter();
         }
 
         $this->operation->setParameters($parameters);

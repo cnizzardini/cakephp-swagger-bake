@@ -35,7 +35,6 @@ class ExtensionLoader
                 continue;
             }
 
-            $instance->loadAnnotations();
             $instance->registerListeners();
         }
     }

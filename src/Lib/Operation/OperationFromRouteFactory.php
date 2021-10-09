@@ -11,7 +11,7 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use ReflectionMethod;
-use SwaggerBake\Lib\Attribute\AttributeInstance;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiOperation;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -66,7 +66,7 @@ class OperationFromRouteFactory
             $refMethod = null;
         }
 
-        if (!$this->isAllowed($route, $httpMethod, $refMethod) || !$this->isVisible($refMethod)) {
+        if (!$this->isAllowed($route, $httpMethod, $refMethod)) {
             return null;
         }
 
@@ -81,28 +81,28 @@ class OperationFromRouteFactory
         $operation = (new OperationDocBlock())
             ->getOperationWithDocBlock($operation, $docBlock);
 
-        $operation = (new OperationPathParameter($operation, $route, $annotations, $schema))
+        $operation = (new OperationPathParameter($operation, $route, $refMethod, $schema))
             ->getOperationWithPathParameters();
 
         $operation = (new OperationHeader())
-            ->getOperationWithHeaders($operation, $annotations);
+            ->getOperationWithHeaders($operation, $refMethod);
 
         $operation = (new OperationSecurity($operation, $refMethod, $route, $controllerInstance, $this->swagger))
             ->getOperationWithSecurity();
 
-        $operation = (new OperationQueryParameter($operation, $annotations, $controllerInstance, $schema))
+        $operation = (new OperationQueryParameter($operation, $controllerInstance, $schema, $refMethod))
             ->getOperationWithQueryParameters();
 
-        $operation = (new OperationRequestBody($this->swagger, $operation, $annotations, $route, $schema))
+        $operation = (new OperationRequestBody($this->swagger, $operation, $route, $refMethod, $schema))
             ->getOperationWithRequestBody();
 
         $operation = (new OperationResponse(
             $this->swagger,
             $config,
             $operation,
-            $annotations,
             $route,
-            $schema
+            $schema,
+            $refMethod,
         ))->getOperationWithResponses();
 
         $operation = (new OperationResponseException($this->swagger, $config, $operation, $docBlock))->getOperation();
@@ -111,7 +111,7 @@ class OperationFromRouteFactory
             new Event('SwaggerBake.Operation.created', $operation, [
                 'config' => $config,
                 'docBlock' => $docBlock,
-                'methodAnnotations' => $annotations,
+                'reflectionMethod' => $refMethod,
                 'route' => $route,
                 'schema' => $schema,
             ])
@@ -144,27 +144,9 @@ class OperationFromRouteFactory
     }
 
     /**
-     * Is the Operation visible in Swagger UI / OpenAPI
-     *
-     * @param \ReflectionMethod|null $refMethod A reflection of the Controller method (i.e. action)
-     * @return bool
-     */
-    private function isVisible(?ReflectionMethod $refMethod): bool
-    {
-        if ($refMethod instanceof ReflectionMethod) {
-            $operation = (new AttributeInstance($refMethod, OpenApiOperation::class))->createOne();
-            if ($operation instanceof OpenApiOperation) {
-                return $operation->isVisible;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Is the route, http method, and annotation combination allowed? This primarily prevents HTTP PUT methods on
-     * controller `edit()` actions from appearing in OpenAPI schema by default. This is because the default CakePHP
-     * behavior for edit actions is HTTP PATCH.
+     * First check if the route (operation) is visible. Then check ifs the route, http method, and annotation
+     * combination allowed? This primarily prevents HTTP PUT methods on controller `edit()` actions from appearing in
+     * OpenAPI schema by default. This is because the default CakePHP behavior for edit actions is HTTP PATCH.
      *
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route instance of RouteDecorator
      * @param string $httpMethod http method (PUT, POST, PATCH etc..)
@@ -173,18 +155,20 @@ class OperationFromRouteFactory
      */
     private function isAllowed(RouteDecorator $route, string $httpMethod, ?ReflectionMethod $refMethod): bool
     {
+        $operation = null;
+
+        if ($refMethod instanceof ReflectionMethod) {
+            $operation = (new AttributeFactory($refMethod, OpenApiOperation::class))->createOneOrNull();
+            if ($operation instanceof OpenApiOperation && !$operation->isVisible) {
+                return false;
+            }
+        }
+
         if (strtoupper($httpMethod) !== 'PUT' || $route->getAction() !== 'edit') {
             return true;
         }
 
-        if ($refMethod instanceof ReflectionMethod) {
-            $operation = (new AttributeInstance($refMethod, OpenApiOperation::class))->createOne();
-            if ($operation instanceof OpenApiOperation) {
-                return $operation->isPut;
-            }
-        }
-
-        return false;
+        return $operation instanceof OpenApiOperation ? $operation->isPut : false;
     }
 
     /**
@@ -201,7 +185,7 @@ class OperationFromRouteFactory
         ?ReflectionMethod $refMethod
     ): Operation {
         if ($refMethod instanceof ReflectionMethod) {
-            $openApiOperation = (new AttributeInstance($refMethod, OpenApiOperation::class))->createOne();
+            $openApiOperation = (new AttributeFactory($refMethod, OpenApiOperation::class))->createOneOrNull();
             if ($openApiOperation instanceof OpenApiOperation && count($openApiOperation->tagNames)) {
                 return $operation->setTags($openApiOperation->tagNames);
             }

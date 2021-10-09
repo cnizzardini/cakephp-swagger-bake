@@ -19,14 +19,6 @@ interface ExtensionInterface
     public function isSupported(): bool;
 
     /**
-     * This method will load any custom annotations provided by the extension.
-     *
-     * @example SwaggerBake\Lib\AnnotationLoader
-     * @return void
-     */
-    public function loadAnnotations(): void;
-
-    /**
      * This will register the listener
      *
      * @see https://book.cakephp.org/4/en/core-libraries/events.html#registering-anonymous-listeners

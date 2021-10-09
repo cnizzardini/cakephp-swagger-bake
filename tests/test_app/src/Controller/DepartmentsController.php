@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBakeTest\App\Controller;
 
 use SwaggerBake\Lib\Annotation as Swag;
+use SwaggerBake\Lib\Attribute\OpenApiPaginator;
+use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
 use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 
 /**
@@ -22,13 +24,8 @@ class DepartmentsController extends AppController
         $this->loadComponent('Authentication.Authentication');
     }
 
-    /**
-     * Gets Departments
-     *
-     * @Swag\SwagPaginator
-     * @Swag\SwagQuery(name="random", type="boolean", required=true)
-     * @return \Cake\Http\Response|null|void Renders view
-     */
+    #[OpenApiPaginator]
+    #[OpenApiQueryParam(name: "random", type: "boolean", required: true)]
     public function index()
     {
         $departments = $this->paginate($this->Departments);

@@ -5,7 +5,6 @@ namespace SwaggerBake\Command;
 
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
-use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\ExtensionLoader;
 
@@ -35,7 +34,6 @@ trait CommandTrait
 
         Configure::readOrFail('SwaggerBake');
 
-        AnnotationLoader::load();
         ExtensionLoader::load();
     }
 }

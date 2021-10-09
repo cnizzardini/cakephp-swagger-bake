@@ -6,7 +6,7 @@ namespace SwaggerBake\Test\TestCase\Lib;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\AnnotationLoader;
+
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
@@ -72,7 +72,7 @@ class SwaggerOperationTest extends TestCase
         $cakeRoute = new RouteScanner($this->router, $configuration);
         $this->swagger = new Swagger(new ModelScanner($cakeRoute, $configuration));
 
-        AnnotationLoader::load();
+        
     }
 
     public function test_crud_operations_exist(): void
@@ -119,7 +119,7 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['$ref']);
     }
 
-    public function test_default_request_schema_on_edit_method(): void
+    public function test_default_request_body_schema_on_edit_method(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 

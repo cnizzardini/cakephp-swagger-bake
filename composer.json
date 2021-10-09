@@ -1,6 +1,6 @@
 {
     "name": "cnizzardini/cakephp-swagger-bake",
-    "description": "Automatically generate Swagger documentation from your exist routes with minimal comments and configuration",
+    "description": "Automatically generate OpenApi, Swagger, and Redoc documentation from your existing code",
     "type": "cakephp-plugin",
     "license": "MIT",
     "keywords": ["cakephp swagger","cakephp4 swagger","cake swagger"],

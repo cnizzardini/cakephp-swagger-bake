@@ -11,13 +11,12 @@ use MixerApi\Core\Model\Model;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
-use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
-use SwaggerBake\Lib\Attribute\AttributeInstance;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
+use SwaggerBake\Lib\Attribute\OpenApiEntityAttribute;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
-use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
  * Creates an instance of SwaggerBake\Lib\OpenApi\Schema per OpenAPI specifications
@@ -29,17 +28,17 @@ class SchemaFactory
     private Validator $validator;
 
     /**
-     * @var string
+     * @var int
      */
     public const WRITEABLE_PROPERTIES = 2;
 
     /**
-     * @var string
+     * @var int
      */
     public const READABLE_PROPERTIES = 4;
 
     /**
-     * @var string
+     * @var int
      */
     public const ALL_PROPERTIES = 6;
 
@@ -54,7 +53,7 @@ class SchemaFactory
     public function create(ModelDecorator $modelDecorator, int $propertyType = 6): ?Schema
     {
         $reflection = new ReflectionClass($modelDecorator->getModel()->getEntity());
-        $openApiSchema = (new AttributeInstance($reflection, OpenApiSchema::class))->createOne();
+        $openApiSchema = (new AttributeFactory($reflection, OpenApiSchema::class))->createOneOrNull();
 
         if ($openApiSchema instanceof OpenApiSchema && $openApiSchema->isVisible === false) {
             return null;
@@ -180,24 +179,21 @@ class SchemaFactory
      *
      * @param \MixerApi\Core\Model\Model $model Model
      * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * @throws \ReflectionException
      */
     private function getSwagPropertyAnnotations(Model $model): array
     {
-        $return = [];
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiEntityAttribute[] $attributes */
+        $attributes = (new AttributeFactory(
+            new ReflectionClass($model->getEntity()),
+            OpenApiEntityAttribute::class
+        ))->createMany();
 
-        $annotations = AnnotationUtility::getClassAnnotationsFromInstance($model->getEntity());
-
-        $swagEntityAttributes = array_filter($annotations, function ($annotation) {
-            return $annotation instanceof SwagEntityAttribute;
-        });
-
-        $factory = new SchemaPropertyFromAnnotationFactory();
-
-        foreach ($swagEntityAttributes as $swagEntityAttribute) {
-            $return[$swagEntityAttribute->name] = $factory->create($swagEntityAttribute);
+        foreach ($attributes as $attribute) {
+            $return[$attribute->name] = $attribute->create();
         }
 
-        return $return;
+        return $return ?? [];
     }
 
     /**

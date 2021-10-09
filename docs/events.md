@@ -28,7 +28,7 @@ EventManager::instance()
 
 ### Initialize
 
-The `SwaggerBake.initialize` is dispatched once, just before [Swagger](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/Swagger.php) begins building OpenAPI from your routes, models, and annotations.
+The `SwaggerBake.initialize` is dispatched once, just before [Swagger](https://github.com/cnizzardini/cakephp-swagger-bake/blob/master/src/Lib/Swagger.php) begins building OpenAPI from your routes, models, and attributes.
 
 ```php
 EventManager::instance()

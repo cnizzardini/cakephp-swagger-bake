@@ -21,7 +21,7 @@ and controllers.
 [Authentication](https://book.cakephp.org/authentication/2/en/index.html), 
 [Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html), and 
 [Bake](#bake-theme).
-- Provides additional functionality through Annotations and Doc Blocks.
+- Provides additional functionality through Attributes and Doc Blocks.
 
 [Swagger Bake Demo](http://cakephpswaggerbake.cnizz.com/) | [Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo) | 
 [Swagger/MixerAPI Demo](https://demo.mixerapi.com/) | [Demo Code](https://github.com/mixerapi/demo)
@@ -33,7 +33,7 @@ and controllers.
 - [Getting Started](#getting-started)
 - [Automatic Documentation](#automatic-documentation)
 - [Doc Blocks](#doc-blocks)
-- [Annotations](#annotations)
+- [Attributes](#attributes)
 - [Events](#event-system)
 - [Customizing Exception Responses](#customizing-exception-responses)
 - [Extending Views and Controllers](#extending-views-and-controllers)
@@ -102,7 +102,7 @@ RESTful controllers.
  
 ## Automatic Documentation
 
-I built this library to reduce the need for annotations to build documentation. SwaggerBake will automatically 
+I built this library to reduce the need for attributes to build documentation. SwaggerBake will automatically 
 build the following from your existing routes and models without additional effort:
 
 - Paths
@@ -160,29 +160,30 @@ for entity attribute descriptions:
  */
 ```
 
-## Annotations
+## Attributes
 
-SwaggerBake provides some optional Annotations for enhanced functionality. These can be imported individually from 
-`SwaggerBake\Lib\Annotation` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Annotation as Swag`.
-[Read the Annotations docs](docs/attributes.md#swaggerbake-annotations) for detailed examples.
+SwaggerBake provides some optional Attributes for enhanced functionality. These can be imported individually from 
+`SwaggerBake\Lib\Attribute` or set to an alias such as `Swag`: `use SwaggerBake\Lib\Attribute as Swag`.
+[Read the Attributes docs](docs/attributes.md) for detailed examples.
 
-| Annotation | Description | 
+| Attribute | Description | 
 | ------------- | ------------- |
-| [@SwagPaginator](docs/attributes.md#swagpaginator) | Supports CakePHP Paginator Component |
-| [@SwagSearch](docs/attributes.md#swagsearch) | Supports Friends of Cake Search |
-| [@SwagQuery](docs/attributes.md#swagquery) | Adds query parameters |
-| [@SwagForm](docs/attributes.md#swagform) | Adds form parameters |
-| [@SwagDto](docs/attributes.md#swagdto) | Adds Data Transfer Objects (DTOs) |
-| [@SwagHeader](docs/attributes.md#swagheader) | Adds header parameters |
-| [@SwagPathParameter](docs/attributes.md#swagpathparameter) | Modifies path parameters |
-| [@SwagSecurity](docs/attributes.md#swagsecurity) | Adds/modifies authentication. Read below |
-| [@SwagOperation](docs/attributes.md#swagoperation) | Modifies OpenAPI operations (can be used to hide operations) |
-| [@SwagRequestBody](docs/attributes.md#swagrequestbody) | Describes OpenAPI request body |
-| [@SwagRequestBodyContent](docs/attributes.md#swagrequestbodycontent) | Describes OpenAPI request body content |
-| [@SwagResponseSchema](docs/attributes.md#swagresponseschema) | Describes OpenAPI response schema |
-| [@SwagPath](docs/attributes.md#swagpath) | Describes OpenAPI paths (can be used to hide paths) |
-| [@SwagEntity](docs/attributes.md#swagentity) | Describes OpenAPI Entity (can be used to hide entity schemas) |
-| [@SwagEntityAttribute](docs/attributes.md#swagentityattribute) | Add/modify OpenAPI schema properties |
+| [OpenApiDto](#OpenApiDto) | Builds OpenAPI query params and request bodies from Data Transfer Objects |
+| [OpenApiDtoQuery](#OpenApiDtoQuery) | Builds OpenAPI query param from Data Transfer Objects |
+| [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) | Builds OpenAPI request body property from Data Transfer Objects |
+| [OpenApiForm](#OpenApiForm) | Builds OpenAPI for application/x-www-form-urlencoded request bodies |
+| [OpenApiEntityAttribute](#OpenApiEntityAttribute) | Modifies an OpenAPI schema property |
+| [OpenApiHeader](#OpenApiHeader) | Create OpenAPI header parameters |
+| [OpenApiOperation](#OpenApiOperation) | Modifies OpenAPI operation |
+| [OpenApiPaginator](#OpenApiPaginator) | Create OpenAPI query params from CakePHP Paginator Component |
+| [OpenApiPath](#OpenApiPath) | Modifies OpenAPI paths |
+| [OpenApiPathParam](#OpenApiPathParam) | Modify an existing OpenAPI path parameter |
+| [OpenApiQueryParam](#OpenApiQueryParam) | Builds OpenAPI query param |
+| [OpenApiRequestBody](#OpenApiRequestBody) | Modify OpenAPI request body |
+| [OpenApiResponse](#OpenApiResponse) | Modify OpenAPI response |
+| [OpenApiSchema](#OpenApiSchema) | Modifies OpenAPI schema |
+| [OpenApiSearch](#OpenApiSearch) | Create OpenAPI query params from CakePHP Search plugin |
+| [OpenApiSecurity](#OpenApiSecurity) | Create/modify OpenAPI security |
 
 ## Event System
 
