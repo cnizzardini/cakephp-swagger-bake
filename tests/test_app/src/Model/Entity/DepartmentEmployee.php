@@ -4,11 +4,10 @@ declare(strict_types=1);
 namespace SwaggerBakeTest\App\Model\Entity;
 
 use Cake\ORM\Entity;
-use SwaggerBake\Lib\Annotation\SwagEntity;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 
 /**
  * DepartmentEmployee Entity
- * @SwagEntity(isPublic=false)
  * @property int $employee_id
  * @property int $department_id
  * @property \Cake\I18n\FrozenDate $from_date
@@ -18,6 +17,7 @@ use SwaggerBake\Lib\Annotation\SwagEntity;
  * @property \SwaggerBake\Test\Model\Entity\Employee $employee
  * @property \SwaggerBake\Test\Model\Entity\Department $department
  */
+#[OpenApiSchema(isPublic: false)]
 class DepartmentEmployee extends Entity
 {
     /**

@@ -4,7 +4,7 @@ namespace SwaggerBake\Test\TestCase\Lib\Factory;
 
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\AnnotationLoader;
+
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
@@ -42,7 +42,7 @@ class SwaggerFactoryTest extends TestCase
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
-        AnnotationLoader::load();
+
     }
 
     public function test_create_method_throws_swagger_runtime_exception(): void

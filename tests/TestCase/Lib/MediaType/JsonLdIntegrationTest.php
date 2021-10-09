@@ -5,7 +5,7 @@ namespace SwaggerBake\Test\TestCase\Lib\MediaType;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\AnnotationLoader;
+
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\MediaType\JsonLd;
 use SwaggerBake\Lib\Model\ModelScanner;
@@ -60,7 +60,7 @@ class JsonLdIntegrationTest extends TestCase
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
-        AnnotationLoader::load();
+        
     }
 
     public function test_collection(): void

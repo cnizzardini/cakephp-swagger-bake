@@ -59,7 +59,7 @@
     <rule ref="rulesets/controversial.xml/CamelCaseClassName" />
     <rule ref="rulesets/controversial.xml/CamelCasePropertyName" />
     <rule ref="rulesets/controversial.xml/CamelCaseVariableName" />
-    <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag" />
+
     <rule ref="rulesets/codesize.xml/ExcessiveParameterList" />
     <rule ref="rulesets/codesize.xml/ExcessivePublicCount" />
     <rule ref="rulesets/codesize.xml/TooManyFields" />
@@ -73,8 +73,10 @@
     <!--<rule ref="rulesets/unusedcode.xml/UnusedLocalVariable" />-->
 
     <!--
-        Not yet included by the project:
+        Suppressed:
     -->
+    <!-- <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag" /> -->
+    <!-- <rule ref="rulesets/cleancode.xml/ElseExpression" /> -->
     <!--
     <rule ref="rulesets/naming.xml/ShortVariable" >
         <properties>
@@ -83,7 +85,6 @@
         </properties>
     </rule>
     -->
-    <!-- <rule ref="rulesets/cleancode.xml/ElseExpression" /> -->
     <!-- <rule ref="rulesets/cleancode.xml/StaticAccess" /> -->
     <!-- <rule ref="rulesets/codesize.xml/TooManyFields" /> -->
 

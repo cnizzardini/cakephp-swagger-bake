@@ -3,22 +3,17 @@ declare(strict_types=1);
 
 namespace SwaggerBakeTest\App\Controller;
 
-use SwaggerBake\Lib\Annotation as Swag;
-use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
+use SwaggerBake\Lib\Attribute\OpenApiOperation;
 
 class OperationsController extends AppController
 {
-    /**
-     * @Swag\SwagOperation(isVisible=false)
-     */
+    #[OpenApiOperation(isVisible: false)]
     public function isVisible()
     {
 
     }
 
-    /**
-     * @Swag\SwagOperation(tagNames={"These","Tags","Are","Might"})
-     */
+    #[OpenApiOperation(tagNames: ['1','2','3','4'])]
     public function tagNames()
     {
 

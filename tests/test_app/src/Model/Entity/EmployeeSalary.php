@@ -5,12 +5,9 @@ namespace SwaggerBakeTest\App\Model\Entity;
 
 use Cake\ORM\Entity;
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 
-/**
- * EmployeeSalary Entity
- *
- * @SwagAnnotation\SwagEntity(isVisible=false)
- */
+#[OpenApiSchema(isVisible: false)]
 class EmployeeSalary extends Entity
 {
     /**

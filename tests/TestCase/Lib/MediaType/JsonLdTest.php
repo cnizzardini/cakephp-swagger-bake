@@ -5,7 +5,7 @@ namespace SwaggerBake\Test\TestCase\Lib\MediaType;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\Annotation\SwagResponseSchema;
+use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\MediaType\JsonLd;
@@ -68,17 +68,15 @@ class JsonLdTest extends TestCase
     public function test_item_with_association(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
         $routes = $cakeRoute->getRoutes();
 
         $schema = (new OperationResponseAssociation(
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $routes['employees:view'],
             null
-        ))->build(new SwagResponseSchema([
-            'schemaType' => 'object',
-            'associations' => ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
-        ]));
+        ))->build(new OpenApiResponse(
+            associations: ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
+        ));
 
         $schema = (new JsonLd())->buildSchema($schema, 'object');
         $object = json_decode(json_encode($schema->jsonSerialize()));
@@ -103,17 +101,16 @@ class JsonLdTest extends TestCase
     public function test_item_collection_association(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
         $routes = $cakeRoute->getRoutes();
 
         $schema = (new OperationResponseAssociation(
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $routes['employees:view'],
             null
-        ))->build(new SwagResponseSchema([
-            'schemaType' => 'array',
-            'associations' => ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
-        ]));
+        ))->build(new OpenApiResponse(
+            schemaType: 'array',
+            associations: ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
+        ));
 
         $schema = (new JsonLd())->buildSchema($schema, 'array');
         $object = json_decode(json_encode($schema->jsonSerialize()));

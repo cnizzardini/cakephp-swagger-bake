@@ -79,6 +79,7 @@ class DocBlockUtility
      */
     public static function getPropertyDocBlock(ReflectionProperty $property): DocBlock
     {
+        print_r($property);
         $comment = $property->getDocComment();
         $docFactory = DocBlockFactory::createInstance();
 

@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Operation;
 
 use InvalidArgumentException;
-use SwaggerBake\Lib\Annotation\SwagResponseSchema;
+use ReflectionMethod;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
+use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\MediaType\Generic;
@@ -31,7 +33,7 @@ class OperationResponse
 
     private Operation $operation;
 
-    private array $annotations;
+    private ?ReflectionMethod $refMethod;
 
     private RouteDecorator $route;
 
@@ -44,22 +46,22 @@ class OperationResponse
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param array $annotations An array of annotation objects
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
-     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema Schema or null
+     * @param \ReflectionMethod $refMethod ReflectionMethod or null
      */
     public function __construct(
         Swagger $swagger,
         Configuration $config,
         Operation $operation,
-        array $annotations,
         RouteDecorator $route,
-        ?Schema $schema
+        ?Schema $schema = null,
+        ?ReflectionMethod $refMethod = null
     ) {
         $this->swagger = $swagger;
         $this->config = $config;
         $this->operation = $operation;
-        $this->annotations = $annotations;
+        $this->refMethod = $refMethod;
         $this->route = $route;
         $this->schema = $schema;
     }
@@ -85,20 +87,25 @@ class OperationResponse
      */
     private function assignFromAnnotations(): void
     {
-        $swagResponses = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagResponseSchema;
-        });
+        if (!$this->refMethod instanceof ReflectionMethod) {
+            return;
+        }
 
-        foreach ($swagResponses as $annotate) {
-            $mimeTypes = $annotate->mimeTypes ?? $this->config->getResponseContentTypes();
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiResponse[] $openApiResponses */
+        $openApiResponses = (new AttributeFactory($this->refMethod, OpenApiResponse::class))->createMany();
+
+        foreach ($openApiResponses as $openApiResponse) {
+            $mimeTypes = $openApiResponse->mimeTypes ?? $this->config->getResponseContentTypes();
 
             foreach ($mimeTypes as $mimeType) {
                 $content = (new Content())->setMimeType($mimeType);
-                $response = (new Response())->setCode($annotate->statusCode)->setDescription($annotate->description);
+                $response = (new Response())
+                    ->setCode($openApiResponse->statusCode)
+                    ->setDescription($openApiResponse->description);
 
                 // push text/plain response and the continue to next mime/type
                 if ($mimeType == 'text/plain') {
-                    $schema = (new Schema())->setType('string')->setFormat($annotate->schemaFormat ?? '');
+                    $schema = (new Schema())->setType('string')->setFormat($openApiResponse->schemaFormat ?? '');
                     $content->setSchema($schema);
                     $response->pushContent($content);
                     $this->operation->pushResponse($response);
@@ -106,23 +113,23 @@ class OperationResponse
                 }
 
                 // push basic response since no entity or format was defined and continue to next mime/type
-                if (empty($annotate->refEntity) && empty($annotate->associations)) {
+                if (empty($openApiResponse->refEntity) && empty($openApiResponse->associations)) {
                     $response->pushContent($content);
                     $this->operation->pushResponse($response);
                     continue;
                 }
 
                 $assocSchema = null;
-                if (is_array($annotate->associations)) {
+                if (is_array($openApiResponse->associations)) {
                     $assocSchema = (new OperationResponseAssociation($this->swagger, $this->route, $this->schema))
-                        ->build($annotate);
+                        ->build($openApiResponse);
                 }
 
                 try {
                     $schema = $this->getMimeTypeSchema(
                         $mimeType,
-                        $annotate->schemaType,
-                        $assocSchema ?? $annotate->refEntity
+                        $openApiResponse->schemaType,
+                        $assocSchema ?? $openApiResponse->refEntity
                     );
                 } catch (\Exception $e) {
                     throw new SwaggerBakeRunTimeException(
@@ -135,7 +142,7 @@ class OperationResponse
                 }
 
                 $content->setSchema(
-                    $annotate->schemaFormat ? $schema->setFormat($annotate->schemaFormat) : $schema
+                    $openApiResponse->schemaFormat ? $schema->setFormat($openApiResponse->schemaFormat) : $schema
                 );
                 $response->pushContent($content);
                 $this->operation->pushResponse($response);

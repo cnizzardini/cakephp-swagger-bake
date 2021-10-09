@@ -5,14 +5,10 @@ namespace SwaggerBake\Test\TestCase\Lib\MediaType;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\Annotation\SwagResponseSchema;
-use SwaggerBake\Lib\AnnotationLoader;
+
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\Model\ModelScanner;
-use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\Operation\OperationResponseAssociation;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
 
@@ -63,7 +59,7 @@ class HalJsonIntegrationTest extends TestCase
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
-        AnnotationLoader::load();
+        
     }
 
     public function test_collection(): void

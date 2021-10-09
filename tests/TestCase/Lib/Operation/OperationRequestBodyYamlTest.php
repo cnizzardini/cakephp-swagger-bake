@@ -5,27 +5,25 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use phpDocumentor\Reflection\DocBlockFactory;
-use SwaggerBake\Lib\Annotation\SwagDto;
-use SwaggerBake\Lib\Annotation\SwagForm;
-use SwaggerBake\Lib\Annotation\SwagRequestBody;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
-use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationRequestBody;
 use SwaggerBake\Lib\Swagger;
 
 class OperationRequestBodyYamlTest extends TestCase
 {
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 
-    private $router;
-    private $config;
+    private Router $router;
+
+    private array $config;
 
     public function setUp(): void
     {
@@ -72,8 +70,8 @@ class OperationRequestBodyYamlTest extends TestCase
         $operationRequestBody = new OperationRequestBody(
             $swagger,
             (new Operation())->setHttpMethod('POST'),
-            [],
             $route,
+            null,
             $swagger->getArray()['components']['schemas']['Employee']
         );
 

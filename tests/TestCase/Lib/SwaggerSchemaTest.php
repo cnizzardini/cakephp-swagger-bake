@@ -5,7 +5,7 @@ namespace SwaggerBake\Test\TestCase\Lib;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\AnnotationLoader;
+
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
@@ -46,7 +46,7 @@ class SwaggerSchemaTest extends TestCase
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
-        AnnotationLoader::load();
+        
     }
 
     public function testEmployeeTableProperties()

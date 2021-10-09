@@ -12,7 +12,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use MixerApi\Core\Model\ModelFactory;
-use SwaggerBake\Lib\Annotation\SwagResponseSchema;
+use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -61,13 +61,13 @@ class OperationResponseAssociation
     /**
      * Builds a new schema with associations
      *
-     * @param \SwaggerBake\Lib\Annotation\SwagResponseSchema $annotation an instance of SwagResponseSchema
+     * @param \SwaggerBake\Lib\Attribute\OpenApiResponse $openApiResponse OpenApiResponse instance
      * @return \SwaggerBake\Lib\OpenApi\Schema
      * @throws \ReflectionException
      */
-    public function build(SwagResponseSchema $annotation): Schema
+    public function build(OpenApiResponse $openApiResponse): Schema
     {
-        $associations = $annotation->associations;
+        $associations = $openApiResponse->associations;
 
         if (!isset($associations['table'])) {
             $associations['table'] = $this->route->getController();
@@ -76,7 +76,7 @@ class OperationResponseAssociation
         if ($associations['depth'] <> 1) {
             throw new SwaggerBakeRunTimeException(
                 sprintf(
-                    'SwagResponseSchema association depth must be a positive integer, but only a depth of `1`' .
+                    'SwagResponseSchema association depth must be a positive integer, but only a depth of `1` ' .
                     'is currently supported. Given depth of `%s`.',
                     $associations['depth']
                 )

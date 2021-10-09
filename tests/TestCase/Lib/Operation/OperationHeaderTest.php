@@ -3,19 +3,24 @@
 namespace SwaggerBake\Test\TestCase\Lib\Operation;
 
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\Annotation\SwagHeader;
+use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
+use SwaggerBake\Lib\Attribute\OpenApiHeader;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationHeader;
 
 class OperationHeaderTest extends TestCase
 {
-    public function testGetOperationWithHeaders()
+    public function test_get_operation_with_headers(): void
     {
-        $operation = (new OperationHeader())
-            ->getOperationWithHeaders(
-                new Operation(),
-                [
-                    new SwagHeader([
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiHeader::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiHeader::class, [
                         'name' => 'X-HEADER',
                         'type' => 'string',
                         'description' => 'test desc',
@@ -24,9 +29,15 @@ class OperationHeaderTest extends TestCase
                         'allowEmptyValue' => true,
                         'deprecated' => true,
                         'format' => 'date',
-                        'example' => 'test example'
+                        'example' => 'test example',
                     ])
-                ]
+                ])
+            );
+
+        $operation = (new OperationHeader())
+            ->getOperationWithHeaders(
+                new Operation(),
+                $mockReflectionMethod
             );
 
         $param = $operation->getParameterByTypeAndName('header', 'X-HEADER');

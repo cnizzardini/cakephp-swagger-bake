@@ -9,7 +9,10 @@ use Cake\Utility\Inflector;
 use Exception;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
-use SwaggerBake\Lib\Annotation\SwagOperation;
+use ReflectionClass;
+use ReflectionMethod;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
+use SwaggerBake\Lib\Attribute\OpenApiOperation;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteDecorator;
@@ -55,7 +58,15 @@ class OperationFromRouteFactory
         $docBlock = $this->getDocBlock($route);
         $annotations = AnnotationUtility::getMethodAnnotations($fqn, $route->getAction());
 
-        if (!$this->isAllowed($route, $httpMethod, $annotations) || !$this->isVisible($annotations)) {
+        try {
+            $refClass = new ReflectionClass($route->getControllerFqn());
+            $refMethod = $refClass->getMethod($route->getAction());
+        } catch (Exception) {
+            $refClass = null;
+            $refMethod = null;
+        }
+
+        if (!$this->isAllowed($route, $httpMethod, $refMethod)) {
             return null;
         }
 
@@ -65,33 +76,33 @@ class OperationFromRouteFactory
             ->setHttpMethod(strtolower($httpMethod))
             ->setOperationId($route->getName() . ':' . strtolower($httpMethod));
 
-        $operation = $this->getOperationWithTags($operation, $route, $annotations);
+        $operation = $this->getOperationWithTags($operation, $route, $refMethod);
 
         $operation = (new OperationDocBlock())
             ->getOperationWithDocBlock($operation, $docBlock);
 
-        $operation = (new OperationPath($operation, $route, $annotations, $schema))
+        $operation = (new OperationPathParameter($operation, $route, $refMethod, $schema))
             ->getOperationWithPathParameters();
 
         $operation = (new OperationHeader())
-            ->getOperationWithHeaders($operation, $annotations);
+            ->getOperationWithHeaders($operation, $refMethod);
 
-        $operation = (new OperationSecurity($operation, $annotations, $route, $controllerInstance, $this->swagger))
+        $operation = (new OperationSecurity($operation, $refMethod, $route, $controllerInstance, $this->swagger))
             ->getOperationWithSecurity();
 
-        $operation = (new OperationQueryParameter($operation, $annotations, $controllerInstance, $schema))
+        $operation = (new OperationQueryParameter($operation, $controllerInstance, $schema, $refMethod))
             ->getOperationWithQueryParameters();
 
-        $operation = (new OperationRequestBody($this->swagger, $operation, $annotations, $route, $schema))
+        $operation = (new OperationRequestBody($this->swagger, $operation, $route, $refMethod, $schema))
             ->getOperationWithRequestBody();
 
         $operation = (new OperationResponse(
             $this->swagger,
             $config,
             $operation,
-            $annotations,
             $route,
-            $schema
+            $schema,
+            $refMethod,
         ))->getOperationWithResponses();
 
         $operation = (new OperationResponseException($this->swagger, $config, $operation, $docBlock))->getOperation();
@@ -100,7 +111,7 @@ class OperationFromRouteFactory
             new Event('SwaggerBake.Operation.created', $operation, [
                 'config' => $config,
                 'docBlock' => $docBlock,
-                'methodAnnotations' => $annotations,
+                'reflectionMethod' => $refMethod,
                 'route' => $route,
                 'schema' => $schema,
             ])
@@ -133,52 +144,31 @@ class OperationFromRouteFactory
     }
 
     /**
-     * Is the Operation visible in Swagger UI / OpenAPI
-     *
-     * @param array $annotations An array of annotation objects
-     * @return bool
-     */
-    private function isVisible(array $annotations): bool
-    {
-        $swagOperations = array_filter($annotations, function ($annotation) {
-            return $annotation instanceof SwagOperation;
-        });
-
-        if (empty($swagOperations)) {
-            return true;
-        }
-
-        $swagOperation = reset($swagOperations);
-
-        return $swagOperation->isVisible === false ? false : true;
-    }
-
-    /**
-     * Is the route, http method, and annotation combination allowed? This primarily prevents HTTP PUT methods on
-     * controller `edit()` actions from appearing in OpenAPI schema by default.
+     * First check if the route (operation) is visible. Then check ifs the route, http method, and annotation
+     * combination allowed? This primarily prevents HTTP PUT methods on controller `edit()` actions from appearing in
+     * OpenAPI schema by default. This is because the default CakePHP behavior for edit actions is HTTP PATCH.
      *
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route instance of RouteDecorator
      * @param string $httpMethod http method (PUT, POST, PATCH etc..)
-     * @param array $annotations an array of annotation objects
+     * @param \ReflectionMethod|null $refMethod A reflection of the Controller method (i.e. action)
      * @return bool
      */
-    private function isAllowed(RouteDecorator $route, string $httpMethod, array $annotations): bool
+    private function isAllowed(RouteDecorator $route, string $httpMethod, ?ReflectionMethod $refMethod): bool
     {
+        $operation = null;
+
+        if ($refMethod instanceof ReflectionMethod) {
+            $operation = (new AttributeFactory($refMethod, OpenApiOperation::class))->createOneOrNull();
+            if ($operation instanceof OpenApiOperation && !$operation->isVisible) {
+                return false;
+            }
+        }
+
         if (strtoupper($httpMethod) !== 'PUT' || $route->getAction() !== 'edit') {
             return true;
         }
 
-        $swagOperations = array_filter($annotations, function ($annotation) {
-            return $annotation instanceof SwagOperation;
-        });
-
-        if (empty($swagOperations)) {
-            return false;
-        }
-
-        $swagOperation = reset($swagOperations);
-
-        return $swagOperation->showPut;
+        return $operation instanceof OpenApiOperation ? $operation->isPut : false;
     }
 
     /**
@@ -186,23 +176,23 @@ class OperationFromRouteFactory
      *
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
-     * @param array $annotations An array of annotation objects
-     * @return \SwaggerBake\Lib\OpenApi\Operation ]
+     * @param \ReflectionMethod|null $refMethod A reflection of the Controller method (i.e. action)
+     * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    private function getOperationWithTags(Operation $operation, RouteDecorator $route, array $annotations): Operation
-    {
-        $swagOperations = array_filter($annotations, function ($annotation) {
-            return $annotation instanceof SwagOperation;
-        });
-
-        $swagOperation = reset($swagOperations);
-
-        if (empty($swagOperation->tagNames)) {
-            return $operation->setTags([
-                Inflector::humanize(Inflector::underscore($route->getController())),
-            ]);
+    private function getOperationWithTags(
+        Operation $operation,
+        RouteDecorator $route,
+        ?ReflectionMethod $refMethod
+    ): Operation {
+        if ($refMethod instanceof ReflectionMethod) {
+            $openApiOperation = (new AttributeFactory($refMethod, OpenApiOperation::class))->createOneOrNull();
+            if ($openApiOperation instanceof OpenApiOperation && count($openApiOperation->tagNames)) {
+                return $operation->setTags($openApiOperation->tagNames);
+            }
         }
 
-        return $operation->setTags($swagOperation->tagNames);
+        return $operation->setTags([
+            Inflector::humanize(Inflector::underscore($route->getController())),
+        ]);
     }
 }

@@ -3,25 +3,20 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
-use SwaggerBake\Lib\Annotation\SwagDto;
-use SwaggerBake\Lib\Annotation\SwagForm;
-use SwaggerBake\Lib\Annotation\SwagRequestBody;
-use SwaggerBake\Lib\Annotation\SwagRequestBodyContent;
+use ReflectionMethod;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
+use SwaggerBake\Lib\Attribute\OpenApiDto;
+use SwaggerBake\Lib\Attribute\OpenApiForm;
+use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\OpenApi\Xml;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
 
-/**
- * Class OperationRequestBody
- *
- * @package SwaggerBake\Lib\Operation
- */
 class OperationRequestBody
 {
     private Swagger $swagger;
@@ -30,109 +25,81 @@ class OperationRequestBody
 
     private RouteDecorator $route;
 
-    private array $annotations;
+    private ?ReflectionMethod $refMethod;
 
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Schema|null
-     */
-    private $schema;
+    private ?Schema $schema;
 
     private Configuration $config;
 
     /**
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param array $annotations Array of annotation objects
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
-     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema
+     * @param \ReflectionMethod|null $refMethod ReflectionMethod or null, this is used to access attributes
+     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema or null, this will be used as the operations schema
      */
     public function __construct(
         Swagger $swagger,
         Operation $operation,
-        array $annotations,
         RouteDecorator $route,
-        ?Schema $schema
+        ?ReflectionMethod $refMethod = null,
+        ?Schema $schema = null
     ) {
         $this->swagger = $swagger;
         $this->operation = $operation;
-        $this->annotations = $annotations;
         $this->route = $route;
+        $this->refMethod = $refMethod;
         $this->schema = $schema;
         $this->config = $swagger->getConfig();
     }
 
     /**
-     * Gets an Operation with RequestBody
+     * Returns the Operation after applying various Attributes and Schemas
      *
      * @return \SwaggerBake\Lib\OpenApi\Operation
+     * @throws \ReflectionException
      */
     public function getOperationWithRequestBody(): Operation
     {
         if (!in_array($this->operation->getHttpMethod(), ['POST','PATCH','PUT'])) {
             return $this->operation;
         }
-
-        $this->assignSwagRequestBodyAnnotation();
-        $this->assignSwagRequestBodyContentAnnotations();
-        $this->assignSwagFormAnnotations();
-        $this->assignSwagDto();
-        $this->assignSchema();
+        if ($this->refMethod instanceof ReflectionMethod) {
+            $this->applyRequestBody();
+            $this->applyForm();
+            $this->applyDataTransferObject();
+        }
+        $this->applySchema();
 
         return $this->operation;
     }
 
     /**
-     * Assigns @SwagRequestBody annotations
+     * Apply OpenApiRequestBody attribute
      *
      * @return void
+     * @throws \ReflectionException
      */
-    private function assignSwagRequestBodyAnnotation(): void
+    private function applyRequestBody(): void
     {
-        $swagRequestBodies = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagRequestBody;
-        });
+        $openApiRequestBody = (new AttributeFactory(
+            $this->refMethod,
+            OpenApiRequestBody::class
+        ))->createOneOrNull();
 
-        if (empty($swagRequestBodies)) {
+        if (!$openApiRequestBody instanceof OpenApiRequestBody) {
             return;
         }
-
-        $swagRequestBody = reset($swagRequestBodies);
-
-        $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
-
-        $requestBody
-            ->setDescription($swagRequestBody->description)
-            ->setRequired($swagRequestBody->required);
-
-        $this->operation->setRequestBody($requestBody);
-    }
-
-    /**
-     * Assigns @SwagRequestBodyContent annotations
-     *
-     * @return void
-     */
-    private function assignSwagRequestBodyContentAnnotations(): void
-    {
-        $swagRequestBodyContents = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagRequestBodyContent;
-        });
-
-        if (empty($swagRequestBodyContents)) {
-            return;
-        }
-
-        $swagRequestBodyContent = reset($swagRequestBodyContents);
 
         $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
 
         $mimeTypes = $this->config->getRequestAccepts();
-        if (!empty($swagRequestBodyContent->mimeTypes)) {
-            $mimeTypes = $swagRequestBodyContent->mimeTypes;
+        if (!empty($openApiRequestBody->mimeTypes)) {
+            $mimeTypes = $openApiRequestBody->mimeTypes;
         }
 
-        if (!empty($swagRequestBodyContent->refEntity)) {
-            $pieces = explode('/', $swagRequestBodyContent->refEntity);
+        if (!empty($openApiRequestBody->ref)) {
+            $pieces = explode('/', $openApiRequestBody->ref);
             $entity = end($pieces);
             $schema = $this->getSchemaWithWritablePropertiesOnly(
                 $this->swagger->getSchemaByName($entity)
@@ -145,41 +112,40 @@ class OperationRequestBody
             if (isset($schema)) {
                 $content->setSchema($schema);
             } else {
-                $content->setSchema($swagRequestBodyContent->refEntity);
+                $content->setSchema($openApiRequestBody->ref);
             }
 
             $requestBody->pushContent($content);
         }
 
-        $this->operation->setRequestBody($requestBody);
+        $this->operation->setRequestBody(
+            $openApiRequestBody->createRequestBody($requestBody)
+        );
     }
 
     /**
-     * Adds @SwagForm annotations to the Operations Request Body
+     * Apply OpenApiForm attributes
      *
      * @return void
+     * @throws \ReflectionException
      */
-    private function assignSwagFormAnnotations(): void
+    private function applyForm(): void
     {
-        $swagForms = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagForm;
-        });
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiForm[] $openApiForms */
+        $openApiForms = (new AttributeFactory(
+            $this->refMethod,
+            OpenApiForm::class
+        ))->createMany();
 
-        if (empty($swagForms)) {
+        if (empty($openApiForms)) {
             return;
         }
 
         $schema = (new Schema())->setType('object');
 
-        foreach ($swagForms as $annotation) {
+        foreach ($openApiForms as $attribute) {
             $schema->pushProperty(
-                (new SchemaProperty())
-                    ->setDescription($annotation->description ?? '')
-                    ->setName($annotation->name)
-                    ->setType($annotation->type)
-                    ->setRequired($annotation->required)
-                    ->setEnum($annotation->enum)
-                    ->setDeprecated($annotation->deprecated)
+                $attribute->create()
             );
         }
 
@@ -197,32 +163,26 @@ class OperationRequestBody
     }
 
     /**
-     * Adds @SwagDto annotations to the Operations Request Body
+     * Apply OpenApiDto attribute
      *
      * @return void
      * @throws \ReflectionException
      */
-    private function assignSwagDto(): void
+    private function applyDataTransferObject(): void
     {
-        $swagDtos = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagDto;
-        });
+        $openApiDto = (new AttributeFactory(
+            $this->refMethod,
+            OpenApiDto::class
+        ))->createOneOrNull();
 
-        if (empty($swagDtos)) {
-            return;
-        }
-
-        $dto = reset($swagDtos);
-        $fqn = $dto->class;
-
-        if (!class_exists($fqn)) {
+        if (!$openApiDto instanceof OpenApiDto || !class_exists($openApiDto->class)) {
             return;
         }
 
         $requestBody = new RequestBody();
         $schema = (new Schema())->setType('object');
 
-        $properties = (new DtoParser($fqn))->getSchemaProperties();
+        $properties = (new DtoParser($openApiDto->class))->getSchemaProperties();
         foreach ($properties as $property) {
             $schema->pushProperty($property);
         }
@@ -239,22 +199,37 @@ class OperationRequestBody
     }
 
     /**
-     * Adds Schema to the Operations Request Body
+     * Apply default schema and OpenApiRequestBody to each mimetype
      *
      * @return void
+     * @throws \ReflectionException
+     * @todo Reflector to improve PHPMD scoring
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    private function assignSchema(): void
+    private function applySchema(): void
     {
-        $ignoreSchemas = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagRequestBody && $annotation->ignoreCakeSchema === true;
-        });
-
-        if (!empty($ignoreSchemas) || !$this->schema) {
+        if (!$this->schema) {
             return;
         }
 
+        if ($this->refMethod instanceof ReflectionMethod) {
+            $openApiRequestBody = (new AttributeFactory(
+                $this->refMethod,
+                OpenApiRequestBody::class
+            ))->createOneOrNull();
+        }
+
         $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
-        $requestBody->setRequired($this->isCrudAction());
+
+        if (isset($openApiRequestBody) && $openApiRequestBody instanceof OpenApiRequestBody) {
+            if ($openApiRequestBody->ignoreCakeSchema) {
+                return;
+            }
+            $requestBody = $openApiRequestBody
+                ->createRequestBody($requestBody)
+                ->setRequired($this->isCrudAction());
+        }
 
         foreach ($this->config->getRequestAccepts() as $mimeType) {
             if ($requestBody->getContentByType($mimeType)) {
@@ -265,12 +240,9 @@ class OperationRequestBody
             $schema = $this->applyRootNodeToXmlSchema($schema, $mimeType, $schema->getName());
 
             $content = (new Content())->setMimeType($mimeType);
+            $isPost = in_array($this->operation->getHttpMethod(), ['POST']);
 
-            if (
-                in_array($this->operation->getHttpMethod(), ['POST'])
-                &&
-                $this->swagger->getSchemaByName($schema->getAddSchemaName())
-            ) {
+            if ($isPost && $this->swagger->getSchemaByName($schema->getAddSchemaName())) {
                 $content->setSchema(
                     $this->swagger->getSchemaByName($schema->getAddSchemaName())->getRefPath()
                 );
