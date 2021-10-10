@@ -31,11 +31,7 @@ class OperationFromYmlFactory
 
         if (isset($yaml['externalDocs']['url'])) {
             $operation->setExternalDocs(
-                (new OperationExternalDoc())
-                    ->setDescription(
-                        $yaml['externalDocs']['description'] ?? ''
-                    )
-                    ->setUrl($yaml['externalDocs']['url'])
+                (new OperationExternalDoc($yaml['externalDocs']['url'], $yaml['externalDocs']['description']))
             );
         }
 

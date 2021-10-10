@@ -8,13 +8,25 @@ use SwaggerBake\Lib\Attribute\OpenApiOperation;
 class OperationsController extends AppController
 {
     #[OpenApiOperation(isVisible: false)]
-    public function isVisible()
+    public function isVisible(): void
     {
 
     }
 
     #[OpenApiOperation(tagNames: ['1','2','3','4'])]
-    public function tagNames()
+    public function tagNames(): void
+    {
+
+    }
+
+    #[OpenApiOperation(isDeprecated: true)]
+    public function deprecated(): void
+    {
+
+    }
+
+    #[OpenApiOperation(externalDocs: ['url' => 'http://localhost', 'description' => 'desc...'])]
+    public function externalDocs(): void
     {
 
     }
