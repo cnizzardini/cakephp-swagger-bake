@@ -9,6 +9,6 @@ class OperationExternalDocTest extends TestCase
 {
     public function test_json_serialize(): void
     {
-        $this->assertIsArray((new OperationExternalDoc())->jsonSerialize());
+        $this->assertIsArray((new OperationExternalDoc('http://localhost', 'test'))->jsonSerialize());
     }
 }

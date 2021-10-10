@@ -43,6 +43,16 @@ class OpenApiOperationTest extends TestCase
                         'method' => 'GET',
                         'path' => 'tag-names'
                     ],
+                    'deprecated' => [
+                        'action' => 'deprecated',
+                        'method' => 'GET',
+                        'path' => 'deprecated'
+                    ],
+                    'externalDocs' => [
+                        'action' => 'externalDocs',
+                        'method' => 'GET',
+                        'path' => 'external-docs'
+                    ],
                 ]
             ]);
             $builder->resources('Departments', function (RouteBuilder $routes) {
@@ -83,5 +93,19 @@ class OpenApiOperationTest extends TestCase
     {
         $arr = json_decode($this->swagger->toString(), true);
         $this->assertCount(4, $arr['paths']['/operations/tag-names']['get']['tags']);
+    }
+
+    public function test_is_deprecated(): void
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+        $this->assertTrue($arr['paths']['/operations/deprecated']['get']['deprecated']);
+    }
+
+    public function test_external_docs(): void
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+        $externalDocs = $arr['paths']['/operations/external-docs']['get']['externalDocs'];
+        $this->assertEquals('http://localhost', $externalDocs['url']);
+        $this->assertEquals('desc...', $externalDocs['description']);
     }
 }

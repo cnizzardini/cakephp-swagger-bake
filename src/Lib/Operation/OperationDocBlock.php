@@ -68,16 +68,9 @@ class OperationDocBlock
             return;
         }
 
-        $externalDoc = new OperationExternalDoc();
-        $externalDoc->setUrl($pieces[0]);
+        [$url, $description] = $pieces;
 
-        array_shift($pieces);
-
-        if (!empty($pieces)) {
-            $externalDoc->setDescription(implode(' ', $pieces));
-        }
-
-        $this->operation->setExternalDocs($externalDoc);
+        $this->operation->setExternalDocs(new OperationExternalDoc($url, $description));
     }
 
     /**

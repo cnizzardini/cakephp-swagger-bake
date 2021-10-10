@@ -336,9 +336,19 @@ Method level attribute for OpenApi Operations.
 
 | Property | Type / Default | OA Spec |Description | 
 | ------------- | ------------- | ------------- | ------------- |
-| isVisible | bool `true` | No | Setting this to false will prevent the operation from appearing in OpenApi output |
+| isVisible | bool `t`rue` | No | Setting this to false will prevent the operation from appearing in OpenApi output |
 | tagNames | array `[]` | Yes | Sets tag names |
 | isPut | bool `false` | No | Changes the HTTP Method to an HTTP PUT on controller `edit()` actions/methods |
+| isDeprecated | bool `false` | Yes | Is the operation deprecated? |
+| externalDocs | array|null `null` | Yes | External documentation |
+
+```php
+#[OpenApiOperation(
+    tagNames: ['Internal API', 'External API'], 
+    externalDocs: ['url' => 'http://localhost', 'description' => 'desc...']]
+)]
+public function index()
+```
 
 A common use-case is to hide an operation from appearing in your OpenAPI, example:
 
@@ -354,7 +364,7 @@ OpenAPI:
     tags:
       - Custom
       - Tags
-```
+``
 
 ### OpenApiPath
 Class level attribute to define scalar [Path](https://spec.openapis.org/oas/latest.html#path-item-object) values.

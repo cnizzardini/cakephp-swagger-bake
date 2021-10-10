@@ -10,10 +10,10 @@ use Exception;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
-use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiOperation;
 use SwaggerBake\Lib\OpenApi\Operation;
+use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
@@ -56,12 +56,14 @@ class OperationFromRouteFactory
         try {
             $refClass = new ReflectionClass($route->getControllerFqn());
             $refMethod = $refClass->getMethod($route->getAction());
+            $openApiOperation = (new AttributeFactory($refMethod, OpenApiOperation::class))->createOneOrNull();
         } catch (Exception) {
             $refClass = null;
             $refMethod = null;
+            $openApiOperation = null;
         }
 
-        if (!$this->isAllowed($route, $httpMethod, $refMethod)) {
+        if (!$this->isAllowed($route, $httpMethod, $openApiOperation)) {
             return null;
         }
 
@@ -69,7 +71,7 @@ class OperationFromRouteFactory
             ->setHttpMethod(strtolower($httpMethod))
             ->setOperationId($route->getName() . ':' . strtolower($httpMethod));
 
-        $operation = $this->getOperationWithTags($operation, $route, $refMethod);
+        $operation = $this->getOperationWithTags($operation, $route, $openApiOperation);
 
         $operation = (new OperationDocBlock($this->swagger, $config, $operation, $docBlock))->getOperation();
 
@@ -140,25 +142,20 @@ class OperationFromRouteFactory
      *
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route instance of RouteDecorator
      * @param string $httpMethod http method (PUT, POST, PATCH etc..)
-     * @param \ReflectionMethod|null $refMethod A reflection of the Controller method (i.e. action)
+     * @param \SwaggerBake\Lib\Attribute\OpenApiOperation|null $openApiOperation OpenApiOperation or null
      * @return bool
      */
-    private function isAllowed(RouteDecorator $route, string $httpMethod, ?ReflectionMethod $refMethod): bool
+    private function isAllowed(RouteDecorator $route, string $httpMethod, ?OpenApiOperation $openApiOperation): bool
     {
-        $operation = null;
-
-        if ($refMethod instanceof ReflectionMethod) {
-            $operation = (new AttributeFactory($refMethod, OpenApiOperation::class))->createOneOrNull();
-            if ($operation instanceof OpenApiOperation && !$operation->isVisible) {
-                return false;
-            }
+        if ($openApiOperation != null && !$openApiOperation->isVisible) {
+            return false;
         }
 
         if (strtoupper($httpMethod) !== 'PUT' || $route->getAction() !== 'edit') {
             return true;
         }
 
-        return $operation instanceof OpenApiOperation ? $operation->isPut : false;
+        return $openApiOperation instanceof OpenApiOperation ? $openApiOperation->isPut : false;
     }
 
     /**
@@ -166,23 +163,35 @@ class OperationFromRouteFactory
      *
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
-     * @param \ReflectionMethod|null $refMethod A reflection of the Controller method (i.e. action)
+     * @param null $openApiOperation A reflection of the Controller method (i.e. action)
      * @return \SwaggerBake\Lib\OpenApi\Operation
      */
     private function getOperationWithTags(
         Operation $operation,
         RouteDecorator $route,
-        ?ReflectionMethod $refMethod
+        ?OpenApiOperation $openApiOperation
     ): Operation {
-        if ($refMethod instanceof ReflectionMethod) {
-            $openApiOperation = (new AttributeFactory($refMethod, OpenApiOperation::class))->createOneOrNull();
-            if ($openApiOperation instanceof OpenApiOperation && count($openApiOperation->tagNames)) {
-                return $operation->setTags($openApiOperation->tagNames);
+        if ($openApiOperation instanceof OpenApiOperation) {
+            if (count($openApiOperation->tagNames)) {
+                $operation->setTags($openApiOperation->tagNames);
+            }
+            $operation->setDeprecated($openApiOperation->isDeprecated);
+            if (is_array($openApiOperation->externalDocs)) {
+                $operation->setExternalDocs(
+                    new OperationExternalDoc(
+                        $openApiOperation->externalDocs['url'] ?? '',
+                        $openApiOperation->externalDocs['description'] ?? '',
+                    )
+                );
             }
         }
 
-        return $operation->setTags([
-            Inflector::humanize(Inflector::underscore($route->getController())),
-        ]);
+        if (!count($operation->getTags())) {
+            $operation->setTags([
+                Inflector::humanize(Inflector::underscore($route->getController())),
+            ]);
+        }
+
+        return $operation;
     }
 }
