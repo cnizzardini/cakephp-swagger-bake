@@ -20,8 +20,6 @@ class OperationFromRouteFactoryTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
-    private Router $router;
-
     private array $config;
 
     public function setUp(): void

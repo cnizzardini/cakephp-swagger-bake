@@ -14,62 +14,39 @@ use JsonSerializable;
  */
 class Operation implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $summary = '';
+    private string $summary = '';
 
-    /**
-     * @var string
-     */
-    private $description = '';
+    private string $description = '';
 
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\OperationExternalDoc|null
-     */
-    private $externalDocs;
+    private ?OperationExternalDoc $externalDocs;
 
-    /**
-     * @var string
-     */
-    private $httpMethod = '';
+    private string $httpMethod = '';
 
     /**
      * @var string[]
      */
-    private $tags = [];
+    private array $tags = [];
 
-    /**
-     * @var string
-     */
-    private $operationId = '';
+    private string $operationId = '';
 
     /**
      * Mixed array of either \SwaggerBake\Lib\OpenApi\Parameter or array for $ref items
-     *
-     * @var mixed
      */
-    private $parameters = [];
+    private array $parameters = [];
 
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\RequestBody|null
-     */
-    private $requestBody;
+    private ?RequestBody $requestBody = null;
 
     /**
      * @var \SwaggerBake\Lib\OpenApi\Response[]
      */
-    private $responses = [];
+    private array $responses = [];
 
     /**
      * @var \SwaggerBake\Lib\OpenApi\PathSecurity[]
      */
-    private $security = [];
+    private array $security = [];
 
-    /**
-     * @var bool
-     */
-    private $deprecated = false;
+    private bool $deprecated = false;
 
     /**
      * @return array
