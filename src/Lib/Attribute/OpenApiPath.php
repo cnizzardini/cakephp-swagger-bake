@@ -8,14 +8,6 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 class OpenApiPath
 {
-    public bool $isVisible = true;
-
-    public ?string $ref;
-
-    public ?string $description;
-
-    public ?string $summary;
-
     /**
      * Class level attribute to define scalar OA Path values.
      *
@@ -26,16 +18,13 @@ class OpenApiPath
      * @see https://mixerapi.com/plugins/cakephp-swagger-bake/docs/attributes/#OpenApiPath
      * @see https://spec.openapis.org/oas/latest.html#path-item-object
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        bool $isVisible = true,
-        ?string $ref = null,
-        ?string $description = null,
-        ?string $summary = null
+        public bool $isVisible = true,
+        public ?string $ref = null,
+        public ?string $description = null,
+        public ?string $summary = null
     ) {
-        $this->isVisible = $isVisible;
-        $this->ref = $ref;
-        $this->description = $description;
-        $this->summary = $summary;
     }
 }

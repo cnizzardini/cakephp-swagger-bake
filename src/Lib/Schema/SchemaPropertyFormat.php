@@ -33,10 +33,6 @@ class SchemaPropertyFormat
         'uuid' => 'uuid',
     ];
 
-    private Validator $validator;
-
-    private SchemaProperty $schemaProperty;
-
     private string $propertyName;
 
     /**
@@ -45,12 +41,10 @@ class SchemaPropertyFormat
      * @param \MixerApi\Core\Model\ModelProperty $property Property
      */
     public function __construct(
-        Validator $validator,
-        SchemaProperty $schemaProperty,
+        private Validator $validator,
+        private SchemaProperty $schemaProperty,
         ModelProperty $property
     ) {
-        $this->validator = $validator;
-        $this->schemaProperty = $schemaProperty;
         $this->propertyName = $property->getName();
     }
 

@@ -27,14 +27,11 @@ use SwaggerBake\Lib\Utility\DocBlockUtility;
  */
 class OperationFromRouteFactory
 {
-    private Swagger $swagger;
-
     /**
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      */
-    public function __construct(Swagger $swagger)
+    public function __construct(private Swagger $swagger)
     {
-        $this->swagger = $swagger;
     }
 
     /**

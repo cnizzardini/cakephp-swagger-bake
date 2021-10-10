@@ -8,17 +8,14 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD)]
 class OpenApiSearch
 {
-    public string $tableClass;
-
-    public string $collection;
-
     /**
      * @param string $tableClass The FQN of the table class
      * @param string $collection The CakePHP search collection
+     * @todo convert to readonly properties in php 8.1
      */
-    public function __construct(string $tableClass, string $collection = 'default')
-    {
-        $this->tableClass = $tableClass;
-        $this->collection = $collection;
+    public function __construct(
+        public string $tableClass,
+        public string $collection = 'default'
+    ) {
     }
 }

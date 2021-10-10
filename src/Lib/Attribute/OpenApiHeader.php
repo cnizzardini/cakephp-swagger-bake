@@ -12,30 +12,6 @@ use SwaggerBake\Lib\Utility\OpenApiDataType;
 #[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class OpenApiHeader
 {
-    public string $name = '';
-
-    public string $ref = '';
-
-    public string $type = 'string';
-
-    public string $description = '';
-
-    public bool $required = false;
-
-    public array $enum = [];
-
-    public bool $deprecated = false;
-
-    public bool $explode = false;
-
-    public string $style = '';
-
-    public string|bool|int $example;
-
-    public string $format = '';
-
-    public bool $allowEmptyValue = false;
-
     /**
      * @param string $name The name of the parameter. Parameter names are case-sensitive.
      * @param string $ref An OpenAPI $ref to your OpenAPI YAML.
@@ -54,20 +30,21 @@ class OpenApiHeader
      * @param string $format The expected format of the type, for instance date-time.
      * @param bool $allowEmptyValue Are empty values allowed?
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        string $name = '',
-        string $ref = '',
-        string $type = 'string',
-        string $description = '',
-        bool $required = false,
-        array $enum = [],
-        bool $deprecated = false,
-        bool $explode = false,
-        string $style = '',
-        string|bool|int $example = '',
-        string $format = '',
-        bool $allowEmptyValue = false
+        public string $name = '',
+        public string $ref = '',
+        public string $type = 'string',
+        public string $description = '',
+        public bool $required = false,
+        public array $enum = [],
+        public bool $deprecated = false,
+        public bool $explode = false,
+        public string $style = '',
+        public string|bool|int $example = '',
+        public string $format = '',
+        public bool $allowEmptyValue = false
     ) {
         if (!in_array($type, OpenApiDataType::TYPES)) {
             throw new SwaggerBakeRunTimeException(
@@ -83,19 +60,6 @@ class OpenApiHeader
         if (empty($ref) && empty($name)) {
             throw new SwaggerBakeRunTimeException('One of ref or name must be defined');
         }
-
-        $this->name = $name;
-        $this->ref = $ref;
-        $this->type = $type;
-        $this->description = $description;
-        $this->required = $required;
-        $this->enum = $enum;
-        $this->deprecated = $deprecated;
-        $this->explode = $explode;
-        $this->style = $style;
-        $this->example = $example;
-        $this->format = $format;
-        $this->allowEmptyValue = $allowEmptyValue;
     }
 
     /**

@@ -12,22 +12,16 @@ use ReflectionProperty;
 
 final class AttributeFactory
 {
-    private ReflectionClass|ReflectionClassConstant|ReflectionFunction|ReflectionMethod|ReflectionParameter|
-    ReflectionProperty $reflection;
-
-    private string $attributeClass;
-
     /**
      * @param \ReflectionClass|\ReflectionClassConstant|\ReflectionFunction|\ReflectionMethod|\ReflectionParameter|\ReflectionProperty $reflection The reflection
      * @param string $attributeClass Your Attribute class
+     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        ReflectionClass|ReflectionClassConstant|ReflectionFunction|ReflectionMethod|ReflectionParameter|
+        private ReflectionClass|ReflectionClassConstant|ReflectionFunction|ReflectionMethod|ReflectionParameter|
         ReflectionProperty $reflection,
-        string $attributeClass
+        private string $attributeClass
     ) {
-        $this->reflection = $reflection;
-        $this->attributeClass = $attributeClass;
     }
 
     /**

@@ -15,14 +15,6 @@ use SwaggerBake\Lib\OpenApi\Schema;
 
 class OperationQueryParameter
 {
-    private Operation $operation;
-
-    private Controller $controller;
-
-    private ?Schema $schema;
-
-    private ?ReflectionMethod $refMethod;
-
     /**
      * Adds query parameters to the Operation
      *
@@ -33,15 +25,11 @@ class OperationQueryParameter
      * @return \SwaggerBake\Lib\OpenApi\Operation
      */
     public function __construct(
-        Operation $operation,
-        Controller $controller,
-        ?Schema $schema = null,
-        ?ReflectionMethod $refMethod = null,
+        private Operation $operation,
+        private Controller $controller,
+        private ?Schema $schema = null,
+        private ?ReflectionMethod $refMethod = null,
     ) {
-        $this->operation = $operation;
-        $this->refMethod = $refMethod;
-        $this->controller = $controller;
-        $this->schema = $schema;
     }
 
     /**

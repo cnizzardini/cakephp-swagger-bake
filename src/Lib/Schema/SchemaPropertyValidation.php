@@ -16,10 +16,6 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
  */
 class SchemaPropertyValidation
 {
-    private Validator $validator;
-
-    private SchemaProperty $schemaProperty;
-
     private string $propertyName;
 
     /**
@@ -28,12 +24,10 @@ class SchemaPropertyValidation
      * @param \MixerApi\Core\Model\ModelProperty $property Property
      */
     public function __construct(
-        Validator $validator,
-        SchemaProperty $schemaProperty,
+        private Validator $validator,
+        private SchemaProperty $schemaProperty,
         ModelProperty $property
     ) {
-        $this->validator = $validator;
-        $this->schemaProperty = $schemaProperty;
         $this->propertyName = $property->getName();
     }
 

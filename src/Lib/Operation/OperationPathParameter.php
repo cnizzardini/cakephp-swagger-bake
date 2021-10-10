@@ -18,17 +18,6 @@ use SwaggerBake\Lib\Route\RouteDecorator;
  */
 class OperationPathParameter
 {
-    private Operation $operation;
-
-    private RouteDecorator $route;
-
-    private ?ReflectionMethod $reflectionMethod;
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Schema|null
-     */
-    private $schema;
-
     /**
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation instance of Operation
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route instance of RouteDecorator
@@ -36,15 +25,11 @@ class OperationPathParameter
      * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema instance of Schema or null
      */
     public function __construct(
-        Operation $operation,
-        RouteDecorator $route,
-        ?ReflectionMethod $reflectionMethod = null,
-        ?Schema $schema = null
+        private Operation $operation,
+        private RouteDecorator $route,
+        private ?ReflectionMethod $reflectionMethod = null,
+        private ?Schema $schema = null
     ) {
-        $this->operation = $operation;
-        $this->route = $route;
-        $this->reflectionMethod = $reflectionMethod;
-        $this->schema = $schema;
     }
 
     /**
@@ -69,7 +54,7 @@ class OperationPathParameter
     {
         $pieces = explode('/', $this->route->getTemplate());
         $results = array_filter($pieces, function ($piece) {
-            return substr($piece, 0, 1) == ':' ? true : null;
+            return str_starts_with($piece, ':');
         });
 
         $properties = $this->schema instanceof Schema ? $this->schema->getProperties() : [];

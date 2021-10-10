@@ -8,20 +8,6 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class OpenApiResponse
 {
-    public string $schemaType;
-
-    public string $statusCode;
-
-    public ?string $refEntity;
-
-    public ?string $description;
-
-    public ?array $mimeTypes;
-
-    public ?string $schemaFormat;
-
-    public ?array $associations = null;
-
     /**
      * @param string $schemaType The type data to be returned, typically object or an array, but can be string. For
      * instance, an operation returning a single resource (e.g. view() actions) would be an object, while operations
@@ -34,18 +20,17 @@ class OpenApiResponse
      * swagger_bake config are used.
      * @param array|null $associations Configuration for displaying a resources associations. See documentation.
      * @param string|null $schemaFormat This is really only applicable for schemaTypes of string.
+     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        string $schemaType = 'object',
-        string $statusCode = '200',
-        ?string $refEntity = null,
-        ?string $description = null,
-        ?array $mimeTypes = null,
-        ?array $associations = null,
-        ?string $schemaFormat = null,
+        public string $schemaType = 'object',
+        public string $statusCode = '200',
+        public ?string $refEntity = null,
+        public ?string $description = null,
+        public ?array $mimeTypes = null,
+        public ?array $associations = null,
+        public ?string $schemaFormat = null,
     ) {
-        $this->schemaType = $schemaType;
-        $this->statusCode = $statusCode;
         $this->refEntity = $refEntity ?? '';
         $this->description = $description ?? '';
         $this->mimeTypes = $mimeTypes ?? null;

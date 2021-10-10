@@ -23,8 +23,6 @@ class RouteScanner
 
     private string $prefix;
 
-    private int $prefixLength;
-
     private Configuration $config;
 
     /**
@@ -43,7 +41,6 @@ class RouteScanner
         $this->router = $router;
         $this->config = $config;
         $this->prefix = $config->getPrefix();
-        $this->prefixLength = strlen($this->prefix);
         $this->loadRoutes();
     }
 
@@ -84,7 +81,7 @@ class RouteScanner
             $results = array_filter($classes, function ($fqn) use ($controller, $route) {
                 $prefix = !empty($route->defaults['prefix']) ? $route->defaults['prefix'] . '\\' : '';
 
-                return strstr($fqn, '\\' . $prefix . $controller . 'Controller');
+                return str_contains($fqn, '\\' . $prefix . $controller . 'Controller');
             });
 
             if (count($results) === 1) {
@@ -105,10 +102,7 @@ class RouteScanner
      */
     private function isRouteAllowed(Route $route): bool
     {
-        if (substr($route->template, 0, $this->prefixLength) != $this->prefix) {
-            return false;
-        }
-        if (substr($route->template, $this->prefixLength) == '') {
+        if (!str_starts_with($route->template, $this->prefix) || empty($route->template)) {
             return false;
         }
 

@@ -13,11 +13,11 @@ use Search\Model\Filter\Base;
  */
 class FilterDecorator
 {
+    private Base $filter;
+
     private string $name;
 
     private string $comparison;
-
-    private Base $filter;
 
     /**
      * @param \Search\Model\Filter\Base $filter Filter\Base
@@ -25,9 +25,9 @@ class FilterDecorator
      */
     public function __construct(Base $filter)
     {
+        $this->filter = $filter;
         $this->name = $filter->name();
         $this->comparison = (new ReflectionClass($filter))->getShortName();
-        $this->filter = $filter;
     }
 
     /**

@@ -24,19 +24,6 @@ use SwaggerBake\Lib\Swagger;
 
 class OperationResponseAssociation
 {
-    private Swagger $swagger;
-
-    private RouteDecorator $route;
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Schema|null
-     */
-    private $schema;
-
-    private LocatorInterface $locator;
-
-    private Inflector $inflector;
-
     /**
      * @param \SwaggerBake\Lib\Swagger $swagger instance of Swagger
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route instance of RouteDecorator
@@ -45,15 +32,12 @@ class OperationResponseAssociation
      * @param \Cake\Utility\Inflector|null $inflector if null, an Inflector will be created
      */
     public function __construct(
-        Swagger $swagger,
-        RouteDecorator $route,
-        ?Schema $schema = null,
-        ?LocatorInterface $locator = null,
-        ?Inflector $inflector = null
+        private Swagger $swagger,
+        private RouteDecorator $route,
+        private ?Schema $schema = null,
+        private ?LocatorInterface $locator = null,
+        private ?Inflector $inflector = null
     ) {
-        $this->swagger = $swagger;
-        $this->route = $route;
-        $this->schema = $schema;
         $this->locator = $locator ?? TableRegistry::getTableLocator();
         $this->inflector = $inflector ?? new Inflector();
     }

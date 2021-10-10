@@ -75,11 +75,11 @@ class NamespaceUtility
         $classNameMapper = ClassNameMapper::createFromComposerFile(null, null, true);
 
         foreach ($namespaces as $namespace) {
-            if (substr($namespace, 0, 1) === '\\') {
+            if (str_starts_with($namespace, '\\')) {
                 $namespace = substr($namespace, 1);
             }
 
-            if (substr($namespace, 0, -1) !== '\\') {
+            if (!str_ends_with($namespace, '\\')) {
                 $namespace .= '\\';
             }
 

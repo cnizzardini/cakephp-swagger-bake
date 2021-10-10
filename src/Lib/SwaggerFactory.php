@@ -18,16 +18,14 @@ use SwaggerBake\Lib\Utility\ValidateConfiguration;
  */
 class SwaggerFactory
 {
-    private Configuration $config;
-
-    private RouteScanner $routeScanner;
-
     /**
      * @param \SwaggerBake\Lib\Configuration|null $config Configuration
      * @param \SwaggerBake\Lib\Route\RouteScanner|null $routeScanner RouteScanner
      */
-    public function __construct(?Configuration $config = null, ?RouteScanner $routeScanner = null)
-    {
+    public function __construct(
+        private ?Configuration $config = null,
+        private ?RouteScanner $routeScanner = null
+    ) {
         $this->config = $config ?? new Configuration();
         ValidateConfiguration::validate($this->config);
 

@@ -20,5 +20,5 @@ interface MediaTypeInterface
      * @return \SwaggerBake\Lib\OpenApi\Schema
      * @throws \InvalidArgumentException if $schemaType isn't array or object
      */
-    public function buildSchema($schema, string $schemaType): Schema;
+    public function buildSchema(Schema|string $schema, string $schemaType): Schema;
 }
