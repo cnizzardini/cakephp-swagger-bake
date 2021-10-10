@@ -30,7 +30,7 @@ class ValidateConfiguration
         $config = $config ?? new Configuration();
         $ymlFile = $config->getYml();
 
-        if (empty($ymlFile) || !strstr($ymlFile, '.yml')) {
+        if (empty($ymlFile) || !str_ends_with($ymlFile, '.yml')) {
             throw new LogicException(self::YML_FILE_REQUIRED_ERROR_MSG . $ymlFile);
         }
 

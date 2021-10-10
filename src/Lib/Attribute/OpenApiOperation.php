@@ -8,12 +8,6 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD)]
 class OpenApiOperation
 {
-    public bool $isVisible = true;
-
-    public array $tagNames = [];
-
-    public bool $isPut = false;
-
     /**
      * A method level attribute for defining a subset of OA Operation values. Additional values are configured by
      * parsing Doc Block comments from the controller action, see main documentation.
@@ -24,11 +18,12 @@ class OpenApiOperation
      * @see https://mixerapi.com/plugins/cakephp-swagger-bake/docs/attributes/#OpenApiOperation
      * @see https://spec.openapis.org/oas/latest.html#operation-object
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @todo convert to readonly properties in PHP 8.1
      */
-    public function __construct(bool $isVisible = true, array $tagNames = [], bool $isPut = false)
-    {
-        $this->isVisible = $isVisible;
-        $this->tagNames = $tagNames;
-        $this->isPut = $isPut;
+    public function __construct(
+        public bool $isVisible = true,
+        public array $tagNames = [],
+        public bool $isPut = false
+    ) {
     }
 }

@@ -211,21 +211,15 @@ class OperationResponse
             );
         }
 
-        switch ($mimeType) {
-            case 'application/xml':
-                return (new Generic($this->swagger))
-                    ->buildSchema($schema, $schemaType)
-                    ->setXml((new OpenApiXml())->setName('response'));
-            case 'application/hal+json':
-            case 'application/vnd.hal+json':
-                return (new HalJson())->buildSchema($schema, $schemaType);
-            case 'application/ld+json':
-                return (new JsonLd())->buildSchema($schema, $schemaType);
-            case 'text/plain':
-                return (new Schema())->setType('string');
-        }
-
-        return (new Generic($this->swagger))->buildSchema($schema, $schemaType);
+        return match ($mimeType) {
+            'application/xml' => (new Generic($this->swagger))
+                ->buildSchema($schema, $schemaType)
+                ->setXml((new OpenApiXml())->setName('response')),
+            'application/hal+json','application/vnd.hal+json' => (new HalJson())->buildSchema($schema, $schemaType),
+            'application/ld+json' => (new JsonLd())->buildSchema($schema, $schemaType),
+            'application/text/plain' => (new Schema())->setType('string'),
+            default => (new Generic($this->swagger))->buildSchema($schema, $schemaType)
+        };
     }
 
     /**

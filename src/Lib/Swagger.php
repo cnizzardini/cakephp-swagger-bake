@@ -13,6 +13,7 @@ use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
 use SwaggerBake\Lib\Route\RouteDecorator;
+use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Schema\SchemaFactory;
 use SwaggerBake\Lib\Schema\SchemaFromYamlFactory;
 use Symfony\Component\Yaml\Yaml;
@@ -29,30 +30,17 @@ class Swagger
      */
     private const ASSETS = __DIR__ . DS . '..' . DS . '..' . DS . 'assets' . DS;
 
-    /**
-     * OpenAPI array
-     *
-     * @var array
-     */
-    private $array = [];
+    private array $array = [];
 
-    /**
-     * @var \SwaggerBake\Lib\Model\ModelScanner
-     */
-    private $modelScanner;
+    private ModelScanner $modelScanner;
 
-    /**
-     * @var \SwaggerBake\Lib\Route\RouteScanner
-     */
-    private $routeScanner;
+    private RouteScanner $routeScanner;
 
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     /**
      * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
+     * @throws \ReflectionException
      */
     public function __construct(ModelScanner $modelScanner)
     {

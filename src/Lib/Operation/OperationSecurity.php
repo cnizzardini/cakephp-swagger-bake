@@ -19,16 +19,6 @@ use SwaggerBake\Lib\Swagger;
  */
 class OperationSecurity
 {
-    private Operation $operation;
-
-    private ?ReflectionMethod $refMethod;
-
-    private RouteDecorator $route;
-
-    private Controller $controller;
-
-    private Swagger $swagger;
-
     /**
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
      * @param \ReflectionMethod|null $refMethod ReflectionMethod or null
@@ -37,17 +27,12 @@ class OperationSecurity
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      */
     public function __construct(
-        Operation $operation,
-        ?ReflectionMethod $refMethod,
-        RouteDecorator $route,
-        Controller $controller,
-        Swagger $swagger
+        private Operation $operation,
+        private ?ReflectionMethod $refMethod,
+        private RouteDecorator $route,
+        private Controller $controller,
+        private Swagger $swagger
     ) {
-        $this->operation = $operation;
-        $this->refMethod = $refMethod;
-        $this->route = $route;
-        $this->controller = $controller;
-        $this->swagger = $swagger;
     }
 
     /**

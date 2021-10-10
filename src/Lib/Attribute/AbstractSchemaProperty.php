@@ -14,60 +14,64 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
  */
 abstract class AbstractSchemaProperty
 {
-    public string $name;
-
-    public string $type = 'string';
-
-    public string $format = '';
-
-    public string $title = '';
-
-    public string $description = '';
-
-    public bool $readOnly = false;
-
-    public bool $writeOnly = false;
-
-    public bool $required = false;
-
-    public string $default = '';
-
-    public bool $nullable = false;
-
-    public bool $deprecated = false;
-
-    public ?float $multipleOf;
-
-    public ?float $maximum;
-
-    public bool $exclusiveMaximum = false;
-
-    public ?float $minimum;
-
-    public bool $exclusiveMinimum = false;
-
-    public ?int $maxLength;
-
-    public ?int $minLength;
-
-    public ?string $pattern;
-
-    public ?int $maxItems;
-
-    public ?int $minItems;
-
-    public bool $uniqueItems = false;
-
-    public ?int $maxProperties;
-
-    public ?int $minProperties;
-
-    public array $enum = [];
-
     /**
-     * @var mixed
+     * @param string $name Name of the property (required)
+     * @param string $type The data scalar type (e.g. string, integer)
+     * @param string $format The data format (e.g. data-time, uuid)
+     * @param string $title Title of the property
+     * @param string $description Description of the property
+     * @param string|int|float|bool $example An example value
+     * @param bool $readOnly Is this read-only?
+     * @param bool $writeOnly Is this write-only?
+     * @param bool $required Is this required?
+     * @param string $default A default value
+     * @param bool $nullable Is this nullable?
+     * @param bool $deprecated Is this deprecated?
+     * @param float|null $multipleOf Provides multiple of option, such as must be a multiple of 10
+     * @param float|null $maximum A minimum value
+     * @param bool $exclusiveMaximum See OpenAPI documentation
+     * @param float|null $minimum A maximum value
+     * @param bool $exclusiveMinimum See OpenAPI documentation
+     * @param int|null $maxLength A min length
+     * @param int|null $minLength A max length
+     * @param string|null $pattern A regex pattern
+     * @param int|null $maxItems Minimum number of items (for arrays)
+     * @param int|null $minItems Maximum number of items (for arrays)
+     * @param bool $uniqueItems Are the items provided required to be unique (for arrays)
+     * @param int|null $maxProperties See OpenAPI documentation
+     * @param int|null $minProperties See OpenAPI documentation
+     * @param array $enum An enumerated list of values that can be accepted
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
-    public $example;
+    public function __construct(
+        public string $name,
+        public string $type = 'string',
+        public string $format = '',
+        public string $title = '',
+        public string $description = '',
+        public string|int|float|bool $example = '',
+        public bool $readOnly = false,
+        public bool $writeOnly = false,
+        public bool $required = false,
+        public string $default = '',
+        public bool $nullable = false,
+        public bool $deprecated = false,
+        public ?float $multipleOf = null,
+        public ?float $maximum = null,
+        public bool $exclusiveMaximum = false,
+        public ?float $minimum = null,
+        public bool $exclusiveMinimum = false,
+        public ?int $maxLength = null,
+        public ?int $minLength = null,
+        public ?string $pattern = null,
+        public ?int $maxItems = null,
+        public ?int $minItems = null,
+        public bool $uniqueItems = false,
+        public ?int $maxProperties = null,
+        public ?int $minProperties = null,
+        public array $enum = [],
+    ) {
+    }
 
     /**
      * Creates an instance of SchemaProperty

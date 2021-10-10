@@ -101,17 +101,12 @@ class Extension implements ExtensionInterface
      */
     private function createParameter(FilterDecorator $filter): Parameter
     {
-        $schema = new Schema();
-
-        switch ($filter->getComparison()) {
-            default:
-                $schema->setType('string');
-        }
-
         return (new Parameter())
             ->setName($filter->getName())
             ->setIn('query')
-            ->setSchema($schema);
+            ->setSchema(
+                (new Schema())->setType('string')
+            );
     }
 
     /**

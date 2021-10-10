@@ -22,18 +22,14 @@ use SwaggerBake\Lib\Route\RouteScanner;
  */
 class ModelScanner
 {
-    private RouteScanner $routeScanner;
-
-    private Configuration $config;
-
     /**
      * @param \SwaggerBake\Lib\Route\RouteScanner $routeScanner RouteScanner
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
-    public function __construct(RouteScanner $routeScanner, Configuration $config)
-    {
-        $this->routeScanner = $routeScanner;
-        $this->config = $config;
+    public function __construct(
+        private RouteScanner $routeScanner,
+        private Configuration $config
+    ) {
     }
 
     /**

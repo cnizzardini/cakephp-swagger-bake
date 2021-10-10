@@ -15,14 +15,11 @@ use SwaggerBake\Lib\Route\RouteDecorator;
  */
 class PathFromRouteFactory
 {
-    private RouteDecorator $route;
-
     /**
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      */
-    public function __construct(RouteDecorator $route)
+    public function __construct(private RouteDecorator $route)
     {
-        $this->route = $route;
     }
 
     /**

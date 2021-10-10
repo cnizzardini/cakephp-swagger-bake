@@ -18,14 +18,11 @@ final class Generic implements MediaTypeInterface
 {
     use MediaTypeTrait;
 
-    private Swagger $swagger;
-
     /**
      * @param \SwaggerBake\Lib\Swagger $swagger an instance of Swagger
      */
-    public function __construct(Swagger $swagger)
+    public function __construct(private Swagger $swagger)
     {
-        $this->swagger = $swagger;
     }
 
     /**
@@ -34,7 +31,6 @@ final class Generic implements MediaTypeInterface
     public function buildSchema($schema, string $schemaType): Schema
     {
         $this->validateSchemaType($schemaType);
-        $this->validateSchema($schema);
 
         return $schemaType === 'array' ? $this->collection($schema) : $this->item($schema);
     }
@@ -43,7 +39,7 @@ final class Generic implements MediaTypeInterface
      * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema instance of Schema or an OpenAPI $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function collection($schema): Schema
+    private function collection(Schema|string $schema): Schema
     {
         $openapi = $this->swagger->getArray();
 
@@ -81,7 +77,7 @@ final class Generic implements MediaTypeInterface
      * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema instance of Schema or an OpenAPI $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function item($schema): Schema
+    private function item(Schema|string $schema): Schema
     {
         if ($schema instanceof Schema) {
             return $schema;

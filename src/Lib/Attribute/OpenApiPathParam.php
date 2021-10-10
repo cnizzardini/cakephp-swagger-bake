@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Attribute;
 
 use Attribute;
-use InvalidArgumentException;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
 
@@ -34,17 +33,15 @@ class OpenApiPathParam extends AbstractOpenApiParameter
         string $example = '',
         bool $allowReserved = false,
     ) {
-        if (empty($name) && empty($ref)) {
-            throw new InvalidArgumentException('One name or ref is required for ' . self::class);
-        }
-
-        $this->name = $name;
-        $this->ref = $ref;
-        $this->type = $type;
-        $this->format = $format;
-        $this->description = $description;
-        $this->example = $example;
-        $this->allowReserved = $allowReserved;
+        parent::__construct(
+            name: $name,
+            ref: $ref,
+            type: $type,
+            format: $format,
+            description: $description,
+            example: $example,
+            allowReserved: $allowReserved
+        );
     }
 
     /**

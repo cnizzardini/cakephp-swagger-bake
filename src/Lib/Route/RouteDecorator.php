@@ -235,7 +235,7 @@ class RouteDecorator
     {
         $pieces = array_map(
             function ($piece) {
-                if (substr($piece, 0, 1) == ':') {
+                if (str_starts_with($piece, ':')) {
                     return '{' . str_replace(':', '', $piece) . '}';
                 }
 

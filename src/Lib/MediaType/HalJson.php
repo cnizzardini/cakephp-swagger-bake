@@ -28,10 +28,9 @@ final class HalJson implements MediaTypeInterface
     /**
      * @inheritDoc
      */
-    public function buildSchema($schema, string $schemaType): Schema
+    public function buildSchema(Schema|string $schema, string $schemaType): Schema
     {
         $this->validateSchemaType($schemaType);
-        $this->validateSchema($schema);
 
         return $schemaType === 'array' ? $this->collection($schema) : $this->item($schema);
     }
@@ -40,7 +39,7 @@ final class HalJson implements MediaTypeInterface
      * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema instance of Schema or an OpenAPI $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function collection($schema): Schema
+    private function collection(Schema|string $schema): Schema
     {
         if ($schema instanceof Schema) {
             $items = [
@@ -74,7 +73,7 @@ final class HalJson implements MediaTypeInterface
      * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema instance of Schema or an OpenAPI $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function item($schema): Schema
+    private function item(Schema|string $schema): Schema
     {
         if ($schema instanceof Schema) {
             return (new Schema())

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Attribute;
 
 use Attribute;
-use InvalidArgumentException;
 
 /**
  * Property level attribute for use in your SwagDto classes.
@@ -51,22 +50,20 @@ class OpenApiDtoQuery extends AbstractOpenApiParameter
         array $enum = [],
         string $style = '',
     ) {
-        if (empty($name) && empty($ref)) {
-            throw new InvalidArgumentException('One of name or ref is required.');
-        }
-
-        $this->name = $name;
-        $this->ref = $ref;
-        $this->type = $type;
-        $this->format = $format;
-        $this->description = $description;
-        $this->required = $required;
-        $this->deprecated = $deprecated;
-        $this->enum = $enum;
-        $this->allowEmptyValue = $allowEmptyValue;
-        $this->example = $example;
-        $this->explode = $explode;
-        $this->allowReserved = $allowReserved;
-        $this->style = $style;
+        parent::__construct(
+            name: $name,
+            ref: $ref,
+            type: $type,
+            format: $format,
+            description: $description,
+            example: $example,
+            required: $required,
+            enum: $enum,
+            deprecated: $deprecated,
+            allowEmptyValue: $allowEmptyValue,
+            explode: $explode,
+            style: $style,
+            allowReserved: $allowReserved
+        );
     }
 }

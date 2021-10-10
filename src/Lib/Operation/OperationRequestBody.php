@@ -19,16 +19,6 @@ use SwaggerBake\Lib\Swagger;
 
 class OperationRequestBody
 {
-    private Swagger $swagger;
-
-    private Operation $operation;
-
-    private RouteDecorator $route;
-
-    private ?ReflectionMethod $refMethod;
-
-    private ?Schema $schema;
-
     private Configuration $config;
 
     /**
@@ -39,17 +29,12 @@ class OperationRequestBody
      * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema or null, this will be used as the operations schema
      */
     public function __construct(
-        Swagger $swagger,
-        Operation $operation,
-        RouteDecorator $route,
-        ?ReflectionMethod $refMethod = null,
-        ?Schema $schema = null
+        private Swagger $swagger,
+        private Operation $operation,
+        private RouteDecorator $route,
+        private ?ReflectionMethod $refMethod = null,
+        private ?Schema $schema = null
     ) {
-        $this->swagger = $swagger;
-        $this->operation = $operation;
-        $this->route = $route;
-        $this->refMethod = $refMethod;
-        $this->schema = $schema;
         $this->config = $swagger->getConfig();
     }
 
