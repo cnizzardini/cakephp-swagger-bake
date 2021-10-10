@@ -10,7 +10,7 @@ use SwaggerBake\Lib\Route\RouteDecorator;
 
 class OperationPathTest extends TestCase
 {
-    public function testGetOperationWithHeaders()
+    public function test(): void
     {
         $routeDecorator = new RouteDecorator(
             new Route('//employees/:id', [

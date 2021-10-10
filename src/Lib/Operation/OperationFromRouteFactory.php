@@ -17,7 +17,6 @@ use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
-use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 
 /**
@@ -53,7 +52,6 @@ class OperationFromRouteFactory
         $controllerInstance = new $fqn();
 
         $docBlock = $this->getDocBlock($route);
-        $annotations = AnnotationUtility::getMethodAnnotations($fqn, $route->getAction());
 
         try {
             $refClass = new ReflectionClass($route->getControllerFqn());
@@ -68,15 +66,12 @@ class OperationFromRouteFactory
         }
 
         $operation = (new Operation())
-            ->setSummary($docBlock->getSummary())
-            ->setDescription($docBlock->getDescription()->render())
             ->setHttpMethod(strtolower($httpMethod))
             ->setOperationId($route->getName() . ':' . strtolower($httpMethod));
 
         $operation = $this->getOperationWithTags($operation, $route, $refMethod);
 
-        $operation = (new OperationDocBlock())
-            ->getOperationWithDocBlock($operation, $docBlock);
+        $operation = (new OperationDocBlock($this->swagger, $config, $operation, $docBlock))->getOperation();
 
         $operation = (new OperationPathParameter($operation, $route, $refMethod, $schema))
             ->getOperationWithPathParameters();
@@ -101,8 +96,6 @@ class OperationFromRouteFactory
             $schema,
             $refMethod,
         ))->getOperationWithResponses();
-
-        $operation = (new OperationResponseException($this->swagger, $config, $operation, $docBlock))->getOperation();
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Operation.created', $operation, [
