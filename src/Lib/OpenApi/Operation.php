@@ -14,9 +14,9 @@ use JsonSerializable;
  */
 class Operation implements JsonSerializable
 {
-    private string $summary = '';
+    private ?string $summary = '';
 
-    private string $description = '';
+    private ?string $description = '';
 
     private ?OperationExternalDoc $externalDocs;
 
@@ -54,6 +54,8 @@ class Operation implements JsonSerializable
     public function toArray(): array
     {
         $vars = get_object_vars($this);
+        $vars['summary'] = $vars['summary'] ?? '';
+        $vars['description'] = $vars['description'] ?? '';
         unset($vars['httpMethod']);
 
         if (in_array($this->httpMethod, ['GET', 'DELETE']) || empty($vars['requestBody'])) {
@@ -380,18 +382,18 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSummary(): string
+    public function getSummary(): ?string
     {
         return $this->summary;
     }
 
     /**
-     * @param string $summary Summary
+     * @param ?string $summary Summary
      * @return $this
      */
-    public function setSummary(string $summary)
+    public function setSummary(?string $summary)
     {
         $this->summary = $summary;
 
@@ -399,18 +401,18 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
     /**
-     * @param string $description Description
+     * @param ?string $description Description
      * @return $this
      */
-    public function setDescription(string $description)
+    public function setDescription(?string $description)
     {
         $this->description = $description;
 

@@ -30,4 +30,10 @@ class OperationsController extends AppController
     {
 
     }
+
+    #[OpenApiOperation(summary: 'summary...', description: 'desc...')]
+    public function descriptions(): void
+    {
+
+    }
 }

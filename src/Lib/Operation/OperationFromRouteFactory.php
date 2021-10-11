@@ -71,7 +71,7 @@ class OperationFromRouteFactory
             ->setHttpMethod(strtolower($httpMethod))
             ->setOperationId($route->getName() . ':' . strtolower($httpMethod));
 
-        $operation = $this->getOperationWithTags($operation, $route, $openApiOperation);
+        $operation = $this->createOperation($operation, $route, $openApiOperation);
 
         $operation = (new OperationDocBlock($this->swagger, $config, $operation, $docBlock))->getOperation();
 
@@ -166,15 +166,15 @@ class OperationFromRouteFactory
      * @param null $openApiOperation A reflection of the Controller method (i.e. action)
      * @return \SwaggerBake\Lib\OpenApi\Operation
      */
-    private function getOperationWithTags(
+    private function createOperation(
         Operation $operation,
         RouteDecorator $route,
         ?OpenApiOperation $openApiOperation
     ): Operation {
         if ($openApiOperation instanceof OpenApiOperation) {
-            if (count($openApiOperation->tagNames)) {
-                $operation->setTags($openApiOperation->tagNames);
-            }
+            $operation->setSummary($openApiOperation->summary);
+            $operation->setDescription($openApiOperation->description);
+            $operation->setTags(count($openApiOperation->tagNames) ? $openApiOperation->tagNames : []);
             $operation->setDeprecated($openApiOperation->isDeprecated);
             if (is_array($openApiOperation->externalDocs)) {
                 $operation->setExternalDocs(

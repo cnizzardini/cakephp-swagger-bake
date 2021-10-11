@@ -53,6 +53,11 @@ class OpenApiOperationTest extends TestCase
                         'method' => 'GET',
                         'path' => 'external-docs'
                     ],
+                    'descriptions' => [
+                        'action' => 'descriptions',
+                        'method' => 'GET',
+                        'path' => 'descriptions'
+                    ],
                 ]
             ]);
             $builder->resources('Departments', function (RouteBuilder $routes) {
@@ -81,6 +86,13 @@ class OpenApiOperationTest extends TestCase
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $configuration);
         $this->swagger = new Swagger(new ModelScanner($cakeRoute, $configuration));
+    }
+
+    public function test_descriptions(): void
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+        $this->assertEquals('summary...', $arr['paths']['/operations/descriptions']['get']['summary']);
+        $this->assertEquals('desc...', $arr['paths']['/operations/descriptions']['get']['description']);
     }
 
     public function test_is_visible(): void

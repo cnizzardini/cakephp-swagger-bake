@@ -47,9 +47,12 @@ class OperationDocBlock
      */
     private function comments(): void
     {
-        $this->operation
-            ->setSummary($this->doc->getSummary())
-            ->setDescription($this->doc->getDescription()->render());
+        if ($this->operation->getSummary() !== null && empty($this->operation->getSummary())) {
+            $this->operation->setSummary($this->doc->getSummary());
+        }
+        if ($this->operation->getDescription() !== null && empty($this->operation->getDescription())) {
+            $this->operation->setDescription($this->doc->getDescription()->render());
+        }
 
         if ($this->doc->hasTag('deprecated')) {
             $this->operation->setDeprecated(true);
