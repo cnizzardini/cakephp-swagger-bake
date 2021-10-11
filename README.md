@@ -167,22 +167,22 @@ SwaggerBake provides some optional Attributes for enhanced functionality. These 
 
 | Attribute | Description | 
 | ------------- | ------------- |
-| [OpenApiDto](docs/annotation.md#OpenApiDto) | Builds OpenAPI query params and request bodies from Data Transfer Objects |
-| [OpenApiDtoQuery](docs/annotation.md#OpenApiDtoQuery) | Builds OpenAPI query param from Data Transfer Objects |
-| [OpenApiDtoRequestBody](docs/annotation.md#OpenApiDtoRequestBody) | Builds OpenAPI request body property from Data Transfer Objects |
-| [OpenApiForm](docs/annotation.md#OpenApiForm) | Builds OpenAPI for application/x-www-form-urlencoded request bodies |
-| [OpenApiEntityAttribute](docs/annotation.md#OpenApiEntityAttribute) | Modifies an OpenAPI schema property |
-| [OpenApiHeader](docs/annotation.md#OpenApiHeader) | Create OpenAPI header parameters |
-| [OpenApiOperation](docs/annotation.md#OpenApiOperation) | Modifies OpenAPI operation |
-| [OpenApiPaginator](docs/annotation.md#OpenApiPaginator) | Create OpenAPI query params from CakePHP Paginator Component |
-| [OpenApiPath](docs/annotation.md#OpenApiPath) | Modifies OpenAPI paths |
-| [OpenApiPathParam](docs/annotation.md#OpenApiPathParam) | Modify an existing OpenAPI path parameter |
-| [OpenApiQueryParam](docs/annotation.md#OpenApiQueryParam) | Builds OpenAPI query param |
-| [OpenApiRequestBody](docs/annotation.md#OpenApiRequestBody) | Modify OpenAPI request body |
-| [OpenApiResponse](docs/annotation.md#OpenApiResponse) | Modify OpenAPI response |
-| [OpenApiSchema](docs/annotation.md#OpenApiSchema) | Modifies OpenAPI schema |
-| [OpenApiSearch](docs/annotation.md#OpenApiSearch) | Create OpenAPI query params from CakePHP Search plugin |
-| [OpenApiSecurity](docs/annotation.md#OpenApiSecurity) | Create/modify OpenAPI security |
+| [OpenApiDto](docs/attributes.md#OpenApiDto) | Builds OpenAPI query params and request bodies from Data Transfer Objects |
+| [OpenApiDtoQuery](docs/attributes.md#OpenApiDtoQuery) | Builds OpenAPI query param from Data Transfer Objects |
+| [OpenApiDtoRequestBody](docs/attributes.md#OpenApiDtoRequestBody) | Builds OpenAPI request body property from Data Transfer Objects |
+| [OpenApiForm](docs/attributes.md#OpenApiForm) | Builds OpenAPI for application/x-www-form-urlencoded request bodies |
+| [OpenApiEntityAttribute](docs/attributes.md#OpenApiEntityAttribute) | Modifies an OpenAPI schema property |
+| [OpenApiHeader](docs/attributes.md#OpenApiHeader) | Create OpenAPI header parameters |
+| [OpenApiOperation](docs/attributes.md#OpenApiOperation) | Modifies OpenAPI operation |
+| [OpenApiPaginator](docs/attributes.md#OpenApiPaginator) | Create OpenAPI query params from CakePHP Paginator Component |
+| [OpenApiPath](docs/attributes.md#OpenApiPath) | Modifies OpenAPI paths |
+| [OpenApiPathParam](docs/attributes.md#OpenApiPathParam) | Modify an existing OpenAPI path parameter |
+| [OpenApiQueryParam](docs/attributes.md#OpenApiQueryParam) | Builds OpenAPI query param |
+| [OpenApiRequestBody](docs/attributes.md#OpenApiRequestBody) | Modify OpenAPI request body |
+| [OpenApiResponse](docs/attributes.md#OpenApiResponse) | Modify OpenAPI response |
+| [OpenApiSchema](docs/attributes.md#OpenApiSchema) | Modifies OpenAPI schema |
+| [OpenApiSearch](docs/attributes.md#OpenApiSearch) | Create OpenAPI query params from CakePHP Search plugin |
+| [OpenApiSecurity](docs/attributes.md#OpenApiSecurity) | Create/modify OpenAPI security |
 
 ## Event System
 
