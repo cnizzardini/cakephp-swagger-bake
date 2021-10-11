@@ -38,6 +38,12 @@ Blocks to build swagger query and post parameters.
 | ------------- | ------------- | ------------- | ------------- |
 | class | string | No | FQN of the DTO class |
 
+
+```php
+#[OpenApiDto(class: "\App\Dto\ActorDto")]
+public function index() {}
+```
+
 ### OpenApiDtoQuery
 Property or parameter level attribute for use in your DTO classes.
 
