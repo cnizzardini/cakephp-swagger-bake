@@ -121,10 +121,10 @@ Property or parameter level attribute for use in your Dto classes.
 
 ```php
 class ActorDto {
-    #[OpenApiDtoQuery(name: 'name', required: true, enum: ['A','B'])]
+    #[OpenApiDtoRequestBody(name: 'name', required: true, enum: ['A','B'])]
     private $name;
 
-    #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
+    #[OpenApiDtoRequestBody(name: 'some_field', type: 'int')]
     private $someField;
 ```
 
@@ -133,9 +133,9 @@ Via constructor property promotion:
 ```php
 class ActorDto {
     public function __construct(
-        #[OpenApiDtoQuery(name: 'name', required: true, enum: ['A','B'])]
+        #[OpenApiDtoRequestBody(name: 'name', required: true, enum: ['A','B'])]
         private string $name,
-        #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
+        #[OpenApiDtoRequestBody(name: 'some_field', type: 'int')]
         private int $someField, 
     ) {
     }
