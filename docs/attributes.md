@@ -39,7 +39,7 @@ Blocks to build swagger query and post parameters.
 | class | string | No | FQN of the DTO class |
 
 ### OpenApiDtoQuery
-Property level attribute for use in your SwagDto classes.
+Property or parameter level attribute for use in your DTO classes.
 
 | Attribute | Type / Default | Description | 
 | ------------- | ------------- | ------------- |
@@ -65,13 +65,29 @@ class ActorDto {
     private $someField;
 ```
 
+
+Via constructor property promotion:
+
+```php
+class ActorDto {
+    public function __construct(
+        #[OpenApiDtoQuery(name: 'name', required: true, enum: ['A','B'])]
+        private string $name,
+        #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
+        private int $someField, 
+    ) {
+    }
+```
+
+Using the DTO:
+
 ```php
 #[OpenApiDto(class: "\App\Dto\ActorDto")]
 public function index() {}
 ```
 
 ### OpenApiDtoRequestBody
-Property level attribute for use in your SwagDto classes.
+Property or parameter level attribute for use in your Dto classes.
 
 | Attribute | Type / Default | Description | 
 | ------------- | ------------- | ------------- |
@@ -104,6 +120,26 @@ class ActorDto {
 
     #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
     private $someField;
+```
+
+Via constructor property promotion:
+
+```php
+class ActorDto {
+    public function __construct(
+        #[OpenApiDtoQuery(name: 'name', required: true, enum: ['A','B'])]
+        private string $name,
+        #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
+        private int $someField, 
+    ) {
+    }
+```
+
+Using the DTO:
+
+```php
+#[OpenApiDto(class: "\App\Dto\ActorDto")]
+public function index() {}
 ```
 
 ### OpenApiForm
