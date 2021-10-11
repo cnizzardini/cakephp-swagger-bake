@@ -58,10 +58,11 @@ Property level attribute for use in your SwagDto classes.
 
 ```php
 class ActorDto {
-     /**
-      * @SwagDtoQuery(name="example", type="string", required=true, enum={"A","B"})
-      */
-    private $example;
+    #[OpenApiDtoQuery(name: 'name', required: true, enum: ['A','B'])]
+    private $name;
+
+    #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
+    private $someField;
 ```
 
 ```php
@@ -70,7 +71,7 @@ public function index() {}
 ```
 
 ### OpenApiDtoRequestBody
-Formerly `@SwagDtoForm`. Property level attribute for use in your SwagDto classes.
+Property level attribute for use in your SwagDto classes.
 
 | Attribute | Type / Default | Description | 
 | ------------- | ------------- | ------------- |
@@ -98,10 +99,11 @@ Formerly `@SwagDtoForm`. Property level attribute for use in your SwagDto classe
 
 ```php
 class ActorDto {
-     /**
-      * @SwagDtoRequestBody(name="example", type="integer", required=true, minimum=10, maximum=100)
-      */
-    private $example;
+    #[OpenApiDtoQuery(name: 'name', required: true, enum: ['A','B'])]
+    private $name;
+
+    #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
+    private $someField;
 ```
 
 ### OpenApiForm
