@@ -71,8 +71,6 @@ class OpenApiHeaderTest extends TestCase
         $this->assertArrayHasKey('get', $arr['paths']['/employees/custom-get']);
         $operation = $arr['paths']['/employees/custom-get']['get'];
 
-        $this->assertEquals('custom-get summary', $operation['summary']);
-
         $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
             return $param['name'] == 'X-HEAD-ATTRIBUTE';
         }));

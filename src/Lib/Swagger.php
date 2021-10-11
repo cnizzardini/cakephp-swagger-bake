@@ -15,7 +15,6 @@ use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Schema\SchemaFactory;
-use SwaggerBake\Lib\Schema\SchemaFromYamlFactory;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -48,10 +47,7 @@ class Swagger
         $this->routeScanner = $modelScanner->getRouteScanner();
         $this->config = $modelScanner->getConfig();
 
-        $this->array = Yaml::parseFile($this->config->getYml());
-
-        $this->buildSchemaFromYml();
-        $this->buildPathsFromYml();
+        $this->array = (new OpenApiFromYaml())->build(Yaml::parseFile($this->config->getYml()));
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.initialize', $this)
@@ -90,12 +86,14 @@ class Swagger
         }
 
         ksort($this->array['paths'], SORT_STRING);
-        uksort($this->array['components']['schemas'], function ($a, $b) {
-            return strcasecmp(
-                preg_replace('/\s+/', '', $a),
-                preg_replace('/\s+/', '', $b)
-            );
-        });
+        if (is_array($this->array['components']['schemas'])) {
+            uksort($this->array['components']['schemas'], function ($a, $b) {
+                return strcasecmp(
+                    preg_replace('/\s+/', '', $a),
+                    preg_replace('/\s+/', '', $b)
+                );
+            });
+        }
 
         if (empty($this->array['components']['schemas'])) {
             unset($this->array['components']['schemas']);
@@ -354,38 +352,6 @@ class Swagger
         }
 
         return null;
-    }
-
-    /**
-     * Build paths from YML
-     *
-     * @todo for now an array will work, but should apply proper Path objects in the future
-     * @return void
-     */
-    private function buildPathsFromYml(): void
-    {
-        if (!isset($this->array['paths'])) {
-            $this->array['paths'] = [];
-        }
-    }
-
-    /**
-     * Build schema from YML
-     *
-     * @return void
-     */
-    private function buildSchemaFromYml(): void
-    {
-        if (!isset($this->array['components']['schemas'])) {
-            $this->array['components']['schemas'] = [];
-        }
-
-        $factory = new SchemaFromYamlFactory();
-
-        foreach ($this->array['components']['schemas'] as $schemaName => $schemaVar) {
-            $schema = $factory->create($schemaName, $schemaVar)->setRefPath('#/components/schemas/' . $schemaName);
-            $this->array['components']['schemas'][$schemaName] = $schema;
-        }
     }
 
     /**

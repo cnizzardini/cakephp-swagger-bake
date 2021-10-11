@@ -336,7 +336,9 @@ Method level attribute for OpenApi Operations.
 
 | Property | Type / Default | OA Spec |Description | 
 | ------------- | ------------- | ------------- | ------------- |
-| isVisible | bool `t`rue` | No | Setting this to false will prevent the operation from appearing in OpenApi output |
+| summary | string|null `` | Yes | Operation summary, set to null to prevent reading from docblock |
+| description | string|null `` | Yes | Operation description, set to null to prevent reading from docblock |
+| isVisible | bool `true` | No | Setting this to false will prevent the operation from appearing in OpenApi output |
 | tagNames | array `[]` | Yes | Sets tag names |
 | isPut | bool `false` | No | Changes the HTTP Method to an HTTP PUT on controller `edit()` actions/methods |
 | isDeprecated | bool `false` | Yes | Is the operation deprecated? |
@@ -344,6 +346,8 @@ Method level attribute for OpenApi Operations.
 
 ```php
 #[OpenApiOperation(
+    summary: 'operation title',
+    description: 'a description',
     tagNames: ['Internal API', 'External API'], 
     externalDocs: ['url' => 'http://localhost', 'description' => 'desc...']]
 )]
