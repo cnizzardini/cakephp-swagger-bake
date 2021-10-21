@@ -62,7 +62,7 @@ class SchemaFactory
         $schema = $this
             ->createSchema($modelDecorator->getModel(), $propertyType)
             ->setIsPublic($openApiSchema->isPublic ?? true)
-            ->setDescription($openApiSchema->description);
+            ->setDescription($openApiSchema->description ?? '');
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Schema.created', $schema, [
