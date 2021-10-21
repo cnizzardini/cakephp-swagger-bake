@@ -59,7 +59,7 @@ class OperationDocBlockTest extends TestCase
     /**
      * @throws InternalErrorException
      */
-    public function testGetOperationWithDocBlock()
+    public function test()
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
@@ -77,6 +77,31 @@ EOT;
         $doc = $operation->getExternalDocs();
 
         $this->assertEquals('CakePHP', $doc->getDescription());
+        $this->assertEquals('http://www.cakephp.org', $doc->getUrl());
+        $this->assertTrue($operation->isDeprecated());
+    }
+
+    /**
+     * @throws InternalErrorException
+     */
+    public function test_without_description()
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeModels = new ModelScanner($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
+
+        $block = <<<EOT
+/** 
+ * @see http://www.cakephp.org
+ * @deprecated 
+ */
+EOT;
+        $docBlock = DocBlockFactory::createInstance()->create($block);
+        $operation = (new OperationDocBlock($swagger, $config, new Operation(), $docBlock))->getOperation();
+        $doc = $operation->getExternalDocs();
+
+        $this->assertEquals('', $doc->getDescription());
         $this->assertEquals('http://www.cakephp.org', $doc->getUrl());
         $this->assertTrue($operation->isDeprecated());
     }

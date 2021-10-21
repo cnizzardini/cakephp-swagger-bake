@@ -65,15 +65,13 @@ class OperationDocBlock
         $tags = $this->doc->getTagsByName('see');
         $seeTag = reset($tags);
         $str = $seeTag->__toString();
-        $pieces = explode(' ', $str);
+        [$url, $description] = explode(' ', $str);
 
-        if (!filter_var($pieces[0], FILTER_VALIDATE_URL)) {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
             return;
         }
 
-        [$url, $description] = $pieces;
-
-        $this->operation->setExternalDocs(new OperationExternalDoc($url, $description));
+        $this->operation->setExternalDocs(new OperationExternalDoc($url, $description ?? ''));
     }
 
     /**
