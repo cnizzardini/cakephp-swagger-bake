@@ -21,40 +21,19 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
      */
     private $example;
 
-    /**
-     * @var bool
-     */
-    private $readOnly = false;
+    private bool $readOnly = false;
 
-    /**
-     * @var bool
-     */
-    private $writeOnly = false;
+    private bool $writeOnly = false;
 
-    /**
-     * @var bool
-     */
-    private $required = false;
+    private bool $required = false;
 
-    /**
-     * @var bool
-     */
-    private $requirePresenceOnCreate = false;
+    private bool $requirePresenceOnCreate = false;
 
-    /**
-     * @var bool
-     */
-    private $requirePresenceOnUpdate = false;
+    private bool $requirePresenceOnUpdate = false;
 
-    /**
-     * @var array
-     */
-    private $items = [];
+    private array $items = [];
 
-    /**
-     * @var string
-     */
-    private $refEntity;
+    private ?string $refEntity = null;
 
     /**
      * @return array
