@@ -148,7 +148,7 @@ class EmployeesController extends AppController
         $this->viewBuilder()->setOption('serialize', ['hello']);
     }
 
-    #[OpenApiResponse(refEntity: '#/components/schemas/Pet')]
+    #[OpenApiResponse(ref: '#/components/schemas/Pet')]
     #[OpenApiResponse(statusCode: '404', description: "new statusCode")]
     #[OpenApiResponse(statusCode: '5XX', description: "status code range")]
     public function customResponseSchema(): void

@@ -13,7 +13,7 @@ class OpenApiResponse
      * instance, an operation returning a single resource (e.g. view() actions) would be an object, while operations
      * returning a collect would (e.g. index() actions) would be an array. Defaults to object.
      * @param string $statusCode The HTTP status code this response represents.
-     * @param string|null $refEntity An optional existing $ref from your OpenAPI YAML. If not set, the entity
+     * @param string|null $ref An optional existing $ref from your OpenAPI YAML. If not set, the entity
      * associated with your controller per cakephp convention will be assumed.
      * @param string|null $description An optional response description.
      * @param array|null $mimeTypes An optional array of mime types, if none are given then the defaults from your
@@ -25,13 +25,13 @@ class OpenApiResponse
     public function __construct(
         public string $schemaType = 'object',
         public string $statusCode = '200',
-        public ?string $refEntity = null,
+        public ?string $ref = null,
         public ?string $description = null,
         public ?array $mimeTypes = null,
         public ?array $associations = null,
         public ?string $schemaFormat = null,
     ) {
-        $this->refEntity = $refEntity ?? '';
+        $this->ref = $ref ?? '';
         $this->description = $description ?? '';
         $this->mimeTypes = $mimeTypes ?? null;
 

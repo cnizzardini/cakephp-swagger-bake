@@ -64,7 +64,7 @@ class OpenApiResponseTest extends TestCase
         $this->swagger = new Swagger(new ModelScanner($cakeRoute, $config));
     }
 
-    public function test_response()
+    public function test_response(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 

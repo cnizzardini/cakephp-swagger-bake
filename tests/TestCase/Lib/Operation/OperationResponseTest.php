@@ -261,7 +261,7 @@ class OperationResponseTest extends TestCase
                 $this->returnValue([
                     new ReflectionAttribute(OpenApiResponse::class, [
                         'schemaType' => 'array',
-                        'refEntity' => '#/components/schema/Employee',
+                        'ref' => '#/components/schema/Employee',
                     ]),
                 ])
             );

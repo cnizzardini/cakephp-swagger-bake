@@ -10,7 +10,7 @@ use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
-class SwagEntityTest extends TestCase
+class OpenApiSchemaTest extends TestCase
 {
     /**
      * @var string[]

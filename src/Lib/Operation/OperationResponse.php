@@ -113,7 +113,7 @@ class OperationResponse
                 }
 
                 // push basic response since no entity or format was defined and continue to next mime/type
-                if (empty($openApiResponse->refEntity) && empty($openApiResponse->associations)) {
+                if (empty($openApiResponse->ref) && empty($openApiResponse->associations)) {
                     $response->pushContent($content);
                     $this->operation->pushResponse($response);
                     continue;
@@ -129,7 +129,7 @@ class OperationResponse
                     $schema = $this->getMimeTypeSchema(
                         $mimeType,
                         $openApiResponse->schemaType,
-                        $assocSchema ?? $openApiResponse->refEntity
+                        $assocSchema ?? $openApiResponse->ref
                     );
                 } catch (\Exception $e) {
                     throw new SwaggerBakeRunTimeException(

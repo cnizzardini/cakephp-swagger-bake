@@ -17,6 +17,6 @@ use Attribute;
  * @see AbstractSchemaProperty
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
-class OpenApiEntityAttribute extends AbstractSchemaProperty
+class OpenApiSchemaProperty extends AbstractSchemaProperty
 {
 }

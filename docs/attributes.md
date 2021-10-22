@@ -15,7 +15,6 @@ when reading this documentation.
 | [OpenApiDtoQuery](#OpenApiDtoQuery) | Builds OpenAPI query param from Data Transfer Objects |
 | [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) | Builds OpenAPI request body property from Data Transfer Objects |
 | [OpenApiForm](#OpenApiForm) | Builds OpenAPI for application/x-www-form-urlencoded request bodies |
-| [OpenApiEntityAttribute](#OpenApiEntityAttribute) | Modifies an OpenAPI schema property |
 | [OpenApiHeader](#OpenApiHeader) | Create OpenAPI header parameters |
 | [OpenApiOperation](#OpenApiOperation) | Modifies OpenAPI operation |
 | [OpenApiPaginator](#OpenApiPaginator) | Create OpenAPI query params from CakePHP Paginator Component |
@@ -25,6 +24,7 @@ when reading this documentation.
 | [OpenApiRequestBody](#OpenApiRequestBody) | Modify OpenAPI request body |
 | [OpenApiResponse](#OpenApiResponse) | Modify OpenAPI response |
 | [OpenApiSchema](#OpenApiSchema) | Modifies OpenAPI schema |
+| [OpenApiSchemaProperty](#OpenApiSchemaProperty) | Modifies an OpenAPI schema property |
 | [OpenApiSearch](#OpenApiSearch) | Create OpenAPI query params from CakePHP Search plugin |
 | [OpenApiSecurity](#OpenApiSecurity) | Create/modify OpenAPI security |
 
@@ -212,7 +212,7 @@ OpenAPI:
                   pattern: [a-zA-Z]
 ```
 
-### OpenApiEntityAttribute
+### OpenApiSchemaProperty
 Class level attribute for customizing Schema Attributes. Note that the attribute does not have to exist in your entity.
 You can add adhoc attributes as needed and optionally combine with
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
@@ -243,9 +243,9 @@ You can add adhoc attributes as needed and optionally combine with
 | example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 
 ```php
-#[OpenApiEntityAttribute(name: 'example_one', minLength: 5, maxLength: 10)]
-#[OpenApiEntityAttribute(name: 'example_two', minLength: 5, enum: ['PG','R'], required: true)]
-#[OpenApiEntityAttribute(name: 'example_virtual_field', readOnly: true)]
+#[OpenApiSchemaProperty(name: 'example_one', minLength: 5, maxLength: 10)]
+#[OpenApiSchemaProperty(name: 'example_two', minLength: 5, enum: ['PG','R'], required: true)]
+#[OpenApiSchemaProperty(name: 'example_virtual_field', readOnly: true)]
 class Employee extends Entity {
 ```
 
@@ -523,7 +523,7 @@ Method level attribute for controller actions defining
 | statusCode | string `200` | Y | The HTTP response code |
 | mimeTypes | array `null` | Y | An array of mime types the response can, if null settings from swagger_bake config are used. |
 | description | string `` | Y | Description of the response |
-| refEntity | string `` | Y | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"` |
+| ref | string `` | Y | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"` |
 | schemaFormat | string `` | Y | The schema format, generally only used for schemaType of string. |
 | associations | array `null` | N | Adds associated tables to the response sample schema, see examples below |
 
@@ -532,10 +532,10 @@ Defining a multiple mimeTypes and 400-409 status code range and an expected 200 
 ```php
 #[OpenApiResponse(
     statusCode: '40x',
-    refEntity: '#/components/schemas/Exception', 
-    mimeTypes: ["application/xml","application/json"]
+    ref: '#/components/schemas/Exception', 
+    mimeTypes: ['application/xml','application/json']
 )]
-#[OpenApiResponse(schemaType: 'array', refEntity: '#/components/schemas/Actor')]
+#[OpenApiResponse(schemaType: 'array', ref: '#/components/schemas/Actor')]
 ```
 
 OpenAPI:
