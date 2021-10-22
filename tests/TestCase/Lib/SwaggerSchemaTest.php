@@ -13,11 +13,16 @@ use SwaggerBake\Lib\Swagger;
 
 class SwaggerSchemaTest extends TestCase
 {
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 
-    private $router;
+    private Router $router;
+
+    private Configuration $config;
 
     public function setUp(): void
     {
@@ -45,11 +50,9 @@ class SwaggerSchemaTest extends TestCase
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
         ], SWAGGER_BAKE_TEST_APP);
-
-        
     }
 
-    public function testEmployeeTableProperties()
+    public function test_employee_table_properties(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
@@ -66,7 +69,7 @@ class SwaggerSchemaTest extends TestCase
         $this->assertEquals('integer', $employee['properties']['id']['type']);
     }
 
-    public function testYmlSchemaTakesPrecedence()
+    public function test_yml_schema_takes_precedence(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 

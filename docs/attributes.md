@@ -101,27 +101,27 @@ Property or parameter level attribute for use in your Dto classes.
 | type | string `string` | Date type such as integer, string, etc... |
 | format | string `""` | Date format such as int32, date-time, etc... |
 | description | string `""` | Description of the property |
-| readOnly | bool `false` | Is the property read only? |
-| writeOnly | bool `false` | Is the property write only? |
-| required | bool `false` | Is the property required? |
+| isReadOnly | bool `false` | Is the property read only? |
+| isWriteOnly | bool `false` | Is the property write only? |
+| isRequired | bool `false` | Is the property required? |
 | multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| hasUniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
 
 ```php
 class ActorDto {
-    #[OpenApiDtoRequestBody(name: 'name', required: true, enum: ['A','B'])]
+    #[OpenApiDtoRequestBody(name: 'name', isRequired: true, enum: ['A','B'])]
     private $name;
 
     #[OpenApiDtoRequestBody(name: 'some_field', type: 'int')]
@@ -133,7 +133,7 @@ Via constructor property promotion:
 ```php
 class ActorDto {
     public function __construct(
-        #[OpenApiDtoRequestBody(name: 'name', required: true, enum: ['A','B'])]
+        #[OpenApiDtoRequestBody(name: 'name', isRequired: true, enum: ['A','B'])]
         private string $name,
         #[OpenApiDtoRequestBody(name: 'some_field', type: 'int')]
         private int $someField, 
@@ -162,15 +162,15 @@ Method level attribute for adding form data fields.
 | isRequired | bool `false` | Is the property required? |
 | multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| hasUniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
@@ -223,20 +223,20 @@ You can add adhoc attributes as needed and optionally combine with
 | type | string `string` | Date type such as integer, string, etc... |
 | format | string `""` | Date format such as int32, date-time, etc... |
 | description | string `""` | Description of the property |
-| readOnly | bool `false` | Is the property read only? |
-| writeOnly | bool `false` | Is the property write only? |
-| required | bool `false` | Is the property required? |
+| isReadOnly | bool `false` | Is the property read only? |
+| isWriteOnly | bool `false` | Is the property write only? |
+| isRequired | bool `false` | Is the property required? |
 | multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| hasUniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
@@ -244,8 +244,8 @@ You can add adhoc attributes as needed and optionally combine with
 
 ```php
 #[OpenApiSchemaProperty(name: 'example_one', minLength: 5, maxLength: 10)]
-#[OpenApiSchemaProperty(name: 'example_two', minLength: 5, enum: ['PG','R'], required: true)]
-#[OpenApiSchemaProperty(name: 'example_virtual_field', readOnly: true)]
+#[OpenApiSchemaProperty(name: 'example_two', minLength: 5, enum: ['PG','R'], isRequired: true)]
+#[OpenApiSchemaProperty(name: 'example_virtual_field', isReadOnly: true)]
 class Employee extends Entity {
 ```
 

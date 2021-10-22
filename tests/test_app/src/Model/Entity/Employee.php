@@ -7,7 +7,7 @@ use Cake\ORM\Entity;
 use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 
 #[OpenApiSchemaProperty(name: 'gender', example: 'female', enum: ['male','female','other'])]
-#[OpenApiSchemaProperty(name: 'last_name', minLength: 3, maxLength: 59, pattern: '/\W/')]
+#[OpenApiSchemaProperty(name: 'last_name', maxLength: 59, minLength: 3, pattern: '/\W/')]
 class Employee extends Entity
 {
     /**
