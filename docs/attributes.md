@@ -157,9 +157,9 @@ Method level attribute for adding form data fields.
 | type | string `string` | Date type such as integer, string, etc... |
 | format | string `""` | Date format such as int32, date-time, etc... |
 | description | string `""` | Description of the property |
-| readOnly | bool `false` | Is the property read only? |
-| writeOnly | bool `false` | Is the property write only? |
-| required | bool `false` | Is the property required? |
+| isReadOnly | bool `false` | Is the property read only? |
+| isWriteOnly | bool `false` | Is the property write only? |
+| isRequired | bool `false` | Is the property required? |
 | multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
@@ -176,8 +176,8 @@ Method level attribute for adding form data fields.
 | enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
 
 ```php
-#[OpenApiForm(name: 'one', description: 'example', require: true, enum: ['A','B'])]
-#[OpenApiForm(name: 'two', type: 'integer', miniimum: 10, maximum: 100, multipleOf: 10)]
+#[OpenApiForm(name: 'one', description: 'example', isRequired: true, enum: ['A','B'])]
+#[OpenApiForm(name: 'two', type: 'integer', minimum: 10, maximum: 100, multipleOf: 10)]
 #[OpenApiForm(name: 'three', minLength: 8, maxLength: 64, pattern: '[a-zA-z]')]
 public function add() {}
 ```

@@ -82,7 +82,7 @@ class OperationRequestBodyTest extends TestCase
                         new ReflectionAttribute(OpenApiForm::class, [
                             'name' => 'test',
                             'type' => 'string',
-                            'required' => false,
+                            'isRequired' => false,
                         ])
                     ]),
                     $this->returnValue([

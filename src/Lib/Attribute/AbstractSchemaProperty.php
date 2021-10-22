@@ -21,9 +21,9 @@ abstract class AbstractSchemaProperty
      * @param string $title Title of the property
      * @param string $description Description of the property
      * @param string|int|float|bool $example An example value
-     * @param bool $readOnly Is this read-only?
-     * @param bool $writeOnly Is this write-only?
-     * @param bool $required Is this required?
+     * @param bool $isReadOnly Is this read-only?
+     * @param bool $isWriteOnly Is this write-only?
+     * @param bool $isRequired Is this required?
      * @param string $default A default value
      * @param bool $nullable Is this nullable?
      * @param bool $deprecated Is this deprecated?
@@ -50,9 +50,9 @@ abstract class AbstractSchemaProperty
         public string $title = '',
         public string $description = '',
         public string|int|float|bool $example = '',
-        public bool $readOnly = false,
-        public bool $writeOnly = false,
-        public bool $required = false,
+        public bool $isReadOnly = false,
+        public bool $isWriteOnly = false,
+        public bool $isRequired = false,
         public string $default = '',
         public bool $nullable = false,
         public bool $deprecated = false,
@@ -85,9 +85,9 @@ abstract class AbstractSchemaProperty
             ->setDescription($this->description ?? '')
             ->setType($this->type)
             ->setFormat($this->format ?? '')
-            ->setReadOnly($this->readOnly ?? false)
-            ->setWriteOnly($this->writeOnly ?? false)
-            ->setRequired($this->required ?? false)
+            ->setReadOnly($this->isReadOnly)
+            ->setWriteOnly($this->isWriteOnly)
+            ->setRequired($this->isRequired)
             ->setEnum($this->enum ?? []);
 
         $properties = [

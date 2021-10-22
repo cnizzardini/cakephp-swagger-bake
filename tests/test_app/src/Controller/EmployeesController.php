@@ -140,7 +140,7 @@ class EmployeesController extends AppController
     }
 
     #[OpenApiRequestBody(description: "Hello", ignoreCakeSchema: true)]
-    #[OpenApiForm(name: "fieldName", type: "string", required: false)]
+    #[OpenApiForm(name: "fieldName", type: "string", isRequired: false)]
     public function customPost(): void
     {
         $hello = 'world';
