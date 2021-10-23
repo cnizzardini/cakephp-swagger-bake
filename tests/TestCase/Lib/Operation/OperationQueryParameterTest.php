@@ -5,12 +5,10 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Controller\Controller;
 use Cake\TestSuite\TestCase;
 use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
-use SwaggerBake\Lib\Annotation\SwagDto;
-use SwaggerBake\Lib\Annotation\SwagPaginator;
-use SwaggerBake\Lib\Annotation\SwagQuery;
 use SwaggerBake\Lib\Attribute\OpenApiDto;
 use SwaggerBake\Lib\Attribute\OpenApiPaginator;
 use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\Operation\OperationQueryParameter;
@@ -26,9 +24,7 @@ class OperationQueryParameterTest extends TestCase
             )
             ->will(
                 $this->onConsecutiveCalls(
-                    $this->returnValue([
-
-                    ]),
+                    $this->returnValue([]),
                     $this->returnValue([
                         new ReflectionAttribute(OpenApiQueryParam::class, [
                             'name' => 'testName',
@@ -42,9 +38,7 @@ class OperationQueryParameterTest extends TestCase
                             'example' => 'test example'
                         ])
                     ]),
-                    $this->returnValue([
-
-                    ]),
+                    $this->returnValue([]),
                 )
             );
 
@@ -130,12 +124,8 @@ class OperationQueryParameterTest extends TestCase
                             'sortEnum' => $enums,
                         ]),
                     ]),
-                    $this->returnValue([
-
-                    ]),
-                    $this->returnValue([
-
-                    ])
+                    $this->returnValue([]),
+                    $this->returnValue([])
                 )
             );
 
@@ -164,12 +154,8 @@ class OperationQueryParameterTest extends TestCase
                             'useSortTextInput' => true,
                         ]),
                     ]),
-                    $this->returnValue([
-
-                    ]),
-                    $this->returnValue([
-
-                    ])
+                    $this->returnValue([]),
+                    $this->returnValue([])
                 )
             );
 
@@ -195,12 +181,8 @@ class OperationQueryParameterTest extends TestCase
                     $this->returnValue([
                         new ReflectionAttribute(OpenApiPaginator::class, []),
                     ]),
-                    $this->returnValue([
-
-                    ]),
-                    $this->returnValue([
-
-                    ])
+                    $this->returnValue([]),
+                    $this->returnValue([])
                 )
             );
 
@@ -230,17 +212,13 @@ class OperationQueryParameterTest extends TestCase
             )
             ->will(
                 $this->onConsecutiveCalls(
-                    $this->returnValue([
-
-                    ]),
+                    $this->returnValue([]),
                     $this->returnValue([
                         new ReflectionAttribute(OpenApiQueryParam::class, [
                             'ref' => $ref,
                         ])
                     ]),
-                    $this->returnValue([
-
-                    ])
+                    $this->returnValue([])
                 )
             );
 
@@ -257,5 +235,33 @@ class OperationQueryParameterTest extends TestCase
 
         $this->assertInstanceOf(Parameter::class, $parameter);
         $this->assertEquals($ref, $parameter->getRef());
+    }
+
+    public function test_dto_class_not_found_exception(): void
+    {
+        $this->expectException(SwaggerBakeRunTimeException::class);
+
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->any())
+            ->method(
+                'getAttributes'
+            )
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue([]),
+                    $this->returnValue([]),
+                    $this->returnValue([
+                        new ReflectionAttribute(OpenApiDto::class, [
+                            'class' => '\SwaggerBakeTest\App\Dto\Nope',
+                        ])
+                    ]),
+                )
+            );
+
+        (new OperationQueryParameter(
+            operation: (new Operation('hello', 'get'))->setHttpMethod('GET'),
+            controller: new Controller(),
+            refMethod: $mockReflectionMethod
+        ))->getOperationWithQueryParameters();
     }
 }
