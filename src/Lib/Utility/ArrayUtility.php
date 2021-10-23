@@ -51,7 +51,7 @@ class ArrayUtility
     public static function removeEmptyAndNullValues(array $array, array $keys): array
     {
         foreach ($keys as $key) {
-            if (array_key_exists($key, $array) && (is_null($array[$key]) || is_null($array[$key]))) {
+            if (array_key_exists($key, $array) && (is_null($array[$key]) || empty($array[$key]))) {
                 unset($array[$key]);
             }
         }
@@ -71,6 +71,42 @@ class ArrayUtility
         foreach ($match as $key => $value) {
             if (array_key_exists($key, $array) && $array[$key] === $value) {
                 unset($array[$key]);
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * Removes matching values from the array by key
+     *
+     * @param array $array The array to scan on
+     * @param array $keys The array to match against
+     * @return array
+     */
+    public static function removeKeysMatching(array $array, array $keys): array
+    {
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $array)) {
+                unset($array[$key]);
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * Convert the null items in the array to empty strings
+     *
+     * @param array $array The array to scan on
+     * @param array $keys The key values to change
+     * @return array
+     */
+    public static function convertNullToEmptyString(array $array, array $keys): array
+    {
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $array) && $array[$key] === null) {
+                $array[$key] = '';
             }
         }
 

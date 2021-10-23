@@ -14,24 +14,18 @@ use JsonSerializable;
 class RequestBody implements JsonSerializable
 {
     /**
-     * @var string
+     * @param string|null $description An optional description
+     * @param \SwaggerBake\Lib\OpenApi\Content[] $content Array of OpenApi Content
+     * @param bool $required Is this required?
+     * @param bool $ignoreCakeSchema Should cakephp schema be ignored?
      */
-    private $description = '';
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Content[]
-     */
-    private $content = [];
-
-    /**
-     * @var bool
-     */
-    private $required = false;
-
-    /**
-     * @var bool
-     */
-    private $ignoreCakeSchema = false;
+    public function __construct(
+        private ?string $description = null,
+        private array $content = [],
+        private bool $required = false,
+        private bool $ignoreCakeSchema = false
+    ) {
+    }
 
     /**
      * @return array

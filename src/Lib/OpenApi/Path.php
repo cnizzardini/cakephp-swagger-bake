@@ -37,9 +37,7 @@ class Path implements JsonSerializable
     public function toArray(): array
     {
         $vars = get_object_vars($this);
-        unset($vars['resource']);
-        unset($vars['operations']);
-        unset($vars['ref']);
+        $vars = ArrayUtility::removeKeysMatching($vars, ['resource', 'operations', 'ref']);
 
         // remove items if null to reduce JSON clutter
         $vars = ArrayUtility::removeNullValues($vars, ['summary', 'description']);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
+use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
  * Class Response
@@ -31,12 +32,10 @@ class Response implements JsonSerializable
     public function toArray(): array
     {
         $vars = get_object_vars($this);
-        unset($vars['code']);
-        if (empty($vars['content'])) {
-            unset($vars['content']);
-        }
+        $vars = ArrayUtility::removeKeysMatching($vars, ['code']);
+        $vars = ArrayUtility::convertNullToEmptyString($vars, ['description']);
 
-        return $vars;
+        return ArrayUtility::removeEmptyAndNullValues($vars, ['content']);
     }
 
     /**
