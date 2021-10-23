@@ -147,7 +147,7 @@ class OperationResponseAssociation
             $assocTable = $this->locator->get($tableName);
             try {
                 $model = (new ModelFactory(ConnectionManager::get('default'), $assocTable))->create();
-            } catch(DatabaseException $e) {
+            } catch (DatabaseException $e) {
                 throw new SwaggerBakeRunTimeException('Error building association: ' . $e->getMessage());
             }
 
