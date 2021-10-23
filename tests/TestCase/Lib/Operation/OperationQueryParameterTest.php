@@ -150,6 +150,75 @@ class OperationQueryParameterTest extends TestCase
         $this->assertEquals($enums, $parameter->getSchema()->getEnum());
     }
 
+    public function test_open_api_paginator_use_sort_text_input(): void
+    {
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->any())
+            ->method(
+                'getAttributes'
+            )
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue([
+                        new ReflectionAttribute(OpenApiPaginator::class, [
+                            'useSortTextInput' => true,
+                        ]),
+                    ]),
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+
+                    ])
+                )
+            );
+
+        $operationQueryParam = new OperationQueryParameter(
+            operation: new Operation('hello', 'get'),
+            controller: new Controller(),
+            refMethod: $mockReflectionMethod
+        );
+
+        $operation = $operationQueryParam->getOperationWithQueryParameters();
+        $this->assertArrayHasKey('#/x-swagger-bake/components/parameters/paginatorSort', $operation->getParameters());
+    }
+
+    public function test_open_api_paginator_with_component_sortable_fields(): void
+    {
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->any())
+            ->method(
+                'getAttributes'
+            )
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue([
+                        new ReflectionAttribute(OpenApiPaginator::class, []),
+                    ]),
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+
+                    ])
+                )
+            );
+
+        $controller = new Controller();
+        $controller->paginate['sortableFields'] = ['test'];
+
+        $operationQueryParam = new OperationQueryParameter(
+            operation: new Operation('hello', 'get'),
+            controller: $controller,
+            refMethod: $mockReflectionMethod
+        );
+
+        $operation = $operationQueryParam->getOperationWithQueryParameters();
+        $parameter = $operation->getParameterByTypeAndName('query', 'sort');
+
+        $this->assertEquals(['test'], $parameter->getSchema()->getEnum());
+    }
+
     public function test_open_api_parameter_using_ref(): void
     {
         $ref = '#/x-swagger-bake/components/parameters/paginatorPage';
