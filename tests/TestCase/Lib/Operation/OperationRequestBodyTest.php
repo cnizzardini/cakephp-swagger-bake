@@ -96,7 +96,7 @@ class OperationRequestBodyTest extends TestCase
 
         $operationRequestBody = new OperationRequestBody(
             $swagger,
-            (new Operation())->setHttpMethod('POST'),
+            new Operation('hello', 'post'),
             $route,
             $mockReflectionMethod
         );
@@ -149,7 +149,7 @@ class OperationRequestBodyTest extends TestCase
 
         $operationRequestBody = new OperationRequestBody(
             $swagger,
-            (new Operation())->setHttpMethod('POST'),
+            new Operation('hello', 'post'),
             $route,
             $mockReflectionMethod
         );
@@ -203,7 +203,7 @@ class OperationRequestBodyTest extends TestCase
 
         $operationRequestBody = new OperationRequestBody(
             $swagger,
-            (new Operation())->setHttpMethod('POST'),
+            new Operation('hello', 'post'),
             $route,
             $mockReflectionMethod,
             $swagger->getArray()['components']['schemas']['Employee']

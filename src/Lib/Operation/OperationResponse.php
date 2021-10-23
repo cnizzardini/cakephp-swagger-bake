@@ -98,23 +98,19 @@ class OperationResponse
             $mimeTypes = $openApiResponse->mimeTypes ?? $this->config->getResponseContentTypes();
 
             foreach ($mimeTypes as $mimeType) {
-                $content = (new Content())->setMimeType($mimeType);
-                $response = (new Response())
-                    ->setCode($openApiResponse->statusCode)
-                    ->setDescription($openApiResponse->description);
+                $response = new Response($openApiResponse->statusCode, $openApiResponse->description);
 
                 // push text/plain response and the continue to next mime/type
                 if ($mimeType == 'text/plain') {
                     $schema = (new Schema())->setType('string')->setFormat($openApiResponse->schemaFormat ?? '');
-                    $content->setSchema($schema);
-                    $response->pushContent($content);
+                    $response->pushContent(new Content($mimeType, $schema));
                     $this->operation->pushResponse($response);
                     continue;
                 }
 
                 // push basic response since no entity or format was defined and continue to next mime/type
                 if (empty($openApiResponse->ref) && empty($openApiResponse->associations)) {
-                    $response->pushContent($content);
+                    $response->pushContent(new Content($mimeType, ''));
                     $this->operation->pushResponse($response);
                     continue;
                 }
@@ -141,10 +137,10 @@ class OperationResponse
                     );
                 }
 
-                $content->setSchema(
+                $response->pushContent(new Content(
+                    $mimeType,
                     $openApiResponse->schemaFormat ? $schema->setFormat($openApiResponse->schemaFormat) : $schema
-                );
-                $response->pushContent($content);
+                ));
                 $this->operation->pushResponse($response);
             }
         }
@@ -177,16 +173,11 @@ class OperationResponse
 
         $schemaMode = $this->swagger->getSchemaByName($this->schema->getName() . '-Read') ?? $this->schema;
 
-        $response = (new Response())->setCode('200');
+        $response = new Response('200');
 
         foreach ($this->config->getResponseContentTypes() as $mimeType) {
             $schema = $this->getMimeTypeSchema($mimeType, $schemaType, $schemaMode->getRefPath());
-
-            $response->pushContent(
-                (new Content())
-                    ->setSchema($schema)
-                    ->setMimeType($mimeType)
-            );
+            $response->pushContent(new Content($mimeType, $schema));
         }
 
         $this->operation->pushResponse($response);
@@ -237,16 +228,12 @@ class OperationResponse
         }
 
         if (strtolower($this->route->getAction()) == 'delete') {
-            $this->operation->pushResponse(
-                (new Response())
-                    ->setCode('204')
-                    ->setDescription('Resource deleted')
-            );
+            $this->operation->pushResponse(new Response('204', 'Resource deleted'));
 
             return;
         }
 
-        $response = (new Response())->setCode('200');
+        $response = new Response('200');
 
         if (in_array($this->operation->getHttpMethod(), ['OPTIONS','HEAD'])) {
             $this->operation->pushResponse($response);
@@ -261,9 +248,7 @@ class OperationResponse
                 $schema->setXml((new OpenApiXml())->setName('response'));
             }
 
-            $response->pushContent(
-                (new Content())->setMimeType($mimeType)->setSchema($schema)
-            );
+            $response->pushContent(new Content($mimeType, $schema));
         }
 
         $this->operation->pushResponse($response);

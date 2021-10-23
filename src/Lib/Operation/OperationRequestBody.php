@@ -92,15 +92,7 @@ class OperationRequestBody
         }
 
         foreach ($mimeTypes as $mimeType) {
-            $content = (new Content())->setMimeType($mimeType);
-
-            if (isset($schema)) {
-                $content->setSchema($schema);
-            } else {
-                $content->setSchema($openApiRequestBody->ref);
-            }
-
-            $requestBody->pushContent($content);
+            $requestBody->pushContent(new Content($mimeType, $schema ?? $openApiRequestBody->ref));
         }
 
         $this->operation->setRequestBody(
@@ -137,11 +129,7 @@ class OperationRequestBody
         $requestBody = $this->operation->getRequestBody() ?? new RequestBody();
 
         foreach ($this->config->getRequestAccepts() as $mimeType) {
-            $requestBody->pushContent(
-                (new Content())
-                    ->setMimeType($mimeType)
-                    ->setSchema($schema)
-            );
+            $requestBody->pushContent(new Content($mimeType, $schema));
         }
 
         $this->operation->setRequestBody($requestBody);
@@ -173,11 +161,7 @@ class OperationRequestBody
         }
 
         foreach ($this->config->getRequestAccepts() as $mimeType) {
-            $requestBody->pushContent(
-                (new Content())
-                    ->setMimeType($mimeType)
-                    ->setSchema($this->applyRootNodeToXmlSchema($schema, $mimeType))
-            );
+            $requestBody->pushContent(new Content($mimeType, $this->applyRootNodeToXmlSchema($schema, $mimeType)));
         }
 
         $this->operation->setRequestBody($requestBody);
@@ -224,26 +208,17 @@ class OperationRequestBody
             $schema = clone $this->schema;
             $schema = $this->applyRootNodeToXmlSchema($schema, $mimeType, $schema->getName());
 
-            $content = (new Content())->setMimeType($mimeType);
             $isPost = in_array($this->operation->getHttpMethod(), ['POST']);
 
             if ($isPost && $this->swagger->getSchemaByName($schema->getAddSchemaName())) {
-                $content->setSchema(
-                    $this->swagger->getSchemaByName($schema->getAddSchemaName())->getRefPath()
-                );
+                $contentSchema = $this->swagger->getSchemaByName($schema->getAddSchemaName())->getRefPath();
             } elseif ($this->swagger->getSchemaByName($schema->getEditSchemaName())) {
-                $content->setSchema(
-                    $this->swagger->getSchemaByName($schema->getEditSchemaName())->getRefPath()
-                );
+                $contentSchema = $this->swagger->getSchemaByName($schema->getEditSchemaName())->getRefPath();
+            } else {
+                $contentSchema = $this->swagger->getSchemaByName($schema->getName())->getRefPath();
             }
 
-            if ($content->getSchema() === null) {
-                $content->setSchema(
-                    $this->swagger->getSchemaByName($schema->getName())->getRefPath()
-                );
-            }
-
-            $requestBody->pushContent($content);
+            $requestBody->pushContent(new Content($mimeType, $contentSchema));
         }
 
         $this->operation->setRequestBody($requestBody);

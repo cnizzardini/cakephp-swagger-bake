@@ -70,9 +70,7 @@ class OperationFromRouteFactory
             return null;
         }
 
-        $operation = (new Operation())
-            ->setHttpMethod(strtolower($httpMethod))
-            ->setOperationId($route->getName() . ':' . strtolower($httpMethod));
+        $operation = new Operation($route->getName() . ':' . strtolower($httpMethod), $httpMethod);
 
         $operation = $this->createOperation($operation, $route, $openApiOperation);
 

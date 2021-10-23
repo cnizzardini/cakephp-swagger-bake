@@ -12,7 +12,6 @@ use SwaggerBake\Lib\Swagger;
 
 class OpenApiResponseTest extends TestCase
 {
-
     /**
      * @var string[]
      */

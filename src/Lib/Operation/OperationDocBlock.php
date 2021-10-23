@@ -92,16 +92,10 @@ class OperationDocBlock
         foreach ($throws as $throw) {
             $exception = new ExceptionHandler($throw, $this->swagger, $this->config);
 
-            $response = (new Response())
-                ->setCode($exception->getCode())
-                ->setDescription($exception->getMessage());
+            $response = new Response($exception->getCode(), $exception->getMessage());
 
             foreach ($this->config->getResponseContentTypes() as $mimeType) {
-                $response->pushContent(
-                    (new Content())
-                        ->setMimeType($mimeType)
-                        ->setSchema($exception->getSchema())
-                );
+                $response->pushContent(new Content($mimeType, $exception->getSchema()));
             }
 
             $this->operation->pushResponse($response);

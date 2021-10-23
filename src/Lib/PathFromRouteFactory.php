@@ -38,7 +38,7 @@ class PathFromRouteFactory
             return null;
         }
 
-        $path = (new Path())->setResource($this->route->templateToOpenApiPath());
+        $path = new Path($this->route->templateToOpenApiPath());
 
         try {
             $reflection = new ReflectionClass($fqn);

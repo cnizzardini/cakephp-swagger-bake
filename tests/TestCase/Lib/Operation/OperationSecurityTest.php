@@ -83,7 +83,7 @@ class OperationSecurityTest extends TestCase
             );
 
         $operationSecurity = new OperationSecurity(
-            new Operation(),
+            new Operation('hello', 'get'),
             $mockReflectionMethod,
             $this->routeDecorator,
             new Controller(),
@@ -103,7 +103,7 @@ class OperationSecurityTest extends TestCase
         $controller->loadComponent('Authentication.Authentication');
 
         $operationSecurity = new OperationSecurity(
-            new Operation(),
+            new Operation('hello', 'get'),
             null,
             $this->routeDecorator,
             $controller,

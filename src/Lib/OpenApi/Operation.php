@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
+use Cake\Routing\Route\Route;
 use InvalidArgumentException;
 use JsonSerializable;
+use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
  * Class Operation
@@ -14,39 +16,37 @@ use JsonSerializable;
  */
 class Operation implements JsonSerializable
 {
-    private ?string $summary = '';
-
-    private ?string $description = '';
-
-    private ?OperationExternalDoc $externalDocs;
-
-    private string $httpMethod = '';
-
     /**
-     * @var string[]
+     * @param string $operationId OpenApi Operation Id
+     * @param string $httpMethod The HTTP method
+     * @param string|null $summary An optional short summary
+     * @param string|null $description An optional description
+     * @param array $tags OpenApi tags
+     * @param \SwaggerBake\Lib\OpenApi\OperationExternalDoc|null $externalDocs Optional External Documentation
+     * @param \SwaggerBake\Lib\OpenApi\RequestBody|null $requestBody Optional request body
+     * @param array $parameters A mixed array of OpenApi Parameter and/or OpenApi $ref
+     * @param \SwaggerBake\Lib\OpenApi\Response[] $responses Array of OpenApi Response
+     * @param \SwaggerBake\Lib\OpenApi\PathSecurity[] $security Array of OpenApi PathSecurity
+     * @param bool $isDeprecated Is this operation deprecated?
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
-    private array $tags = [];
-
-    private string $operationId = '';
-
-    /**
-     * Mixed array of either \SwaggerBake\Lib\OpenApi\Parameter or array for $ref items
-     */
-    private array $parameters = [];
-
-    private ?RequestBody $requestBody = null;
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Response[]
-     */
-    private array $responses = [];
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\PathSecurity[]
-     */
-    private array $security = [];
-
-    private bool $deprecated = false;
+    public function __construct(
+        private string $operationId,
+        private string $httpMethod,
+        private ?string $summary = null,
+        private ?string $description = null,
+        private array $tags = [],
+        private ?OperationExternalDoc $externalDocs = null,
+        private ?RequestBody $requestBody = null,
+        private array $parameters = [],
+        private array $responses = [],
+        private array $security = [],
+        private bool $isDeprecated = false
+    ) {
+        $this->setHttpMethod($httpMethod);
+        $this->setParameters($parameters);
+        $this->setSecurity($security);
+    }
 
     /**
      * @return array
@@ -56,22 +56,29 @@ class Operation implements JsonSerializable
         $vars = get_object_vars($this);
         $vars['summary'] = $vars['summary'] ?? '';
         $vars['description'] = $vars['description'] ?? '';
+        $vars['deprecated'] = $vars['isDeprecated'];
+        unset($vars['isDeprecated']);
         unset($vars['httpMethod']);
 
+        // remove request body got GET and DELETE
         if (in_array($this->httpMethod, ['GET', 'DELETE']) || empty($vars['requestBody'])) {
             unset($vars['requestBody']);
         }
-        if (empty($vars['security'])) {
-            unset($vars['security']);
-        } else {
+
+        // remove openapi properties that are not required (if they are empty)
+        $vars = ArrayUtility::removeEmptyVars($vars, ['security', 'externalDocs']);
+
+        // security should be numerically indexed
+        if (isset($vars['security'])) {
             $vars['security'] = array_values($vars['security']);
         }
-        if (empty($vars['externalDocs'])) {
-            unset($vars['externalDocs']);
-        }
-        if (empty($this->requestBody) || count($this->requestBody->getContent()) === 0) {
+
+        // if request body content is empty remove it
+        if ($this->requestBody && count($this->requestBody->getContent()) === 0) {
             unset($vars['requestBody']);
         }
+
+        // parameters should be numerically indexed
         if (!empty($vars['parameters'])) {
             $vars['parameters'] = array_values($vars['parameters']);
         }
@@ -122,12 +129,10 @@ class Operation implements JsonSerializable
      */
     public function setHttpMethod(string $httpMethod)
     {
-        $httpMethod = strtoupper($httpMethod);
-        if (!in_array($httpMethod, ['GET','PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'])) {
-            throw new InvalidArgumentException("Invalid HTTP METHOD: $httpMethod");
+        $this->httpMethod = strtoupper($httpMethod);
+        if (!in_array($this->httpMethod, Route::VALID_METHODS)) {
+            throw new InvalidArgumentException("Invalid HTTP method given: `$this->httpMethod`");
         }
-
-        $this->httpMethod = $httpMethod;
 
         return $this;
     }
@@ -348,7 +353,7 @@ class Operation implements JsonSerializable
      */
     public function isDeprecated(): bool
     {
-        return $this->deprecated;
+        return $this->isDeprecated;
     }
 
     /**
@@ -357,7 +362,7 @@ class Operation implements JsonSerializable
      */
     public function setDeprecated(bool $deprecated)
     {
-        $this->deprecated = $deprecated;
+        $this->isDeprecated = $deprecated;
 
         return $this;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
+use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
  * Class Schema
@@ -104,11 +105,15 @@ class Schema implements JsonSerializable, SchemaInterface
         }
 
         // remove null or empty properties to avoid swagger.json clutter
-        foreach (['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml'] as $v) {
-            if (array_key_exists($v, $vars) && (empty($vars[$v]) || is_null($vars[$v]))) {
-                unset($vars[$v]);
-            }
-        }
+        $vars = ArrayUtility::removeEmptyAndNullValues(
+            $vars,
+            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml']
+        );
+
+        $vars = ArrayUtility::removeEmptyAndNullValues(
+            $vars,
+            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml']
+        );
 
         // remove null properties only
         foreach (['description'] as $v) {

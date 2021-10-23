@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Attribute;
 
 use InvalidArgumentException;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
 
@@ -59,7 +60,26 @@ abstract class AbstractOpenApiParameter
      */
     public function create(): Parameter
     {
-        $parameter = (new Parameter())
+        switch (static::class) {
+            case OpenApiDtoQuery::class:
+                $parameter = new Parameter(
+                    in: 'query',
+                    ref: $this->ref,
+                    name: $this->name,
+                    allowEmptyValue: $this->allowEmptyValue,
+                    allowReserved: $this->allowReserved
+                );
+                break;
+            case OpenApiHeader::class:
+                $parameter = new Parameter('header', $this->ref, $this->name);
+                break;
+        }
+
+        if (!isset($parameter)) {
+            throw new SwaggerBakeRunTimeException('Parameter object was not created');
+        }
+
+        $parameter
             ->setRef($this->ref ?? '')
             ->setName($this->name ?? '')
             ->setDescription($this->description)
@@ -74,18 +94,6 @@ abstract class AbstractOpenApiParameter
                     ->setEnum($this->enum)
                     ->setFormat($this->format)
             );
-
-        switch (static::class) {
-            case OpenApiDtoQuery::class:
-                $parameter
-                    ->setIn('query')
-                    ->setAllowReserved($this->allowReserved)
-                    ->setAllowEmptyValue($this->allowEmptyValue);
-                break;
-            case OpenApiHeader::class:
-                $parameter->setIn('header');
-                break;
-        }
 
         return $parameter;
     }

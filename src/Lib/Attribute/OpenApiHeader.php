@@ -70,10 +70,7 @@ class OpenApiHeader
      */
     public function createParameter(): Parameter
     {
-        return (new Parameter())
-            ->setIn('header')
-            ->setRef($this->ref)
-            ->setName($this->name)
+        return (new Parameter('header', $this->ref, $this->name))
             ->setDescription($this->description)
             ->setRequired($this->required)
             ->setDeprecated($this->deprecated)

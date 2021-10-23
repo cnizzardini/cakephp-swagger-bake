@@ -111,7 +111,7 @@ class OperationResponseTest extends TestCase
         $operationResponse = new OperationResponse(
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
-            new Operation(),
+            new Operation('hello', 'get'),
             $route,
             null,
             $mockReflectionMethod
@@ -144,7 +144,7 @@ class OperationResponseTest extends TestCase
         $operationResponse = new OperationResponse(
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
-            new Operation(),
+            new Operation('employees:add', 'post'),
             $route,
             $schema,
             $mockReflectionMethod
@@ -172,7 +172,7 @@ class OperationResponseTest extends TestCase
         $operationResponse = new OperationResponse(
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
-            new Operation(),
+            new Operation('employees:add', 'post'),
             $route,
             null,
             $mockReflectionMethod
@@ -205,7 +205,7 @@ class OperationResponseTest extends TestCase
         $operationResponse = new OperationResponse(
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
-            new Operation(),
+            new Operation('employees:delete', 'delete'),
             $route,
             null,
             $mockReflectionMethod
@@ -232,7 +232,7 @@ class OperationResponseTest extends TestCase
         $operationResponse = new OperationResponse(
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
-            new Operation(),
+            new Operation('employees:noresponsedefined', 'get'),
             $route,
             null,
             $mockReflectionMethod
@@ -269,7 +269,7 @@ class OperationResponseTest extends TestCase
         $operationResponse = new OperationResponse(
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
-            new Operation(),
+            new Operation('employees:index', 'get'),
             $route,
             null,
             $mockReflectionMethod
@@ -305,7 +305,7 @@ class OperationResponseTest extends TestCase
         $operationResponse = new OperationResponse(
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
             $this->config,
-            new Operation(),
+            new Operation('employees:textplain', 'get'),
             $route,
             null,
             $mockReflectionMethod

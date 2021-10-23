@@ -69,7 +69,7 @@ class OperationRequestBodyYamlTest extends TestCase
 
         $operationRequestBody = new OperationRequestBody(
             $swagger,
-            (new Operation())->setHttpMethod('POST'),
+            new Operation('hello', 'post'),
             $route,
             null,
             $swagger->getArray()['components']['schemas']['Employee']

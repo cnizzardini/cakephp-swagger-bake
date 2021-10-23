@@ -23,11 +23,12 @@ class OperationFromYmlFactory
      */
     public function create(string $httpMethod, array $yaml): Operation
     {
-        $operation = (new Operation())
-            ->setHttpMethod($httpMethod)
-            ->setTags($yaml['tags'] ?? [])
-            ->setOperationId($yaml['operationId'] ?? '')
-            ->setDeprecated($yaml['deprecated'] ?? false);
+        $operation = new Operation(
+            operationId: $yaml['operationId'],
+            httpMethod: $httpMethod,
+            tags: $yaml['tags'] ?? [],
+            isDeprecated: $yaml['deprecated'] ?? false
+        );
 
         if (isset($yaml['externalDocs']['url'])) {
             $operation->setExternalDocs(

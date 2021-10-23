@@ -5,89 +5,63 @@ namespace SwaggerBake\Lib\OpenApi;
 
 use InvalidArgumentException;
 use JsonSerializable;
-use LogicException;
+use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
  * Class Parameter
  *
  * @package SwaggerBake\Lib\OpenApi
- * @see https://swagger.io/docs/specification/describing-parameters/
+ * @see https://spec.openapis.org/oas/latest.html#parameter-object
  */
 class Parameter implements JsonSerializable
 {
-    public const IN = ['query','cookie','header','path','body'];
-
     /**
-     * For referencing an OpenAPI YAML object. If set only ref will be returned
+     * The location of the parameter.
      *
-     * @var string|null
+     * @var string[]
      */
-    private $ref;
+    public const IN = ['query','cookie','header','path'];
 
     /**
-     * @var string
-     **/
-    private $name = '';
-
-    /**
-     * @var string
-     **/
-    private $in = '';
-
-    /**
-     * @var string
-     **/
-    private $description = '';
-
-    /**
-     * @var bool
-     **/
-    private $required = false;
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Schema
-     **/
-    private $schema;
-
-    /**
-     * @var bool
-     **/
-    private $deprecated = false;
-
-    /**
-     * @var bool
-     **/
-    private $allowEmptyValue = false;
-
-    /**
-     * @var bool
-     **/
-    private $explode = false;
-
-    /**
-     * @var string
-     **/
-    private $style = '';
-
-    /**
-     * @var bool
-     **/
-    private $allowReserved = false;
-
-    /**
-     * @var mixed
-     **/
-    private $example = '';
+     * @param string $in Where the parameter exists, see Parameter::IN
+     * @param string|null $ref An OpenAPI $ref, required if name is empty or null
+     * @param string|null $name Name of the parameter, required if $ref is empty or null
+     * @param string|null $description An optional description
+     * @param bool $required Is this parameter required?
+     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema An optional Schema
+     * @param bool $deprecated Is this parameter deprecated?
+     * @param bool $allowEmptyValue Are empty values allowed?
+     * @param bool $explode Does this parameter accept a comma-separated list?
+     * @param string|null $style See https://spec.openapis.org/oas/latest.html#fixed-fields-9
+     * @param bool $allowReserved See https://spec.openapis.org/oas/latest.html#fixed-fields-9
+     * @param string|null $example See https://spec.openapis.org/oas/latest.html#fixed-fields-9
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
+    public function __construct(
+        private string $in,
+        private ?string $ref = null,
+        private ?string $name = null,
+        private ?string $description = null,
+        private bool $required = false,
+        private ?Schema $schema = null,
+        private bool $deprecated = false,
+        private bool $allowEmptyValue = false,
+        private bool $explode = false,
+        private ?string $style = null,
+        private bool $allowReserved = false,
+        private ?string $example = null,
+    ) {
+        $this->setIn($in);
+        if (empty($ref) && empty($name)) {
+            throw new InvalidArgumentException('A name or ref is required');
+        }
+    }
 
     /**
      * @return array
      */
     public function toArray(): array
     {
-        if (empty($this->in)) {
-            throw new LogicException('Parameter::in is required for ' . $this->name);
-        }
-
         return get_object_vars($this);
     }
 
@@ -106,22 +80,14 @@ class Parameter implements JsonSerializable
             unset($vars['allowReserved']);
         }
 
-        // remove empty values from JSON
-        foreach (['style','description','schema','example','ref'] as $property) {
-            if (empty($vars[$property])) {
-                unset($vars[$property]);
-            }
-        }
+        // remove openapi properties that are not required (if they are empty)
+        $vars = ArrayUtility::removeEmptyVars($vars, ['style','description','schema','example','ref']);
 
         // reduce JSON clutter if these values are equal to their defaults
-        $defaults = ['deprecated' => false, 'allowEmptyValue' => false, 'explode' => false, 'allowReserved' => false];
-        foreach ($defaults as $name => $value) {
-            if ($this->{$name} === $value) {
-                unset($vars[$name]);
-            }
-        }
-
-        return $vars;
+        return ArrayUtility::removeValuesMatching(
+            $vars,
+            ['deprecated' => false, 'allowEmptyValue' => false, 'explode' => false, 'allowReserved' => false]
+        );
     }
 
     /**
