@@ -51,7 +51,7 @@ class ArrayUtility
     public static function removeEmptyAndNullValues(array $array, array $keys): array
     {
         foreach ($keys as $key) {
-            if (array_key_exists($key, $array) && is_null($array[$key]) || is_null($array[$key])) {
+            if (array_key_exists($key, $array) && (is_null($array[$key]) || is_null($array[$key]))) {
                 unset($array[$key]);
             }
         }
