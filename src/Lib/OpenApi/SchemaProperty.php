@@ -16,6 +16,11 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     use JsonSchemaTrait;
     use SchemaTrait;
 
+    /**
+     * Rename keys on the left to the name on the right to match OpenApi spec
+     *
+     * @var array
+     */
     private const PROPERTIES_TO_OPENAPI_SPEC = [
         'isReadOnly' => 'readOnly',
         'isWriteOnly' => 'writeOnly',

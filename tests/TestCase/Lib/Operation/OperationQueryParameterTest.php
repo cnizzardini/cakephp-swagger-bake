@@ -34,10 +34,10 @@ class OperationQueryParameterTest extends TestCase
                             'name' => 'testName',
                             'type' => 'string',
                             'description' => 'test desc',
-                            'required' => true,
+                            'isRequired' => true,
                             'enum' => ['one','two'],
                             'allowEmptyValue' => true,
-                            'deprecated' => true,
+                            'isDeprecated' => true,
                             'format' => 'date-time',
                             'example' => 'test example'
                         ])
@@ -86,10 +86,10 @@ class OperationQueryParameterTest extends TestCase
                             'name' => 'testName',
                             'type' => 'string',
                             'description' => 'test desc',
-                            'required' => true,
+                            'isRequired' => true,
                             'enum' => ['one','two'],
                             'allowEmptyValue' => true,
-                            'deprecated' => true,
+                            'isDeprecated' => true,
                             'format' => 'date-time',
                             'example' => 'test example'
                         ])

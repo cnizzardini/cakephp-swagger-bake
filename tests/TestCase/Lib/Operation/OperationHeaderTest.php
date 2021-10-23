@@ -24,10 +24,10 @@ class OperationHeaderTest extends TestCase
                         'name' => 'X-HEADER',
                         'type' => 'string',
                         'description' => 'test desc',
-                        'required' => true,
+                        'isRequired' => true,
                         'explode' => true,
                         'allowEmptyValue' => true,
-                        'deprecated' => true,
+                        'isDeprecated' => true,
                         'format' => 'date',
                         'example' => 'test example',
                     ])
