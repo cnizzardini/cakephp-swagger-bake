@@ -49,7 +49,7 @@ class OpenApiHeader
         if (!in_array($type, OpenApiDataType::TYPES)) {
             throw new SwaggerBakeRunTimeException(
                 sprintf(
-                    'Invalid Data Type, given %s for %s but must be one of: %s' .
+                    'Invalid Data Type, given %s for %s but must be one of: %s',
                     $type,
                     $name,
                     implode(',', OpenApiDataType::TYPES)
