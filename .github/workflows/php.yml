@@ -7,8 +7,7 @@ on:
     branches: [ master, 2.next ]
 
 jobs:
-  run:
-
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -44,3 +43,16 @@ jobs:
           echo ${{ matrix.php-versions }}
           export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
           vendor/bin/php-coveralls --coverage_clover=clover.xml -v
+  #
+  # CakePHP 4 compatability
+  #
+  compatibility:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ['4.0.*', '4.1.*']
+    steps:
+      - name: CakePHP ${{matrix.version}} Test
+        run: |
+          composer update cakephp/cakephp:${{matrix.version}}
+          composer test

@@ -29,14 +29,14 @@ when reading this documentation.
 | [OpenApiSecurity](#OpenApiSecurity) | Create/modify OpenAPI security |
 
 ### OpenApiDto
-Method level attribute for building query or form parameters from a DataTransferObject. DTOs are more than just a
-best practice. Using them with SwaggerBake greatly reduces the amount of attributes you need to write. Consider
-using a DTO in place of OpenApiQuery or OpenApiForm. OpenApiDto uses either OpenApiDtoProperty or your existing Doc
-Blocks to build swagger query and post parameters.
+
+Method level attribute for building query or form parameters from a DataTransferObject. Your DTO will need to use 
+the [OpenApiDtoQuery](#OpenApiDtoQuery) or [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) on properties depending on 
+the request type.
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
-| class | string | No | FQN of the DTO class |
+| class | string | No | FQN of the DTO class. |
 
 
 ```php
@@ -45,30 +45,32 @@ public function index() {}
 ```
 
 ### OpenApiDtoQuery
+
 Property or parameter level attribute for use in your DTO classes.
 
-| Attribute | Type / Default | Description | 
+| Property | Type / Default | OA Spec | Description |
 | ------------- | ------------- | ------------- |
-| name | string | Name of the query parameter |
-| type | string `string` | Data type |
-| description | string `""` | Description of the parameter |
-| required | bool `false` | Is this parameter required? |
-| enum | array `[]` | An enumerated list of accepted values |
-| deprecated | bool `false` | Is this parameter deprecated? |
-| allowReserved | bool `false` | Allow reserved URI characters? |
-| allowEmptyValue | bool `false` | Allow empty values? |
-| explode | bool `false` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| style | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| format | string `""` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| name | string `""` | Y | Name of the query parameter, required if ref is not set |
+| ref | string `""` | Y | An OpenApi $ref, required if name is not set |
+| type | string `string` | Y | The scalar data type |
+| format | string `""` | Y | A data format describing the scalar type such as `date-time`, `uuid`, or `int64` |
+| description | string `""` | Y | Description of the parameter |
+| example | mixed `null` | Y | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| allowReserved | bool `false` | Y | Allow reserved URI characters? |
+| explode | bool `false` | Y | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| isRequired | bool `false` | Y | Is this parameter required? |
+| isDeprecated | bool `false` | Y | Is this parameter deprecated? |
+| allowEmptyValue | bool `false` | Y | Allow empty values? |
+| enum | array `[]` | Y | An enumerated list of accepted values |
+| style | string `""` | Y | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
 
 ```php
 class ActorDto {
     #[OpenApiDtoQuery(name: 'name', required: true, enum: ['A','B'])]
-    private $name;
+    private string $name;
 
     #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
-    private $someField;
+    private ?int $someField = null;
 ```
 
 
@@ -78,22 +80,15 @@ Via constructor property promotion:
 class ActorDto {
     public function __construct(
         #[OpenApiDtoQuery(name: 'name', required: true, enum: ['A','B'])]
-        private string $name,
+        public string $name,
         #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
-        private int $someField, 
+        public ?int $someField = null, 
     ) {
     }
 ```
 
-Using the DTO:
-
-```php
-#[OpenApiDto(class: "\App\Dto\ActorDto")]
-public function index() {}
-```
-
 ### OpenApiDtoRequestBody
-Property or parameter level attribute for use in your Dto classes.
+Property or parameter level attribute for use in your DTO classes.
 
 | Attribute | Type / Default | Description | 
 | ------------- | ------------- | ------------- |
@@ -122,10 +117,10 @@ Property or parameter level attribute for use in your Dto classes.
 ```php
 class ActorDto {
     #[OpenApiDtoRequestBody(name: 'name', isRequired: true, enum: ['A','B'])]
-    private $name;
+    private string $name;
 
     #[OpenApiDtoRequestBody(name: 'some_field', type: 'int')]
-    private $someField;
+    private ?int $someField = null;
 ```
 
 Via constructor property promotion:
@@ -134,18 +129,11 @@ Via constructor property promotion:
 class ActorDto {
     public function __construct(
         #[OpenApiDtoRequestBody(name: 'name', isRequired: true, enum: ['A','B'])]
-        private string $name,
+        public string $name,
         #[OpenApiDtoRequestBody(name: 'some_field', type: 'int')]
-        private int $someField, 
+        public ?int $someField = null, 
     ) {
     }
-```
-
-Using the DTO:
-
-```php
-#[OpenApiDto(class: "\App\Dto\ActorDto")]
-public function index() {}
 ```
 
 ### OpenApiForm
