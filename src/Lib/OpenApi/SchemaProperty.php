@@ -16,45 +16,29 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     use JsonSchemaTrait;
     use SchemaTrait;
 
+    private const PROPERTIES_TO_OPENAPI_SPEC = [
+        'isReadOnly' => 'readOnly',
+        'isWriteOnly' => 'writeOnly',
+    ];
+
     /**
      * @var mixed
      */
     private $example;
 
-    /**
-     * @var bool
-     */
-    private $readOnly = false;
+    private bool $isReadOnly = false;
 
-    /**
-     * @var bool
-     */
-    private $writeOnly = false;
+    private bool $isWriteOnly = false;
 
-    /**
-     * @var bool
-     */
-    private $required = false;
+    private bool $isRequired = false;
 
-    /**
-     * @var bool
-     */
-    private $requirePresenceOnCreate = false;
+    private bool $requirePresenceOnCreate = false;
 
-    /**
-     * @var bool
-     */
-    private $requirePresenceOnUpdate = false;
+    private bool $requirePresenceOnUpdate = false;
 
-    /**
-     * @var array
-     */
-    private $items = [];
+    private array $items = [];
 
-    /**
-     * @var string
-     */
-    private $refEntity;
+    private ?string $refEntity = null;
 
     /**
      * @return array
@@ -63,8 +47,14 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     {
         $vars = get_object_vars($this);
 
+        // rename class properties to match openapi schema
+        foreach (self::PROPERTIES_TO_OPENAPI_SPEC as $classProperty => $openApiProperty) {
+            $vars[$openApiProperty] = $vars[$classProperty];
+            unset($vars[$classProperty]);
+        }
+
         // remove internal properties
-        foreach (['name','required','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity'] as $v) {
+        foreach (['name','isRequired','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity'] as $v) {
             unset($vars[$v]);
         }
 
@@ -102,7 +92,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
      */
     public function isReadOnly(): bool
     {
-        return $this->readOnly;
+        return $this->isReadOnly;
     }
 
     /**
@@ -111,7 +101,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
      */
     public function setReadOnly(bool $readOnly)
     {
-        $this->readOnly = $readOnly;
+        $this->isReadOnly = $readOnly;
 
         return $this;
     }
@@ -121,7 +111,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
      */
     public function isWriteOnly(): bool
     {
-        return $this->writeOnly;
+        return $this->isWriteOnly;
     }
 
     /**
@@ -130,7 +120,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
      */
     public function setWriteOnly(bool $writeOnly)
     {
-        $this->writeOnly = $writeOnly;
+        $this->isWriteOnly = $writeOnly;
 
         return $this;
     }
@@ -140,7 +130,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
      */
     public function isRequired(): bool
     {
-        return $this->required;
+        return $this->isRequired;
     }
 
     /**
@@ -149,7 +139,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
      */
     public function setRequired(bool $required)
     {
-        $this->required = $required;
+        $this->isRequired = $required;
 
         return $this;
     }

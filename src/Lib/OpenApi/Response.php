@@ -9,24 +9,21 @@ use JsonSerializable;
  * Class Response
  *
  * @package SwaggerBake\Lib\OpenApi
- * @see https://swagger.io/docs/specification/describing-responses/
+ * @see https://spec.openapis.org/oas/latest.html#response-object
  */
 class Response implements JsonSerializable
 {
     /**
-     * @var string
+     * @param string $code HTTP status code
+     * @param string|null $description An optional description
+     * @param \SwaggerBake\Lib\OpenApi\Content[] $content Array of OpenApi Content
      */
-    private $code;
-
-    /**
-     * @var string
-     */
-    private $description = '';
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Content[]
-     */
-    private $content = [];
+    public function __construct(
+        private string $code,
+        private ?string $description = null,
+        private array $content = []
+    ) {
+    }
 
     /**
      * @return array

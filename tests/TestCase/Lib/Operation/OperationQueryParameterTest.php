@@ -49,7 +49,7 @@ class OperationQueryParameterTest extends TestCase
             );
 
         $operationQueryParam = new OperationQueryParameter(
-            operation: (new Operation())->setHttpMethod('GET'),
+            operation: (new Operation('hello', 'get'))->setHttpMethod('GET'),
             controller: new Controller(),
             refMethod: $mockReflectionMethod
         );
@@ -103,7 +103,7 @@ class OperationQueryParameterTest extends TestCase
             );
 
         $operationQueryParam = new OperationQueryParameter(
-            operation: (new Operation())->setHttpMethod('GET'),
+            operation: (new Operation('hello', 'get'))->setHttpMethod('GET'),
             controller: new Controller(),
             refMethod: $mockReflectionMethod
         );
@@ -140,7 +140,7 @@ class OperationQueryParameterTest extends TestCase
             );
 
         $operationQueryParam = new OperationQueryParameter(
-            operation: (new Operation())->setHttpMethod('GET'),
+            operation: new Operation('hello', 'get'),
             controller: new Controller(),
             refMethod: $mockReflectionMethod
         );
@@ -176,7 +176,7 @@ class OperationQueryParameterTest extends TestCase
             );
 
         $operationQueryParam = new OperationQueryParameter(
-            (new Operation())->setHttpMethod('GET'),
+            new Operation('hello', 'get'),
             new Controller(),
             null,
             $mockReflectionMethod

@@ -4,41 +4,32 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
+use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
  * Class Path
  *
  * @package SwaggerBake\Lib\OpenApi
- * @see https://swagger.io/docs/specification/paths-and-operations/
+ * @see https://spec.openapis.org/oas/latest.html#paths-object
  */
 class Path implements JsonSerializable
 {
     /**
-     * The endpoint (resource) for the path
-     *
-     * @var string
+     * @param string $resource The resource (base URL), for example: /pets
+     * @param \SwaggerBake\Lib\OpenApi\Operation[] $operations An array of OpenApi Operations
+     * @param string|null $ref An optional OpenAPI path $ref
+     * @param string|null $summary An optional short summary
+     * @param string|null $description An optional description
      */
-    private $resource = '';
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Operation[]
-     */
-    private $operations = [];
-
-    /**
-     * @var string|null
-     */
-    private $ref;
-
-    /**
-     * @var string|null
-     */
-    private $summary;
-
-    /**
-     * @var string|null
-     */
-    private $description;
+    public function __construct(
+        private string $resource,
+        private array $operations = [],
+        private ?string $ref = null,
+        private ?string $summary = null,
+        private ?string $description = null,
+    ) {
+        $this->setOperations($operations);
+    }
 
     /**
      * @return array
@@ -51,11 +42,7 @@ class Path implements JsonSerializable
         unset($vars['ref']);
 
         // remove items if null to reduce JSON clutter
-        foreach (['summary', 'description'] as $v) {
-            if (is_null($vars[$v])) {
-                unset($vars[$v]);
-            }
-        }
+        $vars = ArrayUtility::removeNullValues($vars, ['summary', 'description']);
 
         foreach ($this->getOperations() as $operation) {
             $vars[strtolower($operation->getHttpMethod())] = $operation;

@@ -8,6 +8,7 @@ use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
 use SwaggerBake\Command as Commands;
+use SwaggerBake\Lib\AnnotationLoader;
 use SwaggerBake\Lib\ExtensionLoader;
 
 /**
@@ -50,6 +51,8 @@ class Plugin extends BasePlugin
         if (PHP_SAPI !== 'cli') {
             triggerWarning('SwaggerBake configuration file `config/swagger_bake.php` is missing');
         }
+
+        AnnotationLoader::load();
     }
 
     /**

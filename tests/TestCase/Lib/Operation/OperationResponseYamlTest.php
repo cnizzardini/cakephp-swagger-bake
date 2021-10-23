@@ -76,7 +76,7 @@ class OperationResponseYamlTest extends TestCase
         $operationResponse = new OperationResponse(
             $swagger,
             $this->config,
-            new Operation(),
+            new Operation('hello', 'get'),
             $route,
             $swagger->getArray()['components']['schemas']['Employee'],
             (new \ReflectionClass(EmployeesController::class))->getMethod('view')

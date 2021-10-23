@@ -15,7 +15,6 @@ when reading this documentation.
 | [OpenApiDtoQuery](#OpenApiDtoQuery) | Builds OpenAPI query param from Data Transfer Objects |
 | [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) | Builds OpenAPI request body property from Data Transfer Objects |
 | [OpenApiForm](#OpenApiForm) | Builds OpenAPI for application/x-www-form-urlencoded request bodies |
-| [OpenApiEntityAttribute](#OpenApiEntityAttribute) | Modifies an OpenAPI schema property |
 | [OpenApiHeader](#OpenApiHeader) | Create OpenAPI header parameters |
 | [OpenApiOperation](#OpenApiOperation) | Modifies OpenAPI operation |
 | [OpenApiPaginator](#OpenApiPaginator) | Create OpenAPI query params from CakePHP Paginator Component |
@@ -25,6 +24,7 @@ when reading this documentation.
 | [OpenApiRequestBody](#OpenApiRequestBody) | Modify OpenAPI request body |
 | [OpenApiResponse](#OpenApiResponse) | Modify OpenAPI response |
 | [OpenApiSchema](#OpenApiSchema) | Modifies OpenAPI schema |
+| [OpenApiSchemaProperty](#OpenApiSchemaProperty) | Modifies an OpenAPI schema property |
 | [OpenApiSearch](#OpenApiSearch) | Create OpenAPI query params from CakePHP Search plugin |
 | [OpenApiSecurity](#OpenApiSecurity) | Create/modify OpenAPI security |
 
@@ -101,27 +101,27 @@ Property or parameter level attribute for use in your Dto classes.
 | type | string `string` | Date type such as integer, string, etc... |
 | format | string `""` | Date format such as int32, date-time, etc... |
 | description | string `""` | Description of the property |
-| readOnly | bool `false` | Is the property read only? |
-| writeOnly | bool `false` | Is the property write only? |
-| required | bool `false` | Is the property required? |
+| isReadOnly | bool `false` | Is the property read only? |
+| isWriteOnly | bool `false` | Is the property write only? |
+| isRequired | bool `false` | Is the property required? |
 | multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| hasUniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
 
 ```php
 class ActorDto {
-    #[OpenApiDtoRequestBody(name: 'name', required: true, enum: ['A','B'])]
+    #[OpenApiDtoRequestBody(name: 'name', isRequired: true, enum: ['A','B'])]
     private $name;
 
     #[OpenApiDtoRequestBody(name: 'some_field', type: 'int')]
@@ -133,7 +133,7 @@ Via constructor property promotion:
 ```php
 class ActorDto {
     public function __construct(
-        #[OpenApiDtoRequestBody(name: 'name', required: true, enum: ['A','B'])]
+        #[OpenApiDtoRequestBody(name: 'name', isRequired: true, enum: ['A','B'])]
         private string $name,
         #[OpenApiDtoRequestBody(name: 'some_field', type: 'int')]
         private int $someField, 
@@ -157,27 +157,27 @@ Method level attribute for adding form data fields.
 | type | string `string` | Date type such as integer, string, etc... |
 | format | string `""` | Date format such as int32, date-time, etc... |
 | description | string `""` | Description of the property |
-| readOnly | bool `false` | Is the property read only? |
-| writeOnly | bool `false` | Is the property write only? |
-| required | bool `false` | Is the property required? |
+| isReadOnly | bool `false` | Is the property read only? |
+| isWriteOnly | bool `false` | Is the property write only? |
+| isRequired | bool `false` | Is the property required? |
 | multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| hasUniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
 
 ```php
-#[OpenApiForm(name: 'one', description: 'example', require: true, enum: ['A','B'])]
-#[OpenApiForm(name: 'two', type: 'integer', miniimum: 10, maximum: 100, multipleOf: 10)]
+#[OpenApiForm(name: 'one', description: 'example', isRequired: true, enum: ['A','B'])]
+#[OpenApiForm(name: 'two', type: 'integer', minimum: 10, maximum: 100, multipleOf: 10)]
 #[OpenApiForm(name: 'three', minLength: 8, maxLength: 64, pattern: '[a-zA-z]')]
 public function add() {}
 ```
@@ -212,7 +212,7 @@ OpenAPI:
                   pattern: [a-zA-Z]
 ```
 
-### OpenApiEntityAttribute
+### OpenApiSchemaProperty
 Class level attribute for customizing Schema Attributes. Note that the attribute does not have to exist in your entity.
 You can add adhoc attributes as needed and optionally combine with
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
@@ -223,29 +223,29 @@ You can add adhoc attributes as needed and optionally combine with
 | type | string `string` | Date type such as integer, string, etc... |
 | format | string `""` | Date format such as int32, date-time, etc... |
 | description | string `""` | Description of the property |
-| readOnly | bool `false` | Is the property read only? |
-| writeOnly | bool `false` | Is the property write only? |
-| required | bool `false` | Is the property required? |
+| isReadOnly | bool `false` | Is the property read only? |
+| isWriteOnly | bool `false` | Is the property write only? |
+| isRequired | bool `false` | Is the property required? |
 | multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| exclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| uniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| hasUniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
 | maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 | enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
 | example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#properties |
 
 ```php
-#[OpenApiEntityAttribute(name: 'example_one', minLength: 5, maxLength: 10)]
-#[OpenApiEntityAttribute(name: 'example_two', minLength: 5, enum: ['PG','R'], required: true)]
-#[OpenApiEntityAttribute(name: 'example_virtual_field', readOnly: true)]
+#[OpenApiSchemaProperty(name: 'example_one', minLength: 5, maxLength: 10)]
+#[OpenApiSchemaProperty(name: 'example_two', minLength: 5, enum: ['PG','R'], isRequired: true)]
+#[OpenApiSchemaProperty(name: 'example_virtual_field', isReadOnly: true)]
 class Employee extends Entity {
 ```
 
@@ -523,7 +523,7 @@ Method level attribute for controller actions defining
 | statusCode | string `200` | Y | The HTTP response code |
 | mimeTypes | array `null` | Y | An array of mime types the response can, if null settings from swagger_bake config are used. |
 | description | string `` | Y | Description of the response |
-| refEntity | string `` | Y | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"` |
+| ref | string `` | Y | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"` |
 | schemaFormat | string `` | Y | The schema format, generally only used for schemaType of string. |
 | associations | array `null` | N | Adds associated tables to the response sample schema, see examples below |
 
@@ -532,10 +532,10 @@ Defining a multiple mimeTypes and 400-409 status code range and an expected 200 
 ```php
 #[OpenApiResponse(
     statusCode: '40x',
-    refEntity: '#/components/schemas/Exception', 
-    mimeTypes: ["application/xml","application/json"]
+    ref: '#/components/schemas/Exception', 
+    mimeTypes: ['application/xml','application/json']
 )]
-#[OpenApiResponse(schemaType: 'array', refEntity: '#/components/schemas/Actor')]
+#[OpenApiResponse(schemaType: 'array', ref: '#/components/schemas/Actor')]
 ```
 
 OpenAPI:

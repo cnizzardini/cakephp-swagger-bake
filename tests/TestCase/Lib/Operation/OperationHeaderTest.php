@@ -36,7 +36,7 @@ class OperationHeaderTest extends TestCase
 
         $operation = (new OperationHeader())
             ->getOperationWithHeaders(
-                new Operation(),
+                new Operation('hello', 'get'),
                 $mockReflectionMethod
             );
 

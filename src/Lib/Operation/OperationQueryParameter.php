@@ -88,13 +88,11 @@ class OperationQueryParameter
             return;
         }
 
-        $parameter = (new Parameter())
-            ->setName('sort')
-            ->setIn('query')
-            ->setSchema((new Schema())->setType('string'))
-            ->setAllowEmptyValue(false)
-            ->setDeprecated(false)
-            ->setRequired(false);
+        $parameter = new Parameter(
+            in: 'query',
+            name: 'sort',
+            schema: (new Schema())->setType('string'),
+        );
 
         if (!empty($paginator->sortEnum)) {
             $schema = $parameter->getSchema()->setEnum($paginator->sortEnum);

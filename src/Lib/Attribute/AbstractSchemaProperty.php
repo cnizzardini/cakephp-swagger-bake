@@ -21,25 +21,25 @@ abstract class AbstractSchemaProperty
      * @param string $title Title of the property
      * @param string $description Description of the property
      * @param string|int|float|bool $example An example value
-     * @param bool $readOnly Is this read-only?
-     * @param bool $writeOnly Is this write-only?
-     * @param bool $required Is this required?
+     * @param bool $isReadOnly Is this read-only?
+     * @param bool $isWriteOnly Is this write-only?
+     * @param bool $isRequired Is this required?
      * @param string $default A default value
-     * @param bool $nullable Is this nullable?
-     * @param bool $deprecated Is this deprecated?
+     * @param bool $isNullable Is this nullable?
+     * @param bool $isDeprecated Is this deprecated?
      * @param float|null $multipleOf Provides multiple of option, such as must be a multiple of 10
-     * @param float|null $maximum A minimum value
-     * @param bool $exclusiveMaximum See OpenAPI documentation
      * @param float|null $minimum A maximum value
-     * @param bool $exclusiveMinimum See OpenAPI documentation
-     * @param int|null $maxLength A min length
+     * @param bool $isExclusiveMinimum See OpenAPI documentation
+     * @param float|null $maximum A minimum value
+     * @param bool $isExclusiveMaximum See OpenAPI documentation
      * @param int|null $minLength A max length
+     * @param int|null $maxLength A min length
      * @param string|null $pattern A regex pattern
-     * @param int|null $maxItems Minimum number of items (for arrays)
      * @param int|null $minItems Maximum number of items (for arrays)
-     * @param bool $uniqueItems Are the items provided required to be unique (for arrays)
-     * @param int|null $maxProperties See OpenAPI documentation
+     * @param int|null $maxItems Minimum number of items (for arrays)
+     * @param bool $hasUniqueItems See OpenAPI documentation
      * @param int|null $minProperties See OpenAPI documentation
+     * @param int|null $maxProperties See OpenAPI documentation
      * @param array $enum An enumerated list of values that can be accepted
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -50,25 +50,25 @@ abstract class AbstractSchemaProperty
         public string $title = '',
         public string $description = '',
         public string|int|float|bool $example = '',
-        public bool $readOnly = false,
-        public bool $writeOnly = false,
-        public bool $required = false,
+        public bool $isReadOnly = false,
+        public bool $isWriteOnly = false,
+        public bool $isRequired = false,
         public string $default = '',
-        public bool $nullable = false,
-        public bool $deprecated = false,
+        public bool $isNullable = false,
+        public bool $isDeprecated = false,
         public ?float $multipleOf = null,
-        public ?float $maximum = null,
-        public bool $exclusiveMaximum = false,
         public ?float $minimum = null,
-        public bool $exclusiveMinimum = false,
-        public ?int $maxLength = null,
+        public bool $isExclusiveMinimum = false,
+        public ?float $maximum = null,
+        public bool $isExclusiveMaximum = false,
         public ?int $minLength = null,
+        public ?int $maxLength = null,
         public ?string $pattern = null,
-        public ?int $maxItems = null,
         public ?int $minItems = null,
-        public bool $uniqueItems = false,
-        public ?int $maxProperties = null,
+        public ?int $maxItems = null,
+        public bool $hasUniqueItems = false,
         public ?int $minProperties = null,
+        public ?int $maxProperties = null,
         public array $enum = [],
     ) {
     }
@@ -85,9 +85,9 @@ abstract class AbstractSchemaProperty
             ->setDescription($this->description ?? '')
             ->setType($this->type)
             ->setFormat($this->format ?? '')
-            ->setReadOnly($this->readOnly ?? false)
-            ->setWriteOnly($this->writeOnly ?? false)
-            ->setRequired($this->required ?? false)
+            ->setReadOnly($this->isReadOnly)
+            ->setWriteOnly($this->isWriteOnly)
+            ->setRequired($this->isRequired)
             ->setEnum($this->enum ?? []);
 
         $properties = [
@@ -96,11 +96,10 @@ abstract class AbstractSchemaProperty
             'pattern',
             'maxItems',
             'minItems',
-            'uniqueItems',
             'maxProperties',
-            'exclusiveMaximum',
-            'exclusiveMinimum',
-            'uniqueItems',
+            'isExclusiveMaximum',
+            'isExclusiveMinimum',
+            'hasUniqueItems',
             'maxProperties',
             'minProperties',
             'example',
@@ -110,7 +109,15 @@ abstract class AbstractSchemaProperty
             if (is_null($this->{$property})) {
                 continue;
             }
+
             $setterMethod = 'set' . ucfirst($property);
+            foreach (['is', 'has'] as $propertyPrefix) {
+                if (str_starts_with($property, $propertyPrefix)) {
+                    $setterMethod = 'set' . ucfirst(substr($property, strlen($propertyPrefix)));
+                    break;
+                }
+            }
+
             $schemaProperty->{$setterMethod}($this->{$property});
         }
 

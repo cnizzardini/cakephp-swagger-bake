@@ -73,14 +73,13 @@ class OperationPathParameter
             }
 
             $this->operation->pushParameter(
-                (new Parameter())
-                    ->setName($name)
-                    ->setDescription($description ?? '')
-                    ->setRequired(true)
-                    ->setIn('path')
-                    ->setSchema(
-                        (new Schema())->setType($type ?? 'string')->setFormat($format ?? '')
-                    )
+                new Parameter(
+                    in: 'path',
+                    name: $name,
+                    description: $description ?? null,
+                    required: true,
+                    schema: (new Schema())->setType($type ?? 'string')->setFormat($format ?? '')
+                )
             );
         }
     }

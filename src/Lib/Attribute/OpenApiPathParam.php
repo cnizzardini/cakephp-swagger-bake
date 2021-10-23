@@ -51,9 +51,7 @@ class OpenApiPathParam extends AbstractOpenApiParameter
      */
     public function createParameter(): Parameter
     {
-        return (new Parameter())
-            ->setIn('path')
-            ->setName($this->name)
+        return (new Parameter(in: 'path', name: $this->name))
             ->setExample($this->example)
             ->setDescription($this->description)
             ->setAllowReserved($this->allowReserved)

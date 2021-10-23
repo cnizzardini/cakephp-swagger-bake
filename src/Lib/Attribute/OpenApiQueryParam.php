@@ -70,10 +70,7 @@ class OpenApiQueryParam
      */
     public function createParameter(): Parameter
     {
-        return (new Parameter())
-            ->setIn('query')
-            ->setRef($this->ref)
-            ->setName($this->name)
+        return (new Parameter('query', $this->ref, $this->name))
             ->setDescription($this->description)
             ->setRequired($this->required)
             ->setDeprecated($this->deprecated)

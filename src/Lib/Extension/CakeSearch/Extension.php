@@ -101,9 +101,7 @@ class Extension implements ExtensionInterface
      */
     private function createParameter(FilterDecorator $filter): Parameter
     {
-        return (new Parameter())
-            ->setName($filter->getName())
-            ->setIn('query')
+        return (new Parameter(in: 'query', name: $filter->getName()))
             ->setSchema(
                 (new Schema())->setType('string')
             );

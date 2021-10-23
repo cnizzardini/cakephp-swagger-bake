@@ -12,11 +12,12 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
-use SwaggerBake\Lib\Attribute\OpenApiEntityAttribute;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
+use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
  * Creates an instance of SwaggerBake\Lib\OpenApi\Schema per OpenAPI specifications
@@ -62,13 +63,15 @@ class SchemaFactory
         $schema = $this
             ->createSchema($modelDecorator->getModel(), $propertyType)
             ->setIsPublic($openApiSchema->isPublic ?? true)
-            ->setDescription($openApiSchema->description);
+            ->setDescription($openApiSchema->description ?? '');
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Schema.created', $schema, [
                 'modelDecorator' => $modelDecorator,
             ])
         );
+
+        AnnotationUtility::checkClassAnnotationsFromInstance($modelDecorator->getModel()->getEntity());
 
         return $schema;
     }
@@ -135,7 +138,7 @@ class SchemaFactory
             $return[$property->getName()] = $factory->create($property);
         }
 
-        $return = array_merge($return, $this->getSwagPropertyAnnotations($model));
+        $return = array_merge($return, $this->getPropertyAnnotations($model));
 
         if ($propertyType === self::ALL_PROPERTIES) {
             return $return;
@@ -181,19 +184,20 @@ class SchemaFactory
      * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
      * @throws \ReflectionException
      */
-    private function getSwagPropertyAnnotations(Model $model): array
+    private function getPropertyAnnotations(Model $model): array
     {
-        /** @var \SwaggerBake\Lib\Attribute\OpenApiEntityAttribute[] $attributes */
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiSchemaProperty[] $attributes */
         $attributes = (new AttributeFactory(
             new ReflectionClass($model->getEntity()),
-            OpenApiEntityAttribute::class
+            OpenApiSchemaProperty::class
         ))->createMany();
 
+        $return = [];
         foreach ($attributes as $attribute) {
             $return[$attribute->name] = $attribute->create();
         }
 
-        return $return ?? [];
+        return $return;
     }
 
     /**

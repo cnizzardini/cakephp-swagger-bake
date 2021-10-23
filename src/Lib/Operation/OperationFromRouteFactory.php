@@ -17,6 +17,7 @@ use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 
 /**
@@ -63,13 +64,13 @@ class OperationFromRouteFactory
             $openApiOperation = null;
         }
 
+        AnnotationUtility::checkMethodAnnotations($fqn, $route->getAction());
+
         if (!$this->isAllowed($route, $httpMethod, $openApiOperation)) {
             return null;
         }
 
-        $operation = (new Operation())
-            ->setHttpMethod(strtolower($httpMethod))
-            ->setOperationId($route->getName() . ':' . strtolower($httpMethod));
+        $operation = new Operation($route->getName() . ':' . strtolower($httpMethod), $httpMethod);
 
         $operation = $this->createOperation($operation, $route, $openApiOperation);
 
