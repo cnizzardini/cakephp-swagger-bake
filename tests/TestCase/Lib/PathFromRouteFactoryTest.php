@@ -2,9 +2,11 @@
 
 namespace SwaggerBake\Test\TestCase\Lib;
 
+use Cake\Routing\Route\Route;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Path;
@@ -63,5 +65,28 @@ class PathFromRouteFactoryTest extends TestCase
         $path = (new PathFromRouteFactory($route))->create();
         $this->assertInstanceOf(Path::class, $path);
         $this->assertEquals('/employees', $path->getResource());
+    }
+
+    public function test_create_returning_null_on_empty_http_methods(): void
+    {
+        $decorator = new RouteDecorator(new Route('/template', []));
+        $decorator->setControllerFqn('\App\Controller\EmployeesController');
+        $path = new PathFromRouteFactory($decorator);
+        $this->assertNull($path->create());
+    }
+
+    public function test_create_returning_null_on_null_controller(): void
+    {
+        $decorator = new RouteDecorator(new Route('/template', ['_method' => 'GET']));
+        $path = new PathFromRouteFactory($decorator);
+        $this->assertNull($path->create());
+    }
+
+    public function test_create_returning_path_on_reflection_exception(): void
+    {
+        $decorator = new RouteDecorator(new Route('/template', ['_method' => 'GET']));
+        $decorator->setControllerFqn('\App\Controller\Nope');
+        $path = new PathFromRouteFactory($decorator);
+        $this->assertInstanceOf(Path::class, $path->create());
     }
 }
