@@ -59,12 +59,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.0'
-          extensions: mbstring, intl, xdebug
+          extensions: mbstring, intl
 
       - name: PHP Version
         run: php -v
 
       - name: CakePHP ${{matrix.version}} Test
         run: |
+          composer install --prefer-dist --no-progress --no-suggest
           composer update cakephp/cakephp:${{matrix.version}} -W
           composer test
