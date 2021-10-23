@@ -5,6 +5,9 @@ namespace SwaggerBake\Test\TestCase\Lib\Attribute;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
+use SwaggerBake\Lib\Attribute\AbstractOpenApiParameter;
+use SwaggerBake\Lib\Attribute\OpenApiPathParam;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
@@ -56,5 +59,14 @@ class OpenApiPathParamTest extends TestCase
         $this->assertEquals('integer', $param['schema']['type']);
         $this->assertEquals('ID', $param['description']);
         $this->assertEquals('int64', $param['schema']['format']);
+    }
+
+    /**
+     * @see AbstractOpenApiParameter
+     */
+    public function test_constructor_throws_exception(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new OpenApiPathParam();
     }
 }

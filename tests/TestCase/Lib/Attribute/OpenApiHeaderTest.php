@@ -7,6 +7,7 @@ use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
 
+use SwaggerBake\Lib\Attribute\AbstractOpenApiParameter;
 use SwaggerBake\Lib\Attribute\OpenApiHeader;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
@@ -59,6 +60,15 @@ class OpenApiHeaderTest extends TestCase
     {
         $this->expectException(SwaggerBakeRunTimeException::class);
         new OpenApiHeader();
+    }
+
+    /**
+     * @see AbstractOpenApiParameter
+     */
+    public function test_create(): void
+    {
+        $parameter = (new OpenApiHeader('name'))->createParameter();
+        $this->assertEquals('header', $parameter->getIn());
     }
 
     private function __setUp(): void
