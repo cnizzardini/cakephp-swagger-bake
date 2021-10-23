@@ -367,9 +367,9 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @return \SwaggerBake\Lib\OpenApi\OperationExternalDoc
+     * @return \SwaggerBake\Lib\OpenApi\OperationExternalDoc|null
      */
-    public function getExternalDocs(): OperationExternalDoc
+    public function getExternalDocs(): ?OperationExternalDoc
     {
         return $this->externalDocs;
     }
