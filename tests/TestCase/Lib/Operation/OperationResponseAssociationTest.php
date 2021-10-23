@@ -140,4 +140,18 @@ class OperationResponseAssociationTest extends TestCase
             associations: ['depth' => 0]
         ));
     }
+
+    public function test_invalid_table_throws_exception(): void
+    {
+        $this->expectException(SwaggerBakeRunTimeException::class);
+
+        (new OperationResponseAssociation(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->routes['employees:view'],
+            null
+        ))->build(new OpenApiResponse(
+            schemaType: 'object',
+            associations: ['table' => 'Nopes']
+        ));
+    }
 }
