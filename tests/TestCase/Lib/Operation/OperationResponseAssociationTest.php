@@ -10,6 +10,7 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationResponseAssociation;
 use SwaggerBake\Lib\Route\RouteScanner;
 
@@ -153,5 +154,40 @@ class OperationResponseAssociationTest extends TestCase
             schemaType: 'object',
             associations: ['table' => 'Nopes']
         ));
+    }
+
+    public function test_invalid_schema_mode_exception(): void
+    {
+        $this->expectException(SwaggerBakeRunTimeException::class);
+        $route = $this->routes['employees:view'];
+        $route->setMethods(['NOPE']);
+
+        (new OperationResponseAssociation(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $route,
+            null
+        ))->build(new OpenApiResponse(
+            schemaType: 'object',
+            associations: ['table' => 'Nopes']
+        ));
+    }
+
+    public function test_associate_one(): void
+    {
+        $schema = (new OperationResponseAssociation(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->routes['employees:view'],
+            null
+        ))->build(new OpenApiResponse(
+            schemaType: 'object',
+            associations: ['table' => 'EmployeeSalaries', 'whiteList' => ['Employees']]
+        ));
+
+        $schemaProperty = $schema->getProperties()['employee'];
+
+        $this->assertEquals(
+            '#/x-swagger-bake/components/schemas/Employee-Read',
+            $schemaProperty->getRefEntity()
+        );
     }
 }
