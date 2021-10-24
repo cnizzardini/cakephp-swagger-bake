@@ -72,7 +72,14 @@ class OperationResponseAssociation
 
         $schemaMode = $this->whichSchemaMode();
         $schema = $this->findSchema($table, $schemaMode);
-        $hasWhiteList = isset($associations['whiteList']) && is_array($associations['whiteList']);
+
+        $hasWhiteList = false;
+        if (isset($associations['whiteList'])) {
+            if (!is_array($associations['whiteList'])) {
+                throw new SwaggerBakeRunTimeException('whiteList must be an array');
+            }
+            $hasWhiteList = true;
+        }
 
         /**
          * @todo support recursion

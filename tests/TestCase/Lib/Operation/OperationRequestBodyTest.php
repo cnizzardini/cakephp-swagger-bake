@@ -10,6 +10,7 @@ use SwaggerBake\Lib\Attribute\OpenApiDto;
 use SwaggerBake\Lib\Attribute\OpenApiForm;
 use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
 use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -235,18 +236,18 @@ class OperationRequestBodyTest extends TestCase
             ->will(
                 $this->onConsecutiveCalls(
                     $this->returnValue([
-
-                    ]),
-                    $this->returnValue([
-
-                    ]),
-                    $this->returnValue([
-
-                    ]),
-                    $this->returnValue([
                         new ReflectionAttribute(OpenApiRequestBody::class, [
                             'ref' => '#/components/schema/Pet',
                         ])
+                    ]),
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+
+                    ]),
+                    $this->returnValue([
+
                     ]),
                 )
             );
@@ -262,7 +263,76 @@ class OperationRequestBodyTest extends TestCase
         $operation = $operationRequestBody->getOperationWithRequestBody();
         $content = $operation->getRequestBody()->getContentByType('application/x-www-form-urlencoded');
 
-        $this->assertEquals('#/components/schemas/Pet', $content->getSchema());
+        $this->assertInstanceOf(Schema::class, $content->getSchema());
+        $this->assertEquals('#/components/schemas/Pet', $content->getSchema()->getRefPath());
+    }
+
+    public function test_crud_and_annotation(): void
+    {
+        $router = new Router();
+        $router::scope('/', function (RouteBuilder $builder) {
+            $builder->setExtensions(['json']);
+            $builder->resources('Employees', [
+                'only' => ['create']
+            ]);
+        });
+        $this->router = $router;
+
+        $this->config = [
+            'prefix' => '/',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'exceptionSchema' => 'Exception',
+            'requestAccepts' => ['application/x-www-form-urlencoded'],
+            'responseContentTypes' => ['application/json'],
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\'],
+                'tables' => ['\SwaggerBakeTest\App\\'],
+            ]
+        ];
+
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeModels = new ModelScanner($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
+
+        $routes = $cakeRoute->getRoutes();
+        $route = $routes['employees:add'];
+
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->any())
+            ->method(
+                'getAttributes'
+            )
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue([]),
+                    $this->returnValue([]),
+                    $this->returnValue([]),
+                    $this->returnValue([
+                        new ReflectionAttribute(OpenApiRequestBody::class, [
+                            'description' => $desc = 'test',
+                        ])
+                    ]),
+                )
+            );
+
+        $operationRequestBody = new OperationRequestBody(
+            $swagger,
+            new Operation('hello', 'post'),
+            $route,
+            $mockReflectionMethod,
+            $swagger->getArray()['components']['schemas']['Employee']
+        );
+
+        $operation = $operationRequestBody->getOperationWithRequestBody();
+        $requestBody = $operation->getRequestBody();
+
+        $this->assertEquals($desc, $requestBody->getDescription());
+        $this->assertTrue($requestBody->isRequired());
     }
 
     private function __setUp(): void

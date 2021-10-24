@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
-use InvalidArgumentException;
 use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\MediaType\Generic;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\MediaType\JsonLd;
@@ -73,7 +71,7 @@ class OperationResponse
      */
     public function getOperationWithResponses(): Operation
     {
-        $this->assignFromAnnotations();
+        $this->assignFromAttributes();
         $this->assignFromCrudActions();
         $this->assignDefaultResponses();
 
@@ -81,11 +79,10 @@ class OperationResponse
     }
 
     /**
-     * Set Responses using SwagResponseSchema annotation
-     *
+     * @throws \ReflectionException
      * @return void
      */
-    private function assignFromAnnotations(): void
+    private function assignFromAttributes(): void
     {
         if (!$this->refMethod instanceof ReflectionMethod) {
             return;
@@ -121,21 +118,11 @@ class OperationResponse
                         ->build($openApiResponse);
                 }
 
-                try {
-                    $schema = $this->getMimeTypeSchema(
-                        $mimeType,
-                        $openApiResponse->schemaType,
-                        $assocSchema ?? $openApiResponse->ref
-                    );
-                } catch (\Exception $e) {
-                    throw new SwaggerBakeRunTimeException(
-                        sprintf(
-                            'Unable to build response schema for `%s`, error: %s',
-                            $this->route->getTemplate(),
-                            $e->getMessage()
-                        )
-                    );
-                }
+                $schema = $this->getMimeTypeSchema(
+                    $mimeType,
+                    $openApiResponse->schemaType,
+                    $assocSchema ?? $openApiResponse->ref
+                );
 
                 $response->pushContent(new Content(
                     $mimeType,
@@ -188,20 +175,11 @@ class OperationResponse
      *
      * @param string $mimeType a mime type (e.g. application/xml, application/json)
      * @param string $schemaType object or array
-     * @param mixed $schema \SwaggerBake\Lib\OpenApi\Schema|string
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema Schema or an OpenApi $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function getMimeTypeSchema(string $mimeType, string $schemaType, $schema): Schema
+    private function getMimeTypeSchema(string $mimeType, string $schemaType, Schema|string $schema): Schema
     {
-        if (!is_string($schema) && !$schema instanceof Schema) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Argument `$schema` must be a string or instance of Schema but `%s` was given.',
-                    gettype($schema)
-                )
-            );
-        }
-
         return match ($mimeType) {
             'application/xml' => (new Generic($this->swagger))
                 ->buildSchema($schema, $schemaType)

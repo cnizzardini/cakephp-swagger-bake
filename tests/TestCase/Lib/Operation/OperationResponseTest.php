@@ -8,6 +8,7 @@ use Cake\TestSuite\TestCase;
 use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
@@ -17,24 +18,19 @@ use SwaggerBake\Lib\Route\RouteScanner;
 
 class OperationResponseTest extends TestCase
 {
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
+        'plugin.SwaggerBake.DepartmentEmployees',
     ];
 
-    /**
-     * @var Router
-     */
-    private $router;
+    private Router $router;
 
-    /**
-     * @var Configuration
-     */
-    private $config;
+    private Configuration $config;
 
-    /**
-     * @var array
-     */
-    private $routes;
+    private array $routes;
 
     public function setUp(): void
     {
@@ -66,28 +62,24 @@ class OperationResponseTest extends TestCase
         });
         $this->router = $router;
 
-        if (!$this->config instanceof Configuration) {
-            $this->config = new Configuration([
-                'prefix' => '/',
-                'yml' => '/config/swagger-bare-bones.yml',
-                'json' => '/webroot/swagger.json',
-                'webPath' => '/swagger.json',
-                'hotReload' => false,
-                'exceptionSchema' => 'Exception',
-                'requestAccepts' => ['application/x-www-form-urlencoded'],
-                'responseContentTypes' => ['application/json'],
-                'namespaces' => [
-                    'controllers' => ['\SwaggerBakeTest\App\\'],
-                    'entities' => ['\SwaggerBakeTest\App\\'],
-                    'tables' => ['\SwaggerBakeTest\App\\'],
-                ]
-            ], SWAGGER_BAKE_TEST_APP);
-        }
+        $this->config = new Configuration([
+            'prefix' => '/',
+            'yml' => '/config/swagger-bare-bones.yml',
+            'json' => '/webroot/swagger.json',
+            'webPath' => '/swagger.json',
+            'hotReload' => false,
+            'exceptionSchema' => 'Exception',
+            'requestAccepts' => ['application/x-www-form-urlencoded'],
+            'responseContentTypes' => ['application/json','application/xml'],
+            'namespaces' => [
+                'controllers' => ['\SwaggerBakeTest\App\\'],
+                'entities' => ['\SwaggerBakeTest\App\\'],
+                'tables' => ['\SwaggerBakeTest\App\\'],
+            ]
+        ], SWAGGER_BAKE_TEST_APP);
 
-        if (empty($this->routes)) {
-            $cakeRoute = new RouteScanner($this->router, $this->config);
-            $this->routes = $cakeRoute->getRoutes();
-        }
+        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $this->routes = $cakeRoute->getRoutes();
     }
 
     public function test_get_operation_with_attribute_response(): void
@@ -317,5 +309,72 @@ class OperationResponseTest extends TestCase
 
         $this->assertEquals('string', $content->getSchema()->getType());
         $this->assertEquals('date-time', $content->getSchema()->getFormat());
+    }
+
+    public function test_associations(): void
+    {
+        $route = $this->routes['employees:index'];
+
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiResponse::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiResponse::class, [
+                        'associations' => ['whiteList' => ['DepartmentEmployees']]
+                    ]),
+                ])
+            );
+
+        $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->config,
+            new Operation('hello', 'get'),
+            $route,
+            null,
+            $mockReflectionMethod
+        );
+
+        $operation = $operationResponse->getOperationWithResponses();
+        $content = $operation->getResponseByCode('200')->getContentByMimeType('application/json');
+        $this->assertArrayHasKey('department_employees', $content->getSchema()->getProperties());
+    }
+
+    public function test_text_plain_mime_type(): void
+    {
+        $route = $this->routes['employees:index'];
+
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiResponse::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiResponse::class, [
+                        'mimeTypes' => ['text/plain']
+                    ]),
+                ])
+            );
+
+        $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->config,
+            new Operation('hello', 'get'),
+            $route,
+            null,
+            $mockReflectionMethod
+        );
+
+        $content = $operationResponse
+            ->getOperationWithResponses()
+            ->getResponseByCode('200')
+            ->getContentByMimeType('text/plain');
+
+        $this->assertEquals('text/plain', $content->getMimeType());
     }
 }

@@ -244,10 +244,8 @@ class OperationRequestBody
         foreach ($schemaProperties as $schemaProperty) {
             $requireOnUpdate = $schemaProperty->isRequirePresenceOnUpdate();
             $requireOnCreate = $schemaProperty->isRequirePresenceOnCreate();
-
-            if (count(array_intersect($httpMethods, ['PUT','PATCH'])) > 1 && $requireOnUpdate) {
-                $schemaProperty->setRequired(true);
-            } elseif (count(array_intersect($httpMethods, ['POST'])) > 1 && $requireOnCreate) {
+            $hasRequestBody = count(array_intersect($httpMethods, ['POST','PUT', 'PATCH'])) > 1;
+            if ($hasRequestBody && ($requireOnUpdate || $requireOnCreate)) {
                 $schemaProperty->setRequired(true);
             }
             $newSchema->pushProperty($schemaProperty);
