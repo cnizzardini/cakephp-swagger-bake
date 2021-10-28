@@ -54,8 +54,7 @@ class Operation implements JsonSerializable
     public function toArray(): array
     {
         $vars = get_object_vars($this);
-        $vars['summary'] = $vars['summary'] ?? '';
-        $vars['description'] = $vars['description'] ?? '';
+        $vars = ArrayUtility::convertNullToEmptyString($vars, ['summary','description']);
         $vars['deprecated'] = $vars['isDeprecated'];
         unset($vars['isDeprecated']);
         unset($vars['httpMethod']);
@@ -368,9 +367,9 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @return \SwaggerBake\Lib\OpenApi\OperationExternalDoc
+     * @return \SwaggerBake\Lib\OpenApi\OperationExternalDoc|null
      */
-    public function getExternalDocs(): OperationExternalDoc
+    public function getExternalDocs(): ?OperationExternalDoc
     {
         return $this->externalDocs;
     }

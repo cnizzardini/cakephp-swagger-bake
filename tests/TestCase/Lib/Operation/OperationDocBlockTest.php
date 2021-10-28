@@ -90,7 +90,7 @@ EOT;
     }
 
     /**
-     * @throws InternalErrorException
+     * @throws InternalErrorException|\ReflectionException
      */
     public function test_without_description()
     {
@@ -112,5 +112,26 @@ EOT;
         $this->assertEquals('', $doc->getDescription());
         $this->assertEquals('http://www.cakephp.org', $doc->getUrl());
         $this->assertTrue($operation->isDeprecated());
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function test_invalid_url(): void
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeModels = new ModelScanner($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
+
+        $block = <<<EOT
+/** 
+ * @see htt:/www.cakephp.org
+ * @deprecated 
+ */
+EOT;
+        $docBlock = DocBlockFactory::createInstance()->create($block);
+        $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
+        $this->assertNull($operation->getExternalDocs());
     }
 }

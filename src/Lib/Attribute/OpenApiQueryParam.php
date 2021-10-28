@@ -17,9 +17,9 @@ class OpenApiQueryParam
      * @param string $ref An OpenAPI $ref to your OpenAPI YAML.
      * @param string $type The type of data accepted, typically string.
      * @param string $description A brief description of the parameter. This could contain examples of use.
-     * @param bool $required Determines whether this parameter is mandatory.
+     * @param bool $isRequired Determines whether this parameter is mandatory.
      * @param array $enum A list of enumerated values allowed for the header
-     * @param bool $deprecated Specifies that a parameter is deprecated and SHOULD be transitioned out of usage.
+     * @param bool $isDeprecated Specifies that a parameter is deprecated and SHOULD be transitioned out of usage.
      * Default value is false.
      * @param bool $explode When this is true, parameter values of type array or object generate separate parameters
      * for each value of the array or key-value pair of the map.
@@ -37,9 +37,9 @@ class OpenApiQueryParam
         public string $ref = '',
         public string $type = 'string',
         public string $description = '',
-        public bool $required = false,
+        public bool $isRequired = false,
         public array $enum = [],
-        public bool $deprecated = false,
+        public bool $isDeprecated = false,
         public bool $explode = false,
         public string $style = '',
         public string|bool|int $example = '',
@@ -49,7 +49,7 @@ class OpenApiQueryParam
         if (!in_array($type, OpenApiDataType::TYPES)) {
             throw new SwaggerBakeRunTimeException(
                 sprintf(
-                    'Invalid Data Type, given %s for %s but must be one of: %s' .
+                    'Invalid Data Type, given %s for %s but must be one of: %s',
                     $type,
                     $name,
                     implode(',', OpenApiDataType::TYPES)
@@ -72,8 +72,8 @@ class OpenApiQueryParam
     {
         return (new Parameter('query', $this->ref, $this->name))
             ->setDescription($this->description)
-            ->setRequired($this->required)
-            ->setDeprecated($this->deprecated)
+            ->setRequired($this->isRequired)
+            ->setDeprecated($this->isDeprecated)
             ->setStyle($this->style)
             ->setExplode($this->explode)
             ->setExample($this->example)

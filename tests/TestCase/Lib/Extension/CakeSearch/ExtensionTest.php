@@ -19,11 +19,9 @@ class ExtensionTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
-    /** @var array */
-    private $config;
+    private array $config;
 
-    /** @var Router  */
-    private $router;
+    private Router $router;
 
     public function setUp(): void
     {

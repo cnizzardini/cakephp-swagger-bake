@@ -89,9 +89,7 @@ class Schema implements JsonSerializable, SchemaInterface
         $vars = get_object_vars($this);
 
         // always unset
-        foreach (['name','refEntity','isPublic', 'refPath'] as $v) {
-            unset($vars[$v]);
-        }
+        $vars = ArrayUtility::removeKeysMatching($vars, ['name','refEntity','isPublic', 'refPath']);
 
         if (empty($vars['required'])) {
             unset($vars['required']);

@@ -24,9 +24,9 @@ abstract class AbstractOpenApiParameter
      * @param string $format The data format (e.g. data-time, uuid)
      * @param string $description A description of the parameter
      * @param string|bool|int|float $example An example scalar value of the parameter
-     * @param bool $required Is the parameter required?
+     * @param bool $isRequired Is the parameter required?
      * @param array $enum An enumerated list of values.
-     * @param bool $deprecated Is the parameter deprecated?
+     * @param bool $isDeprecated Is the parameter deprecated?
      * @param bool $allowEmptyValue Allow empty values?
      * @param bool $explode Explode on comma?
      * @param string $style See OpenAPI documentation
@@ -40,9 +40,9 @@ abstract class AbstractOpenApiParameter
         public string $format = '',
         public string $description = '',
         public string|bool|int|float $example = '',
-        public bool $required = false,
+        public bool $isRequired = false,
         public array $enum = [],
-        public bool $deprecated = false,
+        public bool $isDeprecated = false,
         public bool $allowEmptyValue = false,
         public bool $explode = false,
         public string $style = '',
@@ -83,8 +83,8 @@ abstract class AbstractOpenApiParameter
             ->setRef($this->ref ?? '')
             ->setName($this->name ?? '')
             ->setDescription($this->description)
-            ->setRequired($this->required)
-            ->setDeprecated($this->deprecated)
+            ->setRequired($this->isRequired)
+            ->setDeprecated($this->isDeprecated)
             ->setStyle($this->style)
             ->setExplode($this->explode)
             ->setExample($this->example)

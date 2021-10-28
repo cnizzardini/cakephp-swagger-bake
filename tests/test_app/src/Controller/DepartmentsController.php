@@ -25,7 +25,7 @@ class DepartmentsController extends AppController
     }
 
     #[OpenApiPaginator]
-    #[OpenApiQueryParam(name: "random", type: "boolean", required: true)]
+    #[OpenApiQueryParam(name: "random", type: "boolean", isRequired: true)]
     public function index()
     {
         $departments = $this->paginate($this->Departments);

@@ -17,8 +17,10 @@ class Content implements JsonSerializable
      * @param string $mimeType A mimetype such as "application/json"
      * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema An instance of the schema or an OpenApi $ref string
      */
-    public function __construct(private string $mimeType, private Schema|string $schema)
-    {
+    public function __construct(
+        private string $mimeType,
+        private Schema|string $schema
+    ) {
     }
 
     /**

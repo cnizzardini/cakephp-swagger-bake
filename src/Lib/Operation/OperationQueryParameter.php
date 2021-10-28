@@ -9,6 +9,7 @@ use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiDto;
 use SwaggerBake\Lib\Attribute\OpenApiPaginator;
 use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -155,7 +156,9 @@ class OperationQueryParameter
         }
 
         if (!class_exists($dto->class)) {
-            return;
+            throw new SwaggerBakeRunTimeException(
+                sprintf('DTO class %s not found', $dto->class)
+            );
         }
 
         $parameters = (new DtoParser($dto->class))->getParameters();

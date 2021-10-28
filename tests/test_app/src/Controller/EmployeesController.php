@@ -128,8 +128,8 @@ class EmployeesController extends AppController
      * @throws \Exception
      */
     #[OpenApiSecurity(name: 'BearerAuth')]
-    #[OpenApiQueryParam(name: 'queryParamName', type: "string", required: false)]
-    #[OpenApiHeader(name: 'X-HEAD-ATTRIBUTE', type: 'string', required: true)]
+    #[OpenApiQueryParam(name: 'queryParamName', type: "string", isRequired: false)]
+    #[OpenApiHeader(name: 'X-HEAD-ATTRIBUTE', type: 'string', isRequired: true)]
     #[OpenApiPaginator]
     #[OpenApiResponse(schemaType: 'object', description: "hello world")]
     public function customGet(): void

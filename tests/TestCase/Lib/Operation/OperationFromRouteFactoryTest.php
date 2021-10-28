@@ -101,4 +101,23 @@ class OperationFromRouteFactoryTest extends TestCase
         $this->assertEquals('PUT', $operation->getHttpMethod());
         $this->assertEquals('employees:edit:put', $operation->getOperationId());
     }
+
+    public function test_operation_not_created_if_http_method_missing(): void
+    {
+        $router = new Router();
+        $router::scope('/', function (RouteBuilder $builder) {
+            $builder->setExtensions(['json']);
+            $builder->resources('Employees', [
+                'only' => ['update']
+            ]);
+        });
+
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $swagger = (new SwaggerFactory($config))->create();
+        $cakeRoute = new RouteScanner($router, $config);
+
+        $route = $cakeRoute->getRoutes()['employees:edit'];
+        $route->setMethods([]);
+        $this->assertNull((new OperationFromRouteFactory($swagger))->create($route,'GET',null));
+    }
 }

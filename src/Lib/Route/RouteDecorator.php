@@ -61,7 +61,7 @@ class RouteDecorator
         $defaults = (array)$route->defaults;
 
         $methods = $defaults['_method'];
-        if (!is_array($defaults['_method'])) {
+        if (isset($defaults['_method']) && !is_array($defaults['_method'])) {
             $methods = explode(', ', $defaults['_method']);
         }
 
@@ -69,9 +69,9 @@ class RouteDecorator
             ->setTemplate($route->template)
             ->setName($route->getName())
             ->setPlugin($defaults['plugin'])
-            ->setController($defaults['controller'])
+            ->setController($defaults['controller'] ?? '')
             ->setAction($defaults['action'])
-            ->setMethods($methods);
+            ->setMethods($methods ?? []);
     }
 
     /**

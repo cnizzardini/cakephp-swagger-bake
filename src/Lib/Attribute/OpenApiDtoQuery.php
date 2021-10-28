@@ -28,8 +28,8 @@ class OpenApiDtoQuery extends AbstractOpenApiParameter
      * @param string $example An example of the parameter
      * @param bool $allowEmptyValue Allow empty values?
      * @param bool $explode Explode on comma?
-     * @param bool $required Is the parameter required?
-     * @param bool $deprecated Is the parameter deprecated?
+     * @param bool $isRequired Is the parameter required?
+     * @param bool $isDeprecated Is the parameter deprecated?
      * @param bool $allowReserved Allow reserved words?
      * @param array $enum Provides an enumerated list of options that can be accepted
      * @param string $style See OpenAPI documentation
@@ -44,8 +44,8 @@ class OpenApiDtoQuery extends AbstractOpenApiParameter
         string $example = '',
         bool $allowEmptyValue = false,
         bool $explode = false,
-        bool $required = false,
-        bool $deprecated = false,
+        bool $isRequired = false,
+        bool $isDeprecated = false,
         bool $allowReserved = false,
         array $enum = [],
         string $style = '',
@@ -57,9 +57,9 @@ class OpenApiDtoQuery extends AbstractOpenApiParameter
             format: $format,
             description: $description,
             example: $example,
-            required: $required,
+            isRequired: $isRequired,
             enum: $enum,
-            deprecated: $deprecated,
+            isDeprecated: $isDeprecated,
             allowEmptyValue: $allowEmptyValue,
             explode: $explode,
             style: $style,

@@ -7,8 +7,7 @@ on:
     branches: [ master, 2.next ]
 
 jobs:
-  run:
-
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:

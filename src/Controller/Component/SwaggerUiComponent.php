@@ -41,6 +41,9 @@ class SwaggerUiComponent extends Component
     }
 
     /**
+     * Perform a hot reload if the option is enabled. Also displays some errors using the Flash Component if
+     * the user has that enabled.
+     *
      * @param \Cake\Event\Event $event Event
      * @return void
      */
@@ -73,6 +76,8 @@ class SwaggerUiComponent extends Component
     }
 
     /**
+     * Gets the doc type (Swagger or Redoc) requested by the user
+     *
      * @param \Cake\Http\ServerRequest $request ServerRequest
      * @return string
      */

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Operation;
 
 use Cake\Controller\Controller;
+use Cake\Database\Exception\DatabaseException;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
@@ -68,20 +69,17 @@ class OperationResponseAssociation
         }
 
         $table = $this->locator->get($associations['table']);
-        if (!$table instanceof Table) {
-            throw new SwaggerBakeRunTimeException(
-                sprintf(
-                    'Unable to locate table `%s`. Manually specify base table with the table option',
-                    $associations['table']
-                )
-            );
-        }
 
         $schemaMode = $this->whichSchemaMode();
-
         $schema = $this->findSchema($table, $schemaMode);
 
-        $hasWhiteList = isset($associations['whiteList']) && is_array($associations['whiteList']);
+        $hasWhiteList = false;
+        if (isset($associations['whiteList'])) {
+            if (!is_array($associations['whiteList'])) {
+                throw new SwaggerBakeRunTimeException('whiteList must be an array');
+            }
+            $hasWhiteList = true;
+        }
 
         /**
          * @todo support recursion
@@ -154,7 +152,12 @@ class OperationResponseAssociation
 
         if (!$schema) {
             $assocTable = $this->locator->get($tableName);
-            $model = (new ModelFactory(ConnectionManager::get('default'), $assocTable))->create();
+            try {
+                $model = (new ModelFactory(ConnectionManager::get('default'), $assocTable))->create();
+            } catch (DatabaseException $e) {
+                throw new SwaggerBakeRunTimeException('Error building association: ' . $e->getMessage());
+            }
+
             $decorator = new ModelDecorator($model, new Controller());
             $schema = (new SchemaFactory())->createAlways($decorator, SchemaFactory::READABLE_PROPERTIES);
         }

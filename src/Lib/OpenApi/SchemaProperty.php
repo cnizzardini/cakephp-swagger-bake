@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
+use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
  * Class SchemaProperty
@@ -16,6 +17,11 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     use JsonSchemaTrait;
     use SchemaTrait;
 
+    /**
+     * Rename keys on the left to the name on the right to match OpenApi spec
+     *
+     * @var array
+     */
     private const PROPERTIES_TO_OPENAPI_SPEC = [
         'isReadOnly' => 'readOnly',
         'isWriteOnly' => 'writeOnly',
@@ -54,27 +60,23 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
         }
 
         // remove internal properties
-        foreach (['name','isRequired','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity'] as $v) {
-            unset($vars[$v]);
-        }
+        $vars = ArrayUtility::removeKeysMatching(
+            $vars,
+            ['name','isRequired','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity']
+        );
 
         if (!empty($this->refEntity)) {
             $vars['$ref'] = $this->refEntity;
         }
 
         // reduce JSON clutter by removing empty values
-        foreach (['example','description','enum','format','items','type'] as $v) {
-            if (empty($vars[$v])) {
-                unset($vars[$v]);
-            }
-        }
+        $vars = ArrayUtility::removeEmptyVars($vars, ['example','description','enum','format','items','type']);
 
         // reduce JSON clutter if these values are equal to their defaults
-        foreach (['readOnly', 'writeOnly', 'deprecated'] as $name) {
-            if ($vars[$name] === false) {
-                unset($vars[$name]);
-            }
-        }
+        $vars = ArrayUtility::removeValuesMatching(
+            $vars,
+            ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false]
+        );
 
         return $this->removeEmptyVars($vars);
     }
