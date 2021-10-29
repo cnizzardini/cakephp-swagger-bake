@@ -53,7 +53,7 @@ class RouteScanner
     }
 
     /**
-     * Reads RESTful routes from Cakes Router that matches the userland configured prefix
+     * Reads RESTful routes from Cakes Router that matches the user land configured prefix
      *
      * @return void
      * @throws \Exception
@@ -75,13 +75,12 @@ class RouteScanner
             }
 
             $routeDecorator = new RouteDecorator($route);
+            $path = 'Controller\\';
+            $path .= $routeDecorator->getPrefix() ? $routeDecorator->getPrefix() . '\\' : '';
+            $path .= $routeDecorator->getController() . 'Controller';
 
-            $controller = $routeDecorator->getController();
-
-            $results = array_filter($classes, function ($fqn) use ($controller, $route) {
-                $prefix = !empty($route->defaults['prefix']) ? $route->defaults['prefix'] . '\\' : '';
-
-                return str_contains($fqn, '\\' . $prefix . $controller . 'Controller');
+            $results = array_filter($classes, function ($fqn) use ($path) {
+                return str_contains($fqn, $path);
             });
 
             if (count($results) === 1) {

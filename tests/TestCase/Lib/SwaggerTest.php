@@ -70,16 +70,12 @@ class SwaggerTest extends TestCase
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
         ];
-
-        
     }
 
     public function test_get_mixing_static_yaml_and_dynamic_openapi(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-
         $cakeRoute = new RouteScanner($this->router, $config);
-
         $openApi = (new Swagger(new ModelScanner($cakeRoute, $config)))->getArray();
 
         $this->assertArrayHasKey('/departments', $openApi['paths']);
