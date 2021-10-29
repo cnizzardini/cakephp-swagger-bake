@@ -30,7 +30,7 @@ class BakeTemplateTest extends TestCase
         }
     }
 
-    public function testBakeController()
+    public function test_bake_controller(): void
     {
         $this->exec('bake controller Bakers --no-test --force --theme SwaggerBake');
 

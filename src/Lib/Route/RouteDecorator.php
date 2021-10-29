@@ -16,42 +16,21 @@ class RouteDecorator
 {
     private Route $route;
 
-    /**
-     * @var string|null
-     */
-    private $name;
+    private ?string $name;
 
-    /**
-     * @var string|null
-     */
-    private $plugin;
+    private ?string $plugin;
 
-    /**
-     * @var string|null
-     */
-    private $controller;
+    private ?string $prefix;
 
-    /**
-     * @var string|null
-     */
-    private $action;
+    private ?string $controller;
 
-    /**
-     * @var array
-     */
-    private $methods = [];
+    private ?string $action;
 
-    /**
-     * @var string|null
-     */
-    private $template;
+    private array $methods = [];
 
-    /**
-     * The controllers fully qualified namespace (e.g. \App\Controller\ActorsController)
-     *
-     * @var string|null
-     */
-    private $controllerFqn;
+    private ?string $template;
+
+    private ?string $controllerFqn = null;
 
     /**
      * @param \Cake\Routing\Route\Route $route Route
@@ -66,10 +45,12 @@ class RouteDecorator
         }
 
         $this
+            ->setRoute($route)
             ->setTemplate($route->template)
             ->setName($route->getName())
             ->setPlugin($defaults['plugin'])
-            ->setController($defaults['controller'] ?? '')
+            ->setPrefix($defaults['prefix'] ?? null)
+            ->setController($defaults['controller'] ?? null)
             ->setAction($defaults['action'])
             ->setMethods($methods ?? []);
     }
@@ -113,6 +94,25 @@ class RouteDecorator
     }
 
     /**
+     * @return string|null
+     */
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string|null $prefix The routing prefix, for example "Admin" when controller is in App\Controller\Admin
+     * @return $this
+     */
+    public function setPrefix(?string $prefix)
+    {
+        $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getPlugin(): ?string
@@ -140,10 +140,10 @@ class RouteDecorator
     }
 
     /**
-     * @param string $controller Name of the Controller this route is associated with
+     * @param string|null $controller Name of the Controller this route is associated with
      * @return $this
      */
-    public function setController(string $controller)
+    public function setController(?string $controller)
     {
         $this->controller = $controller;
 

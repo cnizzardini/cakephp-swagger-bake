@@ -22,13 +22,13 @@ class ControllerTest extends TestCase
         static::setAppNamespace('SwaggerBakeTest\App');
     }
 
-    public function testSwaggerIndex()
+    public function test_swagger_index(): void
     {
         $this->get('/');
         $this->assertResponseOk();
     }
 
-    public function testRedocIndex()
+    public function test_redoc_index(): void
     {
         $this->get('/?doctype=redoc');
         $this->assertResponseOk();
