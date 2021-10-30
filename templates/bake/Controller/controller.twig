@@ -25,7 +25,7 @@ namespace {{ namespace }}\Controller{{ prefix }};
 {% if plugin or prefix %}
 use {{ baseNamespace }}\Controller\AppController;
 {% endif %}
-use SwaggerBake\Lib\Annotation as Swag;
+use SwaggerBake\Lib\Attribute as OpenApi;
 
 /**
  * {{ name }} Controller

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBakeTest\App\Controller;
 
-use SwaggerBake\Lib\Annotation as Swag;
+use SwaggerBake\Lib\Attribute as OpenApi;
 
 /**
  * Bakers Controller
@@ -15,10 +15,10 @@ class BakersController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\MethodNotAllowedException When invalid method
-     * @Swag\SwagPaginator()
+     * @return \Cake\Http\Response|null|void
+     * @throws \Cake\Http\Exception\MethodNotAllowedException
      */
+    #[OpenApi\OpenApiPaginator()]
     public function index()
     {
         $this->request->allowMethod('get');
@@ -32,9 +32,9 @@ class BakersController extends AppController
      * View method
      *
      * @param string|null $id Baker id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     * @throws \Cake\Datasource\Exception\MethodNotAllowedException When invalid method
+     * @return \Cake\Http\Response|null|void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException
+     * @throws \Cake\Http\Exception\MethodNotAllowedException
      */
     public function view($id = null)
     {
@@ -51,8 +51,8 @@ class BakersController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Http\Response|null|void HTTP 200 on successful add
-     * @throws \Cake\Datasource\Exception\MethodNotAllowedException When invalid method
+     * @return \Cake\Http\Response|null|void
+     * @throws \Cake\Http\Exception\MethodNotAllowedException
      * @throws \Exception
      */
     public function add()
@@ -72,9 +72,9 @@ class BakersController extends AppController
      * Edit method
      *
      * @param string|null $id Baker id.
-     * @return \Cake\Http\Response|null|void HTTP 200 on successful edit
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     * @throws \Cake\Datasource\Exception\MethodNotAllowedException When invalid method
+     * @return \Cake\Http\Response|null|void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException
+     * @throws \Cake\Http\Exception\MethodNotAllowedException
      * @throws \Exception
      */
     public function edit($id = null)
@@ -96,9 +96,9 @@ class BakersController extends AppController
      * Delete method
      *
      * @param string|null $id Baker id.
-     * @return \Cake\Http\Response|null|void HTTP 204 on success
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     * @throws \Cake\Datasource\Exception\MethodNotAllowedException When invalid method
+     * @return \Cake\Http\Response|null|void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException
+     * @throws \Cake\Http\Exception\MethodNotAllowedException
      * @throws \Exception
      */
     public function delete($id = null)

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Route;
 
 use Cake\Routing\Route\Route;
+use MixerApi\Core\Model\Model;
 
 /**
  * Class RouteDecorator
@@ -31,6 +32,8 @@ class RouteDecorator
     private ?string $template;
 
     private ?string $controllerFqn = null;
+
+    private ?Model $model = null;
 
     /**
      * @param \Cake\Routing\Route\Route $route Route
@@ -222,6 +225,25 @@ class RouteDecorator
     public function setControllerFqn(string $controllerFqn)
     {
         $this->controllerFqn = $controllerFqn;
+
+        return $this;
+    }
+
+    /**
+     * @return \MixerApi\Core\Model\Model|null
+     */
+    public function getModel(): ?Model
+    {
+        return $this->model;
+    }
+
+    /**
+     * @param \MixerApi\Core\Model\Model|null $model The model associated with this route
+     * @return $this
+     */
+    public function setModel(?Model $model)
+    {
+        $this->model = $model;
 
         return $this;
     }

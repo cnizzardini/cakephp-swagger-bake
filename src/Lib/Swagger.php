@@ -344,11 +344,15 @@ class Swagger
      */
     private function getSchemaFromRoute(RouteDecorator $route): ?Schema
     {
-        $controller = $route->getController();
-        $name = preg_replace('/\s+/', '', $controller);
+        if ($route->getModel()) {
+            $table = $route->getModel()->getTable()->getAlias();
+        } else {
+            $controller = $route->getController();
+            $table = preg_replace('/\s+/', '', $controller);
+        }
 
         if (in_array(strtolower($route->getAction()), ['add','view','edit','index','delete'])) {
-            return $this->getSchemaByName(Inflector::singularize($name));
+            return $this->getSchemaByName(Inflector::singularize($table));
         }
 
         return null;
