@@ -41,8 +41,6 @@ and controllers.
 - [Multiple Instances of SwaggerBake](#multiple-instances-of-swagger-bake)
 - [Debug Commands](#debug-commands)
 - [Bake Theme](#bake-theme)
-- [Details](#details)
-- [Misc Sections...](#supported-versions)
 
 ## Installation
 
@@ -70,14 +68,19 @@ use the manual setup.
 
 ### Automated Setup
 
-Run `bin/cake swagger install` and then [add a route](#add-a-route-to-swaggerui).
+Run the installer and then [add a route](#add-a-route-to-swaggerui).
+
+```console
+`bin/cake swagger install`
+```
 
 ### Manual Setup
 
-- Create a base swagger.yml file in `config\swagger.yml`. An example file is provided [here](assets/swagger.yml). 
+- Create a base [swagger.yml](assets/swagger.yml) file at `config\swagger.yml`. An example file is provided 
+[here](assets/swagger.yml). 
 
-- Create a `config/swagger_bake.php` file. See the example file [here](assets/swagger_bake.php) for further 
-explanation. Then just add a route.
+- Create a [swagger_bake.php](assets/swagger_bake.php) config file at `config/swagger_bake.php` file. See the example 
+file [here](assets/swagger_bake.php) for further explanation. Then just add a route.
 
 ### Add a route to SwaggerUI
 
@@ -85,14 +88,20 @@ Create a route for the SwaggerUI page in `config/routes.php`, example:
 
 ```php
 $builder->connect(
-    '/my-swagger-ui', 
+    '/api-docs', 
     ['plugin' => 'SwaggerBake', 'controller' => 'Swagger', 'action' => 'index']
 );
 ``` 
 
+You can now browse to either `/api-docs` or `/api-docs?doctype=redoc`.
+
 ## Getting Started
 
-- You can generate OpenAPI json from the command line at anytime with `bin/cake swagger bake`.
+- You can generate OpenAPI json from the command line at anytime by running: 
+
+```console
+bin/cake swagger bake
+```
 
 - If Hot Reload is enabled ([see config](assets/swagger_bake.php)) OpenAPI will be generated each time you browse 
 to SwaggerUI (or Redoc) in your web browser.
@@ -100,33 +109,33 @@ to SwaggerUI (or Redoc) in your web browser.
 - Checkout the [debug commands](#debug-commands) for troubleshooting and the [bake theme](#bake-theme) for generating 
 RESTful controllers.
  
-## Automatic Documentation
+## Automated OpenAPI
 
-I built this library to reduce the need for attributes to build documentation. SwaggerBake will automatically 
-build the following from your existing routes and models without additional effort:
+SwaggerBake will automatically build the following from your existing routes and models without additional effort:
 
 - Paths
     - Resource (route)
-- Operations
-    - Summary and description
-    - GET, POST, PATCH, DELETE
-    - Form fields and JSON using your Cake models
-    - Responses
-    - Sub resources
-    - Security/Authentication
+    - Operations
+        - Summary and description
+        - GET, POST, PATCH, DELETE
+        - Form fields and JSON using your Cake models
+        - Responses
+        - Sub resources
+        - Security/Authentication
 - Schema
-
-[See details](#details) for how CakePHP conventions are interpreted into OpenAPI 3.0 schema.
-
+    - Properties (fields)
+    
 SwaggerBake works with your existing YML definitions and will not overwrite anything. 
 
-## Doc Blocks
+## Routes
 
-SwaggerBake will parse your [DocBlocks](https://docs.phpdoc.org/latest/guides/docblocks.html) for information. The 
-first line reads as the Operation Summary and the second as the Operation Description, `@see`, `@deprecated`, and 
-`@throws` are also supported. Throw tags use the Exception classes HTTP status code. For instance, a 
-`MethodNotAllowedException` displays as a 405 response in Swagger UI, while a standard PHP Exception displays as a 500 
-code. You must use the FQN for exceptions.
+Your [RESTful routes](https://book.cakephp.org/4/en/development/routing.html#restful-routing) are used to build 
+OpenAPI paths and operations.
+
+## Controllers
+
+SwaggerBake will parse the [DocBlocks](https://docs.phpdoc.org/latest/guides/docblocks.html) on your controller 
+actions to for additional OpenAPI Operation data.
 
 ```php
 /**
@@ -134,55 +143,47 @@ code. You must use the FQN for exceptions.
  * 
  * This displays as the operations long description
  * 
- * @see https://book.cakephp.org/4/en/index.html The link and this description appear in Swagger
- * @deprecated
- * @throws \Cake\Http\Exception\BadRequestException An optional bad request description here
- * @throws \Exception
+ * @see https://book.cakephp.org/4/en/index.html The link and this description appear in OpenAPI
+ * @deprecated Indicates the operation is deprecated
+ * @throws \Cake\Http\Exception\BadRequestException An optional description for the HTTP 400
+ * @throws \Exception An optional description for the HTTP 500
  */
 public function index() {}
 ```
 
-For Entities, the description from `@property` is supported and will appear in OpenAPI and be usable by swagger/redoc 
-for entity attribute descriptions:
+If you prefer, you may use the [OpenApiOperation](docs/attributes.md#OpenApiOperation), 
+[OpenApiResponse](docs/attributes.md#OpenApiResponse) attributes instead. These attributes take precedence over doc 
+block parsing. Read below for a full list of attributes.
 
-```php
-/**
- * City Entity
- *
- * @property string $name Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
- * incididunt ut labore et dolore magna aliqua. 
- *
- * - some
- * - bullets
- *
- * Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
- * magna aliqua.
- */
-```
+## Models
+
+OpenAPI schema is built from your Table and Entity classes and any validators you've defined in them. You may adjust
+the default schema using the [OpenApiSchema](docs/attributes.md#OpenApiSchema) and
+[OpenApiSchemaProperty](docs/attributes.md#OpenApiSchemaProperty) attributes.
 
 ## Attributes
 
-SwaggerBake provides some optional Attributes for enhanced functionality. These can be imported individually from 
-`SwaggerBake\Lib\Attribute`. [Read the Attributes docs](docs/attributes.md) for detailed examples.
+SwaggerBake provides some optional Attributes for enhanced functionality. These can be imported individually from the 
+`SwaggerBake\Lib\Attribute` namespace. [Read the Attributes docs](docs/attributes.md) for detailed examples.
 
-| Attribute | Description | 
-| ------------- | ------------- |
-| [OpenApiDto](docs/attributes.md#OpenApiDto) | Builds OpenAPI query params and request bodies from Data Transfer Objects |
-| [OpenApiDtoQuery](docs/attributes.md#OpenApiDtoQuery) | Builds OpenAPI query param from Data Transfer Objects |
-| [OpenApiDtoRequestBody](docs/attributes.md#OpenApiDtoRequestBody) | Builds OpenAPI request body property from Data Transfer Objects |
-| [OpenApiForm](docs/attributes.md#OpenApiForm) | Builds OpenAPI for application/x-www-form-urlencoded request bodies |
-| [OpenApiEntityAttribute](docs/attributes.md#OpenApiEntityAttribute) | Modifies an OpenAPI schema property |
-| [OpenApiHeader](docs/attributes.md#OpenApiHeader) | Create OpenAPI header parameters |
-| [OpenApiOperation](docs/attributes.md#OpenApiOperation) | Modifies OpenAPI operation |
-| [OpenApiPaginator](docs/attributes.md#OpenApiPaginator) | Create OpenAPI query params from CakePHP Paginator Component |
-| [OpenApiPath](docs/attributes.md#OpenApiPath) | Modifies OpenAPI paths |
-| [OpenApiPathParam](docs/attributes.md#OpenApiPathParam) | Modify an existing OpenAPI path parameter |
-| [OpenApiQueryParam](docs/attributes.md#OpenApiQueryParam) | Builds OpenAPI query param |
-| [OpenApiRequestBody](docs/attributes.md#OpenApiRequestBody) | Modify OpenAPI request body |
-| [OpenApiResponse](docs/attributes.md#OpenApiResponse) | Modify OpenAPI response |
-| [OpenApiSchema](docs/attributes.md#OpenApiSchema) | Modifies OpenAPI schema |
-| [OpenApiSearch](docs/attributes.md#OpenApiSearch) | Create OpenAPI query params from CakePHP Search plugin |
-| [OpenApiSecurity](docs/attributes.md#OpenApiSecurity) | Create/modify OpenAPI security |
+| Attribute | Usage | Description | 
+| ------------- | ------------- | ------------- |
+| [OpenApiDto](docs/attributes.md#OpenApiDto) | Controller Action | Builds OpenAPI query params and request bodies from Data Transfer Objects |
+| [OpenApiDtoQuery](docs/attributes.md#OpenApiDtoQuery) | DTO class property |  Builds OpenAPI query param from Data Transfer Objects |
+| [OpenApiDtoRequestBody](docs/attributes.md#OpenApiDtoRequestBody) | DTO class property | Builds OpenAPI request body property from Data Transfer Objects |
+| [OpenApiForm](docs/attributes.md#OpenApiForm) | Controller Action | Builds OpenAPI for application/x-www-form-urlencoded request bodies |
+| [OpenApiHeader](docs/attributes.md#OpenApiHeader) | Controller Action | Create OpenAPI header parameters |
+| [OpenApiOperation](docs/attributes.md#OpenApiOperation) | Controller Action | Modifies OpenAPI operation |
+| [OpenApiPaginator](docs/attributes.md#OpenApiPaginator) | Controller Action | Create OpenAPI query params from CakePHP Paginator Component |
+| [OpenApiPath](docs/attributes.md#OpenApiPath) | Controller | Modifies OpenAPI paths |
+| [OpenApiPathParam](docs/attributes.md#OpenApiPathParam) | Controller Action | Modify an existing OpenAPI path parameter |
+| [OpenApiQueryParam](docs/attributes.md#OpenApiQueryParam) | Controller Action | Builds OpenAPI query param |
+| [OpenApiRequestBody](docs/attributes.md#OpenApiRequestBody) | Controller Action | Modify OpenAPI request body |
+| [OpenApiResponse](docs/attributes.md#OpenApiResponse) | Controller Action | Modify OpenAPI response |
+| [OpenApiSchema](docs/attributes.md#OpenApiSchema) | Entity | Modifies OpenAPI schema |
+| [OpenApiSchemaProperty](docs/attributes.md#OpenApiSchemaProperty) | Entity | Modifies an OpenAPI schema property |
+| [OpenApiSearch](docs/attributes.md#OpenApiSearch) | Controller Action | Create OpenAPI query params from CakePHP Search plugin |
+| [OpenApiSecurity](docs/attributes.md#OpenApiSecurity) | Controller Action | Create/modify OpenAPI security |
 
 ## Event System
 
@@ -330,85 +331,14 @@ bake theme is not specifically designed for RESTful APIs.
 bin/cake bake controller {Name} --theme SwaggerBake
 ```
 
-## Details
-
-- Swagger uses your existing swagger.yml as a base for adding additional paths and schema.
-- Generates JSON based on the OpenAPI 3 specification. I am still working on implementing the full spec.
-- All Schemas and Paths generated must have the following in your CakePHP Application:
-  - App\Model\Entity class (for schemas only)
-  - App\Controller class
-  - Must be a valid route
-  - Three versions of schema will be created: 
-    - Default with all properties `#/components/schemas/Entity`
-    - Writeable properties `#/x-swagger-bake/components/schemas/Entity-Write`
-    - Readable properties `#/x-swagger-bake/components/schemas/Entity-Read`
-- Entity Attributes: 
-  - Reads descriptions from `@property` doc block tags.
-  - Hidden attributes will not be visible.
-  - Primary Keys will be set to read only by default.
-  - DateTime fields named `created` and `modified` are automatically set to read only per Cake convention.
-- CRUD Responses
-  - Index, Edit, Add, and View methods default to an HTTP 200 with the Controllers related Cake Entity schema.
-  - Delete defaults to HTTP 204 (no content). 
-- Table Validators:
-  - Reads in [Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html) rules such as 
-  requirePresence, minLength, maxLength, basic math comparison operators, regex, inList, hasAtLeast, and hasAtMost.
-- Security Scheme 
-  - Leverages the [CakePHP AuthenticationComponent](https://book.cakephp.org/authentication/2/en/index.html)
-  - Will automatically set security on operations if a single [securityScheme](https://swagger.io/docs/specification/authentication/) 
-  is defined in your swagger.yaml. If more than one security schema exists you will need to use `@SwagSecurity`.
-  - `@SwagSecurity` takes precedence.
-- SwaggerBake supports the following formats: application/json, application/x-www-form-urlencoded, application/xml, 
-application/hal+json, and application/ld+json
-
-SwaggerBake does not document schema associations. If your application includes associations on things like 
-GET requests, you can easily add them into your swagger documentation through the OpenAPI `allOf` property. Since 
-SwaggerBake works in conjunction with OpenAPI YAML you can easily add a new schema with this association. Below is an 
-example of extending an existing City schema to include a Country association.
-
-```yaml
-# in your swagger.yml
-components:
-  schemas:
-    CityExtended:
-      description: 'City with extended information including Country'
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/City'
-        - type: object
-          properties:
-            country:
-              $ref: '#/components/schemas/Country'
-
-```
-
-Then in your controller action you'd specify the Schema: 
-
-```php
-/**
- * View method
- * @Swag\SwagResponseSchema(refEntity="#/components/schemas/CityExtended")
- */
-public function view($id)
-{
-    $this->request->allowMethod('get');
-    $city = $this->Cities->get($id, ['contain' => ['Countries']]);
-    $this->set(compact('cities'));
-    $this->viewBuilder()->setOption('serialize', 'cities');
-}
-```
-
-The demo application includes this and many other examples of usage. Read more about `oneOf`, `anyOf`, `allOf`, and 
-`not` in the [OpenAPI 3 documentation](https://swagger.io/docs/specification/data-models/oneof-anyof-allof-not/).
-
 ## Supported Versions
 
 This is built for CakePHP 4.x only. 
 
-| Version | Branch | Cake Version  | PHP Version | Supported | 
-| ------------- | ------------- | ------------- | ------------- | ------------- |
-| 2.* | master | 4.* | 7.4+  | Yes |
-| 1.* | v1 | 4.* | 7.2+  | No | 
+| Version | Branch | Cake Version  | PHP Version | 
+| ------------- | ------------- | ------------- | ------------- |
+| 2.* | master | 4.2 - 4.3 | 8.0+  |
+| 1.* | v1 | 4.0 - 4.3 | 7.2+  | 
 
 ## Common Issues
 
@@ -430,27 +360,31 @@ Change permissions on your `swagger.json file`, `764` should do.
 
 `Controller not found`
 
-Make sure a controller actually exists for the route resource. 
+Make sure a controller actually exists for the route resource.
 
-### Other Issues
+### Missing routes
 
-#### Missing actions (missing paths) in Swagger
+Make sure yours route are properly defined in `config/routes.php` per the 
+[CakePHP RESTful routing](https://book.cakephp.org/4/en/development/routing.html#restful-routing) documentation.
 
-By default Cake RESTful resources will only create routes for index, view, add, edit and delete. You can add and remove 
-paths using CakePHPs route resource functionality. Read the 
-[Cake Routing documentation](https://book.cakephp.org/4/en/development/routing.html) which describes in detail how to 
-add, remove, modify, and alter routes. 
+### Missing request or response samples
 
-#### Missing CSRF token body
+Sample schema is determined using [CakePHP naming conventions](https://book.cakephp.org/4/en/intro/conventions.html). 
+Does your controller name match your model names? For customizing response schema see 
+[OpenApiResponse](docs/attributes.md#OpenApiResponse).
+
+### Missing request schema
+
+Sample schema is determined using [CakePHP naming conventions](https://book.cakephp.org/4/en/intro/conventions.html).
+Does your controller name match your model names? For customizing request schema see 
+[OpenApiRequestBody](docs/attributes.md#OpenApiRequestBody).
+
+### Missing CSRF token body
 
 Either disable CSRF protection on your main route in `config/routes.php` or enable CSRF protection in Swagger 
 UI. The library does not currently support adding this in for you.
 
-#### My route isn't displaying in Swagger UI
-
-Make sure the route is properly defined in your `config/routes.php` file.
-
-#### HTTP DELETE issues with Swagger UI
+### HTTP DELETE issues with Swagger UI
 
 Swagger UI sends HTTP DELETE without an `accept` header. If the record does not exist, an exception is generated. 
 This results in an HTML response being generated which can be quite large and cause the UI to be slow to render. To 

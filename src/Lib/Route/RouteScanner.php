@@ -30,7 +30,7 @@ class RouteScanner
      *
      * @var \SwaggerBake\Lib\Route\RouteDecorator[]
      */
-    private $routes;
+    private array $routes;
 
     /**
      * @param \Cake\Routing\Router $router Router
@@ -74,25 +74,38 @@ class RouteScanner
                 continue;
             }
 
-            $routeDecorator = new RouteDecorator($route);
-            $path = 'Controller\\';
-            $path .= $routeDecorator->getPrefix() ? $routeDecorator->getPrefix() . '\\' : '';
-            $path .= $routeDecorator->getController() . 'Controller';
-
-            $results = array_filter($classes, function ($fqn) use ($path) {
-                return str_contains($fqn, $path);
-            });
-
-            if (count($results) === 1) {
-                $routeDecorator->setControllerFqn('\\' . reset($results));
-            }
-
-            $routes[$route->getName()] = $routeDecorator;
+            $routes[$route->getName()] = $this->createRouteDecorator($route, $classes);
         }
 
         ksort($routes);
 
         $this->routes = $routes;
+    }
+
+    /**
+     * Creates a RouteDecorator from a route. The $classes argument should provide a list of all controller classes
+     * so the route can be matched to a Controller class.
+     *
+     * @param \Cake\Routing\Route\Route $route The Route to be decorated
+     * @param array $classes An array of controller classes
+     * @return \SwaggerBake\Lib\Route\RouteDecorator
+     */
+    private function createRouteDecorator(Route $route, array $classes): RouteDecorator
+    {
+        $routeDecorator = new RouteDecorator($route);
+        $path = 'Controller\\';
+        $path .= $routeDecorator->getPrefix() ? $routeDecorator->getPrefix() . '\\' : '';
+        $path .= $routeDecorator->getController() . 'Controller';
+
+        $results = array_filter($classes, function ($fqn) use ($path) {
+            return str_contains($fqn, $path);
+        });
+
+        if (count($results) === 1) {
+            $routeDecorator->setControllerFqn('\\' . reset($results));
+        }
+
+        return $routeDecorator;
     }
 
     /**

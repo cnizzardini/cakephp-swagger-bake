@@ -6,6 +6,8 @@ namespace SwaggerBake\Lib\Model;
 use Cake\Collection\Collection;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\Table;
+use Exception;
 use MixerApi\Core\Model\Model;
 use MixerApi\Core\Model\ModelFactory;
 use MixerApi\Core\Utility\NamespaceUtility;
@@ -36,6 +38,7 @@ class ModelScanner
      * Gets an array of ModelDecorator instances
      *
      * @return \SwaggerBake\Lib\Model\ModelDecorator[]
+     * @throws \ReflectionException
      */
     public function getModelDecorators(): array
     {
@@ -64,7 +67,7 @@ class ModelScanner
                 }
 
                 $routeDecorator = $this->getRouteDecorator($model);
-                if (!$this->hasVisibility($model, $routeDecorator)) {
+                if (!$this->isVisible($model, $routeDecorator)) {
                     continue;
                 }
 
@@ -78,6 +81,69 @@ class ModelScanner
         }
 
         return $return;
+    }
+
+    /**
+     * Returns the RouteDecorator associated with the Model using the loadedModel from the Controller.
+     *
+     * 1. Use CakePHP naming convention to determine the table.
+     * 2. Check if the Controller has an instance of a \Cake\ORM\Table and match on the table alias.
+     *
+     * If neither options find a matching table for the controller then return null.
+     *
+     * @param \MixerApi\Core\Model\Model $model Model instance
+     * @return \SwaggerBake\Lib\Route\RouteDecorator
+     */
+    private function getRouteDecorator(Model $model): ?RouteDecorator
+    {
+        $routes = $this->routeScanner->getRoutes();
+
+        $result = (new Collection($routes))->filter(function (RouteDecorator $route) use ($model) {
+            if ($route->getController() == $model->getTable()->getAlias()) {
+                $route->setModel($model);
+
+                return true;
+            } elseif ($route->getControllerFqn()) {
+                $fqn = $route->getControllerFqn();
+                try {
+                    $results = (new Collection(get_object_vars(new $fqn())))->filter(function ($item) {
+                        return $item instanceof Table;
+                    });
+                    if ($results->count() > 0) {
+                        /** @var \Cake\ORM\Table $table */
+                        $table = $results->first();
+                        if ($table->getAlias() == $model->getTable()->getAlias()) {
+                            $route->setModel($model);
+
+                            return true;
+                        }
+                    }
+                } catch (Exception $e) {
+                }
+            }
+        });
+
+        return $result->first();
+    }
+
+    /**
+     * Checks OpenApiSchema attribute to determine if this model visible to OpenAPI.
+     *
+     * @param \MixerApi\Core\Model\Model $model Model instance
+     * @param \SwaggerBake\Lib\Route\RouteDecorator|null $routeDecorator RouteDecorator instance
+     * @return bool
+     * @throws \ReflectionException
+     */
+    private function isVisible(Model $model, ?RouteDecorator $routeDecorator): bool
+    {
+        $reflection = new ReflectionClass(get_class($model->getEntity()));
+        $schema = (new AttributeFactory($reflection, OpenApiSchema::class))->createOneOrNull();
+
+        if (!$schema instanceof OpenApiSchema) {
+            return $routeDecorator !== null;
+        }
+
+        return $schema->isVisible;
     }
 
     /**
@@ -104,37 +170,5 @@ class ModelScanner
     public function getConfig(): Configuration
     {
         return $this->config;
-    }
-
-    /**
-     * @param \MixerApi\Core\Model\Model $model Model instance
-     * @return \SwaggerBake\Lib\Route\RouteDecorator
-     */
-    private function getRouteDecorator(Model $model): ?RouteDecorator
-    {
-        $routes = $this->routeScanner->getRoutes();
-
-        $result = (new Collection($routes))->filter(function (RouteDecorator $route) use ($model) {
-            return $route->getController() == $model->getTable()->getAlias();
-        });
-
-        return $result->first();
-    }
-
-    /**
-     * @param \MixerApi\Core\Model\Model $model Model instance
-     * @param \SwaggerBake\Lib\Route\RouteDecorator|null $routeDecorator RouteDecorator instance
-     * @return bool
-     */
-    private function hasVisibility(Model $model, ?RouteDecorator $routeDecorator): bool
-    {
-        $reflection = new ReflectionClass(get_class($model->getEntity()));
-        $schema = (new AttributeFactory($reflection, OpenApiSchema::class))->createOneOrNull();
-
-        if (!$schema instanceof OpenApiSchema) {
-            return $routeDecorator !== null;
-        }
-
-        return $schema->isVisible;
     }
 }

@@ -192,10 +192,10 @@ class OperationResponse
     }
 
     /**
-     * Assigns a default responses
+     * Assigns a default response:
      *
-     * delete: 204 with empty response body
-     * default: 200 with empty response body and first element from responseContentTypes config as mimeType
+     * HTTP DELETE: 204 with empty response body
+     * DEFAULT: 200 with empty response body and first element from responseContentTypes config as mimeType
      *
      * @return void
      */

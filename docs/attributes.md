@@ -49,7 +49,7 @@ public function index() {}
 Property or parameter level attribute for use in your DTO classes.
 
 | Property | Type / Default | OA Spec | Description |
-| ------------- | ------------- | ------------- |
+| ------------- | ------------- | ------------- | ------------- |
 | name | string `""` | Y | Name of the query parameter, required if ref is not set |
 | ref | string `""` | Y | An OpenApi $ref, required if name is not set |
 | type | string `string` | Y | The scalar data type |
@@ -400,7 +400,7 @@ OpenAPI:
     tags:
       - Custom
       - Tags
-``
+```
 
 ### OpenApiPath
 Class level attribute to define scalar [Path](https://spec.openapis.org/oas/latest.html#path-item-object) values.
@@ -570,7 +570,7 @@ Class level attribute for exposing entities to Swagger UI.
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
 | isVisible | boolean `true` | No | All entities with routes are added to OpenAPI schema. To completely hide a schema from appearing anywhere in OpenAPI JSON output set to false |
-| isPublic | boolean `true` | No | To hide from the default via in Swagger 3.0 set to false. isVisible takes precedence (see isVisible vs isPublic below) |
+| isPublic | boolean `true` | No | Setting to false hides the Schema from Swaggers Schema section. |
 | title | string `""` | Yes | Overwrites the default title |
 | description | string `""` | Yes | Overwrites the default description (if any) |
 
