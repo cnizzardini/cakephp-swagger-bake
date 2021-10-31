@@ -248,7 +248,7 @@ class Swagger
 
             if (in_array($schema->getVisibility(), [OpenApiSchema::VISIBILE_DEFAULT, OpenApiSchema::VISIBILE_ALWAYS])) {
                 $this->pushSchema($schema);
-            } else if ($schema->getVisibility() == OpenApiSchema::VISIBILE_HIDDEN) {
+            } elseif ($schema->getVisibility() == OpenApiSchema::VISIBILE_HIDDEN) {
                 $this->pushVendorSchema($schema);
             }
 

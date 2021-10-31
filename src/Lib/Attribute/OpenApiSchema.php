@@ -9,7 +9,7 @@ use Attribute;
 class OpenApiSchema
 {
     /**
-     * 	Default behavior. Adds the schema to default & vendor locations if it matches a controller with a restful route.
+     *  Default behavior. Adds the schema to default & vendor locations if it matches a controller with a restful route.
      */
     public const VISIBILE_DEFAULT = 1;
 

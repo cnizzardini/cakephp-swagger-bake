@@ -437,12 +437,13 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param int $visibility
+     * @param int $visibility See OpenApiSchema class constants
      * @return $this
      */
     public function setVisibility(int $visibility)
     {
         $this->visibility = $visibility;
+
         return $this;
     }
 
