@@ -6,6 +6,7 @@ namespace SwaggerBake\Lib;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Utility\Inflector;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -245,9 +246,9 @@ class Swagger
                 continue;
             }
 
-            if ($schema->isPublic()) {
+            if (in_array($schema->getVisibility(), [OpenApiSchema::VISIBILE_DEFAULT, OpenApiSchema::VISIBILE_ALWAYS])) {
                 $this->pushSchema($schema);
-            } else {
+            } else if ($schema->getVisibility() == OpenApiSchema::VISIBILE_HIDDEN) {
                 $this->pushVendorSchema($schema);
             }
 
