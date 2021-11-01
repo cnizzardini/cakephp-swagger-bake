@@ -44,7 +44,7 @@ class SchemaFactory
     public const ALL_PROPERTIES = 6;
 
     /**
-     * Creates an instance of Schema for an ModelDecorator, returns null if the Entity is set to invisible
+     * Creates an instance of Schema for an ModelDecorator, returns null if the Entity is set never visible.
      *
      * @param \SwaggerBake\Lib\Model\ModelDecorator $modelDecorator ModelDecorator
      * @param int $propertyType see public constants for options
@@ -56,13 +56,13 @@ class SchemaFactory
         $reflection = new ReflectionClass($modelDecorator->getModel()->getEntity());
         $openApiSchema = (new AttributeFactory($reflection, OpenApiSchema::class))->createOneOrNull();
 
-        if ($openApiSchema instanceof OpenApiSchema && $openApiSchema->isVisible === false) {
+        if ($openApiSchema instanceof OpenApiSchema && $openApiSchema->visibility === OpenApiSchema::VISIBILE_NEVER) {
             return null;
         }
 
         $schema = $this
             ->createSchema($modelDecorator->getModel(), $propertyType)
-            ->setIsPublic($openApiSchema->isPublic ?? true)
+            ->setVisibility($openApiSchema->visibility ?? OpenApiSchema::VISIBILE_DEFAULT)
             ->setDescription($openApiSchema->description ?? '');
 
         EventManager::instance()->dispatch(

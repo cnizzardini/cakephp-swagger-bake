@@ -7,7 +7,7 @@ use Cake\ORM\Entity;
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
 
-#[OpenApiSchema(isVisible: false)]
+#[OpenApiSchema(visibility: OpenApiSchema::VISIBILE_NEVER)]
 class EmployeeSalary extends Entity
 {
     /**

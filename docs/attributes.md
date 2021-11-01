@@ -569,22 +569,18 @@ Class level attribute for exposing entities to Swagger UI.
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
-| isVisible | boolean `true` | No | All entities with routes are added to OpenAPI schema. To completely hide a schema from appearing anywhere in OpenAPI JSON output set to false |
-| isPublic | boolean `true` | No | Setting to false hides the Schema from Swaggers Schema section. |
+| visibility | int `1` | No | Determines the visibility of the schema, see OpenApiSchema class constants |
 | title | string `""` | Yes | Overwrites the default title |
 | description | string `""` | Yes | Overwrites the default description (if any) |
 
-**isVisible vs isPublic:** 
+visibility options:
 
-`isVisible` takes precedence over `isPublic`. If you've set `isVisible` to `false` then whatever you've defined for 
-`isPublic` becomes inert. If a schema is visible, but not public it be accessed via 
-`#/x-swagger-bake-bake/components/schemas/EntityName`. This is helpful if you want to reduce cluter in your Swagger 
-schemas, but still want the ability to reference it via `OpenApiResponseSchema`
-
-```php
- #[OpenApiSchema(isVisble: true, isPublic: false, title: 'optional title', description: 'optional description')]
-class Employee extends Entity
-```
+| Name  | Value  | Description  |
+|---|---|---|
+| `OpenApiSchema::VISIBILE_DEFAULT`  |  1  |  Default behavior. Adds the schema to default & vendor locations if it matches a controller with a restful route. |
+| `OpenApiSchema::VISIBILE_ALWAYS`  |  2  |  Always add the schema to default & vendor locations.  |
+| `OpenApiSchema::VISIBILE_HIDDEN` |  3  | Never add the schema to the default location, but adds it to vendor location. This hides the schema from the Swagger UIs Schemas section, but still allows the schema to be used for request and response bodies.  |
+| `OpenApiSchema::VISIBILE_NEVER`  |  4  | Never add the schema anywhere (default or vendor location). Warning this can break request body definitions and response samples. |
 
 ### OpenApiSearch
 Method level attribute for documenting search parameters using the popular

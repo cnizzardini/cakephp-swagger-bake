@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
@@ -73,6 +74,8 @@ class Schema implements JsonSerializable, SchemaInterface
      * @var bool
      */
     private $isPublic = true;
+
+    private int $visibility = OpenApiSchema::VISIBILE_DEFAULT;
 
     /**
      * The openapi ref location (e.g. #/components/schemas/Model)
@@ -421,6 +424,25 @@ class Schema implements JsonSerializable, SchemaInterface
     public function setIsPublic(bool $isPublic)
     {
         $this->isPublic = $isPublic;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVisibility(): int
+    {
+        return $this->visibility;
+    }
+
+    /**
+     * @param int $visibility See OpenApiSchema class constants
+     * @return $this
+     */
+    public function setVisibility(int $visibility)
+    {
+        $this->visibility = $visibility;
 
         return $this;
     }

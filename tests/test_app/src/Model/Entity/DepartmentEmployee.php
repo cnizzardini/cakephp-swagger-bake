@@ -17,7 +17,7 @@ use SwaggerBake\Lib\Attribute\OpenApiSchema;
  * @property \SwaggerBake\Test\Model\Entity\Employee $employee
  * @property \SwaggerBake\Test\Model\Entity\Department $department
  */
-#[OpenApiSchema(isPublic: false)]
+#[OpenApiSchema(visibility: OpenApiSchema::VISIBILE_HIDDEN)]
 class DepartmentEmployee extends Entity
 {
     /**
