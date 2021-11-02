@@ -401,20 +401,6 @@ public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
 Read more about [CakePHP middleware](https://book.cakephp.org/4/en/controllers/middleware.html) in the official 
 documentation.
 
-## Reporting Issues
-
-This is a new library so please take some steps before reporting issues. You can copy & paste the JSON SwaggerBake 
-outputs into https://editor.swagger.io/ which will automatically convert the JSON into YML and display potential 
-schema issues.
-
-Please include the following in your issue a long with a brief description:
-
-- Steps to Reproduce
-- Actual Outcome
-- Expected Outcome
-
-Feature requests are welcomed.
-
 ## Contribute
 
 Send pull requests to help improve this library. You can include SwaggerBake in your primary Cake project as a 
