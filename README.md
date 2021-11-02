@@ -43,7 +43,6 @@ This is built for CakePHP 4.x only. Supported versions:
 - [Debug Commands](#debug-commands)
 - [Bake Theme](#bake-theme)
 - [Common Issues](#common-issues)
-- [Reporting Issues](#reporting-issues)
 - [Contributing](#contribute)
 
 ## Installation
