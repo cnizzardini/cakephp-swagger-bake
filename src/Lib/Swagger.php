@@ -319,7 +319,13 @@ class Swagger
                 continue;
             }
 
-            foreach ($route->getMethods() as $httpMethod) {
+            if ($route->getAction() == 'edit') {
+                $methods = $this->getConfig()->get('editActionMethods');
+            } else {
+                $methods = $route->getMethods();
+            }
+
+            foreach ($methods as $httpMethod) {
                 $schema = $this->getSchemaFromRoute($route);
 
                 $operation = $operationFactory->create($route, $httpMethod, $schema);

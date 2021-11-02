@@ -66,7 +66,7 @@ class OperationFromRouteFactory
 
         AnnotationUtility::checkMethodAnnotations($fqn, $route->getAction());
 
-        if (!$this->isAllowed($route, $httpMethod, $openApiOperation)) {
+        if ($openApiOperation != null && !$openApiOperation->isVisible) {
             return null;
         }
 
@@ -134,29 +134,6 @@ class OperationFromRouteFactory
         } catch (Exception $e) {
             return $emptyDocBlock;
         }
-    }
-
-    /**
-     * First check if the route (operation) is visible. Then check ifs the route, http method, and annotation
-     * combination allowed? This primarily prevents HTTP PUT methods on controller `edit()` actions from appearing in
-     * OpenAPI schema by default. This is because the default CakePHP behavior for edit actions is HTTP PATCH.
-     *
-     * @param \SwaggerBake\Lib\Route\RouteDecorator $route instance of RouteDecorator
-     * @param string $httpMethod http method (PUT, POST, PATCH etc..)
-     * @param \SwaggerBake\Lib\Attribute\OpenApiOperation|null $openApiOperation OpenApiOperation or null
-     * @return bool
-     */
-    private function isAllowed(RouteDecorator $route, string $httpMethod, ?OpenApiOperation $openApiOperation): bool
-    {
-        if ($openApiOperation != null && !$openApiOperation->isVisible) {
-            return false;
-        }
-
-        if (strtoupper($httpMethod) !== 'PUT' || $route->getAction() !== 'edit') {
-            return true;
-        }
-
-        return $openApiOperation instanceof OpenApiOperation ? $openApiOperation->isPut : false;
     }
 
     /**
