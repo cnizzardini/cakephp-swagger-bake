@@ -1,16 +1,15 @@
-# SwaggerBake plugin for CakePHP4
+# Swagger Bake
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
 [![Build](https://github.com/cnizzardini/cakephp-swagger-bake/workflows/Build/badge.svg?branch=master)](https://github.com/cnizzardini/cakephp-swagger-bake/actions)
 [![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-swagger-bake/badge.svg?branch=master)](https://coveralls.io/github/cnizzardini/cakephp-swagger-bake?branch=master)
-[![License: MIT](https://img.shields.io/badge/license-mit-blue)](LICENSE.md)
 [![MixerApi](https://img.shields.io/badge/mixer-api-red?logo=data:image/png;base64,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)](http://mixerapi.com)
-[![CakePHP](https://img.shields.io/badge/cakephp-%3E%3D%204.2-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.0-8892BF.svg?logo=php)](https://php.net/)
+[![CakePHP](https://img.shields.io/badge/cakephp-^4.2-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
+[![Minimum PHP Version](https://img.shields.io/badge/php-^8.0-8892BF.svg?logo=php)](https://php.net/)
 [![OpenAPI](https://img.shields.io/badge/openapi-3.0-green?logo=openapi-initiative)](https://www.openapis.org/)
 
-A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
-builds your Swagger UI and ReDoc from your existing cake models and routes.
+A delightfully tasty plugin for generating OpenAPI for your CakePHP API. Build Swagger and ReDoc automatically from 
+your existing models, routes and controllers.
 
 - Creates OpenApi paths and operations from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes 
 and controllers.
@@ -26,21 +25,25 @@ and controllers.
 [Swagger Bake Demo](http://cakephpswaggerbake.cnizz.com/) | [Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo) | 
 [Swagger/MixerAPI Demo](https://demo.mixerapi.com/) | [Demo Code](https://github.com/mixerapi/demo)
 
+This is built for CakePHP 4.x only. Supported versions:
+
+| Version | Branch | Cake Version  | PHP Version | 
+| ------------- | ------------- | ------------- | ------------- |
+| 2.* | master | 4.2 - 4.3 | 8.0+  |
+| 1.* | 1.x | 4.0 - 4.3 | 7.2+  | 
 
 ## Table of Contents
 - [Installation](#installation)
-- [Setup](#setup)
 - [Getting Started](#getting-started)
-- [Automatic Documentation](#automatic-documentation)
-- [Doc Blocks](#doc-blocks)
 - [Attributes](#attributes)
 - [Events](#event-system)
 - [Customizing Exception Responses](#customizing-exception-responses)
 - [Extending Views and Controllers](#extending-views-and-controllers)
-- [Generating OpenAPI](#generating-openapi)
 - [Multiple Instances of SwaggerBake](#multiple-instances-of-swagger-bake)
 - [Debug Commands](#debug-commands)
 - [Bake Theme](#bake-theme)
+- [Common Issues](#common-issues)
+- [Contributing](#contribute)
 
 ## Installation
 
@@ -61,17 +64,15 @@ public function bootstrap(): void
 }
 ```
 
-## Setup
-
 For standard applications that have not split their API into plugins, the automated setup should work. Otherwise 
-use the manual setup.
+use the manual setup. 
 
 ### Automated Setup
 
-Run the installer and then [add a route](#add-a-route-to-swaggerui).
+Run the install command and then [add a route](#add-route).
 
 ```console
-`bin/cake swagger install`
+bin/cake swagger install
 ```
 
 ### Manual Setup
@@ -82,18 +83,19 @@ Run the installer and then [add a route](#add-a-route-to-swaggerui).
 - Create a [swagger_bake.php](assets/swagger_bake.php) config file at `config/swagger_bake.php` file. See the example 
 file [here](assets/swagger_bake.php) for further explanation. Then just add a route.
 
-### Add a route to SwaggerUI
+### Add Route
 
 Create a route for the SwaggerUI page in `config/routes.php`, example:
 
 ```php
 $builder->connect(
-    '/api-docs', 
+    '/api',
     ['plugin' => 'SwaggerBake', 'controller' => 'Swagger', 'action' => 'index']
 );
 ``` 
 
-You can now browse to either `/api-docs` or `/api-docs?doctype=redoc`.
+You can now browse to either `/api` for swagger or `/api?doctype=redoc` for redoc. Your OpenAPI JSON
+will exist at `/api/swagger.json`.
 
 ## Getting Started
 
@@ -106,33 +108,24 @@ bin/cake swagger bake
 - If Hot Reload is enabled ([see config](assets/swagger_bake.php)) OpenAPI will be generated each time you browse 
 to SwaggerUI (or Redoc) in your web browser.
 
+- You can also generate OpenAPI programmatically: 
+
+```php
+$swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create();
+$swagger->getArray(); # returns swagger array
+$swagger->toString(); # returns swagger json
+$swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
+```
+
 - Checkout the [debug commands](#debug-commands) for troubleshooting and the [bake theme](#bake-theme) for generating 
 RESTful controllers.
- 
-## Automated OpenAPI
 
-SwaggerBake will automatically build the following from your existing routes and models without additional effort:
-
-- Paths
-    - Resource (route)
-    - Operations
-        - Summary and description
-        - GET, POST, PATCH, DELETE
-        - Form fields and JSON using your Cake models
-        - Responses
-        - Sub resources
-        - Security/Authentication
-- Schema
-    - Properties (fields)
-    
-SwaggerBake works with your existing YML definitions and will not overwrite anything. 
-
-## Routes
+### Routes
 
 Your [RESTful routes](https://book.cakephp.org/4/en/development/routing.html#restful-routing) are used to build 
 OpenAPI paths and operations.
 
-## Controllers
+### Controllers
 
 SwaggerBake will parse the [DocBlocks](https://docs.phpdoc.org/latest/guides/docblocks.html) on your controller 
 actions to for additional OpenAPI Operation data.
@@ -155,7 +148,7 @@ If you prefer, you may use the [OpenApiOperation](docs/attributes.md#OpenApiOper
 [OpenApiResponse](docs/attributes.md#OpenApiResponse) attributes instead. These attributes take precedence over doc 
 block parsing. Read below for a full list of attributes.
 
-## Models
+### Models
 
 OpenAPI schema is built from your Table and Entity classes and any validators you've defined in them. You may adjust
 the default schema using the [OpenApiSchema](docs/attributes.md#OpenApiSchema) and
@@ -163,7 +156,8 @@ the default schema using the [OpenApiSchema](docs/attributes.md#OpenApiSchema) a
 
 ## Attributes
 
-SwaggerBake provides some optional Attributes for enhanced functionality. These can be imported individually from the 
+For additional functionality the following [PHP8 Attributes](https://www.php.net/manual/en/language.attributes.overview.php) 
+may be used. These can be imported individually from the 
 `SwaggerBake\Lib\Attribute` namespace. [Read the Attributes docs](docs/attributes.md) for detailed examples.
 
 | Attribute | Usage | Description | 
@@ -196,15 +190,33 @@ SwaggerBake comes with an [event system](docs/events.md) to allow for further co
 | [SwaggerBake.initialize](docs/events.md) | Dispatched during initialization phase on SwaggerBake |
 | [SwaggerBake.beforeRender](docs/events.md) | Dispatched before SwaggerBake outputs OpenAPI JSON |
 
-## Customizing Exception Responses
+## Customizing Exception Response Samples
 
-By default, SwaggerBake uses components > schemas > Exception as your Swagger documentations Exception schema. See the 
+By default, SwaggerBake uses `'#/components/schemas/Exception'` as your OpenAPI documentations Exception schema. See the 
 default [swagger.yml](assets/swagger.yml) and `exceptionSchema` in [swagger_bake.php](assets/swagger_bake.php) for more 
-info.
+info. You can further customize with attributes and `@throws`.
+
+### OpenApiResponse
+
+Using the [OpenApiResponse](docs/attributes.md#OpenApiResponse) attribute:
+
+```php
+#[OpenApiResponse(statusCode: '422', ref: '#/components/schemas/BadRequest')]
+```
+
+### `@throws` tag
 
 You can provide custom schemas for exceptions by adding schema to your YAML at 
-`#/x-swagger-bake/components/schemas/app-exceptions` and referencing the FQN of the exception with `x-exception-fqn`, 
-example:
+`#/x-swagger-bake/components/schemas/app-exceptions`, referencing the FQN of the exception with `x-exception-fqn`, and 
+then adding the exception to your doc block:
+
+```php
+/**
+ * @throws \MixerApi\ExceptionRender\ValidationException
+ */
+```
+
+OpenAPI YAML:
 
 ```yaml
 x-swagger-bake:
@@ -226,7 +238,7 @@ x-swagger-bake:
               example: /url/path
             code:
               type: integer
-              example: 500
+              example: 422
             violations:
               type: array
               items:
@@ -240,7 +252,7 @@ several other options to extend functionality documented below:
 
 #### Using Your Own SwaggerUI
 
-You may use your own swagger install in lieu of the version that comes with SwaggerBake. Simply don't add a custom 
+You may use your own swagger or redoc install in lieu of the version that comes with SwaggerBake. Simply don't add a custom 
 route as indicated in the installation steps. In this case just reference the generated swagger.json within your 
 userland Swagger UI install.
 
@@ -264,23 +276,6 @@ the CakePHP documentation on [Views](https://book.cakephp.org/4/en/views.html) f
 you'd like to add additional functionality to SwaggerUI (or Redoc) using their APIs or if your project is not 
 installed in your web servers document root (i.e. a sub-folder).
 
-## Generating OpenAPI
-
-There a three options for generating swagger.json:
-
-1. Call `swagger bake` which can be included as part of your build process.
-
-2. Enable the `hotReload` option in config/swagger_bake.php (recommended for local development only).
-
-3. Call SwaggerBake programmatically: 
-
-```php
-$swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create();
-$swagger->getArray(); # returns swagger array
-$swagger->toString(); # returns swagger json
-$swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
-```
-
 ## Multiple Instances of Swagger Bake
 
 If your application has multiple APIs that are split into plugins you can generate unique OpenAPI schema, Swagger UI, 
@@ -299,7 +294,7 @@ configurations should point to your plugins paths and namespaces. Next, create a
 
 When running `bin/cake swagger bake` you will need to specify your plugins swagger_bake config:
 
-```bash
+```console
 bin/cake swagger bake --config OtherApi.swagger_bake
 ```
 
@@ -330,15 +325,6 @@ bake theme is not specifically designed for RESTful APIs.
 ```
 bin/cake bake controller {Name} --theme SwaggerBake
 ```
-
-## Supported Versions
-
-This is built for CakePHP 4.x only. 
-
-| Version | Branch | Cake Version  | PHP Version | 
-| ------------- | ------------- | ------------- | ------------- |
-| 2.* | master | 4.2 - 4.3 | 8.0+  |
-| 1.* | v1 | 4.0 - 4.3 | 7.2+  | 
 
 ## Common Issues
 
@@ -414,20 +400,6 @@ public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
 Read more about [CakePHP middleware](https://book.cakephp.org/4/en/controllers/middleware.html) in the official 
 documentation.
 
-## Reporting Issues
-
-This is a new library so please take some steps before reporting issues. You can copy & paste the JSON SwaggerBake 
-outputs into https://editor.swagger.io/ which will automatically convert the JSON into YML and display potential 
-schema issues.
-
-Please included the following in your issues a long with a brief description:
-
-- Steps to Reproduce
-- Actual Outcome
-- Expected Outcome
-
-Feature requests are welcomed.
-
 ## Contribute
 
 Send pull requests to help improve this library. You can include SwaggerBake in your primary Cake project as a 
@@ -457,7 +429,7 @@ local source to make developing easier:
 Undo these steps when you're done. Read the full composer documentation on loading from path here: 
 [https://getcomposer.org/doc/05-repositories.md#path](https://getcomposer.org/doc/05-repositories.md#path)
 
-## Tests + Analysis
+### Tests + Analysis
 
 PHPUnit Test Suite:
 ```console

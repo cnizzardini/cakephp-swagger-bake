@@ -10,6 +10,7 @@ use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
 
 use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
@@ -117,5 +118,21 @@ class SwaggerTest extends TestCase
 
         $this->assertArrayHasKey('/pets', $arr['paths']);
         $this->assertArrayHasKey('Pets', $arr['components']['schemas']);
+    }
+
+    public function test_http_put_on_edit_action(): void
+    {
+        $vars = $this->config;
+        $vars['editActionMethods'] = ['PUT'];
+        $config = new Configuration($vars, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new RouteScanner($this->router, $config);
+
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
+        $openApi = $swagger->getArray();
+        /** @var Path $path */
+        $path = $openApi['paths']['/employees/{id}'];
+        $this->assertArrayHasKey('put', $path->getOperations());
+        $this->assertArrayNotHasKey('patch', $path->getOperations());
     }
 }

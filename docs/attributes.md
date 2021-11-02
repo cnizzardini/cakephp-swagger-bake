@@ -38,7 +38,6 @@ the request type.
 | ------------- | ------------- | ------------- | ------------- |
 | class | string | No | FQN of the DTO class. |
 
-
 ```php
 #[OpenApiDto(class: "\App\Dto\ActorDto")]
 public function index() {}
@@ -372,7 +371,6 @@ Method level attribute for OpenApi Operations.
 | description | string|null `` | Yes | Operation description, set to null to prevent reading from docblock |
 | isVisible | bool `true` | No | Setting this to false will prevent the operation from appearing in OpenApi output |
 | tagNames | array `[]` | Yes | Sets tag names |
-| isPut | bool `false` | No | Changes the HTTP Method to an HTTP PUT on controller `edit()` actions/methods |
 | isDeprecated | bool `false` | Yes | Is the operation deprecated? |
 | externalDocs | array|null `null` | Yes | External documentation |
 
@@ -386,20 +384,17 @@ Method level attribute for OpenApi Operations.
 public function index()
 ```
 
+OpenAPI:
+
+```yaml
+todo
+```
+
 A common use-case is to hide an operation from appearing in your OpenAPI, example:
 
 ```php
 #[OpenApiOperation(isVisible: false)]
 public function index()
-```
-
-OpenAPI:
-
-```yaml
-  put:
-    tags:
-      - Custom
-      - Tags
 ```
 
 ### OpenApiPath

@@ -31,13 +31,10 @@ class Configuration
             'hotReload' => false,
             'exceptionSchema' => 'Exception',
             'requestAccepts' => [
-                'application/x-www-form-urlencoded',
                 'application/json',
-                'application/xml',
             ],
             'responseContentTypes' => [
                 'application/json',
-                'application/xml',
             ],
             'namespaces' => [
                 'controllers' => ['\App\\'],
@@ -45,6 +42,7 @@ class Configuration
                 'tables' => ['\App\\'],
             ],
             'jsonOptions' => JSON_PRETTY_PRINT,
+            'editActionMethods' => ['PATCH'],
         ];
 
         if (!empty($config)) {

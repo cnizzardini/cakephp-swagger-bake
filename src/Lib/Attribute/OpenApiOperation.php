@@ -16,7 +16,6 @@ class OpenApiOperation
      * @param string|null $description A description, setting to null prevents description being set from doc blocks
      * @param bool $isVisible Is this operation visible
      * @param string[] $tagNames An array of tags
-     * @param bool $isPut Use HTTP PUT instead of PATCH on controller::edit crud action, default is false (PATCH)
      * @param bool $isDeprecated Is the operation deprecated?
      * @param array|null $externalDocs An optional external docs array
      * @see https://mixerapi.com/plugins/cakephp-swagger-bake/docs/attributes/#OpenApiOperation
@@ -29,7 +28,6 @@ class OpenApiOperation
         public ?string $description = '',
         public bool $isVisible = true,
         public array $tagNames = [],
-        public bool $isPut = false,
         public bool $isDeprecated = false,
         public ?array $externalDocs = null
     ) {
