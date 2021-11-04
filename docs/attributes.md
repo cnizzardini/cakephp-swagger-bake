@@ -2,10 +2,10 @@
 
 SwaggerBake provides some optional [Attributes](https://www.php.net/manual/en/language.attributes.overview.php) for 
 enhanced functionality. It is helpful to understand the [OpenApi specification](https://spec.openapis.org/oas/latest.html) 
-when reading this documentation.
+when reading this documentation. Annotations exist in the following namespaces:
 
-- `use SwaggerBake\Lib\Attribute as OpenApi;`
-- `use SwaggerBake\Lib\Extension as OpenApiExt;`
+- `SwaggerBake\Lib\Attribute`
+- `SwaggerBake\Lib\Extension`
 
 Just a reminder that many usage examples exist in the 
 [SwaggerBake Demo](https://github.com/cnizzardini/cakephp-swagger-bake-demo).
@@ -68,6 +68,8 @@ Property or parameter level attribute for use in your DTO classes.
 | enum | array `[]` | Y | An enumerated list of accepted values |
 | style | string `""` | Y | See https://spec.openapis.org/oas/v3.0.3#parameterStyle |
 
+Example:
+
 ```php
 class ActorDto {
     #[OpenApiDtoQuery(name: 'name', isRequired: true)]
@@ -78,7 +80,7 @@ class ActorDto {
     public ?string $favoriteColor = null
 ```
 
-Via constructor property promotion:
+Example with constructor property promotion:
 
 ```php
 class ActorDto {
