@@ -1,4 +1,7 @@
 <?php
+
+use Cake\Core\Configure;
+
 /**
  * ################################
  * # REQUIRED SETTINGS:
@@ -18,7 +21,7 @@
  *
  * @var bool $hotReload Regenerate swagger on page reloaded. This only works if you are using the built-in Swagger UI.
  *      Using your applications debug value is recommended as an easy way to define this.
- *      Default: \Cake\Core\Configure::read('debug')
+ *      Default: false
  *
  * ################################
  * # OPTIONAL SETTINGS:
@@ -54,11 +57,10 @@ return [
         'yml' => '/config/swagger.yml',
         'json' => '/webroot/swagger.json',
         'webPath' => '/swagger.json',
-        'hotReload' => \Cake\Core\Configure::read('debug'),
-        /** optional configurations below:  **/
+        'hotReload' => Configure::read('debug'),
+        'jsonOptions' => JSON_PRETTY_PRINT,
         /*
         'editActionMethods' => ['PATCH'],
-        'jsonOptions' => JSON_PRETTY_PRINT,
         'requestAccepts' => [
             'application/json',
             'application/x-www-form-urlencoded',

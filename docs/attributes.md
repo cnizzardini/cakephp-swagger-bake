@@ -7,6 +7,9 @@ when reading this documentation.
 - `use SwaggerBake\Lib\Attribute as OpenApi;`
 - `use SwaggerBake\Lib\Extension as OpenApiExt;`
 
+Just a reminder that many usage examples exist in the 
+[SwaggerBake Demo](https://github.com/cnizzardini/cakephp-swagger-bake-demo).
+
 ## Table of Contents
 
 | Attribute | Description | 
@@ -31,12 +34,14 @@ when reading this documentation.
 ### OpenApiDto
 
 Method level attribute for building query or form parameters from a DataTransferObject. Your DTO will need to use 
-the [OpenApiDtoQuery](#OpenApiDtoQuery) or [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) on properties depending on 
-the request type.
+the [OpenApiDtoQuery](#OpenApiDtoQuery) or [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) on its properties depending 
+on the request type.
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
 | class | string | No | FQN of the DTO class. |
+
+Example:
 
 ```php
 #[OpenApiDto(class: "\App\Dto\ActorDto")]
@@ -50,40 +55,69 @@ Property or parameter level attribute for use in your DTO classes.
 | Property | Type / Default | OA Spec | Description |
 | ------------- | ------------- | ------------- | ------------- |
 | name | string `""` | Y | Name of the query parameter, required if ref is not set |
-| ref | string `""` | Y | An OpenApi $ref, required if name is not set |
+| ref | string `""` | Y | An OpenApi `$ref`, required if name is not set |
 | type | string `string` | Y | The scalar data type |
 | format | string `""` | Y | A data format describing the scalar type such as `date-time`, `uuid`, or `int64` |
 | description | string `""` | Y | Description of the parameter |
-| example | mixed `null` | Y | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| example | mixed `null` | Y | An example value |
 | allowReserved | bool `false` | Y | Allow reserved URI characters? |
-| explode | bool `false` | Y | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| explode | bool `false` | Y | See http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
 | isRequired | bool `false` | Y | Is this parameter required? |
 | isDeprecated | bool `false` | Y | Is this parameter deprecated? |
 | allowEmptyValue | bool `false` | Y | Allow empty values? |
 | enum | array `[]` | Y | An enumerated list of accepted values |
-| style | string `""` | Y | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| style | string `""` | Y | See https://spec.openapis.org/oas/v3.0.3#parameterStyle |
 
 ```php
 class ActorDto {
-    #[OpenApiDtoQuery(name: 'name', required: true, enum: ['A','B'])]
+    #[OpenApiDtoQuery(name: 'name', isRequired: true)]
     private string $name;
-
-    #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
-    private ?int $someField = null;
+    #[OpenApiDtoQuery(name: 'age', type: 'int', isRequired: true)]
+    private int $age;
+    #[OpenApiDtoQuery(name: 'favorite_color', enum: ['red','green'])]
+    public ?string $favoriteColor = null
 ```
-
 
 Via constructor property promotion:
 
 ```php
 class ActorDto {
     public function __construct(
-        #[OpenApiDtoQuery(name: 'name', required: true, enum: ['A','B'])]
+        #[OpenApiDtoQuery(name: 'name', isRequired: true)]
         public string $name,
-        #[OpenApiDtoQuery(name: 'some_field', type: 'int')]
-        public ?int $someField = null, 
+        #[OpenApiDtoQuery(name: 'age', type: 'int', format: 'int32', isRequired: true, )]
+        public int $age, 
+        #[OpenApiDtoQuery(name: 'favorite_color', enum: ['red','green'])]
+        public ?string $favoriteColor = null
     ) {
     }
+```
+
+OpenAPI:
+
+```yaml
+    get:
+      operationId: examples:dtoqueryexample:get
+      parameters:
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: age
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - in: query
+          name: favorite_color
+          required: false
+          schema:
+            type: string
+            enum:
+              - red
+              - green
 ```
 
 ### OpenApiDtoRequestBody
@@ -117,9 +151,6 @@ Property or parameter level attribute for use in your DTO classes.
 class ActorDto {
     #[OpenApiDtoRequestBody(name: 'name', isRequired: true, enum: ['A','B'])]
     private string $name;
-
-    #[OpenApiDtoRequestBody(name: 'some_field', type: 'int')]
-    private ?int $someField = null;
 ```
 
 Via constructor property promotion:

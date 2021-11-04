@@ -128,11 +128,11 @@ OpenAPI paths and operations.
 ### Controllers
 
 SwaggerBake will parse the [DocBlocks](https://docs.phpdoc.org/latest/guides/docblocks.html) on your controller 
-actions to for additional OpenAPI Operation data.
+actions for additional OpenAPI data.
 
 ```php
 /**
- * Swagger Operation Summary
+ * OpenAPI Operation Summary
  * 
  * This displays as the operations long description
  * 
@@ -428,6 +428,8 @@ local source to make developing easier:
 
 Undo these steps when you're done. Read the full composer documentation on loading from path here: 
 [https://getcomposer.org/doc/05-repositories.md#path](https://getcomposer.org/doc/05-repositories.md#path)
+
+Check out the [extensions](docs/extensions.md) documentation to add functionality to this project.
 
 ### Tests + Analysis
 
