@@ -1,5 +1,5 @@
 # Swagger Bake
-#### A delightfully tasty plugin for generating OpenAPI for your CakePHP API
+#### A delightfully tasty CakePHP plugin for generating OpenAPI, Swagger and Redoc
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
 [![Build](https://github.com/cnizzardini/cakephp-swagger-bake/workflows/Build/badge.svg?branch=master)](https://github.com/cnizzardini/cakephp-swagger-bake/actions)
