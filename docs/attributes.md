@@ -72,12 +72,8 @@ Example:
 
 ```php
 class ActorDto {
-    #[OpenApiDtoQuery(name: 'name', isRequired: true)]
-    private string $name;
-    #[OpenApiDtoQuery(name: 'age', type: 'int', isRequired: true)]
-    private int $age;
-    #[OpenApiDtoQuery(name: 'favorite_color', enum: ['red','green'])]
-    public ?string $favoriteColor = null
+    #[OpenApiDtoQuery(name: 'genre', isRequired: true, enum: ['action','horror'])]
+    private string $genre;
 ```
 
 Example with constructor property promotion:
@@ -85,12 +81,8 @@ Example with constructor property promotion:
 ```php
 class ActorDto {
     public function __construct(
-        #[OpenApiDtoQuery(name: 'name', isRequired: true)]
-        public string $name,
-        #[OpenApiDtoQuery(name: 'age', type: 'int', format: 'int32', isRequired: true, )]
-        public int $age, 
-        #[OpenApiDtoQuery(name: 'favorite_color', enum: ['red','green'])]
-        public ?string $favoriteColor = null
+        #[OpenApiDtoQuery(name: 'genre', isRequired: true, enum: ['action','horror'])]
+        private string $genre
     ) {
     }
 ```
@@ -99,73 +91,89 @@ OpenAPI:
 
 ```yaml
     get:
-      operationId: examples:dtoqueryexample:get
       parameters:
         - in: query
-          name: name
+          name: genre
           required: true
-          schema:
-            type: string
-        - in: query
-          name: age
-          required: true
-          schema:
-            type: integer
-            format: int32
-        - in: query
-          name: favorite_color
-          required: false
           schema:
             type: string
             enum:
-              - red
-              - green
+              - action
+              - horror
 ```
 
 ### OpenApiDtoRequestBody
-Property or parameter level attribute for use in your DTO classes.
+
+Property or parameter level attribute for use in your DTO classes. See the OpenAPI documentation on 
+[schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail.
 
 | Attribute | Type / Default | Description | 
 | ------------- | ------------- | ------------- |
 | name | string | Name of the schema property |
-| type | string `string` | Date type such as integer, string, etc... |
+| type | string `string` | Date type such as integer, string, array etc... |
 | format | string `""` | Date format such as int32, date-time, etc... |
 | description | string `""` | Description of the property |
 | isReadOnly | bool `false` | Is the property read only? |
 | isWriteOnly | bool `false` | Is the property write only? |
 | isRequired | bool `false` | Is the property required? |
-| multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| isExclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
-| minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| isExclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| hasUniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| multipleOf | float `null` | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum | float `null` | The minimum allowed numeric value |
+| isExclusiveMinimum | bool `false` | Is the `minimum` value excluded from the range. |
+| maximum | float `null` | The maximum allowed numeric value |
+| isExclusiveMaximum | bool `false` | Is the `maximum` value excluded from the range. |
+| minLength | integer `null` | The minimum length of a string |
+| maxLength | integer `null` | The maximum length of a string |
+| pattern | string `null` | A regex pattern the value must follow |
+| minItems | integer `null` | The minimum items allowed in a list |
+| maxItems | integer `null` | The maximum items allowed in a list |
+| hasUniqueItems | bool `false` | The list must contain unique items |
 | minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | An enumerated list of of options for the value |
+
+Example:
 
 ```php
 class ActorDto {
-    #[OpenApiDtoRequestBody(name: 'name', isRequired: true, enum: ['A','B'])]
+    #[OpenApiDtoRequestBody(name: 'name', isRequired: true)]
     private string $name;
+    #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum:1, maximum:100)]
+    private int $age;
 ```
 
-Via constructor property promotion:
+Example with constructor property promotion:
 
 ```php
 class ActorDto {
     public function __construct(
-        #[OpenApiDtoRequestBody(name: 'name', isRequired: true, enum: ['A','B'])]
+        #[OpenApiDtoRequestBody(name: 'name', isRequired: true)]
         public string $name,
-        #[OpenApiDtoRequestBody(name: 'some_field', type: 'int')]
-        public ?int $someField = null, 
+        #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum:1, maximum:100)]
+        private int $age
     ) {
     }
+```
+
+OpenAPI:
+
+```yaml
+    post:
+      operationId: examples:dtorequestbodyexample:post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - age
+              properties:
+                name:
+                  type: string
+                age:
+                  type: integer
+                  format: int32
+                  minimum: 1
+                  maximum: 100
 ```
 
 ### OpenApiForm
@@ -233,7 +241,7 @@ OpenAPI:
 ```
 
 ### OpenApiSchemaProperty
-Class level attribute for customizing Schema Attributes. Note that the attribute does not have to exist in your entity.
+Class level attribute for customizing Schema properties. Note that the attribute does not have to exist in your entity.
 You can add adhoc attributes as needed and optionally combine with
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
 
@@ -514,7 +522,7 @@ Method level attribute for describing request body. Set ignoreCakeSchema for ful
 | ignoreCakeSchema | bool `false` | Ignore cake schema |
 
 ```php
-#[OpenApiRequestBody(ref: '#/components/schema/Custom', description: 'hi', ignoreCakeSchema: true, mimeTypes: ['application/json'])]
+#[OpenApiRequestBody(ref: '#/components/schema/Custom', ignoreCakeSchema: true, mimeTypes: ['application/json'])]
 public function index() {}
 ```
 
@@ -522,7 +530,6 @@ OpenAPI:
 
 ```yaml
       requestBody:
-        description: 'hi'
         content:
           application/json:
             schema:
@@ -531,7 +538,7 @@ OpenAPI:
 
 ### OpenApiResponse
 Method level attribute for controller actions defining
-[response object's](https://spec.openapis.org/oas/latest.html#response-object) and their schema/content.
+[response objects](https://spec.openapis.org/oas/latest.html#response-object) and their schema/content.
 
 | Property | Type / Default | OA Spec | Description |
 | ------------- | ------------- | ------------- |  ------------- |
