@@ -66,6 +66,6 @@ jobs:
 
       - name: CakePHP ${{matrix.version}} Compatability
         run: |
+          composer require cakephp/cakephp:${{matrix.version}} --no-update
           composer install --prefer-dist --no-progress --no-suggest
-          composer update cakephp/cakephp:${{matrix.version}} -W
           composer test
