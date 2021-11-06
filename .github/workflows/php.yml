@@ -42,7 +42,7 @@ jobs:
         run: |
           composer analyze
           echo ${{ matrix.php-versions }}
-          composer require php-coveralls/php-coveralls -W
+          composer require php-coveralls/php-coveralls
           export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
           vendor/bin/php-coveralls --coverage_clover=clover.xml -v
   #
