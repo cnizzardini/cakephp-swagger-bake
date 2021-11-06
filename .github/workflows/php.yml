@@ -41,7 +41,7 @@ jobs:
         run: |
           composer analyze
           echo ${{ matrix.php-versions }}
-          composer install php-coveralls/php-coveralls:^2.4
+          composer require php-coveralls/php-coveralls:^2.4
           export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
           vendor/bin/php-coveralls --coverage_clover=clover.xml -v
   #
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['~4.2', '^4.3']
+        version: ['~4.2.0', '^4.3']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
