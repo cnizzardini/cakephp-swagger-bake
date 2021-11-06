@@ -567,15 +567,18 @@ Remember `schemaType` defaults to `object`. We can specify `array` if we are ret
 ```
 
 ### OpenApiSchema
+
 Class level attribute for exposing entities to Swagger UI. 
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
-| visibility | int `1` | No | Determines the visibility of the schema, see OpenApiSchema class constants |
+| [visibility](#visibility) | int `1` | No | Determines the visibility of the schema, see OpenApiSchema class constants |
 | title | string `""` | Yes | Overwrites the default title |
 | description | string `""` | Yes | Overwrites the default description (if any) |
 
-visibility options:
+#### Visibility
+
+You can use the constants below when defining `visibility`:
 
 | Name  | Value  | Description  |
 |---|---|---|
@@ -583,6 +586,12 @@ visibility options:
 | `OpenApiSchema::VISIBILE_ALWAYS`  |  2  |  Always add the schema to default & vendor locations.  |
 | `OpenApiSchema::VISIBILE_HIDDEN` |  3  | Never add the schema to the default location, but adds it to vendor location. This hides the schema from the Swagger UIs Schemas section, but still allows the schema to be used for request and response bodies.  |
 | `OpenApiSchema::VISIBILE_NEVER`  |  4  | Never add the schema anywhere (default or vendor location). Warning this can break request body definitions and response samples. |
+
+Example:
+
+```php
+#[OpenApiSchema(visbility: OpenApiSchema::VISIBILE_ALWAYS, title: 'Always visible schema')]
+```
 
 ### OpenApiSchemaProperty
 
