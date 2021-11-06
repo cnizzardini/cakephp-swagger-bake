@@ -15,8 +15,8 @@
         "mixerapi/core": "^0.2"
     },
     "suggest": {
-        "friendsofcake/search": "Easy model searching with @SwagSearch",
-        "cakephp/authentication": "Automates OpenApi security schemes"
+        "friendsofcake/search": "Required by SwaggerBake #[OpenApiSearch]",
+        "cakephp/authentication": "Used by SwaggerBake #[OpenApiSecurity]"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
