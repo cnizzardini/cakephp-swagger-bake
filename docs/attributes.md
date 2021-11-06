@@ -592,7 +592,7 @@ Example:
 
 ```php
 #[OpenApiSchema(visbility: OpenApiSchema::VISIBILE_ALWAYS, title: 'Always visible schema')]
-class ActorEntity{}
+class Actor extends Entity{}
 ```
 
 ### OpenApiSchemaProperty
