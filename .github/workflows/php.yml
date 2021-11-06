@@ -32,7 +32,7 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: |
           composer validate
-          composer install --prefer-dist --no-progress --no-suggest
+          composer install --prefer-dist --no-progress
 
       - name: Test + Coverage + Static Analysis (8.0 only)
         if: ${{ matrix.php-versions == '8.0' }}
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['~4.2']
+        version: ['~4.2', '^4.3']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -68,5 +68,5 @@ jobs:
         run: |
           rm -rf composer.lock
           composer require cakephp/cakephp:${{matrix.version}} --no-update
-          composer install --prefer-dist --no-progress --no-suggest
+          composer install --prefer-dist --no-progress
           composer test
