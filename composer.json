@@ -26,7 +26,6 @@
         "phpstan/phpstan": "^0.12.32",
         "phpmd/phpmd": "^2.10",
         "cakephp/bake": "^2.1",
-        "php-coveralls/php-coveralls": "^2.4",
         "phpro/grumphp-shim": "^1.4"
     },
     "autoload": {
