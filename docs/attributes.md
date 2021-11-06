@@ -495,6 +495,7 @@ OpenAPI:
 ```
 
 ### OpenApiResponse
+
 Method level attribute for controller actions defining
 [response objects](https://spec.openapis.org/oas/latest.html#response-object) and their schema/content.
 
@@ -506,7 +507,7 @@ Method level attribute for controller actions defining
 | description | string `` | Y | Description of the response |
 | ref | string `` | Y | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"` |
 | schemaFormat | string `` | Y | The schema format, generally only used for schemaType of string. |
-| associations | array `null` | N | Adds associated tables to the response sample schema, see examples below |
+| [associations](#Associations) | array `null` | N | Adds associated tables to the response sample schema, see examples below. |
 
 Defining a multiple mimeTypes and 400-409 status code range and an expected 200 response:
 
@@ -538,23 +539,31 @@ OpenAPI:
                  $ref: '#/components/schemas/Exception'
 ```
 
-To include all immediately associated tables (deep nested associations are not yet supported) for an object
-(resource/item) we can just set an empty array. Remember, this infers the base table from the controller.
+#### Associations
+
+The association property allows you to include associations defined in your Table class within your OpenAPI response 
+schema. To include all immediately associated tables (deep nested associations are not yet supported):
 
 ```php
 #[OpenApiResponse(associations: [])]
 ```
 
-We can change the base table like so:
+Since the base table is inferred using CakePHP naming conventions we can change the base table if necessary:
 
 ```php
 #[OpenApiResponse(associations: ['table' => 'OtherTable'])]
 ```
 
-As an array (collection) but white list specific tables (ignores all others):
+We can restrict the associations using the `whiteList` option:
 
 ```php
 #[OpenApiResponse(schemaType: 'array', associations: ['whiteList' => ['Films']])]
+```
+
+Remember `schemaType` defaults to `object`. We can specify `array` if we are returning many records:
+
+```php
+#[OpenApiResponse(schemaType: 'array', associations: [])]
 ```
 
 ### OpenApiSchema
@@ -632,6 +641,7 @@ OpenAPI:
 ```
 
 ### OpenApiSearch
+
 Method level attribute for documenting search parameters using the popular
 [friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
 

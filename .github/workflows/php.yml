@@ -35,7 +35,7 @@ jobs:
           composer validate
           composer install --prefer-dist --no-progress
 
-      - name: Test + Coverage + Static Analysis (8.0 only) + Report to Coveralls
+      - name: Test + Static Analysis (8.0 only)
         if: ${{ matrix.php-versions == '8.0' }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
