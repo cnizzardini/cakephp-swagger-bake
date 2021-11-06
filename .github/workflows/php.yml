@@ -42,9 +42,14 @@ jobs:
         run: |
           composer analyze
           echo ${{ matrix.php-versions }}
-          composer require-dev php-coveralls/php-coveralls
-          export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
-          vendor/bin/php-coveralls --coverage_clover=clover.xml -v
+
+      - name: Upload coverage results to Coveralls
+        if: ${{ matrix.php-versions == '8.0' }}
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require php-coveralls/php-coveralls
+          php-coveralls --coverage_clover=clover.xml -v
   #
   # CakePHP version compatability
   #
