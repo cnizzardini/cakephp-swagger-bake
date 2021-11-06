@@ -518,6 +518,7 @@ Defining a multiple mimeTypes and 400-409 status code range and an expected 200 
     mimeTypes: ['application/xml','application/json']
 )]
 #[OpenApiResponse(schemaType: 'array', ref: '#/components/schemas/Actor')]
+public function index(){}
 ```
 
 OpenAPI:
@@ -568,7 +569,7 @@ Remember `schemaType` defaults to `object`. We can specify `array` if we are ret
 
 ### OpenApiSchema
 
-Class level attribute for exposing entities to Swagger UI. 
+Class level attribute for modifying OpenAPI Schema to Swagger UI. 
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
@@ -591,6 +592,7 @@ Example:
 
 ```php
 #[OpenApiSchema(visbility: OpenApiSchema::VISIBILE_ALWAYS, title: 'Always visible schema')]
+class ActorEntity{}
 ```
 
 ### OpenApiSchemaProperty
