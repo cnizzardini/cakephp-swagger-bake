@@ -66,6 +66,6 @@ jobs:
 
       - name: CakePHP ${{matrix.version}} Compatability
         run: |
-          sed -i '/"cakephp/cakephp":/c\"cakephp/cakephp":"${{matrix.version}}"' composer.json
+          sed -i '/"cakephp/cakephp":/c\"cakephp/cakephp": "${{matrix.version}}",' composer.json
           composer install --prefer-dist --no-progress --no-suggest
           composer test
