@@ -44,7 +44,7 @@ on the request type.
 Example:
 
 ```php
-#[OpenApiDto(class: "\App\Dto\ActorDto")]
+#[OpenApiDto(class: '\App\Dto\ActorDto')]
 public function index() {}
 ```
 
@@ -137,7 +137,7 @@ Example:
 class ActorDto {
     #[OpenApiDtoRequestBody(name: 'name', isRequired: true)]
     private string $name;
-    #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum:1, maximum:100)]
+    #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum: 1, maximum: 100)]
     private int $age;
 ```
 
@@ -148,7 +148,7 @@ class ActorDto {
     public function __construct(
         #[OpenApiDtoRequestBody(name: 'name', isRequired: true)]
         public string $name,
-        #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum:1, maximum:100)]
+        #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum: 1, maximum: 100)]
         private int $age
     ) {
     }
@@ -177,36 +177,38 @@ OpenAPI:
 ```
 
 ### OpenApiForm
-Method level attribute for adding form data fields.
+
+Method level attribute for adding form data fields. See the OpenAPI documentation on
+[schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail.
 
 | Attribute | Type / Default | Description | 
 | ------------- | ------------- | ------------- |
 | name | string | Name of the schema property |
-| type | string `string` | Date type such as integer, string, etc... |
+| type | string `string` | Date type such as integer, string, array etc... |
 | format | string `""` | Date format such as int32, date-time, etc... |
 | description | string `""` | Description of the property |
 | isReadOnly | bool `false` | Is the property read only? |
 | isWriteOnly | bool `false` | Is the property write only? |
 | isRequired | bool `false` | Is the property required? |
-| multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| isExclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
-| minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| isExclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| hasUniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| multipleOf | float `null` | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum | float `null` | The minimum allowed numeric value |
+| isExclusiveMinimum | bool `false` | Is the `minimum` value excluded from the range. |
+| maximum | float `null` | The maximum allowed numeric value |
+| isExclusiveMaximum | bool `false` | Is the `maximum` value excluded from the range. |
+| minLength | integer `null` | The minimum length of a string |
+| maxLength | integer `null` | The maximum length of a string |
+| pattern | string `null` | A regex pattern the value must follow |
+| minItems | integer `null` | The minimum items allowed in a list |
+| maxItems | integer `null` | The maximum items allowed in a list |
+| hasUniqueItems | bool `false` | The list must contain unique items |
 | minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | An enumerated list of of options for the value |
+
+Example: 
 
 ```php
-#[OpenApiForm(name: 'one', description: 'example', isRequired: true, enum: ['A','B'])]
-#[OpenApiForm(name: 'two', type: 'integer', minimum: 10, maximum: 100, multipleOf: 10)]
-#[OpenApiForm(name: 'three', minLength: 8, maxLength: 64, pattern: '[a-zA-z]')]
+#[OpenApiForm(name: 'username', minLength: 8, maxLength: 64, pattern: '[a-zA-z]', isRequired: true)]
 public function add() {}
 ```
 
@@ -214,103 +216,39 @@ OpenAPI:
 
 ```yaml
       requestBody:
-        description: ''
         content:
           application/x-www-form-urlencoded:
             schema:
-              description: Actor Entity
               type: object
               properties:
-                one:
-                  type: string
-                  description: example
-                  required: true
-                  enum:
-                    - A
-                    - B
-                two:
-                  type: integer
-                  minimum: 10
-                  maximum: 100
-                  multipleOf: 10
-                three:
+                username:
                   type: string
                   minLength: 8
                   maxLength: 64
                   pattern: [a-zA-Z]
-```
-
-### OpenApiSchemaProperty
-Class level attribute for customizing Schema properties. Note that the attribute does not have to exist in your entity.
-You can add adhoc attributes as needed and optionally combine with
-[Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
-
-| Attribute | Type / Default | Description | 
-| ------------- | ------------- | ------------- |
-| name | string | Name of the schema property |
-| type | string `string` | Date type such as integer, string, etc... |
-| format | string `""` | Date format such as int32, date-time, etc... |
-| description | string `""` | Description of the property |
-| isReadOnly | bool `false` | Is the property read only? |
-| isWriteOnly | bool `false` | Is the property write only? |
-| isRequired | bool `false` | Is the property required? |
-| multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| isExclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
-| minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| isExclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| hasUniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
-| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-
-```php
-#[OpenApiSchemaProperty(name: 'example_one', minLength: 5, maxLength: 10)]
-#[OpenApiSchemaProperty(name: 'example_two', minLength: 5, enum: ['PG','R'], isRequired: true)]
-#[OpenApiSchemaProperty(name: 'example_virtual_field', isReadOnly: true)]
-class Employee extends Entity {
-```
-
-OpenAPI:
-
-```yaml
-        example_one:
-          type: string
-          minLength: 5
-          maxLength: 10
-        example_two:
-          type: string
-          enum:
-            - PG
-            - R
-          required: true
-        example_virtual_field:
-          type: string
-          readOnly: true
+                  required: true
 ```
 
 ### OpenApiHeader
+
 Method level attribute for adding [header](https://spec.openapis.org/oas/latest.html#header-object) parameters.
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
-| name | string | Y | Name of the query parameter |
-| type | string `string` | Y |  Data type |
+| name | string `""` | Y | Name of the query parameter. Required if `ref` is not defined |
+| ref | string `""` | Y | An OpenAPI `$ref` such as `#/components/parameters/ParameterName`. Required if name is not defined |
+| type | string `string` | Date type such as integer, string, array etc... |
+| format | string `""` | Date format such as int32, date-time, etc... |
 | description | string `""` | Y |  Description of the parameter |
-| required | bool `false` | Y |  Is this parameter required? |
-| allowEmpty | bool `false` | Y |  Are empty values allowed? |
+| isRequired | bool `false` | Y |  Is this parameter required? |
 | enum | array `[]` | Y |  An enumerated list of accepted values |
-| deprecated | bool `false` | Y |  Is this parameter deprecated? |
+| isDeprecated | bool `false` | Y |  Is this parameter deprecated? |
 | explode | bool `false` | Y |  http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
 | style | string `""` | Y |  http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| format | string `""` | Y |  http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| example | mixed `null` | Y |  http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
+| example | mixed `null` | Y | An example value |
+| allowEmptyValue | bool `false` | Y |  Are empty values allowed? |
+
+Example: 
 
 ```php
 #[OpenApiHeader(name: 'X-HEAD-ATTRIBUTE', type: 'string', description: 'example')]
@@ -330,15 +268,74 @@ OpenAPI:
        - $ref: #/x-my-project/components/parameters/my-header
 ```
 
+### OpenApiOperation
+
+Method level attribute for OpenApi Operations.
+
+| Property | Type / Default | OA Spec |Description | 
+| ------------- | ------------- | ------------- | ------------- |
+| summary | string|null `` | Yes | Operation summary, set to null to prevent reading from docblock |
+| description | string|null `` | Yes | Operation description, set to null to prevent reading from docblock |
+| isVisible | bool `true` | No | Setting this to false will prevent the operation from appearing in OpenApi output |
+| tagNames | array `[]` | Yes | Sets tag names |
+| isDeprecated | bool `false` | Yes | Is the operation deprecated? |
+| externalDocs | array|null `null` | Yes | External documentation |
+
+Example:
+
+```php
+#[OpenApiOperation(
+    summary: 'operation title',
+    description: 'a description',
+    tagNames: ['Internal API', 'External API'], 
+    externalDocs: [
+        'url' => 'https://github.com/cnizzardini/cakephp-swagger-bake', 
+        'description' => 'Check out the documentation'
+    ]
+)]
+public function index()
+```
+
+OpenAPI:
+
+```yaml
+    get:
+      operationId: actors:index:get
+      summary: operation title
+      description: a description
+      tags:
+        - Internal API
+        - External API
+      externalDocs:
+        url: https://github.com/cnizzardini/cakephp-swagger-bake
+        description: Check out the documentation
+```
+
+A common use-case is to hide an operation from appearing in your OpenAPI, example:
+
+```php
+#[OpenApiOperation(isVisible: false)]
+public function index()
+```
+
 ### OpenApiPaginator
+
 Method level attribute for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html)
-query parameters: page, limit, sort, and direction. When specified with no arguments, Paginate.sortableFields will be
-used to populate the options list (for `index()` actions only). User supplied options can be given using sortEnum.
+query parameters: page, limit, sort, and direction.  OpenApiPaginator only works on `index()` actions.
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
-| sortEnum | array `[]` | No| A list of fields that can be sorted by. |
-| useSortTextInput | boolean `false` | No | Use an input box instead of dropdown for sortable field |
+| sortEnum | array `[]` | No| A list of fields that can be sorted by. This overrides the default `Paginate.sortableFields` |
+| useSortTextInput | boolean `false` | No | Display an input box in Swagger UI instead of a dropdown for sorting |
+
+Default usage:
+
+```php
+#[OpenApiPaginator()]
+public function index() {}
+```
+
+Override default sortable fields:
 
 ```php
 #[OpenApiPaginator(sortEnum: ['id', 'name'])]
@@ -373,18 +370,41 @@ OpenAPI:
               - desc
 ```
 
+### OpenApiPath
+
+Class level attribute to define scalar [Path](https://spec.openapis.org/oas/latest.html#path-item-object) values.
+
+| Property | Type / Default | OA Spec | Description | 
+| ------------- | ------------- | ------------- | ------------- |
+| isVisible | boolean `true` | No | Is the path and its operations visible in OpenAPI  |
+| ref | string `""` | Yes | An OpenAPI ref such as `#/paths/my-path` |
+| summary | string `""` | Yes | Overwrites the default summary (if any) |
+| description | string `""` | Yes | Overwrites the default description |
+
+A common use-case for this is to hide a controller from appearing in your OpenApi (the default behavior). For instance,
+you may have a bespoke endpoint that you don't want to publish:
+
+```php
+#[OpenApiPath(isVisible: false)]
+class UsersController extends AppController
+```
+
 ### OpenApiPathParam
+
 Method level attribute for modifying path parameters. This is for modifying existing path parameters only. Path 
 parameters must first be defined in your routes file.
 
 | Attribute | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
-| name | string | Yes | Name of the query parameter |
+| name | string `""` | Yes | Name of the query parameter |
+| ref | string `""` | Yes | Name of the query parameter |
 | type | string `string` | Yes | Data type |
 | format | string `` | Yes | Data format |
-| description | string `` | Yes | Description of the parameter |
-| allowReserved | bool `false` | Yes | Allow reserved URI characters? |
+| description | string `""` | Yes | Description of the parameter |
 | example | mixed `null` | Yes | An example value |
+| allowReserved | bool `false` | Yes | Allow reserved URI characters? |
+
+Example: 
 
 ```php
 #[OpenApiPathParam(name: 'id', type: 'integer', format: 'int64', description: 'ID')]
@@ -403,82 +423,29 @@ OpenAPI:
               format: int64
 ```
 
-### OpenApiOperation
-Method level attribute for OpenApi Operations. 
-
-| Property | Type / Default | OA Spec |Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| summary | string|null `` | Yes | Operation summary, set to null to prevent reading from docblock |
-| description | string|null `` | Yes | Operation description, set to null to prevent reading from docblock |
-| isVisible | bool `true` | No | Setting this to false will prevent the operation from appearing in OpenApi output |
-| tagNames | array `[]` | Yes | Sets tag names |
-| isDeprecated | bool `false` | Yes | Is the operation deprecated? |
-| externalDocs | array|null `null` | Yes | External documentation |
-
-```php
-#[OpenApiOperation(
-    summary: 'operation title',
-    description: 'a description',
-    tagNames: ['Internal API', 'External API'], 
-    externalDocs: ['url' => 'http://localhost', 'description' => 'desc...']]
-)]
-public function index()
-```
-
-OpenAPI:
-
-```yaml
-todo
-```
-
-A common use-case is to hide an operation from appearing in your OpenAPI, example:
-
-```php
-#[OpenApiOperation(isVisible: false)]
-public function index()
-```
-
-### OpenApiPath
-Class level attribute to define scalar [Path](https://spec.openapis.org/oas/latest.html#path-item-object) values.
-
-| Property | Type / Default | OA Spec | Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| isVisible | boolean `true` | No | Is the path and its operations visible in OpenAPI  |
-| ref | string `""` | Yes | An OpenAPI ref such as `#/paths/my-path` |
-| description | string `""` | Yes | Overwrites the default description |
-| summary | string `""` | Yes | Overwrites the default summary (if any) |
-
-A common use-case for this is to hide a controller from appearing in your OpenApi (the default behavior). For instance,
-you may have a bespoke endpoint that you don't want to publish.
-
-```php
-#[OpenApiPath(isVisible: false)]
-class UsersController extends AppController
-```
-
-
 ### OpenApiQueryParam
+
 Method level attribute for adding query parameters.
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
-| name | string | Yes | Name of the query parameter |
-| type | string `string` | Yes | Data type |
+| name | string | Yes | Name of the query parameter. Required if `ref` is empty. |
 | ref | string | Yes | An OpenApi $ref parameter describing the query parameter |
+| type | string `string` | Yes | Data type. Required if `name` is empty.  |
+| format | string `""` | Yes | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
 | description | string `""` | Yes | Description of the parameter |
-| required | bool `false` | Yes | Is this parameter required? |
-| enum | array `[]` | Yes | An enumerated list of accepted values |
-| deprecated | bool `false` | Yes | Is this parameter deprecated? |
+| isRequired | bool `false` | Y |  Is this parameter required? |
+| enum | array `[]` | Y |  An enumerated list of accepted values |
+| isDeprecated | bool `false` | Yes | Is this parameter deprecated? |
 | explode | bool `false` | Yes | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
 | style | string `""` | Yes | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
 | example | mixed `null` | Yes | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| format | string `""` | Yes | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
 | allowEmptyValue | bool `false` | Yes | Allow empty values? |
 
+Example:
+
 ```php
-#[OpenApiQueryParam(name: "one", required: true, description: "example description")]
-#[OpenApiQueryParam(name: "two", type: "string", explode: true)]
-#[OpenApiQueryParam(name: "three", enum: ["A","B","C"], deprecated: true])]
+#[OpenApiQueryParam(name: "option", isRequired: true, enum: ["A","B","C"], description: "desc...")]
 #[OpenApiQueryParam(ref: "#/x-my-project/components/parameters/my-parameter")]
 public function index() {}
 ```
@@ -487,20 +454,8 @@ OpenAPI:
 
 ```yaml
       parameters:
-        - name: one
+        - name: option
           in: query
-          description: example description
-          schema:
-            type: string
-        - name: two
-          in: query
-          explode: true
-          schema:
-            type: string
-        - name: three
-          in: query
-          explode: true
-          deprecated: true
           schema:
             type: string
             enum:
@@ -511,6 +466,7 @@ OpenAPI:
 ```
 
 ### OpenApiRequestBody
+
 Method level attribute for describing request body. Set ignoreCakeSchema for full control over request body.
 
 | Attribute | Type / Default | Description | 
@@ -520,6 +476,8 @@ Method level attribute for describing request body. Set ignoreCakeSchema for ful
 | mimeTypes | array `[]` | An array of strings of mime types to support |
 | required | bool `true` | Is the request body required? |
 | ignoreCakeSchema | bool `false` | Ignore cake schema |
+
+Example:
 
 ```php
 #[OpenApiRequestBody(ref: '#/components/schema/Custom', ignoreCakeSchema: true, mimeTypes: ['application/json'])]
@@ -616,6 +574,62 @@ visibility options:
 | `OpenApiSchema::VISIBILE_ALWAYS`  |  2  |  Always add the schema to default & vendor locations.  |
 | `OpenApiSchema::VISIBILE_HIDDEN` |  3  | Never add the schema to the default location, but adds it to vendor location. This hides the schema from the Swagger UIs Schemas section, but still allows the schema to be used for request and response bodies.  |
 | `OpenApiSchema::VISIBILE_NEVER`  |  4  | Never add the schema anywhere (default or vendor location). Warning this can break request body definitions and response samples. |
+
+### OpenApiSchemaProperty
+
+Class level attribute for customizing Schema properties. Note that the attribute does not have to exist in your entity.
+You can add adhoc attributes as needed and optionally combine with
+[Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
+
+| Attribute | Type / Default | Description | 
+| ------------- | ------------- | ------------- |
+| name | string | Name of the schema property |
+| type | string `string` | Date type such as integer, string, etc... |
+| format | string `""` | Date format such as int32, date-time, etc... |
+| description | string `""` | Description of the property |
+| isReadOnly | bool `false` | Is the property read only? |
+| isWriteOnly | bool `false` | Is the property write only? |
+| isRequired | bool `false` | Is the property required? |
+| multipleOf | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maximum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMaximum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minimum | float `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| isExclusiveMinimum | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minLength | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| pattern | string `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minItems | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| hasUniqueItems | bool `false` | http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | http://spec.openapis.org/oas/v3.0.3#properties |
+| example | mixed `null` | http://spec.openapis.org/oas/v3.0.3#properties |
+
+```php
+#[OpenApiSchemaProperty(name: 'example_one', minLength: 5, maxLength: 10)]
+#[OpenApiSchemaProperty(name: 'example_two', minLength: 5, enum: ['PG','R'], isRequired: true)]
+#[OpenApiSchemaProperty(name: 'example_virtual_field', isReadOnly: true)]
+class Employee extends Entity {
+```
+
+OpenAPI:
+
+```yaml
+        example_one:
+          type: string
+          minLength: 5
+          maxLength: 10
+        example_two:
+          type: string
+          enum:
+            - PG
+            - R
+          required: true
+        example_virtual_field:
+          type: string
+          readOnly: true
+```
 
 ### OpenApiSearch
 Method level attribute for documenting search parameters using the popular

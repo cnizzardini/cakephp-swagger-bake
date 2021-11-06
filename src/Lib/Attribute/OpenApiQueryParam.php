@@ -16,18 +16,18 @@ class OpenApiQueryParam
      * @param string $name The name of the parameter. Parameter names are case-sensitive.
      * @param string $ref An OpenAPI $ref to your OpenAPI YAML.
      * @param string $type The type of data accepted, typically string.
-     * @param string $description A brief description of the parameter. This could contain examples of use.
-     * @param bool $isRequired Determines whether this parameter is mandatory.
-     * @param array $enum A list of enumerated values allowed for the header
-     * @param bool $isDeprecated Specifies that a parameter is deprecated and SHOULD be transitioned out of usage.
+     * @param string $format A brief description of the parameter. This could contain examples of use.
+     * @param string $description Determines whether this parameter is mandatory.
+     * @param bool $isRequired A list of enumerated values allowed for the header
+     * @param array $enum Specifies that a parameter is deprecated and SHOULD be transitioned out of usage.
      * Default value is false.
-     * @param bool $explode When this is true, parameter values of type array or object generate separate parameters
+     * @param bool $isDeprecated When this is true, parameter values of type array or object generate separate parameters
      * for each value of the array or key-value pair of the map.
-     * @param string $style Describes how the parameter value will be serialized depending on the type of the parameter
+     * @param bool $explode Describes how the parameter value will be serialized depending on the type of the parameter
      * value.
-     * @param string|bool|int $example Example of the parameter’s potential value. The example SHOULD match the specified schema
+     * @param string $style Example of the parameter’s potential value. The example SHOULD match the specified schema
      * and encoding properties if present.
-     * @param string $format The expected format of the type, for instance date-time.
+     * @param string|bool|int $example The expected format of the type, for instance date-time.
      * @param bool $allowEmptyValue Are empty values allowed?
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @todo convert to readonly properties in PHP 8.1
@@ -36,6 +36,7 @@ class OpenApiQueryParam
         public string $name = '',
         public string $ref = '',
         public string $type = 'string',
+        public string $format = '',
         public string $description = '',
         public bool $isRequired = false,
         public array $enum = [],
@@ -43,9 +44,12 @@ class OpenApiQueryParam
         public bool $explode = false,
         public string $style = '',
         public string|bool|int $example = '',
-        public string $format = '',
         public bool $allowEmptyValue = false
     ) {
+        if (empty($ref) && empty($name)) {
+            throw new SwaggerBakeRunTimeException('One of ref or name must be defined');
+        }
+
         if (!in_array($type, OpenApiDataType::TYPES)) {
             throw new SwaggerBakeRunTimeException(
                 sprintf(
@@ -55,10 +59,6 @@ class OpenApiQueryParam
                     implode(',', OpenApiDataType::TYPES)
                 )
             );
-        }
-
-        if (empty($ref) && empty($name)) {
-            throw new SwaggerBakeRunTimeException('One of ref or name must be defined');
         }
     }
 

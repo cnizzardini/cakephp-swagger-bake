@@ -40,7 +40,7 @@ use Cake\Core\Configure;
  * @var string[] $responseContentTypes Array of mime types returned. Can be used if your application returns XML etc...
  *      Default: ['application/json']
  *
- * @var string $docType Options are swagger and redoc.
+ * @var string $docType The default doc type. Options are swagger and redoc.
  *      Default: swagger
  *
  * @var string $exceptionSchema The name of your Exception schema in components > schemas defined in your swagger.yml.

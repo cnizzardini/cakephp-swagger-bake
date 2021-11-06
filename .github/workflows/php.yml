@@ -43,3 +43,29 @@ jobs:
           echo ${{ matrix.php-versions }}
           export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
           vendor/bin/php-coveralls --coverage_clover=clover.xml -v
+  #
+  # CakePHP version compatability
+  #
+  compatibility:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ['4.2.*','^4.3']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: mbstring, intl
+
+      - name: PHP Version
+        run: php -v
+
+      - name: CakePHP ${{matrix.version}} Compatability
+        run: |
+          sed -i '/"cakephp/cakephp":/c\"cakephp/cakephp":"${{matrix.version}}"' composer.json
+          composer install --prefer-dist --no-progress --no-suggest
+          composer test
