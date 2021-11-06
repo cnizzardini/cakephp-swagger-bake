@@ -1,5 +1,5 @@
 # Swagger Bake
-#### A delightfully tasty CakePHP plugin for generating OpenAPI, Swagger and Redoc
+#### A delightfully tasty plugin for generating OpenAPI, Swagger and Redoc
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
 [![Build](https://github.com/cnizzardini/cakephp-swagger-bake/workflows/Build/badge.svg?branch=master)](https://github.com/cnizzardini/cakephp-swagger-bake/actions)
@@ -9,7 +9,7 @@
 [![Minimum PHP Version](https://img.shields.io/badge/php-^8.0-8892BF.svg?logo=php)](https://php.net/)
 [![OpenAPI](https://img.shields.io/badge/openapi-3.0-green?logo=openapi-initiative)](https://www.openapis.org/)
 
-Build Swagger and ReDoc automatically from your existing models, routes and controllers.
+Automatically generate OpenApi, Swagger, and Redoc documentation from your existing CakePHP code
 
 - Creates OpenApi paths and operations from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes 
 and controllers.
