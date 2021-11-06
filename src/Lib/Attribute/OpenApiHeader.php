@@ -15,7 +15,8 @@ class OpenApiHeader
     /**
      * @param string $name The name of the parameter. Parameter names are case-sensitive.
      * @param string $ref An OpenAPI $ref to your OpenAPI YAML.
-     * @param string $type The type of data accepted, typically string.
+     * @param string $format The type of data accepted, typically string.
+     * @param string $type The expected format of the type, for instance date-time.
      * @param string $description A brief description of the parameter. This could contain examples of use.
      * @param bool $isRequired Determines whether this parameter is mandatory.
      * @param array $enum A list of enumerated values allowed for the header
@@ -27,7 +28,6 @@ class OpenApiHeader
      * value.
      * @param string|bool|int $example Example of the parameter’s potential value. The example SHOULD match the specified schema
      * and encoding properties if present.
-     * @param string $format The expected format of the type, for instance date-time.
      * @param bool $allowEmptyValue Are empty values allowed?
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @todo convert to readonly properties in PHP 8.1
@@ -35,6 +35,7 @@ class OpenApiHeader
     public function __construct(
         public string $name = '',
         public string $ref = '',
+        public string $format = '',
         public string $type = 'string',
         public string $description = '',
         public bool $isRequired = false,
@@ -43,9 +44,12 @@ class OpenApiHeader
         public bool $explode = false,
         public string $style = '',
         public string|bool|int $example = '',
-        public string $format = '',
         public bool $allowEmptyValue = false
     ) {
+        if (empty($ref) && empty($name)) {
+            throw new SwaggerBakeRunTimeException('One of ref or name must be defined');
+        }
+
         if (!in_array($type, OpenApiDataType::TYPES)) {
             throw new SwaggerBakeRunTimeException(
                 sprintf(
@@ -55,10 +59,6 @@ class OpenApiHeader
                     implode(',', OpenApiDataType::TYPES)
                 )
             );
-        }
-
-        if (empty($ref) && empty($name)) {
-            throw new SwaggerBakeRunTimeException('One of ref or name must be defined');
         }
     }
 

@@ -1,4 +1,7 @@
 <?php
+
+use Cake\Core\Configure;
+
 /**
  * ################################
  * # REQUIRED SETTINGS:
@@ -18,7 +21,7 @@
  *
  * @var bool $hotReload Regenerate swagger on page reloaded. This only works if you are using the built-in Swagger UI.
  *      Using your applications debug value is recommended as an easy way to define this.
- *      Default: \Cake\Core\Configure::read('debug')
+ *      Default: false
  *
  * ################################
  * # OPTIONAL SETTINGS:
@@ -37,7 +40,7 @@
  * @var string[] $responseContentTypes Array of mime types returned. Can be used if your application returns XML etc...
  *      Default: ['application/json']
  *
- * @var string $docType Options are swagger and redoc.
+ * @var string $docType The default doc type. Options are swagger and redoc.
  *      Default: swagger
  *
  * @var string $exceptionSchema The name of your Exception schema in components > schemas defined in your swagger.yml.
@@ -54,11 +57,10 @@ return [
         'yml' => '/config/swagger.yml',
         'json' => '/webroot/swagger.json',
         'webPath' => '/swagger.json',
-        'hotReload' => \Cake\Core\Configure::read('debug'),
-        /** optional configurations below:  **/
+        'hotReload' => Configure::read('debug'),
+        'jsonOptions' => JSON_PRETTY_PRINT,
         /*
         'editActionMethods' => ['PATCH'],
-        'jsonOptions' => JSON_PRETTY_PRINT,
         'requestAccepts' => [
             'application/json',
             'application/x-www-form-urlencoded',

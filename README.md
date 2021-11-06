@@ -1,4 +1,5 @@
 # Swagger Bake
+#### A delightfully tasty plugin for generating OpenAPI, Swagger and Redoc
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-swagger-bake.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-swagger-bake)
 [![Build](https://github.com/cnizzardini/cakephp-swagger-bake/workflows/Build/badge.svg?branch=master)](https://github.com/cnizzardini/cakephp-swagger-bake/actions)
@@ -8,8 +9,7 @@
 [![Minimum PHP Version](https://img.shields.io/badge/php-^8.0-8892BF.svg?logo=php)](https://php.net/)
 [![OpenAPI](https://img.shields.io/badge/openapi-3.0-green?logo=openapi-initiative)](https://www.openapis.org/)
 
-A delightfully tasty plugin for generating OpenAPI for your CakePHP API. Build Swagger and ReDoc automatically from 
-your existing models, routes and controllers.
+Automatically generate OpenApi, Swagger, and Redoc documentation from your existing CakePHP code
 
 - Creates OpenApi paths and operations from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes 
 and controllers.
@@ -128,11 +128,11 @@ OpenAPI paths and operations.
 ### Controllers
 
 SwaggerBake will parse the [DocBlocks](https://docs.phpdoc.org/latest/guides/docblocks.html) on your controller 
-actions to for additional OpenAPI Operation data.
+actions for additional OpenAPI data.
 
 ```php
 /**
- * Swagger Operation Summary
+ * OpenAPI Operation Summary
  * 
  * This displays as the operations long description
  * 
@@ -429,19 +429,26 @@ local source to make developing easier:
 Undo these steps when you're done. Read the full composer documentation on loading from path here: 
 [https://getcomposer.org/doc/05-repositories.md#path](https://getcomposer.org/doc/05-repositories.md#path)
 
+Check out the [extensions](docs/extensions.md) documentation to add functionality to this project.
+
 ### Tests + Analysis
 
 PHPUnit Test Suite:
+
 ```console
 composer test
 ```
 
 PHPUnit, PHPCS, PHPSTAN, and PHPMD:
+
 ```console
 composer analyze
 ```
 
 [GrumPHP](https://github.com/phpro/grumphp) can be used to run tests and static analyzers in a pre-commit hook.
+
 ```console
 composer grumphp-init
 ```
+
+I've set grumphp to be installed globally: https://github.com/phpro/grumphp/blob/master/doc/installation/global.md

@@ -31,15 +31,51 @@ jobs:
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: |
+          composer self-update
           composer validate
-          composer install --prefer-dist --no-progress --no-suggest
+          composer install --prefer-dist --no-progress
 
-      - name: Test + Coverage + Static Analysis (8.0 only)
+      - name: Test + Static Analysis (8.0 only)
         if: ${{ matrix.php-versions == '8.0' }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           composer analyze
           echo ${{ matrix.php-versions }}
+
+      - name: Upload coverage results to Coveralls
+        if: ${{ matrix.php-versions == '8.0' }}
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require php-coveralls/php-coveralls
           export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
-          vendor/bin/php-coveralls --coverage_clover=clover.xml -v
+          php-coveralls --coverage_clover=clover.xml -v
+  #
+  # CakePHP version compatability
+  #
+  compatibility:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ['~4.2.0', '^4.3']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: mbstring, intl
+
+      - name: PHP Version
+        run: php -v
+
+      - name: CakePHP ${{matrix.version}} Compatability
+        run: |
+          composer self-update
+          rm -rf composer.lock
+          composer require cakephp/cakephp:${{matrix.version}} --no-update
+          composer install --prefer-dist --no-progress
+          composer test

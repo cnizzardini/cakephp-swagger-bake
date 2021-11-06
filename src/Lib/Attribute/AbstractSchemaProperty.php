@@ -17,14 +17,14 @@ abstract class AbstractSchemaProperty
     /**
      * @param string $name Name of the property (required)
      * @param string $type The data scalar type (e.g. string, integer)
-     * @param string $format The data format (e.g. data-time, uuid)
-     * @param string $title Title of the property
-     * @param string $description Description of the property
-     * @param string|int|float|bool $example An example value
+     * @param string|null $format The data format (e.g. data-time, uuid)
+     * @param string|null $title Title of the property
+     * @param string|null $description Description of the property
+     * @param mixed|null $example An example value
+     * @param string|null $default A default value
      * @param bool $isReadOnly Is this read-only?
      * @param bool $isWriteOnly Is this write-only?
      * @param bool $isRequired Is this required?
-     * @param string $default A default value
      * @param bool $isNullable Is this nullable?
      * @param bool $isDeprecated Is this deprecated?
      * @param float|null $multipleOf Provides multiple of option, such as must be a multiple of 10
@@ -46,14 +46,14 @@ abstract class AbstractSchemaProperty
     public function __construct(
         public string $name,
         public string $type = 'string',
-        public string $format = '',
-        public string $title = '',
-        public string $description = '',
-        public string|int|float|bool $example = '',
+        public ?string $format = null,
+        public ?string $title = null,
+        public ?string $description = null,
+        public $example = null,
+        public ?string $default = null,
         public bool $isReadOnly = false,
         public bool $isWriteOnly = false,
         public bool $isRequired = false,
-        public string $default = '',
         public bool $isNullable = false,
         public bool $isDeprecated = false,
         public ?float $multipleOf = null,

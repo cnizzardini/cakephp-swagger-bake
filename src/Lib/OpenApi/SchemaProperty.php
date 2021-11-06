@@ -25,6 +25,8 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     private const PROPERTIES_TO_OPENAPI_SPEC = [
         'isReadOnly' => 'readOnly',
         'isWriteOnly' => 'writeOnly',
+        'isNullable' => 'nullable',
+        'isDeprecated' => 'deprecated',
     ];
 
     /**
@@ -69,13 +71,19 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             $vars['$ref'] = $this->refEntity;
         }
 
-        // reduce JSON clutter by removing empty values
-        $vars = ArrayUtility::removeEmptyVars($vars, ['example','description','enum','format','items','type']);
+        // Removing empty and null items from OpenAPI
+        $vars = ArrayUtility::removeEmptyAndNullValues(
+            $vars,
+            [
+                'format','title','description','multipleOf','minimum','maximum','minLength','maxLength','pattern',
+                'minItems','maxItems','minProperties','maxProperties',
+            ]
+        );
 
-        // reduce JSON clutter if these values are equal to their defaults
+        // Remove items matching their defaults from OpenAPI
         $vars = ArrayUtility::removeValuesMatching(
             $vars,
-            ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false]
+            ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false, 'nullable' => false]
         );
 
         return $this->removeEmptyVars($vars);

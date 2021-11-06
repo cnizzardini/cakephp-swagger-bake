@@ -15,8 +15,9 @@
         "mixerapi/core": "^0.2"
     },
     "suggest": {
-        "friendsofcake/search": "Easy model searching with @SwagSearch",
-        "cakephp/authentication": "Automates OpenApi security schemes"
+        "cakephp/authentication": "Used by SwaggerBake #[OpenApiSecurity]",
+        "cakephp/bake": "Used by SwaggerBake bake templates",
+        "friendsofcake/search": "Required by SwaggerBake #[OpenApiSearch]"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
@@ -25,9 +26,7 @@
         "cakephp/cakephp-codesniffer": "^4.2",
         "phpstan/phpstan": "^0.12.32",
         "phpmd/phpmd": "^2.10",
-        "cakephp/bake": "^2.1",
-        "php-coveralls/php-coveralls": "^2.4",
-        "phpro/grumphp-shim": "^1.4"
+        "cakephp/bake": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -59,7 +58,6 @@
     },
     "support": {
         "issues": "https://github.com/cnizzardini/cakephp-swagger-bake/issues",
-        "wiki": "https://github.com/cnizzardini/cakephp-swagger-bake/wiki",
         "source": "https://github.com/cnizzardini/cakephp-swagger-bake"
     },
     "authors": [

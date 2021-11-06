@@ -2,7 +2,8 @@
 
 Extensions to SwaggerBake can be added through the use of events and OpenAPI vendor extensions.
 
-See the [CakeSearch extension](https://github.com/cnizzardini/cakephp-swagger-bake/tree/master/src/Lib/Extension) for an example. You may submit extensions as PRs to this project.
+See the [CakeSearch extension](https://github.com/cnizzardini/cakephp-swagger-bake/tree/master/src/Lib/Extension) for 
+an example. You may submit extensions as PRs to this project.
 
 1. Your extension must implement ExtensionInterface. Read the interfaces comments and refer to the CakeSearch
    extension for additional insight.
