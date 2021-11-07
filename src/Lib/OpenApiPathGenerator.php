@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Utility\Inflector;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Path;
@@ -64,6 +66,10 @@ class OpenApiPathGenerator
 
                 $path->pushOperation($operation);
             }
+
+            EventManager::instance()->dispatch(
+                new Event('SwaggerBake.Path.created', $path)
+            );
 
             if (!empty($path->getOperations())) {
                 $openapi['paths'][$route->templateToOpenApiPath()] = $path;
