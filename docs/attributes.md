@@ -290,7 +290,7 @@ Method level attribute for OpenApi Operations.
 | tagNames | array `[]` | Yes | Sets tag names |
 | isDeprecated | bool `false` | Yes | Is the operation deprecated? |
 | externalDocs | array/null `null` | Yes | External documentation |
-| sortOrder | int/null `null` | Yes | The order the operation appears at in OpenAPI output. Defaults to the order the action appears in the controller class. |
+| sortOrder | int/null `null` | No | The order the operation appears at in OpenAPI output. Defaults to the order the action appears in the controller class. |
 
 Example:
 
@@ -613,7 +613,7 @@ You can add adhoc attributes as needed and optionally combine with
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
 
 | Attribute | Type / Default | OA Spec? | Description | 
-| ------------- | ------------- | ------------- | ------------- |
+| ------------- | ------------- | ------------- |------------- |
 | name | string | N | Name of the schema property |
 | type | string `string` | Y | Date type such as integer, string, array etc... |
 | format | string/null `null` | Y | Date format such as int32, date-time, etc... |
