@@ -185,8 +185,13 @@ SwaggerBake comes with an [event system](docs/events.md) to allow for further co
 
 | Event | Description | 
 | ------------- | ------------- |
+<<<<<<< HEAD
 | [SwaggerBake.Operation.created](docs/events.md#path-created) | Dispatched each time an OpenAPI Path > Operation is created |
 | [SwaggerBake.Path.created](docs/events.md#operation-created) | Dispatched each time an OpenAPI Path is created |
+=======
+| [SwaggerBake.Operation.created](docs/events.md#operation-created) | Dispatched each time an OpenAPI Path > Operation is created |
+| [SwaggerBake.Path.created](docs/events.md#path-created) | Dispatched each time an OpenAPI Path is created |
+>>>>>>> path-event
 | [SwaggerBake.Schema.created](docs/events.md#schema-created) | Dispatched each time an OpenAPI Schema is created |
 | [SwaggerBake.initialize](docs/events.md#initialize) | Dispatched during initialization phase on SwaggerBake |
 | [SwaggerBake.beforeRender](docs/events.md#before-render) | Dispatched before SwaggerBake outputs OpenAPI JSON |
