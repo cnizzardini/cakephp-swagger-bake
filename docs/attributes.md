@@ -111,9 +111,9 @@ Property or parameter level attribute for use in your DTO classes. See the OpenA
 | ------------- | ------------- | ------------- |
 | name | string | N | Name of the schema property |
 | type | string `string` | Y | Date type such as integer, string, array etc... |
-| format | string|null `null` | Y | Date format such as int32, date-time, etc... |
-| title | string|null `null` | Y |  Title of the property |
-| description | string|null `null` | Y |  Description of the property |
+| format | string/null `null` | Y | Date format such as int32, date-time, etc... |
+| title | string/null `null` | Y |  Title of the property |
+| description | string/null `null` | Y |  Description of the property |
 | example | mixed `null` | Y |  An example value |
 | isReadOnly | bool `false` | Y |  Is the property read only? |
 | isWriteOnly | bool `false` | Y |  Is the property write only? |
@@ -121,19 +121,19 @@ Property or parameter level attribute for use in your DTO classes. See the OpenA
 | default | mixed `null` | Y |  A default value |
 | isNullable | bool `false` | Y |  Can the value be null? |
 | isDeprecated | bool `false` | Y |  Is the property deprecated? |
-| multipleOf | float|null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum | float|null `null` | Y |  The minimum allowed numeric value |
+| multipleOf | float/null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum | float/null `null` | Y |  The minimum allowed numeric value |
 | isExclusiveMinimum | bool `false` | Y |  Is the `minimum` value excluded from the range. |
-| maximum | float|null `null` | Y |  The maximum allowed numeric value |
+| maximum | float/null `null` | Y |  The maximum allowed numeric value |
 | isExclusiveMaximum | bool `false` | Y |  Is the `maximum` value excluded from the range. |
-| minLength | integer|null `null` | Y |  The minimum length of a string |
-| maxLength | integer|null `null` | Y |  The maximum length of a string |
-| pattern | string|null `null` | Y |  A regex pattern the value must follow |
-| minItems | integer|null `null` | Y |  The minimum items allowed in a list |
-| maxItems | integer|null `null` | Y |  The maximum items allowed in a list |
+| minLength | integer/null `null` | Y |  The minimum length of a string |
+| maxLength | integer/null `null` | Y |  The maximum length of a string |
+| pattern | string/null `null` | Y |  A regex pattern the value must follow |
+| minItems | integer/null `null` | Y |  The minimum items allowed in a list |
+| maxItems | integer/null `null` | Y |  The maximum items allowed in a list |
 | hasUniqueItems | bool `false` | Y |  The list must contain unique items |
-| minProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| minProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
 | enum | array `[]` | Y |  An enumerated list of of options for the value |
 
 Example:
@@ -190,9 +190,9 @@ Method level attribute for adding form data fields. See the OpenAPI documentatio
 | ------------- | ------------- | ------------- |
 | name | string | N | Name of the schema property |
 | type | string `string` | Y | Date type such as integer, string, array etc... |
-| format | string|null `null` | Y | Date format such as int32, date-time, etc... |
-| title | string|null `null` | Y |  Title of the property |
-| description | string|null `null` | Y |  Description of the property |
+| format | string/null `null` | Y | Date format such as int32, date-time, etc... |
+| title | string/null `null` | Y |  Title of the property |
+| description | string/null `null` | Y |  Description of the property |
 | example | mixed `null` | Y |  An example value |
 | isReadOnly | bool `false` | Y |  Is the property read only? |
 | isWriteOnly | bool `false` | Y |  Is the property write only? |
@@ -200,19 +200,19 @@ Method level attribute for adding form data fields. See the OpenAPI documentatio
 | default | mixed `null` | Y |  A default value |
 | isNullable | bool `false` | Y |  Can the value be null? |
 | isDeprecated | bool `false` | Y |  Is the property deprecated? |
-| multipleOf | float|null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum | float|null `null` | Y |  The minimum allowed numeric value |
+| multipleOf | float/null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum | float/null `null` | Y |  The minimum allowed numeric value |
 | isExclusiveMinimum | bool `false` | Y |  Is the `minimum` value excluded from the range. |
-| maximum | float|null `null` | Y |  The maximum allowed numeric value |
+| maximum | float/null `null` | Y |  The maximum allowed numeric value |
 | isExclusiveMaximum | bool `false` | Y |  Is the `maximum` value excluded from the range. |
-| minLength | integer|null `null` | Y |  The minimum length of a string |
-| maxLength | integer|null `null` | Y |  The maximum length of a string |
-| pattern | string|null `null` | Y |  A regex pattern the value must follow |
-| minItems | integer|null `null` | Y |  The minimum items allowed in a list |
-| maxItems | integer|null `null` | Y |  The maximum items allowed in a list |
+| minLength | integer/null `null` | Y |  The minimum length of a string |
+| maxLength | integer/null `null` | Y |  The maximum length of a string |
+| pattern | string/null `null` | Y |  A regex pattern the value must follow |
+| minItems | integer/null `null` | Y |  The minimum items allowed in a list |
+| maxItems | integer/null `null` | Y |  The maximum items allowed in a list |
 | hasUniqueItems | bool `false` | Y |  The list must contain unique items |
-| minProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| minProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
 | enum | array `[]` | Y |  An enumerated list of of options for the value |
 
 Example:
@@ -284,13 +284,13 @@ Method level attribute for OpenApi Operations.
 
 | Property | Type / Default | OA Spec |Description | 
 | ------------- | ------------- | ------------- | ------------- |
-| summary | string|null `` | Yes | Operation summary, set to null to prevent reading from docblock |
-| description | string|null `` | Yes | Operation description, set to null to prevent reading from docblock |
+| summary | string/null `` | Yes | Operation summary, set to null to prevent reading from docblock |
+| description | string/null `` | Yes | Operation description, set to null to prevent reading from docblock |
 | isVisible | bool `true` | No | Setting this to false will prevent the operation from appearing in OpenApi output |
 | tagNames | array `[]` | Yes | Sets tag names |
 | isDeprecated | bool `false` | Yes | Is the operation deprecated? |
-| externalDocs | array|null `null` | Yes | External documentation |
-| sortOrder | int|null `null` | Yes | The order the operation appears at in OpenAPI output. Defaults to the order the action appears in the controller class. |
+| externalDocs | array/null `null` | Yes | External documentation |
+| sortOrder | int/null `null` | Yes | The order the operation appears at in OpenAPI output. Defaults to the order the action appears in the controller class. |
 
 Example:
 
@@ -616,9 +616,9 @@ You can add adhoc attributes as needed and optionally combine with
 | ------------- | ------------- | ------------- |
 | name | string | N | Name of the schema property |
 | type | string `string` | Y | Date type such as integer, string, array etc... |
-| format | string|null `null` | Y | Date format such as int32, date-time, etc... |
-| title | string|null `null` | Y |  Title of the property |
-| description | string|null `null` | Y |  Description of the property |
+| format | string/null `null` | Y | Date format such as int32, date-time, etc... |
+| title | string/null `null` | Y |  Title of the property |
+| description | string/null `null` | Y |  Description of the property |
 | example | mixed `null` | Y |  An example value |
 | isReadOnly | bool `false` | Y |  Is the property read only? |
 | isWriteOnly | bool `false` | Y |  Is the property write only? |
@@ -626,19 +626,19 @@ You can add adhoc attributes as needed and optionally combine with
 | default | mixed `null` | Y |  A default value |
 | isNullable | bool `false` | Y |  Can the value be null? |
 | isDeprecated | bool `false` | Y |  Is the property deprecated? |
-| multipleOf | float|null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum | float|null `null` | Y |  The minimum allowed numeric value |
+| multipleOf | float/null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum | float/null `null` | Y |  The minimum allowed numeric value |
 | isExclusiveMinimum | bool `false` | Y |  Is the `minimum` value excluded from the range. |
-| maximum | float|null `null` | Y |  The maximum allowed numeric value |
+| maximum | float/null `null` | Y |  The maximum allowed numeric value |
 | isExclusiveMaximum | bool `false` | Y |  Is the `maximum` value excluded from the range. |
-| minLength | integer|null `null` | Y |  The minimum length of a string |
-| maxLength | integer|null `null` | Y |  The maximum length of a string |
-| pattern | string|null `null` | Y |  A regex pattern the value must follow |
-| minItems | integer|null `null` | Y |  The minimum items allowed in a list |
-| maxItems | integer|null `null` | Y |  The maximum items allowed in a list |
+| minLength | integer/null `null` | Y |  The minimum length of a string |
+| maxLength | integer/null `null` | Y |  The maximum length of a string |
+| pattern | string/null `null` | Y |  A regex pattern the value must follow |
+| minItems | integer/null `null` | Y |  The minimum items allowed in a list |
+| maxItems | integer/null `null` | Y |  The maximum items allowed in a list |
 | hasUniqueItems | bool `false` | Y |  The list must contain unique items |
-| minProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| minProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
 | enum | array `[]` | Y |  An enumerated list of of options for the value |
 
 ```php
