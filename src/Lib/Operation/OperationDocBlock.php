@@ -47,10 +47,10 @@ class OperationDocBlock
      */
     private function comments(): void
     {
-        if ($this->operation->getSummary() !== null && empty($this->operation->getSummary())) {
+        if ($this->operation->getSummary() == null && !empty($this->doc->getSummary())) {
             $this->operation->setSummary($this->doc->getSummary());
         }
-        if ($this->operation->getDescription() !== null && empty($this->operation->getDescription())) {
+        if ($this->operation->getDescription() == null && !empty($this->doc->getDescription()->render())) {
             $this->operation->setDescription($this->doc->getDescription()->render());
         }
 
