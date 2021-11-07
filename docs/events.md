@@ -4,13 +4,8 @@ Swagger Bake uses the [CakePHP Event System](https://book.cakephp.org/4/en/core-
 
 | Event | Description | 
 | ------------- | ------------- |
-<<<<<<< HEAD
-| [SwaggerBake.Operation.created](#path-created) | Dispatched each time an OpenAPI Path > Operation is created |
-| [SwaggerBake.Path.created](#operation-created) | Dispatched each time an OpenAPI Path is created |
-=======
 | [SwaggerBake.Operation.created](#operation-created) | Dispatched each time an OpenAPI Path > Operation is created |
 | [SwaggerBake.Path.created](#path-created) | Dispatched each time an OpenAPI Path is created |
->>>>>>> path-event
 | [SwaggerBake.Schema.created](#schema-created) | Dispatched each time an OpenAPI Schema is created |
 | [SwaggerBake.initialize](#initialize) | Dispatched during initialization phase on SwaggerBake |
 | [SwaggerBake.beforeRender](#before-render) | Dispatched before SwaggerBake outputs OpenAPI JSON |
