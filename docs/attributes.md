@@ -108,7 +108,7 @@ Property or parameter level attribute for use in your DTO classes. See the OpenA
 [schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail.
 
 | Attribute | Type / Default | OA Spec? | Description |
-| ------------- | ------------- | ------------- |
+| ------------- | ------------- | ------------- |------------- |
 | name | string | N | Name of the schema property |
 | type | string `string` | Y | Date type such as integer, string, array etc... |
 | format | string/null `null` | Y | Date format such as int32, date-time, etc... |
@@ -187,7 +187,7 @@ Method level attribute for adding form data fields. See the OpenAPI documentatio
 [schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail.
 
 | Attribute | Type / Default | OA Spec? | Description |
-| ------------- | ------------- | ------------- |
+| ------------- | ------------- | ------------- |------------- |
 | name | string | N | Name of the schema property |
 | type | string `string` | Y | Date type such as integer, string, array etc... |
 | format | string/null `null` | Y | Date format such as int32, date-time, etc... |
@@ -613,7 +613,7 @@ You can add adhoc attributes as needed and optionally combine with
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
 
 | Attribute | Type / Default | OA Spec? | Description | 
-| ------------- | ------------- | ------------- |
+| ------------- | ------------- | ------------- | ------------- |
 | name | string | N | Name of the schema property |
 | type | string `string` | Y | Date type such as integer, string, array etc... |
 | format | string/null `null` | Y | Date format such as int32, date-time, etc... |
