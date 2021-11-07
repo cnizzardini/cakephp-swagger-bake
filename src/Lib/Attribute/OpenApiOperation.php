@@ -18,6 +18,8 @@ class OpenApiOperation
      * @param string[] $tagNames An array of tags
      * @param bool $isDeprecated Is the operation deprecated?
      * @param array|null $externalDocs An optional external docs array
+     * @param int|null $sortOrder The order the operation appears at in OpenAPI output. Defaults to the order the action
+     * appears in the controller class.
      * @see https://mixerapi.com/plugins/cakephp-swagger-bake/docs/attributes/#OpenApiOperation
      * @see https://spec.openapis.org/oas/latest.html#operation-object
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -29,7 +31,8 @@ class OpenApiOperation
         public bool $isVisible = true,
         public array $tagNames = [],
         public bool $isDeprecated = false,
-        public ?array $externalDocs = null
+        public ?array $externalDocs = null,
+        public ?int $sortOrder = null,
     ) {
     }
 }

@@ -13,6 +13,7 @@ use SwaggerBake\Lib\Utility\ArrayUtility;
  *
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/paths-and-operations/
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Operation implements JsonSerializable
 {
@@ -28,6 +29,7 @@ class Operation implements JsonSerializable
      * @param \SwaggerBake\Lib\OpenApi\Response[] $responses Array of OpenApi Response
      * @param \SwaggerBake\Lib\OpenApi\PathSecurity[] $security Array of OpenApi PathSecurity
      * @param bool $isDeprecated Is this operation deprecated?
+     * @param int $sortOrder The sort order, by default uses the order of methods in the controller.
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -41,7 +43,8 @@ class Operation implements JsonSerializable
         private array $parameters = [],
         private array $responses = [],
         private array $security = [],
-        private bool $isDeprecated = false
+        private bool $isDeprecated = false,
+        private int $sortOrder = 100
     ) {
         $this->setHttpMethod($httpMethod);
         $this->setParameters($parameters);
@@ -419,6 +422,25 @@ class Operation implements JsonSerializable
     public function setDescription(?string $description)
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSortOrder(): int
+    {
+        return $this->sortOrder;
+    }
+
+    /**
+     * @param int $sortOrder Where the operation appears in OpenAPI result
+     * @return $this
+     */
+    public function setSortOrder(int $sortOrder)
+    {
+        $this->sortOrder = $sortOrder;
 
         return $this;
     }

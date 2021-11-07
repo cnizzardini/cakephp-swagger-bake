@@ -14,6 +14,14 @@ use SwaggerBake\Lib\Utility\ArrayUtility;
  */
 class Path implements JsonSerializable
 {
+    private const SORT_ORDER = [
+        'post' => 0,
+        'get' => 1,
+        'patch' => 2,
+        'put' => 3,
+        'delete' => 4,
+    ];
+
     /**
      * @param string $resource The resource (base URL), for example: /pets
      * @param \SwaggerBake\Lib\OpenApi\Operation[] $operations An array of OpenApi Operations
@@ -42,9 +50,16 @@ class Path implements JsonSerializable
         // remove items if null to reduce JSON clutter
         $vars = ArrayUtility::removeNullValues($vars, ['summary', 'description']);
 
+        $operations = [];
         foreach ($this->getOperations() as $operation) {
-            $vars[strtolower($operation->getHttpMethod())] = $operation;
+            $operations[strtolower($operation->getHttpMethod())] = $operation;
         }
+
+        uasort($operations, function (Operation $a, Operation $b) {
+            return $a->getSortOrder() < $b->getSortOrder() ? -1 : 1;
+        });
+
+        $vars += $operations;
 
         if ($this->ref !== null) {
             $vars['$ref'] = $this->ref;
