@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
+use Cake\Collection\Collection;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Utility\Inflector;
@@ -10,6 +11,7 @@ use Exception;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
+use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiOperation;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -24,6 +26,7 @@ use SwaggerBake\Lib\Utility\DocBlockUtility;
  * Class OperationFromRouteFactory
  *
  * @package SwaggerBake\Lib\Operation
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class OperationFromRouteFactory
 {
@@ -57,6 +60,9 @@ class OperationFromRouteFactory
         try {
             $refClass = new ReflectionClass($route->getControllerFqn());
             $refMethod = $refClass->getMethod($route->getAction());
+            $keys = (new Collection($refClass->getMethods()))->filter(function (ReflectionMethod $method) use ($route) {
+                return $route->getAction() == $method->getName();
+            })->toArray();
             $openApiOperation = (new AttributeFactory($refMethod, OpenApiOperation::class))->createOneOrNull();
         } catch (Exception) {
             $refClass = null;
@@ -70,7 +76,11 @@ class OperationFromRouteFactory
             return null;
         }
 
-        $operation = new Operation($route->getName() . ':' . strtolower($httpMethod), $httpMethod);
+        $operation = new Operation(
+            operationId: $route->getName() . ':' . strtolower($httpMethod),
+            httpMethod: $httpMethod,
+            sortOrder: key($keys ?? []) ?? 100
+        );
 
         $operation = $this->createOperation($operation, $route, $openApiOperation);
 
@@ -161,6 +171,9 @@ class OperationFromRouteFactory
                         $openApiOperation->externalDocs['description'] ?? '',
                     )
                 );
+            }
+            if (is_numeric($openApiOperation->sortOrder)) {
+                $operation->setSortOrder($openApiOperation->sortOrder);
             }
         }
 

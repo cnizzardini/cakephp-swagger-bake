@@ -1,13 +1,13 @@
 # SwaggerBake Attributes
 
-SwaggerBake provides some optional [Attributes](https://www.php.net/manual/en/language.attributes.overview.php) for 
-enhanced functionality. It is helpful to understand the [OpenApi specification](https://spec.openapis.org/oas/latest.html) 
+SwaggerBake provides some optional [Attributes](https://www.php.net/manual/en/language.attributes.overview.php) for
+enhanced functionality. It is helpful to understand the [OpenApi specification](https://spec.openapis.org/oas/latest.html)
 when reading this documentation. Annotations exist in the following namespaces:
 
 - `SwaggerBake\Lib\Attribute`
 - `SwaggerBake\Lib\Extension`
 
-Just a reminder that many usage examples exist in the 
+Just a reminder that many usage examples exist in the
 [SwaggerBake Demo](https://github.com/cnizzardini/cakephp-swagger-bake-demo).
 
 ## Table of Contents
@@ -33,8 +33,8 @@ Just a reminder that many usage examples exist in the
 
 ### OpenApiDto
 
-Method level attribute for building query or form parameters from a DataTransferObject. Your DTO will need to use 
-the [OpenApiDtoQuery](#OpenApiDtoQuery) or [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) on its properties depending 
+Method level attribute for building query or form parameters from a DataTransferObject. Your DTO will need to use
+the [OpenApiDtoQuery](#OpenApiDtoQuery) or [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) on its properties depending
 on the request type.
 
 | Property | Type / Default | OA Spec | Description | 
@@ -104,37 +104,37 @@ OpenAPI:
 
 ### OpenApiDtoRequestBody
 
-Property or parameter level attribute for use in your DTO classes. See the OpenAPI documentation on 
+Property or parameter level attribute for use in your DTO classes. See the OpenAPI documentation on
 [schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail.
 
-| Attribute | Type / Default | Description | 
+| Attribute | Type / Default | OA Spec? | Description |
 | ------------- | ------------- | ------------- |
-| name | string | Name of the schema property |
-| type | string `string` | Date type such as integer, string, array etc... |
-| format | string|null `null` | Date format such as int32, date-time, etc... |
-| title | string|null `null` | Title of the property |
-| description | string|null `null` | Description of the property |
-| example | mixed `null` | An example value |
-| isReadOnly | bool `false` | Is the property read only? |
-| isWriteOnly | bool `false` | Is the property write only? |
-| isRequired | bool `false` | Is the property required? |
-| default | mixed `null` | A default value |
-| isNullable | bool `false` | Can the value be null? |
-| isDeprecated | bool `false` | Is the property deprecated? |
-| multipleOf | float `null` | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum | float `null` | The minimum allowed numeric value |
-| isExclusiveMinimum | bool `false` | Is the `minimum` value excluded from the range. |
-| maximum | float `null` | The maximum allowed numeric value |
-| isExclusiveMaximum | bool `false` | Is the `maximum` value excluded from the range. |
-| minLength | integer `null` | The minimum length of a string |
-| maxLength | integer `null` | The maximum length of a string |
-| pattern | string `null` | A regex pattern the value must follow |
-| minItems | integer `null` | The minimum items allowed in a list |
-| maxItems | integer `null` | The maximum items allowed in a list |
-| hasUniqueItems | bool `false` | The list must contain unique items |
-| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| enum | array `[]` | An enumerated list of of options for the value |
+| name | string | N | Name of the schema property |
+| type | string `string` | Y | Date type such as integer, string, array etc... |
+| format | string|null `null` | Y | Date format such as int32, date-time, etc... |
+| title | string|null `null` | Y |  Title of the property |
+| description | string|null `null` | Y |  Description of the property |
+| example | mixed `null` | Y |  An example value |
+| isReadOnly | bool `false` | Y |  Is the property read only? |
+| isWriteOnly | bool `false` | Y |  Is the property write only? |
+| isRequired | bool `false` | Y |  Is the property required? |
+| default | mixed `null` | Y |  A default value |
+| isNullable | bool `false` | Y |  Can the value be null? |
+| isDeprecated | bool `false` | Y |  Is the property deprecated? |
+| multipleOf | float|null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum | float|null `null` | Y |  The minimum allowed numeric value |
+| isExclusiveMinimum | bool `false` | Y |  Is the `minimum` value excluded from the range. |
+| maximum | float|null `null` | Y |  The maximum allowed numeric value |
+| isExclusiveMaximum | bool `false` | Y |  Is the `maximum` value excluded from the range. |
+| minLength | integer|null `null` | Y |  The minimum length of a string |
+| maxLength | integer|null `null` | Y |  The maximum length of a string |
+| pattern | string|null `null` | Y |  A regex pattern the value must follow |
+| minItems | integer|null `null` | Y |  The minimum items allowed in a list |
+| maxItems | integer|null `null` | Y |  The maximum items allowed in a list |
+| hasUniqueItems | bool `false` | Y |  The list must contain unique items |
+| minProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | Y |  An enumerated list of of options for the value |
 
 Example:
 
@@ -186,36 +186,36 @@ OpenAPI:
 Method level attribute for adding form data fields. See the OpenAPI documentation on
 [schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail.
 
-| Attribute | Type / Default | Description | 
+| Attribute | Type / Default | OA Spec? | Description |
 | ------------- | ------------- | ------------- |
-| name | string | Name of the schema property |
-| type | string `string` | Date type such as integer, string, array etc... |
-| format | string|null `null` | Date format such as int32, date-time, etc... |
-| title | string|null `null` | Title of the property |
-| description | string|null `null` | Description of the property |
-| example | mixed `null` | An example value |
-| isReadOnly | bool `false` | Is the property read only? |
-| isWriteOnly | bool `false` | Is the property write only? |
-| isRequired | bool `false` | Is the property required? |
-| default | mixed `null` | A default value |
-| isNullable | bool `false` | Can the value be null? |
-| isDeprecated | bool `false` | Is the property deprecated? |
-| multipleOf | float `null` | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum | float `null` | The minimum allowed numeric value |
-| isExclusiveMinimum | bool `false` | Is the `minimum` value excluded from the range. |
-| maximum | float `null` | The maximum allowed numeric value |
-| isExclusiveMaximum | bool `false` | Is the `maximum` value excluded from the range. |
-| minLength | integer `null` | The minimum length of a string |
-| maxLength | integer `null` | The maximum length of a string |
-| pattern | string `null` | A regex pattern the value must follow |
-| minItems | integer `null` | The minimum items allowed in a list |
-| maxItems | integer `null` | The maximum items allowed in a list |
-| hasUniqueItems | bool `false` | The list must contain unique items |
-| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| enum | array `[]` | An enumerated list of of options for the value |
+| name | string | N | Name of the schema property |
+| type | string `string` | Y | Date type such as integer, string, array etc... |
+| format | string|null `null` | Y | Date format such as int32, date-time, etc... |
+| title | string|null `null` | Y |  Title of the property |
+| description | string|null `null` | Y |  Description of the property |
+| example | mixed `null` | Y |  An example value |
+| isReadOnly | bool `false` | Y |  Is the property read only? |
+| isWriteOnly | bool `false` | Y |  Is the property write only? |
+| isRequired | bool `false` | Y |  Is the property required? |
+| default | mixed `null` | Y |  A default value |
+| isNullable | bool `false` | Y |  Can the value be null? |
+| isDeprecated | bool `false` | Y |  Is the property deprecated? |
+| multipleOf | float|null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum | float|null `null` | Y |  The minimum allowed numeric value |
+| isExclusiveMinimum | bool `false` | Y |  Is the `minimum` value excluded from the range. |
+| maximum | float|null `null` | Y |  The maximum allowed numeric value |
+| isExclusiveMaximum | bool `false` | Y |  Is the `maximum` value excluded from the range. |
+| minLength | integer|null `null` | Y |  The minimum length of a string |
+| maxLength | integer|null `null` | Y |  The maximum length of a string |
+| pattern | string|null `null` | Y |  A regex pattern the value must follow |
+| minItems | integer|null `null` | Y |  The minimum items allowed in a list |
+| maxItems | integer|null `null` | Y |  The maximum items allowed in a list |
+| hasUniqueItems | bool `false` | Y |  The list must contain unique items |
+| minProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | Y |  An enumerated list of of options for the value |
 
-Example: 
+Example:
 
 ```php
 #[OpenApiForm(name: 'username', minLength: 8, maxLength: 64, pattern: '[a-zA-z]', isRequired: true)]
@@ -258,7 +258,7 @@ Method level attribute for adding [header](https://spec.openapis.org/oas/latest.
 | example | mixed `null` | Y | An example value |
 | allowEmptyValue | bool `false` | Y |  Are empty values allowed? |
 
-Example: 
+Example:
 
 ```php
 #[OpenApiHeader(name: 'X-HEAD-ATTRIBUTE', type: 'string', description: 'example')]
@@ -290,6 +290,7 @@ Method level attribute for OpenApi Operations.
 | tagNames | array `[]` | Yes | Sets tag names |
 | isDeprecated | bool `false` | Yes | Is the operation deprecated? |
 | externalDocs | array|null `null` | Yes | External documentation |
+| sortOrder | int|null `null` | Yes | The order the operation appears at in OpenAPI output. Defaults to the order the action appears in the controller class. |
 
 Example:
 
@@ -375,7 +376,7 @@ OpenAPI:
           in: query
           schema:
             type: string
-            enum: 
+            enum:
               - asc
               - desc
 ```
@@ -401,7 +402,7 @@ class UsersController extends AppController
 
 ### OpenApiPathParam
 
-Method level attribute for modifying path parameters. This is for modifying existing path parameters only. Path 
+Method level attribute for modifying path parameters. This is for modifying existing path parameters only. Path
 parameters must first be defined in your routes file.
 
 | Attribute | Type / Default | OA Spec | Description | 
@@ -414,14 +415,14 @@ parameters must first be defined in your routes file.
 | example | mixed `null` | Yes | An example value |
 | allowReserved | bool `false` | Yes | Allow reserved URI characters? |
 
-Example: 
+Example:
 
 ```php
 #[OpenApiPathParam(name: 'id', type: 'integer', format: 'int64', description: 'ID')]
 public function view($id) {}
 ```
 
-OpenAPI: 
+OpenAPI:
 
 ```yaml
         parameters:
@@ -552,7 +553,7 @@ OpenAPI:
 
 #### Associations
 
-The association property allows you to include associations defined in your Table class within your OpenAPI response 
+The association property allows you to include associations defined in your Table class within your OpenAPI response
 schema. To include all immediately associated tables (deep nested associations are not yet supported):
 
 ```php
@@ -579,7 +580,7 @@ Remember `schemaType` defaults to `object`. We can specify `array` if we are ret
 
 ### OpenApiSchema
 
-Class level attribute for modifying OpenAPI Schema to Swagger UI. 
+Class level attribute for modifying OpenAPI Schema to Swagger UI.
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
@@ -611,34 +612,34 @@ Class level attribute for customizing Schema properties. Note that the attribute
 You can add adhoc attributes as needed and optionally combine with
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
 
-| Attribute | Type / Default | Description | 
+| Attribute | Type / Default | OA Spec? | Description | 
 | ------------- | ------------- | ------------- |
-| name | string | Name of the schema property |
-| type | string `string` | Date type such as integer, string, array etc... |
-| format | string|null `null` | Date format such as int32, date-time, etc... |
-| title | string|null `null` | Title of the property |
-| description | string|null `null` | Description of the property |
-| example | mixed `null` | An example value |
-| isReadOnly | bool `false` | Is the property read only? |
-| isWriteOnly | bool `false` | Is the property write only? |
-| isRequired | bool `false` | Is the property required? |
-| default | mixed `null` | A default value |
-| isNullable | bool `false` | Can the value be null? |
-| isDeprecated | bool `false` | Is the property deprecated? |
-| multipleOf | float `null` | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum | float `null` | The minimum allowed numeric value |
-| isExclusiveMinimum | bool `false` | Is the `minimum` value excluded from the range. |
-| maximum | float `null` | The maximum allowed numeric value |
-| isExclusiveMaximum | bool `false` | Is the `maximum` value excluded from the range. |
-| minLength | integer `null` | The minimum length of a string |
-| maxLength | integer `null` | The maximum length of a string |
-| pattern | string `null` | A regex pattern the value must follow |
-| minItems | integer `null` | The minimum items allowed in a list |
-| maxItems | integer `null` | The maximum items allowed in a list |
-| hasUniqueItems | bool `false` | The list must contain unique items |
-| minProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer `null` | http://spec.openapis.org/oas/v3.0.3#properties |
-| enum | array `[]` | An enumerated list of of options for the value |
+| name | string | N | Name of the schema property |
+| type | string `string` | Y | Date type such as integer, string, array etc... |
+| format | string|null `null` | Y | Date format such as int32, date-time, etc... |
+| title | string|null `null` | Y |  Title of the property |
+| description | string|null `null` | Y |  Description of the property |
+| example | mixed `null` | Y |  An example value |
+| isReadOnly | bool `false` | Y |  Is the property read only? |
+| isWriteOnly | bool `false` | Y |  Is the property write only? |
+| isRequired | bool `false` | Y |  Is the property required? |
+| default | mixed `null` | Y |  A default value |
+| isNullable | bool `false` | Y |  Can the value be null? |
+| isDeprecated | bool `false` | Y |  Is the property deprecated? |
+| multipleOf | float|null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum | float|null `null` | Y |  The minimum allowed numeric value |
+| isExclusiveMinimum | bool `false` | Y |  Is the `minimum` value excluded from the range. |
+| maximum | float|null `null` | Y |  The maximum allowed numeric value |
+| isExclusiveMaximum | bool `false` | Y |  Is the `maximum` value excluded from the range. |
+| minLength | integer|null `null` | Y |  The minimum length of a string |
+| maxLength | integer|null `null` | Y |  The maximum length of a string |
+| pattern | string|null `null` | Y |  A regex pattern the value must follow |
+| minItems | integer|null `null` | Y |  The minimum items allowed in a list |
+| maxItems | integer|null `null` | Y |  The maximum items allowed in a list |
+| hasUniqueItems | bool `false` | Y |  The list must contain unique items |
+| minProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| maxProperties | integer|null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
+| enum | array `[]` | Y |  An enumerated list of of options for the value |
 
 ```php
 #[OpenApiSchemaProperty(name: 'example_one', minLength: 5, maxLength: 10)]

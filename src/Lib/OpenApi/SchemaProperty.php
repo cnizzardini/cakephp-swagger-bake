@@ -57,8 +57,10 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
 
         // rename class properties to match openapi schema
         foreach (self::PROPERTIES_TO_OPENAPI_SPEC as $classProperty => $openApiProperty) {
-            $vars[$openApiProperty] = $vars[$classProperty];
-            unset($vars[$classProperty]);
+            if (isset($vars[$classProperty])) {
+                $vars[$openApiProperty] = $vars[$classProperty];
+                unset($vars[$classProperty]);
+            }
         }
 
         // remove internal properties
