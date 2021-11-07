@@ -50,16 +50,16 @@ class OpenApiHeaderTest extends TestCase
         }));
     }
 
-    public function test_constructor_expect_exception_from_invalid_type(): void
-    {
-        $this->expectException(SwaggerBakeRunTimeException::class);
-        new OpenApiHeader(type: 'blah');
-    }
-
     public function test_constructor_expect_exception_from_missing_name_and_ref(): void
     {
         $this->expectException(SwaggerBakeRunTimeException::class);
         new OpenApiHeader();
+    }
+
+    public function test_constructor_expect_exception_from_invalid_type(): void
+    {
+        $this->expectException(SwaggerBakeRunTimeException::class);
+        new OpenApiHeader(name: 'Name', type: 'invalid');
     }
 
     /**

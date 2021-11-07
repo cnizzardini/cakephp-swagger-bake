@@ -50,18 +50,17 @@ class OpenApiQueryParamTest extends TestCase
         }));
     }
 
-    public function test_constructor_expect_exception_from_invalid_type(): void
-    {
-        $this->expectException(SwaggerBakeRunTimeException::class);
-        new OpenApiQueryParam(type: 'blah');
-    }
-
     public function test_constructor_expect_exception_from_missing_name_and_ref(): void
     {
         $this->expectException(SwaggerBakeRunTimeException::class);
         new OpenApiQueryParam();
     }
 
+    public function test_constructor_expect_exception_from_invalid_type(): void
+    {
+        $this->expectException(SwaggerBakeRunTimeException::class);
+        new OpenApiQueryParam(name: 'Name', type: 'invalid');
+    }
 
     private function __setUp(): void
     {
