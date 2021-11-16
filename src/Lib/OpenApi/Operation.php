@@ -59,8 +59,7 @@ class Operation implements JsonSerializable
         $vars = get_object_vars($this);
         $vars = ArrayUtility::convertNullToEmptyString($vars, ['summary','description']);
         $vars['deprecated'] = $vars['isDeprecated'];
-        unset($vars['isDeprecated']);
-        unset($vars['httpMethod']);
+        $vars = ArrayUtility::removeKeysMatching($vars, ['isDeprecated', 'httpMethod', 'sortOrder']);
 
         // remove request body got GET and DELETE
         if (in_array($this->httpMethod, ['GET', 'DELETE']) || empty($vars['requestBody'])) {
