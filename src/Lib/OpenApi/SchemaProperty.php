@@ -78,7 +78,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             $vars,
             [
                 'format','title','description','multipleOf','minimum','maximum','minLength','maxLength','pattern',
-                'minItems','maxItems','minProperties','maxProperties',
+                'minItems','maxItems','minProperties','maxProperties','items','enum',
             ]
         );
 

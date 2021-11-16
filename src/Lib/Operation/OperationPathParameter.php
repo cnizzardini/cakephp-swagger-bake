@@ -54,28 +54,24 @@ class OperationPathParameter
     {
         $pieces = explode('/', $this->route->getTemplate());
         $results = array_filter($pieces, function ($piece) {
-            return str_starts_with($piece, ':');
+            return str_starts_with($piece, ':') || str_starts_with($piece, '{');
         });
 
         $properties = $this->schema instanceof Schema ? $this->schema->getProperties() : [];
 
         foreach ($results as $result) {
-            $name = strtolower($result);
+            $id = str_replace([':','{','}'], ['','',''], strtolower($result));
 
-            if (substr($name, 0, 1) == ':') {
-                $name = substr($name, 1);
-            }
-
-            if (isset($properties[$name])) {
-                $type = $properties[$name]->getType();
-                $format = $properties[$name]->getFormat();
-                $description = $properties[$name]->getDescription();
+            if (isset($properties[$id])) {
+                $type = $properties[$id]->getType();
+                $format = $properties[$id]->getFormat();
+                $description = $properties[$id]->getDescription();
             }
 
             $this->operation->pushParameter(
                 new Parameter(
                     in: 'path',
-                    name: $name,
+                    name: $id,
                     description: $description ?? null,
                     required: true,
                     schema: (new Schema())->setType($type ?? 'string')->setFormat($format ?? '')
