@@ -45,10 +45,10 @@ class SwaggerOperationTest extends TestCase
                     ],
                 ]
             ]);
-/*            $builder->resources('Departments', function (RouteBuilder $routes) {
+            $builder->resources('Departments', function (RouteBuilder $routes) {
                 $routes->resources('DepartmentEmployees');
             });
-            $builder->resources('EmployeeSalaries');*/
+            $builder->resources('EmployeeSalaries');
         });
         $this->router = $router;
 
