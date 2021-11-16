@@ -45,10 +45,10 @@ class SwaggerOperationTest extends TestCase
                     ],
                 ]
             ]);
-            $builder->resources('Departments', function (RouteBuilder $routes) {
+/*            $builder->resources('Departments', function (RouteBuilder $routes) {
                 $routes->resources('DepartmentEmployees');
             });
-            $builder->resources('EmployeeSalaries');
+            $builder->resources('EmployeeSalaries');*/
         });
         $this->router = $router;
 
@@ -199,5 +199,16 @@ class SwaggerOperationTest extends TestCase
         $this->assertArrayHasKey('BearerAuth', $securities[0]);
         $this->assertArrayHasKey('ApiKey', $securities[1]);
         $this->assertCount(2, $securities[0]['BearerAuth']);
+    }
+
+    public function test_path_parameter_is_defined(): void
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+        $operation = $arr['paths']['/employees/{id}']['get'];
+
+        $this->assertEquals('path', $operation['parameters'][0]['in']);
+        $this->assertEquals('id', $operation['parameters'][0]['name']);
+        $this->assertEquals('integer', $operation['parameters'][0]['schema']['type']);
+        $this->assertEquals('int64', $operation['parameters'][0]['schema']['format']);
     }
 }
