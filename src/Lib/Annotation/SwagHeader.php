@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
- * Annotation for describing Header Parameter Objects.
- *
+ * @deprecated Use OpenApiHeader
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
@@ -20,11 +20,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("format",  type = "string"),
  * @Attribute("example",  type = "mixed"),
  * })
- *
- * Read OpenAPI specification for exact usage of the attributes:
- * @see https://swagger.io/specification/ search for "Parameter Object"
- * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
- * @see AbstractParameter
  */
 class SwagHeader extends AbstractParameter
 {

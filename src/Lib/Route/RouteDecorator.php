@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Route;
 
 use Cake\Routing\Route\Route;
+use MixerApi\Core\Model\Model;
 
 /**
  * Class RouteDecorator
@@ -14,47 +15,25 @@ use Cake\Routing\Route\Route;
  */
 class RouteDecorator
 {
-    /**
-     * @var \Cake\Routing\Route\Route
-     */
-    private $route;
+    private Route $route;
 
-    /**
-     * @var string|null
-     */
-    private $name;
+    private ?string $name;
 
-    /**
-     * @var string|null
-     */
-    private $plugin;
+    private ?string $plugin;
 
-    /**
-     * @var string|null
-     */
-    private $controller;
+    private ?string $prefix;
 
-    /**
-     * @var string|null
-     */
-    private $action;
+    private ?string $controller;
 
-    /**
-     * @var array
-     */
-    private $methods = [];
+    private ?string $action;
 
-    /**
-     * @var string|null
-     */
-    private $template;
+    private array $methods = [];
 
-    /**
-     * The controllers fully qualified namespace (e.g. \App\Controller\ActorsController)
-     *
-     * @var string|null
-     */
-    private $controllerFqn;
+    private ?string $template;
+
+    private ?string $controllerFqn = null;
+
+    private ?Model $model = null;
 
     /**
      * @param \Cake\Routing\Route\Route $route Route
@@ -64,17 +43,19 @@ class RouteDecorator
         $defaults = (array)$route->defaults;
 
         $methods = $defaults['_method'];
-        if (!is_array($defaults['_method'])) {
+        if (isset($defaults['_method']) && !is_array($defaults['_method'])) {
             $methods = explode(', ', $defaults['_method']);
         }
 
         $this
+            ->setRoute($route)
             ->setTemplate($route->template)
             ->setName($route->getName())
             ->setPlugin($defaults['plugin'])
-            ->setController($defaults['controller'])
+            ->setPrefix($defaults['prefix'] ?? null)
+            ->setController($defaults['controller'] ?? null)
             ->setAction($defaults['action'])
-            ->setMethods($methods);
+            ->setMethods($methods ?? []);
     }
 
     /**
@@ -116,6 +97,25 @@ class RouteDecorator
     }
 
     /**
+     * @return string|null
+     */
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string|null $prefix The routing prefix, for example "Admin" when controller is in App\Controller\Admin
+     * @return $this
+     */
+    public function setPrefix(?string $prefix)
+    {
+        $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getPlugin(): ?string
@@ -143,10 +143,10 @@ class RouteDecorator
     }
 
     /**
-     * @param string $controller Name of the Controller this route is associated with
+     * @param string|null $controller Name of the Controller this route is associated with
      * @return $this
      */
-    public function setController(string $controller)
+    public function setController(?string $controller)
     {
         $this->controller = $controller;
 
@@ -230,6 +230,25 @@ class RouteDecorator
     }
 
     /**
+     * @return \MixerApi\Core\Model\Model|null
+     */
+    public function getModel(): ?Model
+    {
+        return $this->model;
+    }
+
+    /**
+     * @param \MixerApi\Core\Model\Model|null $model The model associated with this route
+     * @return $this
+     */
+    public function setModel(?Model $model)
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    /**
      * Converts a CakePHP route template to an OpenAPI path
      *
      * @return string
@@ -238,7 +257,7 @@ class RouteDecorator
     {
         $pieces = array_map(
             function ($piece) {
-                if (substr($piece, 0, 1) == ':') {
+                if (str_starts_with($piece, ':')) {
                     return '{' . str_replace(':', '', $piece) . '}';
                 }
 

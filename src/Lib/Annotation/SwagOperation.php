@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
- * Method level annotation for OpenApi Operations
- *
+ * @deprecated Use OpenApiOperation
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({

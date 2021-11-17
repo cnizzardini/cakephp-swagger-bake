@@ -19,23 +19,13 @@ use SwaggerBake\Lib\Utility\DataTypeConversion;
 class SchemaPropertyFactory
 {
     /**
-     * @var \Cake\Validation\Validator
-     */
-    private $validator;
-
-    /**
-     * @var \phpDocumentor\Reflection\DocBlock|null
-     */
-    private $docBlock;
-
-    /**
      * @param \Cake\Validation\Validator $validator Validator
      * @param \phpDocumentor\Reflection\DocBlock|null $docBlock a DocBlock instance of the Entity
      */
-    public function __construct(Validator $validator, ?DocBlock $docBlock = null)
-    {
-        $this->validator = $validator;
-        $this->docBlock = $docBlock;
+    public function __construct(
+        private Validator $validator,
+        private ?DocBlock $docBlock = null
+    ) {
     }
 
     /**

@@ -14,14 +14,14 @@ use JsonSerializable;
 class Content implements JsonSerializable
 {
     /**
-     * @var string
+     * @param string $mimeType A mimetype such as "application/json"
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema An instance of the schema or an OpenApi $ref string
      */
-    private $mimeType;
-
-    /**
-     * @var string|\SwaggerBake\Lib\OpenApi\Schema
-     */
-    private $schema;
+    public function __construct(
+        private string $mimeType,
+        private Schema|string $schema
+    ) {
+    }
 
     /**
      * @return array
@@ -82,7 +82,7 @@ class Content implements JsonSerializable
     /**
      * Can be either a schema $ref string such as '#/components/schemas/Pet' or a Schema instance.
      *
-     * @param string|\SwaggerBake\Lib\OpenApi\Schema $schema Schema
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema Schema
      * @return $this
      */
     public function setSchema($schema)

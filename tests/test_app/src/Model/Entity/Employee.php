@@ -4,17 +4,10 @@ declare(strict_types=1);
 namespace SwaggerBakeTest\App\Model\Entity;
 
 use Cake\ORM\Entity;
-use SwaggerBake\Lib\Annotation as SwagAnnotation;
+use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 
-/**
- * Employee Entity
- * @SwagAnnotation\SwagEntityAttribute(
- *     name="gender", type="string", required=false, enum={"male","female","other"}, example="female"
- * )
- * @SwagAnnotation\SwagEntityAttribute(
- *     name="last_name", type="string", minLength=3, maxLength=59, pattern="/\W/"
- * )
- */
+#[OpenApiSchemaProperty(name: 'gender', example: 'female', enum: ['male','female','other'])]
+#[OpenApiSchemaProperty(name: 'last_name', maxLength: 59, minLength: 3, pattern: '/\W/')]
 class Employee extends Entity
 {
     /**

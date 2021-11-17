@@ -3,17 +3,22 @@ declare(strict_types=1);
 
 namespace SwaggerBakeTest\App\Controller;
 
-use SwaggerBake\Lib\Annotation as Swag;
-use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
+use SwaggerBake\Lib\Attribute\OpenApiDto;
+use SwaggerBake\Lib\Attribute\OpenApiForm;
+use SwaggerBake\Lib\Attribute\OpenApiHeader;
+use SwaggerBake\Lib\Attribute\OpenApiPaginator;
+use SwaggerBake\Lib\Attribute\OpenApiPath;
+use SwaggerBake\Lib\Attribute\OpenApiOperation;
+use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
+use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
+use SwaggerBake\Lib\Attribute\OpenApiResponse;
+use SwaggerBake\Lib\Attribute\OpenApiSecurity;
+use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
 
-/**
- * Employees Controller
- *
- * @Swag\SwagPath(description="description here", summary="summary here")
- * @property \App\Model\Table\EmployeesTable $Employees
- *
- * @method \App\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+#[OpenApiPath(
+    description: 'description here',
+    summary: 'summary here'
+)]
 class EmployeesController extends AppController
 {
     public function initialize() : void
@@ -21,20 +26,19 @@ class EmployeesController extends AppController
         parent::initialize();
 
         $this->loadComponent('Search.Search', [
-            'actions' => ['swagSearch'],
+            'actions' => ['search'],
         ]);
     }
 
     /**
      * Gets Employees
      *
-     * @Swag\SwagOperation(tagNames={"Employees","CustomTag"})
      * @return \Cake\Http\Response|null|void Renders view
      */
+    #[OpenApiOperation(tagNames: ['Employees','CustomTag'])]
     public function index()
     {
         $employees = $this->paginate($this->Employees);
-
         $this->set(compact('employees'));
         $this->viewBuilder()->setOption('serialize', ['employees']);
     }
@@ -80,7 +84,6 @@ class EmployeesController extends AppController
     /**
      * Edit method
      *
-     * @Swag\SwagOperation(showPut=true)
      * @param string|null $id Employee id.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
@@ -110,7 +113,7 @@ class EmployeesController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id)
+    public function delete($id): void
     {
 
     }
@@ -118,83 +121,60 @@ class EmployeesController extends AppController
     /**
      * custom-get summary
      *
-     * @Swag\SwagPaginator
-     * @Swag\SwagQuery(name="queryParamName", type="string", required=false)
-     * @Swag\SwagHeader(name="X-HEAD-ATTRIBUTE", type="string", required=false)
-     * @Swag\SwagSecurity(name="BearerAuth")
-     * @Swag\SwagResponseSchema(refEntity="", description="hello world", httpCode=200)
      * @throws \Cake\Http\Exception\BadRequestException
      * @throws \Cake\Http\Exception\UnauthorizedException
      * @throws \Cake\Http\Exception\ForbiddenException
      * @throws \Exception
      */
-    public function customGet()
+    #[OpenApiSecurity(name: 'BearerAuth')]
+    #[OpenApiQueryParam(name: 'queryParamName', type: "string", isRequired: false)]
+    #[OpenApiHeader(name: 'X-HEAD-ATTRIBUTE', type: 'string', isRequired: true)]
+    #[OpenApiPaginator]
+    #[OpenApiResponse(schemaType: 'object', description: "hello world")]
+    public function customGet(): void
     {
         $hello = 'world';
         $this->set(compact('hello'));
         $this->viewBuilder()->setOption('serialize', ['hello']);
     }
 
-    /**
-     * custom-post summary
-     *
-     * @Swag\SwagRequestBody(description="Hello", ignoreCakeSchema=true)
-     * @Swag\SwagForm(name="fieldName", type="string", required=false)
-     */
-    public function customPost()
+    #[OpenApiRequestBody(description: "Hello", ignoreCakeSchema: true)]
+    #[OpenApiForm(name: "fieldName", type: "string", isRequired: false)]
+    public function customPost(): void
     {
         $hello = 'world';
         $this->set(compact('hello'));
         $this->viewBuilder()->setOption('serialize', ['hello']);
     }
 
-    /**
-     * @Swag\SwagResponseSchema(refEntity="#/components/schemas/Pet")
-     * @Swag\SwagResponseSchema(refEntity="", description="deprecated httpCode still works", httpCode=400)
-     * @Swag\SwagResponseSchema(refEntity="", description="new statusCode", statusCode="404")
-     * @Swag\SwagResponseSchema(refEntity="", description="status code range", statusCode="5XX")
-     */
-    public function customResponseSchema()
+    #[OpenApiResponse(ref: '#/components/schemas/Pet')]
+    #[OpenApiResponse(statusCode: '404', description: "new statusCode")]
+    #[OpenApiResponse(statusCode: '5XX', description: "status code range")]
+    public function customResponseSchema(): void
     {
         $hello = 'world';
         $this->set(compact('hello'));
         $this->viewBuilder()->setOption('serialize', ['hello']);
     }
 
-    /**
-     * @Swag\SwagResponseSchema(schemaItems={"$ref"="#/components/schemas/Pet"})
-     */
-    public function schemaItems()
+    #[OpenApiDto(class: "\SwaggerBakeTest\App\Dto\EmployeeData")]
+    public function dtoQuery(): void
     {
         $hello = 'world';
         $this->set(compact('hello'));
         $this->viewBuilder()->setOption('serialize', ['hello']);
     }
 
-    /**
-     * @Swag\SwagDto(class="\SwaggerBakeTest\App\Dto\EmployeeData")
-     */
-    public function dtoQuery()
+    #[OpenApiDto(class: "\SwaggerBakeTest\App\Dto\EmployeeData")]
+    public function dtoPost(): void
     {
         $hello = 'world';
         $this->set(compact('hello'));
         $this->viewBuilder()->setOption('serialize', ['hello']);
     }
 
-    /**
-     * @Swag\SwagDto(class="\SwaggerBakeTest\App\Dto\EmployeeData")
-     */
-    public function dtoPost()
-    {
-        $hello = 'world';
-        $this->set(compact('hello'));
-        $this->viewBuilder()->setOption('serialize', ['hello']);
-    }
-
-    /**
-     * @SwagSearch(tableClass="\SwaggerBakeTest\App\Model\Table\EmployeesTable")
-     */
-    public function swagSearch()
+    #[OpenApiSearch(tableClass: '\SwaggerBakeTest\App\Model\Table\EmployeesTable')]
+    public function search(): void
     {
         $query = $this->Employees
             ->find('search', [
@@ -207,7 +187,7 @@ class EmployeesController extends AppController
         $this->viewBuilder()->setOption('serialize', ['employees']);
     }
 
-    public function noResponsesDefined()
+    public function noResponsesDefined(): void
     {
         $response = 'nokay';
         $this->set(compact('response'));

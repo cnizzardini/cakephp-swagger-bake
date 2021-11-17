@@ -7,6 +7,9 @@ use SwaggerBake\Lib\Extension\ExtensionInterface;
 
 class ExtensionLoader
 {
+    /**
+     * @var string[]
+     */
     private const EXTENSIONS = [
         '\SwaggerBake\Lib\Extension\CakeSearch\Extension',
     ];
@@ -32,7 +35,6 @@ class ExtensionLoader
                 continue;
             }
 
-            $instance->loadAnnotations();
             $instance->registerListeners();
         }
     }

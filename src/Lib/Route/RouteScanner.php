@@ -19,32 +19,18 @@ class RouteScanner
         'DebugKit',
     ];
 
-    /**
-     * @var \Cake\Routing\Router
-     */
-    private $router;
+    private Router $router;
 
-    /**
-     * @var string
-     */
-    private $prefix;
+    private string $prefix;
 
-    /**
-     * @var int
-     */
-    private $prefixLength = 0;
-
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     /**
      * Array of RouteDecorator instances
      *
      * @var \SwaggerBake\Lib\Route\RouteDecorator[]
      */
-    private $routes;
+    private array $routes;
 
     /**
      * @param \Cake\Routing\Router $router Router
@@ -55,7 +41,6 @@ class RouteScanner
         $this->router = $router;
         $this->config = $config;
         $this->prefix = $config->getPrefix();
-        $this->prefixLength = strlen($this->prefix);
         $this->loadRoutes();
     }
 
@@ -68,7 +53,7 @@ class RouteScanner
     }
 
     /**
-     * Reads RESTful routes from Cakes Router that matches the userland configured prefix
+     * Reads RESTful routes from Cakes Router that matches the user land configured prefix
      *
      * @return void
      * @throws \Exception
@@ -89,21 +74,7 @@ class RouteScanner
                 continue;
             }
 
-            $routeDecorator = new RouteDecorator($route);
-
-            $controller = $routeDecorator->getController();
-
-            $results = array_filter($classes, function ($fqn) use ($controller, $route) {
-                $prefix = !empty($route->defaults['prefix']) ? $route->defaults['prefix'] . '\\' : '';
-
-                return strstr($fqn, '\\' . $prefix . $controller . 'Controller');
-            });
-
-            if (count($results) === 1) {
-                $routeDecorator->setControllerFqn('\\' . reset($results));
-            }
-
-            $routes[$route->getName()] = $routeDecorator;
+            $routes[$route->getName()] = $this->createRouteDecorator($route, $classes);
         }
 
         ksort($routes);
@@ -112,15 +83,38 @@ class RouteScanner
     }
 
     /**
+     * Creates a RouteDecorator from a route. The $classes argument should provide a list of all controller classes
+     * so the route can be matched to a Controller class.
+     *
+     * @param \Cake\Routing\Route\Route $route The Route to be decorated
+     * @param array $classes An array of controller classes
+     * @return \SwaggerBake\Lib\Route\RouteDecorator
+     */
+    private function createRouteDecorator(Route $route, array $classes): RouteDecorator
+    {
+        $routeDecorator = new RouteDecorator($route);
+        $path = 'Controller\\';
+        $path .= $routeDecorator->getPrefix() ? $routeDecorator->getPrefix() . '\\' : '';
+        $path .= $routeDecorator->getController() . 'Controller';
+
+        $results = array_filter($classes, function ($fqn) use ($path) {
+            return str_contains($fqn, $path);
+        });
+
+        if (count($results) === 1) {
+            $routeDecorator->setControllerFqn('\\' . reset($results));
+        }
+
+        return $routeDecorator;
+    }
+
+    /**
      * @param \Cake\Routing\Route\Route $route Route
      * @return bool
      */
     private function isRouteAllowed(Route $route): bool
     {
-        if (substr($route->template, 0, $this->prefixLength) != $this->prefix) {
-            return false;
-        }
-        if (substr($route->template, $this->prefixLength) == '') {
+        if (!str_starts_with($route->template, $this->prefix) || empty($route->template)) {
             return false;
         }
 

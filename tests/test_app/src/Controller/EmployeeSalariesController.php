@@ -3,19 +3,14 @@ declare(strict_types=1);
 
 namespace SwaggerBakeTest\App\Controller;
 
-use SwaggerBake\Lib\Annotation\SwagQuery;
-use SwaggerBake\Lib\Annotation\SwagPaginator;
+use SwaggerBake\Lib\Attribute\OpenApiPaginator;
 
 /**
  * EmployeeSalaries Controller
  */
 class EmployeeSalariesController extends AppController
 {
-    /**
-     * Index method
-     * @SwagPaginator
-     * @return \Cake\Http\Response|null|void Renders view
-     */
+    #[OpenApiPaginator]
     public function index()
     {
         $this->paginate = [

@@ -7,9 +7,8 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use SwaggerBake\Lib\Annotation as SwagAnnotation;
 
 /**
- * Class AnnotationLoader
- *
- * @package SwaggerBake\Lib
+ * @deprecated This class is marked for removal in v2.1.0
+ * @codeCoverageIgnore
  */
 class AnnotationLoader
 {

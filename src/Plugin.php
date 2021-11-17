@@ -19,6 +19,23 @@ use SwaggerBake\Lib\ExtensionLoader;
 class Plugin extends BasePlugin
 {
     /**
+     * Plugin name.
+     *
+     * @var string
+     */
+    protected $name = 'SwaggerBake';
+
+    /**
+     * @var bool
+     */
+    protected $routes = false;
+
+    /**
+     * @var bool
+     */
+    protected $middleware = false;
+
+    /**
      * @param \Cake\Core\PluginApplicationInterface $app PluginApplicationInterface
      * @return void
      */
@@ -26,7 +43,6 @@ class Plugin extends BasePlugin
     {
         if (file_exists(CONFIG . 'swagger_bake.php')) {
             Configure::load('swagger_bake', 'default');
-            AnnotationLoader::load();
             ExtensionLoader::load();
 
             return;
@@ -35,6 +51,8 @@ class Plugin extends BasePlugin
         if (PHP_SAPI !== 'cli') {
             triggerWarning('SwaggerBake configuration file `config/swagger_bake.php` is missing');
         }
+
+        AnnotationLoader::load();
     }
 
     /**

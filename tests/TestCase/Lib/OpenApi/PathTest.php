@@ -10,12 +10,13 @@ class PathTest extends TestCase
 {
     public function test_get_set(): void
     {
-        $path = (new Path())
-            ->setDescription($desc = '1')
-            ->setSummary($s = '2')
-            ->setRef($r = 'r')
-            ->setOperations([(new Operation())->setHttpMethod('GET')])
-        ;
+        $path = new Path(
+            resource: '/pet',
+            operations: [new Operation('hello', 'get')],
+            ref: $r = 'r',
+            summary: $s = '1',
+            description: $desc = '1',
+        );
 
         $this->assertEquals($desc, $path->getDescription());
         $this->assertEquals($s, $path->getSummary());

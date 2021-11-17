@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
+use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
  * Class Schema
@@ -15,11 +17,6 @@ use JsonSerializable;
 class Schema implements JsonSerializable, SchemaInterface
 {
     use SchemaTrait;
-
-    /**
-     * @var string
-     */
-    public const SCHEMA = '#/x-swagger-bake/components/schemas/';
 
     /**
      * @var string|null
@@ -78,6 +75,15 @@ class Schema implements JsonSerializable, SchemaInterface
      */
     private $isPublic = true;
 
+    private int $visibility = OpenApiSchema::VISIBILE_DEFAULT;
+
+    /**
+     * The openapi ref location (e.g. #/components/schemas/Model)
+     *
+     * @var string|null
+     */
+    private $refPath;
+
     /**
      * @return array
      */
@@ -86,9 +92,7 @@ class Schema implements JsonSerializable, SchemaInterface
         $vars = get_object_vars($this);
 
         // always unset
-        foreach (['name','refEntity','isPublic'] as $v) {
-            unset($vars[$v]);
-        }
+        $vars = ArrayUtility::removeKeysMatching($vars, ['name','refEntity','isPublic', 'refPath','visibility']);
 
         if (empty($vars['required'])) {
             unset($vars['required']);
@@ -102,11 +106,15 @@ class Schema implements JsonSerializable, SchemaInterface
         }
 
         // remove null or empty properties to avoid swagger.json clutter
-        foreach (['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml'] as $v) {
-            if (array_key_exists($v, $vars) && (empty($vars[$v]) || is_null($vars[$v]))) {
-                unset($vars[$v]);
-            }
-        }
+        $vars = ArrayUtility::removeEmptyAndNullValues(
+            $vars,
+            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml']
+        );
+
+        $vars = ArrayUtility::removeEmptyAndNullValues(
+            $vars,
+            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml']
+        );
 
         // remove null properties only
         foreach (['description'] as $v) {
@@ -219,11 +227,11 @@ class Schema implements JsonSerializable, SchemaInterface
      */
     public function pushProperty(SchemaInterface $property)
     {
-        if (empty($property->getName())) {
-            throw new \LogicException(
-                'Name must be set on ' . get_class($property)
-            );
-        }
+        /*        if (empty($property->getName())) {
+                    throw new \LogicException(
+                        'Name must be set on ' . get_class($property)
+                    );
+                }*/
 
         $this->properties[$property->getName()] = $property;
 
@@ -264,7 +272,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param string[] $items Items
+     * @param array $items Items
      * @return $this
      */
     public function setItems(array $items)
@@ -402,38 +410,6 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @return string
-     */
-    public function getWriteSchemaRef(): string
-    {
-        return self::SCHEMA . $this->getWriteSchemaName();
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddSchemaRef(): string
-    {
-        return self::SCHEMA . $this->getAddSchemaName();
-    }
-
-    /**
-     * @return string
-     */
-    public function getEditSchemaRef(): string
-    {
-        return self::SCHEMA . $this->getEditSchemaName();
-    }
-
-    /**
-     * @return string
-     */
-    public function getReadSchemaRef(): string
-    {
-        return self::SCHEMA . $this->getReadSchemaName();
-    }
-
-    /**
      * @return bool
      */
     public function isPublic(): bool
@@ -448,6 +424,44 @@ class Schema implements JsonSerializable, SchemaInterface
     public function setIsPublic(bool $isPublic)
     {
         $this->isPublic = $isPublic;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVisibility(): int
+    {
+        return $this->visibility;
+    }
+
+    /**
+     * @param int $visibility See OpenApiSchema class constants
+     * @return $this
+     */
+    public function setVisibility(int $visibility)
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRefPath(): ?string
+    {
+        return $this->refPath;
+    }
+
+    /**
+     * @param string $refPath the openapi ref location (e.g. #/components/schemas/Model)
+     * @return $this
+     */
+    public function setRefPath(string $refPath)
+    {
+        $this->refPath = $refPath;
 
         return $this;
     }

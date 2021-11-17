@@ -5,15 +5,12 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use phpDocumentor\Reflection\DocBlockFactory;
-use SwaggerBake\Lib\Annotation\SwagResponseSchema;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
-use SwaggerBake\Lib\OpenApi\Response;
-use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Operation\OperationResponse;
 use SwaggerBake\Lib\Route\RouteScanner;
+use SwaggerBakeTest\App\Controller\EmployeesController;
 
 class OperationResponseYamlTest extends TestCase
 {
@@ -79,11 +76,10 @@ class OperationResponseYamlTest extends TestCase
         $operationResponse = new OperationResponse(
             $swagger,
             $this->config,
-            new Operation(),
-            DocBlockFactory::createInstance()->create('/** @throws Exception */'),
-            [],
+            new Operation('hello', 'get'),
             $route,
-            $swagger->getArray()['components']['schemas']['Employee']
+            $swagger->getArray()['components']['schemas']['Employee'],
+            (new \ReflectionClass(EmployeesController::class))->getMethod('view')
         );
 
         $schema = $operationResponse

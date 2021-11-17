@@ -6,14 +6,13 @@ namespace SwaggerBake\Lib\Annotation;
 use InvalidArgumentException;
 
 /**
- * Method level annotation for building query or form parameters from a DataTransferObject.
- *
+ * @deprecated Use OpenApiDto instead
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
  * @Attribute("class", type = "string")
  * })
- * @see https://github.com/cnizzardini/cakephp-swagger-bake for example DTO
  */
 class SwagDto
 {

@@ -5,19 +5,23 @@ namespace SwaggerBake\Test\TestCase\Lib\MediaType;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\AnnotationLoader;
+use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\Model\ModelScanner;
-use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\Operation\OperationResponseAssociation;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
 
 class HalJsonTest extends TestCase
 {
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
+        'plugin.SwaggerBake.DepartmentEmployees',
     ];
 
     /**
@@ -55,48 +59,69 @@ class HalJsonTest extends TestCase
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
         ], SWAGGER_BAKE_TEST_APP);
-
-        AnnotationLoader::load();
     }
 
-    public function test_collection(): void
+    /**
+     * Employee hasMany DepartmentEmployees
+     * DepartmentEmployees hasOne Department
+     */
+    public function test_item_with_association(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
+        $routes = $cakeRoute->getRoutes();
 
-        /** @var \SwaggerBake\Lib\OpenApi\Path $path */
-        $path = $swagger->getArray()['paths']['/employees'];
-        $content = $path->getOperations()['get']->getResponses()['200']->getContent()['application/hal+json'];
-        $schema = $content->getSchema();
+        $schema = (new OperationResponseAssociation(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $routes['employees:view'],
+            null
+        ))->build(new OpenApiResponse(
+            associations: ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
+        ));
 
-        $this->assertEquals(HalJson::HAL_COLLECTION, $schema->getAllOf()[0]['$ref']);
-        $this->assertEquals(
-            HalJson::HAL_ITEM,
-            $schema->getProperties()['_embedded']->getItems()['allOf'][0]['$ref']
-        );
-        $this->assertEquals(
-            Schema::SCHEMA . 'Employee-Read',
-            $schema->getProperties()['_embedded']->getItems()['allOf'][1]['$ref']
-        );
-    }
+        $schema = (new HalJson())->buildSchema($schema, 'object');
+        $object = json_decode(json_encode($schema->jsonSerialize()));
 
-    public function test_item(): void
-    {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
-
-        /** @var \SwaggerBake\Lib\OpenApi\Path $path */
-        $path = $swagger->getArray()['paths']['/employees/{id}'];
-        $content = $path->getOperations()['get']->getResponses()['200']->getContent()['application/hal+json'];
-        $schema = $content->getSchema();
+        $this->assertTrue(isset($object->items->properties->_embedded->items->allOf));
 
         $this->assertEquals(
             HalJson::HAL_ITEM,
-            $schema->getAllOf()[0]['$ref']
+            $object->items->properties->_embedded->items->allOf[0]->{'$ref'}
         );
+
         $this->assertEquals(
-            Schema::SCHEMA . 'Employee-Read',
-            $schema->getAllOf()[1]['$ref']
+            '#/x-swagger-bake/components/schemas/DepartmentEmployee-Read',
+            $object->items->properties->_embedded->items->allOf[1]->{'$ref'}
         );
+    }
+
+    /**
+     * Employee hasMany DepartmentEmployees
+     * DepartmentEmployees hasOne Department
+     */
+    public function test_item_collection_association(): void
+    {
+        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $routes = $cakeRoute->getRoutes();
+
+        $schema = (new OperationResponseAssociation(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $routes['employees:view'],
+            null
+        ))->build(new OpenApiResponse(
+            schemaType: 'array',
+            associations: ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
+        ));
+
+        $schema = (new HalJson())->buildSchema($schema, 'array');
+        $object = json_decode(json_encode($schema->jsonSerialize()));
+
+        $this->assertEquals(HalJson::HAL_COLLECTION, $object->allOf[0]->{'$ref'});
+
+        $this->assertTrue(isset($object->properties->_embedded->items->properties->_embedded->items->allOf));
+
+        $allOf = $object->properties->_embedded->items->properties->_embedded->items->allOf;
+
+        $this->assertEquals(HalJson::HAL_ITEM, $allOf[0]->{'$ref'});
+        $this->assertEquals('#/x-swagger-bake/components/schemas/DepartmentEmployee-Read', $allOf[1]->{'$ref'});
     }
 }

@@ -20,11 +20,6 @@ class ConfigurationTest extends TestCase
         (new Configuration())->set('nope', 'value');
     }
 
-    public function test_get_hot_reload(): void
-    {
-        $this->assertFalse(@(new Configuration())->getHotReload());
-    }
-
     public function test_get_doc_type(): void
     {
         $this->assertEquals('swagger', (new Configuration())->getDocType());

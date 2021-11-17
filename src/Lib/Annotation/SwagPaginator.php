@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
- * Method level annotation for adding CakePHP Paginator query parameters: page, limit, sort, and direction.
- *
+ * @deprecated Use OpenApiPaginator
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"METHOD"})
  * @Target({"METHOD"})
@@ -13,7 +13,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("sortEnum", type="array"),
  * @Attribute("useSortTextInput", type="bool")
  * })
- * @see https://book.cakephp.org/4/en/controllers/components/pagination.html
  */
 class SwagPaginator
 {

@@ -10,31 +10,25 @@ class ParameterTest extends TestCase
 {
     public function test_get_set(): void
     {
-        $obj = (new Parameter())
-            ->setIn($in = 'query')
-            ->setStyle($style = 'test')
-        ;
-
-        $this->assertEquals($in, $obj->getIn());
-        $this->assertEquals($style, $obj->getStyle());
-    }
-
-    public function test_toArray_logic_exception(): void
-    {
-        $this->expectException(\LogicException::class);
-        (new Parameter())->toArray();
+        $parameter = new Parameter(
+            in: $in = 'query',
+            name: 'test',
+            style: $style = 'test'
+        );
+        $this->assertEquals($in, $parameter->getIn());
+        $this->assertEquals($style, $parameter->getStyle());
     }
 
     public function test_jsonSerialize_returns_ref(): void
     {
         $this->assertEquals(
-            'string', (new Parameter())->setIn('query')->setRef('string')->jsonSerialize()['$ref']
+            'string', (new Parameter('query','string'))->jsonSerialize()['$ref']
         );
     }
 
     public function test_setIn_throws_invalid_arg_exception(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        (new Parameter())->setIn('nope');
+        new Parameter('nope', 'ref');
     }
 }

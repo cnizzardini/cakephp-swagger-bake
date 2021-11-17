@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
+ * @deprecated Use OpenApiPath
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"CLASS"})
  * @Attributes({

@@ -8,29 +8,27 @@ use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\AnnotationLoader;
+
 use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
 class SwaggerTest extends TestCase
 {
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.DepartmentEmployees',
         'plugin.SwaggerBake.Departments',
         'plugin.SwaggerBake.Employees',
     ];
 
-    /**
-     * @var Router
-     */
-    private $router;
+    private Router $router;
 
-    /**
-     * @var array
-     */
-    private $config;
+    private array $config;
 
     public function setUp(): void
     {
@@ -73,29 +71,20 @@ class SwaggerTest extends TestCase
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
         ];
-
-        AnnotationLoader::load();
     }
 
-    public function testGetArrayWithExistingPathsAndSchema()
+    public function test_get_mixing_static_yaml_and_dynamic_openapi(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-
         $cakeRoute = new RouteScanner($this->router, $config);
+        $openApi = (new Swagger(new ModelScanner($cakeRoute, $config)))->getArray();
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
-
-        $jsonString = $swagger->toString();
-        $this->assertStringContainsString('"\/departments"', $jsonString);
-        $this->assertStringContainsString("\n", $jsonString);
-
-        $arr = json_decode($swagger->toString(), true);
-
-        $this->assertArrayHasKey('/pets', $arr['paths']);
-        $this->assertArrayHasKey('Pets', $arr['components']['schemas']);
+        $this->assertArrayHasKey('/departments', $openApi['paths']);
+        $this->assertArrayHasKey('/pets', $openApi['paths']);
+        $this->assertArrayHasKey('Pets', $openApi['components']['schemas']);
     }
 
-    public function testGetArrayFromBareBones()
+    public function test_get_array_from_bare_bones(): void
     {
         $vars = $this->config;
         $vars['yml'] = '/config/swagger-bare-bones.yml';
@@ -110,7 +99,7 @@ class SwaggerTest extends TestCase
         $this->assertArrayHasKey('Department', $arr['components']['schemas']);
     }
 
-    public function testCustomJsonOptions()
+    public function test_custom_json_options(): void
     {
         $vars = $this->config;
         $vars['jsonOptions'] = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
@@ -129,5 +118,21 @@ class SwaggerTest extends TestCase
 
         $this->assertArrayHasKey('/pets', $arr['paths']);
         $this->assertArrayHasKey('Pets', $arr['components']['schemas']);
+    }
+
+    public function test_http_put_on_edit_action(): void
+    {
+        $vars = $this->config;
+        $vars['editActionMethods'] = ['PUT'];
+        $config = new Configuration($vars, SWAGGER_BAKE_TEST_APP);
+
+        $cakeRoute = new RouteScanner($this->router, $config);
+
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
+        $openApi = $swagger->getArray();
+        /** @var Path $path */
+        $path = $openApi['paths']['/employees/{id}'];
+        $this->assertArrayHasKey('put', $path->getOperations());
+        $this->assertArrayNotHasKey('patch', $path->getOperations());
     }
 }

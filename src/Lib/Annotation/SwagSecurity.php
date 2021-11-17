@@ -6,6 +6,8 @@ namespace SwaggerBake\Lib\Annotation;
 use InvalidArgumentException;
 
 /**
+ * @deprecated Use OpenApiSecurity
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({

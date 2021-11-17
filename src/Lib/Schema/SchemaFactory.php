@@ -11,8 +11,9 @@ use MixerApi\Core\Model\Model;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
-use SwaggerBake\Lib\Annotation\SwagEntity;
-use SwaggerBake\Lib\Annotation\SwagEntityAttribute;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
+use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
@@ -25,43 +26,77 @@ use SwaggerBake\Lib\Utility\AnnotationUtility;
  */
 class SchemaFactory
 {
-    /**
-     * @var \Cake\Validation\Validator
-     */
-    private $validator;
+    private Validator $validator;
 
     /**
-     * @var string
+     * @var int
      */
     public const WRITEABLE_PROPERTIES = 2;
 
     /**
-     * @var string
+     * @var int
      */
     public const READABLE_PROPERTIES = 4;
 
     /**
-     * @var string
+     * @var int
      */
     public const ALL_PROPERTIES = 6;
 
     /**
-     * Creates an instance of Schema for an ModelDecorator, returns null if the Entity is set to invisible
+     * Creates an instance of Schema for an ModelDecorator, returns null if the Entity is set never visible.
      *
      * @param \SwaggerBake\Lib\Model\ModelDecorator $modelDecorator ModelDecorator
-     * @param int $propertyType see public constants for o
+     * @param int $propertyType see public constants for options
      * @return \SwaggerBake\Lib\OpenApi\Schema|null
      * @throws \ReflectionException
      */
     public function create(ModelDecorator $modelDecorator, int $propertyType = 6): ?Schema
     {
-        $model = $modelDecorator->getModel();
-        $swagEntity = $this->getSwagEntityAnnotation($model->getEntity());
+        $reflection = new ReflectionClass($modelDecorator->getModel()->getEntity());
+        $openApiSchema = (new AttributeFactory($reflection, OpenApiSchema::class))->createOneOrNull();
 
-        if ($swagEntity !== null && $swagEntity->isVisible === false) {
+        if ($openApiSchema instanceof OpenApiSchema && $openApiSchema->visibility === OpenApiSchema::VISIBILE_NEVER) {
             return null;
         }
 
+        $schema = $this
+            ->createSchema($modelDecorator->getModel(), $propertyType)
+            ->setVisibility($openApiSchema->visibility ?? OpenApiSchema::VISIBILE_DEFAULT)
+            ->setDescription($openApiSchema->description ?? '');
+
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.Schema.created', $schema, [
+                'modelDecorator' => $modelDecorator,
+            ])
+        );
+
+        AnnotationUtility::checkClassAnnotationsFromInstance($modelDecorator->getModel()->getEntity());
+
+        return $schema;
+    }
+
+    /**
+     * Same as create() except this does not check SwagEntity options or dispatch an event and will always create a
+     * Schema. Using create(), its possible null is returned based on SwagEntity options.
+     *
+     * @param \SwaggerBake\Lib\Model\ModelDecorator $modelDecorator ModelDecorator
+     * @param int $propertyType see public constants for options
+     * @return \SwaggerBake\Lib\OpenApi\Schema
+     * @throws \ReflectionException
+     */
+    public function createAlways(ModelDecorator $modelDecorator, int $propertyType = 6): Schema
+    {
+        return $this->createSchema($modelDecorator->getModel(), $propertyType);
+    }
+
+    /**
+     * @param \MixerApi\Core\Model\Model $model Model instance
+     * @param int $propertyType see public constants for options
+     * @return \SwaggerBake\Lib\OpenApi\Schema
+     */
+    private function createSchema(Model $model, int $propertyType = 6): Schema
+    {
         $this->validator = $this->getValidator($model);
 
         $docBlock = $this->getDocBlock($model->getEntity());
@@ -70,10 +105,8 @@ class SchemaFactory
 
         $schema = (new Schema())
             ->setName((new ReflectionClass($model->getEntity()))->getShortName())
-            ->setDescription($swagEntity->description)
             ->setType('object')
-            ->setProperties($properties)
-            ->setIsPublic($swagEntity->isPublic);
+            ->setProperties($properties);
 
         if (empty($schema->getDescription())) {
             $schema->setDescription($docBlock ? $docBlock->getSummary() : null);
@@ -86,12 +119,6 @@ class SchemaFactory
         if (!empty($requiredProperties)) {
             $schema->setRequired(array_keys($requiredProperties));
         }
-
-        EventManager::instance()->dispatch(
-            new Event('SwaggerBake.Schema.created', $schema, [
-                'modelDecorator' => $modelDecorator,
-            ])
-        );
 
         return $schema;
     }
@@ -111,7 +138,7 @@ class SchemaFactory
             $return[$property->getName()] = $factory->create($property);
         }
 
-        $return = array_merge($return, $this->getSwagPropertyAnnotations($model));
+        $return = array_merge($return, $this->getPropertyAnnotations($model));
 
         if ($propertyType === self::ALL_PROPERTIES) {
             return $return;
@@ -155,43 +182,22 @@ class SchemaFactory
      *
      * @param \MixerApi\Core\Model\Model $model Model
      * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * @throws \ReflectionException
      */
-    private function getSwagPropertyAnnotations(Model $model): array
+    private function getPropertyAnnotations(Model $model): array
     {
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiSchemaProperty[] $attributes */
+        $attributes = (new AttributeFactory(
+            new ReflectionClass($model->getEntity()),
+            OpenApiSchemaProperty::class
+        ))->createMany();
+
         $return = [];
-
-        $annotations = AnnotationUtility::getClassAnnotationsFromInstance($model->getEntity());
-
-        $swagEntityAttributes = array_filter($annotations, function ($annotation) {
-            return $annotation instanceof SwagEntityAttribute;
-        });
-
-        $factory = new SchemaPropertyFromAnnotationFactory();
-
-        foreach ($swagEntityAttributes as $swagEntityAttribute) {
-            $return[$swagEntityAttribute->name] = $factory->create($swagEntityAttribute);
+        foreach ($attributes as $attribute) {
+            $return[$attribute->name] = $attribute->create();
         }
 
         return $return;
-    }
-
-    /**
-     * Returns instance of SwagEntity annotation
-     *
-     * @param \Cake\Datasource\EntityInterface $entity EntityInterface
-     * @return \SwaggerBake\Lib\Annotation\SwagEntity
-     */
-    private function getSwagEntityAnnotation(EntityInterface $entity): SwagEntity
-    {
-        $annotations = AnnotationUtility::getClassAnnotationsFromInstance($entity);
-
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof SwagEntity) {
-                return $annotation;
-            }
-        }
-
-        return new SwagEntity([]);
     }
 
     /**

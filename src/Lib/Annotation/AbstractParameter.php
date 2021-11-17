@@ -8,11 +8,8 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Utility\OpenApiDataType;
 
 /**
- * Read OpenAPI specification for exact usage of the attributes:
- *
- * @see http://spec.openapis.org/oas/v3.0.3#fixed-fields-9
- * @see https://swagger.io/specification/ search for "Parameter Object"
- * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
+ * @deprecated
+ * @codeCoverageIgnore
  */
 abstract class AbstractParameter
 {

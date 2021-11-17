@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
- * Method level annotation for adding form data fields.
- *
- * For use with application/x-www-form-urlencoded request bodies.
- *
+ * @deprecated Use OpenApiForm
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({

@@ -6,8 +6,15 @@ namespace SwaggerBake\Lib\MediaType;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
-class JsonLd extends AbstractMediaType
+/**
+ * Builds sample response schema for JSON-LD
+ *
+ * @internal
+ */
+final class JsonLd implements MediaTypeInterface
 {
+    use MediaTypeTrait;
+
     /**
      * @var string
      */
@@ -19,25 +26,31 @@ class JsonLd extends AbstractMediaType
     public const JSONLD_COLLECTION = '#/x-swagger-bake/components/schemas/JsonLd-Collection';
 
     /**
-     * Returns JSON-LD schema
-     *
-     * @param string $action controller action (e.g. add, index, view, edit, delete)
-     * @return \SwaggerBake\Lib\OpenApi\Schema
+     * @inheritDoc
      */
-    public function buildSchema(string $action): Schema
+    public function buildSchema(Schema|string $schema, string $schemaType): Schema
     {
-        if ($action == 'index') {
-            return $this->collection();
-        }
+        $this->validateSchemaType($schemaType);
 
-        return $this->item();
+        return $schemaType === 'array' ? $this->collection($schema) : $this->item($schema);
     }
 
     /**
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema instance of Schema or an OpenAPI $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function collection(): Schema
+    private function collection(Schema|string $schema): Schema
     {
+        if ($schema instanceof Schema) {
+            $items = [
+                'allOf' => [
+                    ['$ref' => self::JSONLD_ITEM],
+                ],
+                'type' => 'object',
+                'properties' => $this->recursion($schema->getProperties()),
+            ];
+        }
+
         return (new Schema())
             ->setAllOf([
                 ['$ref' => self::JSONLD_COLLECTION],
@@ -46,26 +59,72 @@ class JsonLd extends AbstractMediaType
                 (new SchemaProperty())
                     ->setName('member')
                     ->setType('array')
-                    ->setItems([
+                    ->setItems($items ?? [
                         'type' => 'object',
                         'allOf' => [
                             ['$ref' => self::JSONLD_ITEM],
-                            ['$ref' => $this->ref],
+                            ['$ref' => $schema],
                         ],
                     ]),
             ]);
     }
 
     /**
+     * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema instance of Schema or an OpenAPI $ref string
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function item(): Schema
+    private function item(Schema|string $schema): Schema
     {
+        if ($schema instanceof Schema) {
+            return (new Schema())
+                ->setAllOf([
+                    ['$ref' => self::JSONLD_ITEM],
+                ])
+                ->setItems([
+                    'type' => 'object',
+                    'properties' => $this->recursion($schema->getProperties()),
+                ])
+                ->setProperties([]);
+        }
+
         return (new Schema())
             ->setAllOf([
                 ['$ref' => self::JSONLD_ITEM],
-                ['$ref' => $this->ref],
+                ['$ref' => $schema],
             ])
             ->setProperties([]);
+    }
+
+    /**
+     * @todo this method needs to actually be recursive
+     * @param \SwaggerBake\Lib\OpenApi\SchemaProperty[] $properties an array of SchemaProperty
+     * @return array
+     */
+    private function recursion(array $properties): array
+    {
+        foreach ($properties as $key => $property) {
+            if (!in_array($property->getType(), ['object','array'])) {
+                continue;
+            }
+
+            unset($properties[$key]);
+            $items = $property->getItems();
+            $items['allOf'][] = ['$ref' => self::JSONLD_ITEM];
+            if ($property->getRefEntity()) {
+                $items['allOf'][] = ['$ref' => $property->getRefEntity()];
+            }
+
+            if ($property->getType() === 'object') {
+                $properties[$key] = $items;
+            } else {
+                if (isset($items['$ref'])) {
+                    $items['allOf'][] = ['$ref' => $items['$ref']];
+                    unset($items['$ref']);
+                }
+                $properties[$key]['items'] = $items;
+            }
+        }
+
+        return $properties;
     }
 }

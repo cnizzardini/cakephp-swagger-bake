@@ -3,73 +3,53 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
+use Cake\Routing\Route\Route;
 use InvalidArgumentException;
 use JsonSerializable;
+use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
  * Class Operation
  *
  * @package SwaggerBake\Lib\OpenApi
  * @see https://swagger.io/docs/specification/paths-and-operations/
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Operation implements JsonSerializable
 {
     /**
-     * @var string
+     * @param string $operationId OpenApi Operation Id
+     * @param string $httpMethod The HTTP method
+     * @param string|null $summary An optional short summary
+     * @param string|null $description An optional description
+     * @param array $tags OpenApi tags
+     * @param \SwaggerBake\Lib\OpenApi\OperationExternalDoc|null $externalDocs Optional External Documentation
+     * @param \SwaggerBake\Lib\OpenApi\RequestBody|null $requestBody Optional request body
+     * @param array $parameters A mixed array of OpenApi Parameter and/or OpenApi $ref
+     * @param \SwaggerBake\Lib\OpenApi\Response[] $responses Array of OpenApi Response
+     * @param \SwaggerBake\Lib\OpenApi\PathSecurity[] $security Array of OpenApi PathSecurity
+     * @param bool $isDeprecated Is this operation deprecated?
+     * @param int $sortOrder The sort order, by default uses the order of methods in the controller.
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
-    private $summary = '';
-
-    /**
-     * @var string
-     */
-    private $description = '';
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\OperationExternalDoc|null
-     */
-    private $externalDocs;
-
-    /**
-     * @var string
-     */
-    private $httpMethod = '';
-
-    /**
-     * @var string[]
-     */
-    private $tags = [];
-
-    /**
-     * @var string
-     */
-    private $operationId = '';
-
-    /**
-     * Mixed array of either \SwaggerBake\Lib\OpenApi\Parameter or array for $ref items
-     *
-     * @var mixed
-     */
-    private $parameters = [];
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\RequestBody|null
-     */
-    private $requestBody;
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Response[]
-     */
-    private $responses = [];
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\PathSecurity[]
-     */
-    private $security = [];
-
-    /**
-     * @var bool
-     */
-    private $deprecated = false;
+    public function __construct(
+        private string $operationId,
+        private string $httpMethod,
+        private ?string $summary = null,
+        private ?string $description = null,
+        private array $tags = [],
+        private ?OperationExternalDoc $externalDocs = null,
+        private ?RequestBody $requestBody = null,
+        private array $parameters = [],
+        private array $responses = [],
+        private array $security = [],
+        private bool $isDeprecated = false,
+        private int $sortOrder = 100
+    ) {
+        $this->setHttpMethod($httpMethod);
+        $this->setParameters($parameters);
+        $this->setSecurity($security);
+    }
 
     /**
      * @return array
@@ -77,22 +57,29 @@ class Operation implements JsonSerializable
     public function toArray(): array
     {
         $vars = get_object_vars($this);
-        unset($vars['httpMethod']);
+        $vars = ArrayUtility::convertNullToEmptyString($vars, ['summary','description']);
+        $vars['deprecated'] = $vars['isDeprecated'];
+        $vars = ArrayUtility::removeKeysMatching($vars, ['isDeprecated', 'httpMethod', 'sortOrder']);
 
+        // remove request body got GET and DELETE
         if (in_array($this->httpMethod, ['GET', 'DELETE']) || empty($vars['requestBody'])) {
             unset($vars['requestBody']);
         }
-        if (empty($vars['security'])) {
-            unset($vars['security']);
-        } else {
+
+        // remove openapi properties that are not required (if they are empty)
+        $vars = ArrayUtility::removeEmptyVars($vars, ['security', 'externalDocs']);
+
+        // security should be numerically indexed
+        if (isset($vars['security'])) {
             $vars['security'] = array_values($vars['security']);
         }
-        if (empty($vars['externalDocs'])) {
-            unset($vars['externalDocs']);
-        }
-        if (empty($this->requestBody) || count($this->requestBody->getContent()) === 0) {
+
+        // if request body content is empty remove it
+        if ($this->requestBody && count($this->requestBody->getContent()) === 0) {
             unset($vars['requestBody']);
         }
+
+        // parameters should be numerically indexed
         if (!empty($vars['parameters'])) {
             $vars['parameters'] = array_values($vars['parameters']);
         }
@@ -143,12 +130,10 @@ class Operation implements JsonSerializable
      */
     public function setHttpMethod(string $httpMethod)
     {
-        $httpMethod = strtoupper($httpMethod);
-        if (!in_array($httpMethod, ['GET','PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'])) {
-            throw new InvalidArgumentException("Invalid HTTP METHOD: $httpMethod");
+        $this->httpMethod = strtoupper($httpMethod);
+        if (!in_array($this->httpMethod, Route::VALID_METHODS)) {
+            throw new InvalidArgumentException("Invalid HTTP method given: `$this->httpMethod`");
         }
-
-        $this->httpMethod = $httpMethod;
 
         return $this;
     }
@@ -204,7 +189,7 @@ class Operation implements JsonSerializable
      * @param string $name name of the parameter
      * @return \SwaggerBake\Lib\OpenApi\Parameter
      */
-    public function getParameterByTypeAndName($type, $name): Parameter
+    public function getParameterByTypeAndName(string $type, string $name): Parameter
     {
         if (!in_array($type, Parameter::IN)) {
             throw new InvalidArgumentException(
@@ -213,7 +198,6 @@ class Operation implements JsonSerializable
         }
 
         $index = "$type:$name";
-
         if (!isset($this->parameters[$index])) {
             throw new InvalidArgumentException("Parameter $index not found");
         }
@@ -370,7 +354,7 @@ class Operation implements JsonSerializable
      */
     public function isDeprecated(): bool
     {
-        return $this->deprecated;
+        return $this->isDeprecated;
     }
 
     /**
@@ -379,15 +363,15 @@ class Operation implements JsonSerializable
      */
     public function setDeprecated(bool $deprecated)
     {
-        $this->deprecated = $deprecated;
+        $this->isDeprecated = $deprecated;
 
         return $this;
     }
 
     /**
-     * @return \SwaggerBake\Lib\OpenApi\OperationExternalDoc
+     * @return \SwaggerBake\Lib\OpenApi\OperationExternalDoc|null
      */
-    public function getExternalDocs(): OperationExternalDoc
+    public function getExternalDocs(): ?OperationExternalDoc
     {
         return $this->externalDocs;
     }
@@ -404,18 +388,18 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSummary(): string
+    public function getSummary(): ?string
     {
         return $this->summary;
     }
 
     /**
-     * @param string $summary Summary
+     * @param ?string $summary Summary
      * @return $this
      */
-    public function setSummary(string $summary)
+    public function setSummary(?string $summary)
     {
         $this->summary = $summary;
 
@@ -423,20 +407,39 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
     /**
-     * @param string $description Description
+     * @param ?string $description Description
      * @return $this
      */
-    public function setDescription(string $description)
+    public function setDescription(?string $description)
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSortOrder(): int
+    {
+        return $this->sortOrder;
+    }
+
+    /**
+     * @param int $sortOrder Where the operation appears in OpenAPI result
+     * @return $this
+     */
+    public function setSortOrder(int $sortOrder)
+    {
+        $this->sortOrder = $sortOrder;
 
         return $this;
     }

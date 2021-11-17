@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
- * Property level annotation for use in your SwagDto classes.
- *
- * For use with HTTP GET requests requiring query parameters. Use this in your DTO class (e.g. App\Dto|MyDto)
- *
+ * @deprecated Use OpenApiDtoQuery
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"PROPERTY"})
  * @Attributes({
@@ -24,11 +22,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("format",  type = "string"),
  * @Attribute("example",  type = "mixed"),
  * })
- *
- * Read OpenAPI specification for exact usage of the attributes
- * @see https://swagger.io/specification/ search for "Parameter Object"
- * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format  search for "data format"
- * @see AbstractParameter
  */
 class SwagDtoQuery extends AbstractParameter
 {

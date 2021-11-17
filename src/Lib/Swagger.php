@@ -5,17 +5,10 @@ namespace SwaggerBake\Lib;
 
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Utility\Inflector;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
-use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
-use SwaggerBake\Lib\Path\PathFromRouteFactory;
-use SwaggerBake\Lib\Route\RouteDecorator;
-use SwaggerBake\Lib\Schema\SchemaFactory;
-use SwaggerBake\Lib\Schema\SchemaFromYamlFactory;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -30,41 +23,19 @@ class Swagger
      */
     private const ASSETS = __DIR__ . DS . '..' . DS . '..' . DS . 'assets' . DS;
 
-    /**
-     * OpenAPI array
-     *
-     * @var array
-     */
-    private $array = [];
+    private array $array = [];
 
-    /**
-     * @var \SwaggerBake\Lib\Model\ModelScanner
-     */
-    private $modelScanner;
-
-    /**
-     * @var \SwaggerBake\Lib\Route\RouteScanner
-     */
-    private $routeScanner;
-
-    /**
-     * @var \SwaggerBake\Lib\Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     /**
      * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
+     * @throws \ReflectionException
      */
     public function __construct(ModelScanner $modelScanner)
     {
-        $this->modelScanner = $modelScanner;
-        $this->routeScanner = $modelScanner->getRouteScanner();
         $this->config = $modelScanner->getConfig();
 
-        $this->array = Yaml::parseFile($this->config->getYml());
-
-        $this->buildSchemaFromYml();
-        $this->buildPathsFromYml();
+        $this->array = (new OpenApiFromYaml())->build(Yaml::parseFile($this->config->getYml()));
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.initialize', $this)
@@ -77,8 +48,9 @@ class Swagger
             $this->array['x-swagger-bake'] ?? []
         );
 
-        $this->buildSchemasFromModels();
-        $this->buildPathsFromRoutes();
+        $this->array = (new OpenApiSchemaGenerator($modelScanner))->generate($this->array);
+        $this->array = (new OpenApiPathGenerator($this, $modelScanner->getRouteScanner(), $this->config))
+            ->generate($this->array);
     }
 
     /**
@@ -103,12 +75,14 @@ class Swagger
         }
 
         ksort($this->array['paths'], SORT_STRING);
-        uksort($this->array['components']['schemas'], function ($a, $b) {
-            return strcasecmp(
-                preg_replace('/\s+/', '', $a),
-                preg_replace('/\s+/', '', $b)
-            );
-        });
+        if (is_array($this->array['components']['schemas'])) {
+            uksort($this->array['components']['schemas'], function ($a, $b) {
+                return strcasecmp(
+                    preg_replace('/\s+/', '', $a),
+                    preg_replace('/\s+/', '', $b)
+                );
+            });
+        }
 
         if (empty($this->array['components']['schemas'])) {
             unset($this->array['components']['schemas']);
@@ -165,38 +139,6 @@ class Swagger
     }
 
     /**
-     * Adds a Schema element to OpenAPI 3.0 spec
-     *
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema Schema
-     * @return $this
-     */
-    public function pushSchema(Schema $schema)
-    {
-        $name = $schema->getName();
-        if (!isset($this->array['components']['schemas'][$name])) {
-            $this->array['components']['schemas'][$name] = $schema;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Adds a Schema element to OpenAPI 3.0 spec
-     *
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema Schema
-     * @return $this
-     */
-    public function pushVendorSchema(Schema $schema)
-    {
-        $name = $schema->getName();
-        if (!isset($this->array['x-swagger-bake']['components']['schemas'][$name])) {
-            $this->array['x-swagger-bake']['components']['schemas'][$name] = $schema;
-        }
-
-        return $this;
-    }
-
-    /**
      * Returns a schema object by $name argument
      *
      * @param string $name Name of schema
@@ -208,21 +150,7 @@ class Swagger
             return $this->array['components']['schemas'][$name];
         }
 
-        return null;
-    }
-
-    /**
-     * Adds a path to OpenAPI 3.0 spec
-     *
-     * @param \SwaggerBake\Lib\OpenApi\Path $path Path
-     * @return $this
-     */
-    public function pushPath(Path $path)
-    {
-        $resource = $path->getResource();
-        $this->array['paths'][$resource] = $path;
-
-        return $this;
+        return $this->array['x-swagger-bake']['components']['schemas'][$name] ?? null;
     }
 
     /**
@@ -233,169 +161,6 @@ class Swagger
     public function getConfig(): Configuration
     {
         return $this->config;
-    }
-
-    /**
-     * Builds schemas from cake models
-     *
-     * @return void
-     * @throws \ReflectionException
-     */
-    private function buildSchemasFromModels(): void
-    {
-        $schemaFactory = new SchemaFactory();
-        $models = $this->modelScanner->getModelDecorators();
-
-        foreach ($models as $model) {
-            $entityName = (new \ReflectionClass($model->getModel()->getEntity()))->getShortName();
-
-            if ($this->getSchemaByName($entityName)) {
-                continue;
-            }
-
-            $schema = $schemaFactory->create($model);
-            if (!$schema) {
-                continue;
-            }
-
-            if ($schema->isPublic()) {
-                $this->pushSchema($schema);
-            } else {
-                $this->pushVendorSchema($schema);
-            }
-
-            $readSchema = $schemaFactory->create($model, $schemaFactory::READABLE_PROPERTIES);
-            $this->pushVendorSchema(
-                $readSchema->setName($readSchema->getReadSchemaName())
-            );
-
-            $writeSchema = $schemaFactory->create($model, $schemaFactory::WRITEABLE_PROPERTIES);
-            $this->pushVendorSchema(
-                $writeSchema->setName($writeSchema->getWriteSchemaName())
-            );
-
-            $propertiesRequiredOnCreate = array_filter($writeSchema->getProperties(), function ($property) {
-                return $property->isRequirePresenceOnCreate() || $property->isRequired();
-            });
-
-            $addSchema = clone $writeSchema;
-            $this->pushVendorSchema(
-                $addSchema
-                    ->setName($schema->getAddSchemaName())
-                    ->setProperties([])
-                    ->setAllOf([
-                        ['$ref' => $schema->getWriteSchemaRef()],
-                    ])
-                    ->setRequired(array_keys($propertiesRequiredOnCreate))
-            );
-
-            $propertiesRequiredOnUpdate = array_filter($writeSchema->getProperties(), function ($property) {
-                return $property->isRequirePresenceOnUpdate() || $property->isRequired();
-            });
-
-            $editSchema = clone $writeSchema;
-            $this->pushVendorSchema(
-                $editSchema
-                    ->setName($schema->getEditSchemaName())
-                    ->setProperties([])
-                    ->setAllOf([
-                        ['$ref' => $schema->getWriteSchemaRef()],
-                    ])
-                    ->setRequired(array_keys($propertiesRequiredOnUpdate))
-            );
-        }
-    }
-
-    /**
-     * Builds paths from cake routes
-     *
-     * @return void
-     */
-    private function buildPathsFromRoutes(): void
-    {
-        $routes = $this->routeScanner->getRoutes();
-        $operationFactory = new OperationFromRouteFactory($this);
-
-        $ignorePaths = array_keys($this->array['paths']);
-
-        foreach ($routes as $route) {
-            $resource = $route->templateToOpenApiPath();
-
-            if ($this->hasPathByResource($resource)) {
-                $path = $this->array['paths'][$resource];
-            } else {
-                $path = (new PathFromRouteFactory($route, $this->config))->create();
-            }
-
-            if (!$path instanceof Path || in_array($path->getResource(), $ignorePaths)) {
-                continue;
-            }
-
-            foreach ($route->getMethods() as $httpMethod) {
-                $schema = $this->getSchemaFromRoute($route);
-
-                $operation = $operationFactory->create($route, $httpMethod, $schema);
-
-                if (!$operation instanceof Operation) {
-                    continue;
-                }
-
-                $path->pushOperation($operation);
-            }
-
-            if (!empty($path->getOperations())) {
-                $this->pushPath($path);
-            }
-        }
-    }
-
-    /**
-     * Gets the Schema associated with a Route
-     *
-     * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
-     * @return \SwaggerBake\Lib\OpenApi\Schema|null
-     */
-    private function getSchemaFromRoute(RouteDecorator $route): ?Schema
-    {
-        $controller = $route->getController();
-        $name = preg_replace('/\s+/', '', $controller);
-
-        if (in_array(strtolower($route->getAction()), ['add','view','edit','index','delete'])) {
-            return $this->getSchemaByName(Inflector::singularize($name));
-        }
-
-        return null;
-    }
-
-    /**
-     * Build paths from YML
-     *
-     * @todo for now an array will work, but should apply proper Path objects in the future
-     * @return void
-     */
-    private function buildPathsFromYml(): void
-    {
-        if (!isset($this->array['paths'])) {
-            $this->array['paths'] = [];
-        }
-    }
-
-    /**
-     * Build schema from YML
-     *
-     * @return void
-     */
-    private function buildSchemaFromYml(): void
-    {
-        if (!isset($this->array['components']['schemas'])) {
-            $this->array['components']['schemas'] = [];
-        }
-
-        $factory = new SchemaFromYamlFactory();
-
-        foreach ($this->array['components']['schemas'] as $schemaName => $schemaVar) {
-            $this->array['components']['schemas'][$schemaName] = $factory->create($schemaName, $schemaVar);
-        }
     }
 
     /**
@@ -421,15 +186,6 @@ class Swagger
         }
 
         return $operations;
-    }
-
-    /**
-     * @param string $resource Resource name
-     * @return bool
-     */
-    private function hasPathByResource(string $resource): bool
-    {
-        return isset($this->array['paths'][$resource]);
     }
 
     /**

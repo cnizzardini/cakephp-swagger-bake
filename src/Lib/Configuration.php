@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib;
 
 use Cake\Core\Configure;
-use Cake\Log\Log;
 use LogicException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -15,21 +14,15 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Configuration
 {
-    /**
-     * @var array
-     */
-    private $configs = [];
+    private array $configs = [];
 
-    /**
-     * @var string
-     */
-    private $root = '';
+    private string $root;
 
     /**
      * @param array $config SwaggerBake configurations (useful for unit tests mainly). Default: []
      * @param string $root The application ROOT (useful for unit tests mainly). Default: ROOT
      */
-    public function __construct($config = [], $root = ROOT)
+    public function __construct(array $config = [], string $root = ROOT)
     {
         $this->root = $root;
 
@@ -38,13 +31,10 @@ class Configuration
             'hotReload' => false,
             'exceptionSchema' => 'Exception',
             'requestAccepts' => [
-                'application/x-www-form-urlencoded',
                 'application/json',
-                'application/xml',
             ],
             'responseContentTypes' => [
                 'application/json',
-                'application/xml',
             ],
             'namespaces' => [
                 'controllers' => ['\App\\'],
@@ -52,6 +42,7 @@ class Configuration
                 'tables' => ['\App\\'],
             ],
             'jsonOptions' => JSON_PRETTY_PRINT,
+            'editActionMethods' => ['PATCH'],
         ];
 
         if (!empty($config)) {
@@ -109,20 +100,6 @@ class Configuration
     public function getWebPath(): string
     {
         return $this->get('webPath');
-    }
-
-    /**
-     * @return bool
-     * @deprecated this method will be deprecated
-     * @SuppressWarnings(PHPMD)
-     */
-    public function getHotReload(): bool
-    {
-        $deprecationMsg = 'SwaggerBake: getHotReload() in Configuration will be deprecated, use isHotReload()';
-        Log::warning($deprecationMsg);
-        deprecationWarning($deprecationMsg);
-
-        return $this->isHotReload();
     }
 
     /**

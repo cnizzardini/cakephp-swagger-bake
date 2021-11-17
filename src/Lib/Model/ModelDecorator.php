@@ -9,23 +9,13 @@ use MixerApi\Core\Model\Model;
 class ModelDecorator
 {
     /**
-     * @var \MixerApi\Core\Model\Model
-     */
-    private $model;
-
-    /**
-     * @var \Cake\Controller\Controller|null
-     */
-    private $controller;
-
-    /**
      * @param \MixerApi\Core\Model\Model $model Model instance
      * @param \Cake\Controller\Controller|null $controller Controller instance
      */
-    public function __construct(Model $model, ?Controller $controller)
-    {
-        $this->model = $model;
-        $this->controller = $controller;
+    public function __construct(
+        private Model $model,
+        private ?Controller $controller
+    ) {
     }
 
     /**

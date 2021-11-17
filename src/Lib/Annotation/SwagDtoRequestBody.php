@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
- * Property level annotation for use in your SwagDto classes. Read the comments to see all supported properties.
- *
+ * @deprecated Use OpenApiDtoRequestBody
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"PROPERTY"})
  * @Attributes({
@@ -31,11 +31,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("minProperties", type = "integer"),
  * @Attribute("enum", type = "array"),
  * })
- *
- * Read OpenAPI specification for exact usage of the attributes:
- * @see https://swagger.io/specification/ search for "Schema Object"
- * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
- * @see AbstractSchemaProperty
  */
 class SwagDtoRequestBody extends AbstractSchemaProperty
 {

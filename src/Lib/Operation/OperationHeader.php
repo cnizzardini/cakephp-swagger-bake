@@ -3,31 +3,33 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
-use SwaggerBake\Lib\Annotation\SwagHeader;
-use SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory;
+use ReflectionMethod;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
+use SwaggerBake\Lib\Attribute\OpenApiHeader;
 use SwaggerBake\Lib\OpenApi\Operation;
 
-/**
- * Class OperationHeader
- *
- * @package SwaggerBake\Lib\Operation
- */
 class OperationHeader
 {
     /**
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param array $annotations Array of annotation objects
+     * @param \ReflectionMethod|null $refMethod ReflectionMethod or null
      * @return \SwaggerBake\Lib\OpenApi\Operation
+     * @throws \ReflectionException
      */
-    public function getOperationWithHeaders(Operation $operation, array $annotations): Operation
+    public function getOperationWithHeaders(Operation $operation, ?ReflectionMethod $refMethod = null): Operation
     {
-        $swagHeaders = array_filter($annotations, function ($annotation) {
-            return $annotation instanceof SwagHeader;
-        });
+        if (!$refMethod instanceof ReflectionMethod) {
+            return $operation;
+        }
 
-        $factory = new ParameterFromAnnotationFactory();
-        foreach ($swagHeaders as $annotation) {
-            $operation->pushParameter($factory->create($annotation));
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiHeader[] $headers */
+        $headers = (new AttributeFactory($refMethod, OpenApiHeader::class))->createMany();
+        if (!count($headers)) {
+            return $operation;
+        }
+
+        foreach ($headers as $attribute) {
+            $operation->pushParameter($attribute->createParameter());
         }
 
         return $operation;

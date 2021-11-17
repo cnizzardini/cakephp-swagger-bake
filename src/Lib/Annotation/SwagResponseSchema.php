@@ -6,8 +6,8 @@ namespace SwaggerBake\Lib\Annotation;
 use Cake\Log\Log;
 
 /**
- * Method level annotation for defining custom response schema for OpenApi response content.
- *
+ * @deprecated Use OpenApiResponse
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
@@ -21,9 +21,6 @@ use Cake\Log\Log;
  * @Attribute("schemaFormat", type = "string"),
  * @Attribute("schemaItems", type = "array")
  * })
- * @see https://swagger.io/docs/specification/describing-responses/
- * @see https://swagger.io/specification/
- * @todo remove httpCode in future version
  */
 class SwagResponseSchema
 {

@@ -6,10 +6,8 @@ namespace SwaggerBake\Lib\Annotation;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 /**
- * Annotation for describing Path Parameter Objects.
- *
- * The name specified for Path Parameter must exist in your existing routes for the path parameter to be applied.
- *
+ * @deprecated Use OpenApiPathParameter
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
@@ -20,11 +18,6 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
  * @Attribute("format",  type = "string"),
  * @Attribute("example",  type = "mixed"),
  * })
- *
- * Read OpenAPI specification for exact usage of the attributes:
- * @see https://swagger.io/specification/ search for "Parameter Object"
- * @see https://swagger.io/docs/specification/describing-parameters/#path-parameters
- * @see AbstractParameter
  */
 class SwagPathParameter extends AbstractParameter
 {

@@ -4,69 +4,40 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Operation;
 
 use Cake\Controller\Controller;
-use SwaggerBake\Lib\Annotation\SwagDto;
-use SwaggerBake\Lib\Annotation\SwagPaginator;
-use SwaggerBake\Lib\Annotation\SwagQuery;
+use ReflectionMethod;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
+use SwaggerBake\Lib\Attribute\OpenApiDto;
+use SwaggerBake\Lib\Attribute\OpenApiPaginator;
+use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Factory\ParameterFromAnnotationFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
 
-/**
- * Class OperationQueryParameter
- *
- * @package SwaggerBake\Lib\Operation
- */
 class OperationQueryParameter
 {
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Operation
-     */
-    private $operation;
-
-    /**
-     * Array of annotations
-     *
-     * @var array
-     */
-    private $annotations;
-
-    /**
-     * @var \Cake\Controller\Controller
-     */
-    private $controller;
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Schema
-     */
-    private $schema;
-
     /**
      * Adds query parameters to the Operation
      *
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation instance of the Operation
-     * @param array $annotations an array of annotation objects
      * @param \Cake\Controller\Controller $controller instance of the Controller
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
+     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema instance of Schema or null
+     * @param \ReflectionMethod|null $refMethod ReflectionMethod or null
      * @return \SwaggerBake\Lib\OpenApi\Operation
      */
     public function __construct(
-        Operation $operation,
-        array $annotations,
-        Controller $controller,
-        ?Schema $schema = null
+        private Operation $operation,
+        private Controller $controller,
+        private ?Schema $schema = null,
+        private ?ReflectionMethod $refMethod = null,
     ) {
-        $this->operation = $operation;
-        $this->annotations = $annotations;
-        $this->controller = $controller;
-        $this->schema = $schema;
     }
 
     /**
      * Adds query parameters to the Operation
      *
      * @return \SwaggerBake\Lib\OpenApi\Operation
+     * @throws \ReflectionException
      */
     public function getOperationWithQueryParameters(): Operation
     {
@@ -74,14 +45,13 @@ class OperationQueryParameter
             return $this->operation;
         }
 
-        $this->definePagination();
-        $this->defineFromAnnotations();
-
-        try {
-            $this->defineDataTransferObjectFromAnnotations();
-        } catch (\ReflectionException $e) {
-            throw new SwaggerBakeRunTimeException('ReflectionException: ' . $e->getMessage());
+        if (!$this->refMethod instanceof ReflectionMethod) {
+            return $this->operation;
         }
+
+        $this->definePagination();
+        $this->defineQueryParams();
+        $this->defineDataTransferObject();
 
         return $this->operation;
     }
@@ -90,50 +60,43 @@ class OperationQueryParameter
      * Adds CakePHP Paginator query parameters to the Operation
      *
      * @return void
+     * @throws \ReflectionException
      */
-    private function definePagination()
+    private function definePagination(): void
     {
-        $results = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagPaginator;
-        });
-
-        if (empty($results)) {
+        $paginator = (new AttributeFactory($this->refMethod, OpenApiPaginator::class))->createOneOrNull();
+        if (!$paginator instanceof OpenApiPaginator) {
             return;
         }
 
-        /** @var \SwaggerBake\Lib\Annotation\SwagPaginator $swagPaginator */
-        $swagPaginator = reset($results);
-
         $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorPage');
         $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorLimit');
-        $this->pushSortParameter($swagPaginator);
+        $this->pushSortParameter($paginator);
         $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorDirection');
     }
 
     /**
-     * Pushes the sort parameter into the Operation based on SwagPaginator attributes
+     * Pushes the sort parameter into the Operation based on OpenApiPaginator attributes
      *
-     * @param \SwaggerBake\Lib\Annotation\SwagPaginator $swagPaginator SwagPaginator
+     * @param \SwaggerBake\Lib\Attribute\OpenApiPaginator $paginator OpenApiPaginator
      * @return void
      */
-    private function pushSortParameter(SwagPaginator $swagPaginator): void
+    private function pushSortParameter(OpenApiPaginator $paginator): void
     {
-        if ($swagPaginator->useSortTextInput === true) {
+        if ($paginator->useSortTextInput === true) {
             $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorSort');
 
             return;
         }
 
-        $parameter = (new Parameter())
-            ->setName('sort')
-            ->setIn('query')
-            ->setSchema((new Schema())->setType('string'))
-            ->setAllowEmptyValue(false)
-            ->setDeprecated(false)
-            ->setRequired(false);
+        $parameter = new Parameter(
+            in: 'query',
+            name: 'sort',
+            schema: (new Schema())->setType('string'),
+        );
 
-        if (!empty($swagPaginator->sortEnum)) {
-            $schema = $parameter->getSchema()->setEnum($swagPaginator->sortEnum);
+        if (!empty($paginator->sortEnum)) {
+            $schema = $parameter->getSchema()->setEnum($paginator->sortEnum);
             $this->operation->pushParameter($parameter->setSchema($schema));
 
             return;
@@ -164,16 +127,18 @@ class OperationQueryParameter
      * Adds query parameters from SwagPaginator to the Operation
      *
      * @return void
+     * @throws \ReflectionException
      */
-    private function defineFromAnnotations(): void
+    private function defineQueryParams(): void
     {
-        $swagQueries = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagQuery;
-        });
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiQueryParam[] $params */
+        $params = (new AttributeFactory($this->refMethod, OpenApiQueryParam::class))->createMany();
+        if (!count($params)) {
+            return;
+        }
 
-        $factory = new ParameterFromAnnotationFactory();
-        foreach ($swagQueries as $annotation) {
-            $this->operation->pushParameter($factory->create($annotation));
+        foreach ($params as $attribute) {
+            $this->operation->pushParameter($attribute->createParameter());
         }
     }
 
@@ -183,24 +148,20 @@ class OperationQueryParameter
      * @return void
      * @throws \ReflectionException
      */
-    private function defineDataTransferObjectFromAnnotations(): void
+    private function defineDataTransferObject(): void
     {
-        $swagDtos = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagDto;
-        });
-
-        if (empty($swagDtos)) {
+        $dto = (new AttributeFactory($this->refMethod, OpenApiDto::class))->createOneOrNull();
+        if (!$dto instanceof OpenApiDto) {
             return;
         }
 
-        $dto = reset($swagDtos);
-        $fqns = $dto->class;
-
-        if (!class_exists($fqns)) {
-            return;
+        if (!class_exists($dto->class)) {
+            throw new SwaggerBakeRunTimeException(
+                sprintf('DTO class %s not found', $dto->class)
+            );
         }
 
-        $parameters = (new DtoParser($fqns))->getParameters();
+        $parameters = (new DtoParser($dto->class))->getParameters();
         foreach ($parameters as $parameter) {
             $this->operation->pushParameter($parameter);
         }

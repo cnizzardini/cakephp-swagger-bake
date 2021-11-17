@@ -5,12 +5,11 @@ namespace SwaggerBake\Test\TestCase\Lib\Extension\CakeSearch;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\AnnotationLoader;
+use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\ExtensionLoader;
+use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
-use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
-use SwaggerBake\Lib\ExtensionLoader;
 use SwaggerBake\Lib\Swagger;
 
 class ExtensionTest extends TestCase
@@ -20,11 +19,9 @@ class ExtensionTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
-    /** @var array */
-    private $config;
+    private array $config;
 
-    /** @var Router  */
-    private $router;
+    private Router $router;
 
     public function setUp(): void
     {
@@ -33,12 +30,12 @@ class ExtensionTest extends TestCase
         $router::scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => ['swagSearch'],
+                'only' => ['search'],
                 'map' => [
-                    'swagSearch' => [
-                        'action' => 'swagSearch',
+                    'search' => [
+                        'action' => 'search',
                         'method' => 'GET',
-                        'path' => 'swag-search'
+                        'path' => 'search'
                     ]
                 ]
             ]);
@@ -60,9 +57,9 @@ class ExtensionTest extends TestCase
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
         ];
-        $this->assertTrue(class_exists(SwagSearch::class));
+        $this->assertTrue(class_exists(OpenApiSearch::class));
         $this->loadPlugins(['Search']);
-        AnnotationLoader::load();
+
         ExtensionLoader::load();
     }
 
@@ -75,9 +72,9 @@ class ExtensionTest extends TestCase
 
         $arr = json_decode($swagger->toString(), true);
 
-        $this->assertArrayHasKey('get', $arr['paths']['/employees/swag-search']);
-        $swagSearch = $arr['paths']['/employees/swag-search']['get'];
+        $this->assertArrayHasKey('get', $arr['paths']['/employees/search']);
+        $search = $arr['paths']['/employees/search']['get'];
 
-        $this->assertEquals('first_name', $swagSearch['parameters'][0]['name']);
+        $this->assertEquals('first_name', $search['parameters'][0]['name']);
     }
 }

@@ -7,9 +7,9 @@ use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\Table;
-use Doctrine\Common\Annotations\AnnotationRegistry;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch;
+use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
 use SwaggerBake\Lib\Extension\ExtensionInterface;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
@@ -43,14 +43,6 @@ class Extension implements ExtensionInterface
     }
 
     /**
-     * @return void
-     */
-    public function loadAnnotations(): void
-    {
-        AnnotationRegistry::loadAnnotationClass(SwagSearch::class);
-    }
-
-    /**
      * Returns an Operation instance after adding search operators (if possible)
      *
      * @param \Cake\Event\Event $event Event
@@ -62,45 +54,39 @@ class Extension implements ExtensionInterface
         /** @var \SwaggerBake\Lib\OpenApi\Operation $operation */
         $operation = $event->getSubject();
 
-        $annotations = $event->getData('methodAnnotations');
+        /** @var \ReflectionMethod $refMethod */
+        $refMethod = $event->getData('reflectionMethod');
 
-        $results = array_filter($annotations, function ($annotation) {
-            return $annotation instanceof SwagSearch;
-        });
-
-        if (empty($results)) {
+        $openApiSearch = (new AttributeFactory($refMethod, OpenApiSearch::class))->createOneOrNull();
+        if (!$openApiSearch instanceof OpenApiSearch) {
             return $operation;
         }
 
-        $swagSearch = reset($results);
-
-        $operation = $this->getOperationWithQueryParameters($operation, $swagSearch);
-
-        return $operation;
+        return $this->getOperationWithQueryParameters($operation, $openApiSearch);
     }
 
     /**
      * Returns an Operation instance after applying query parameters
      *
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param \SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch $swagSearch SwagSearch
+     * @param \SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch $openApiSearch OpenApiSearch
      * @return \SwaggerBake\Lib\OpenApi\Operation
      * @throws \ReflectionException
      * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
      */
-    private function getOperationWithQueryParameters(Operation $operation, SwagSearch $swagSearch): Operation
+    private function getOperationWithQueryParameters(Operation $operation, OpenApiSearch $openApiSearch): Operation
     {
         if ($operation->getHttpMethod() != 'GET') {
             return $operation;
         }
 
-        $tableFqns = $swagSearch->tableClass;
+        $tableFqn = $openApiSearch->tableClass;
 
-        if (!class_exists($tableFqns)) {
-            throw new SwaggerBakeRunTimeException("tableClass `$tableFqns` does not exist");
+        if (!class_exists($tableFqn)) {
+            throw new SwaggerBakeRunTimeException("tableClass `$tableFqn` does not exist");
         }
 
-        $filters = $this->getFilterDecorators(new $tableFqns(), $swagSearch);
+        $filters = $this->getFilterDecorators(new $tableFqn(), $openApiSearch);
 
         foreach ($filters as $filter) {
             $operation->pushParameter($this->createParameter($filter));
@@ -115,32 +101,25 @@ class Extension implements ExtensionInterface
      */
     private function createParameter(FilterDecorator $filter): Parameter
     {
-        $schema = new Schema();
-
-        switch ($filter->getComparison()) {
-            default:
-                $schema->setType('string');
-        }
-
-        return (new Parameter())
-            ->setName($filter->getName())
-            ->setIn('query')
-            ->setSchema($schema);
+        return (new Parameter(in: 'query', name: $filter->getName()))
+            ->setSchema(
+                (new Schema())->setType('string')
+            );
     }
 
     /**
      * @param \Cake\ORM\Table $table Table
-     * @param \SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch $swagSearch SwagSearch
+     * @param \SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch $openApiSearch OpenApiSearch
      * @return \SwaggerBake\Lib\Extension\CakeSearch\FilterDecorator[]
      * @throws \ReflectionException
      */
-    private function getFilterDecorators(Table $table, SwagSearch $swagSearch): array
+    private function getFilterDecorators(Table $table, OpenApiSearch $openApiSearch): array
     {
         $decoratedFilters = [];
 
-        $manager = $this->getSearchManager($table, $swagSearch);
+        $manager = $this->getSearchManager($table, $openApiSearch);
 
-        $filters = $manager->getFilters($swagSearch->collection);
+        $filters = $manager->getFilters($openApiSearch->collection);
 
         if (empty($filters)) {
             return $decoratedFilters;
@@ -155,14 +134,14 @@ class Extension implements ExtensionInterface
 
     /**
      * @param \Cake\ORM\Table $table Table
-     * @param \SwaggerBake\Lib\Extension\CakeSearch\Annotation\SwagSearch $swagSearch SwagSearch
+     * @param \SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch $openApiSearch OpenApiSearch
      * @return \Search\Manager
      */
-    private function getSearchManager(Table $table, SwagSearch $swagSearch): \Search\Manager
+    private function getSearchManager(Table $table, OpenApiSearch $openApiSearch): \Search\Manager
     {
         $table->find('search', [
             'search' => [],
-            'collection' => $swagSearch->collection,
+            'collection' => $openApiSearch->collection,
         ]);
 
         /** @var \Search\Model\Behavior\SearchBehavior $search */

@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Operation;
 
 use Cake\Controller\Controller;
-use SwaggerBake\Lib\Annotation\SwagSecurity;
+use ReflectionMethod;
+use SwaggerBake\Lib\Attribute\AttributeFactory;
+use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\PathSecurity;
 use SwaggerBake\Lib\Route\RouteDecorator;
@@ -18,49 +20,19 @@ use SwaggerBake\Lib\Swagger;
 class OperationSecurity
 {
     /**
-     * @var \SwaggerBake\Lib\OpenApi\Operation
-     */
-    private $operation;
-
-    /**
-     * @var array
-     */
-    private $annotations;
-
-    /**
-     * @var \SwaggerBake\Lib\Route\RouteDecorator
-     */
-    private $route;
-
-    /**
-     * @var \Cake\Controller\Controller
-     */
-    private $controller;
-
-    /**
-     * @var \SwaggerBake\Lib\Swagger
-     */
-    private $swagger;
-
-    /**
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
-     * @param array $annotations Array of annotation objects
+     * @param \ReflectionMethod|null $refMethod ReflectionMethod or null
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @param \Cake\Controller\Controller $controller Controller
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      */
     public function __construct(
-        Operation $operation,
-        array $annotations,
-        RouteDecorator $route,
-        Controller $controller,
-        Swagger $swagger
+        private Operation $operation,
+        private ?ReflectionMethod $refMethod,
+        private RouteDecorator $route,
+        private Controller $controller,
+        private Swagger $swagger
     ) {
-        $this->operation = $operation;
-        $this->annotations = $annotations;
-        $this->route = $route;
-        $this->controller = $controller;
-        $this->swagger = $swagger;
     }
 
     /**
@@ -70,28 +42,33 @@ class OperationSecurity
      */
     public function getOperationWithSecurity(): Operation
     {
-        $this->assignSwagSecurityAnnotations();
+        $this->assignOpenApiSecurity();
         $this->assignAuthenticationComponent();
 
         return $this->operation;
     }
 
     /**
-     * Assigns @SwagSecurity annotations
+     * Assigns OpenApiSecurity attribute
      *
      * @return void
      */
-    private function assignSwagSecurityAnnotations(): void
+    private function assignOpenApiSecurity(): void
     {
-        $swagSecurities = array_filter($this->annotations, function ($annotation) {
-            return $annotation instanceof SwagSecurity;
-        });
+        if (!$this->refMethod instanceof ReflectionMethod) {
+            return;
+        }
 
-        foreach ($swagSecurities as $annotation) {
+        $securities = (new AttributeFactory($this->refMethod, OpenApiSecurity::class))->createMany();
+        if (empty($securities)) {
+            return;
+        }
+
+        foreach ($securities as $sec) {
             $this->operation->pushSecurity(
                 (new PathSecurity())
-                    ->setName($annotation->name)
-                    ->setScopes($annotation->scopes)
+                    ->setName($sec->name)
+                    ->setScopes($sec->scopes)
             );
         }
     }

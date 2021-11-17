@@ -7,21 +7,22 @@ use Cake\Routing\Route\Route;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Annotation\SwagSecurity;
+use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationSecurity;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
+use SwaggerBake\Lib\Swagger;
 
 class OperationSecurityTest extends TestCase
 {
-    /** @var \SwaggerBake\Lib\Swagger  */
-    private $swagger;
+    private Swagger $swagger;
 
-    /** @var RouteDecorator  */
-    private $routeDecorator;
+    private RouteDecorator $routeDecorator;
 
     public function setUp(): void
     {
@@ -34,7 +35,7 @@ class OperationSecurityTest extends TestCase
             ]);
         });
 
-        $this->config = [
+        $config = [
             'prefix' => '/',
             'yml' => '/config/swagger-bare-bones.yml',
             'json' => '/webroot/swagger.json',
@@ -59,20 +60,36 @@ class OperationSecurityTest extends TestCase
             ])
         );
 
-        $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $configuration = new Configuration($config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($router, $configuration);
         $this->swagger = (new SwaggerFactory($configuration, $cakeRoute))->create();
     }
 
-    public function testGetOperationSecurityFromSwagSecurityAnnotation()
+    public function test_from_security_attribute(): void
     {
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiSecurity::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiSecurity::class, [
+                        'name' => 'BearerAuth',
+                        'scopes' => ['A', 'B'],
+                    ]),
+                ])
+            );
+
         $operationSecurity = new OperationSecurity(
-            new Operation(),
-            [new SwagSecurity(['name' => 'BearerAuth' , 'scopes' => ['read','write']])],
+            new Operation('hello', 'get'),
+            $mockReflectionMethod,
             $this->routeDecorator,
             new Controller(),
             $this->swagger
         );
+
         $operation = $operationSecurity->getOperationWithSecurity();
         $securities = $operation->getSecurity();
         $security = reset($securities);
@@ -80,14 +97,14 @@ class OperationSecurityTest extends TestCase
         $this->assertCount(2, $security->getScopes());
     }
 
-    public function testGetOperationSecurityFromAuthenticationComponent()
+    public function test_from_auth_component(): void
     {
         $controller = new Controller();
         $controller->loadComponent('Authentication.Authentication');
 
         $operationSecurity = new OperationSecurity(
-            new Operation(),
-            [],
+            new Operation('hello', 'get'),
+            null,
             $this->routeDecorator,
             $controller,
             $this->swagger

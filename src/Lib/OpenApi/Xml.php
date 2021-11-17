@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
+use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
  * Class Xml
@@ -45,20 +46,10 @@ class Xml implements JsonSerializable
         $vars = get_object_vars($this);
 
         // remove properties if they are set to their defaults (to avoid json clutter)
-        foreach (['attribute','wrapped'] as $v) {
-            if (array_key_exists($v, $vars) && $vars[$v] === false) {
-                unset($vars[$v]);
-            }
-        }
+        $vars = ArrayUtility::removeValuesMatching($vars, ['attribute' => false, 'wrapped' => false]);
 
         // remove empty properties to avoid swagger.json clutter
-        foreach (['namespace','prefix','attribute','wrapped'] as $v) {
-            if (array_key_exists($v, $vars) && (is_null($vars[$v]) || empty($vars[$v]))) {
-                unset($vars[$v]);
-            }
-        }
-
-        return $vars;
+        return ArrayUtility::removeEmptyAndNullValues($vars, ['namespace','prefix','attribute','wrapped']);
     }
 
     /**

@@ -10,14 +10,21 @@ use SwaggerBake\Lib\OpenApi\Response;
 
 class OperationTest extends TestCase
 {
+    private Operation $operation;
+
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->operation = (new Operation('hello', 'get'));
+    }
+
     public function test_get_set(): void
     {
-        $path = (new Operation())
+        $path = $this->operation
             ->setDescription($desc = '1')
             ->setSummary($s = '2')
-            ->setResponses([new Response()])
-            ->setSecurity([(new PathSecurity())->setName('test')->setScopes(['test'])])
-        ;
+            ->setResponses([new Response('200')])
+            ->setSecurity([(new PathSecurity())->setName('test')->setScopes(['test'])]);
 
         $this->assertEquals($desc, $path->getDescription());
         $this->assertEquals($s, $path->getSummary());
@@ -28,25 +35,25 @@ class OperationTest extends TestCase
     public function test_hasSuccessResponseCode(): void
     {
         $this->assertTrue(
-            (new Operation())->setResponses([(new Response())->setCode('2XX')])->hasSuccessResponseCode()
+            $this->operation->setResponses([new Response('2XX')])->hasSuccessResponseCode()
         );
     }
 
     public function test_setHttpMethod_throws_invalid_arg_exception(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        (new Operation())->setHttpMethod('nope');
+        $this->operation->setHttpMethod('nope');
     }
 
     public function test_getParameterByTypeAndName_throws_invalid_arg_exception(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        (new Operation())->getParameterByTypeAndName('nope', 'nope');
+        $this->operation->getParameterByTypeAndName('nope', 'nope');
     }
 
     public function test_getParameterByTypeAndName_throws_invalid_arg_exception_next(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        (new Operation())->getParameterByTypeAndName('query', 'nope');
+        $this->operation->getParameterByTypeAndName('query', 'nope');
     }
 }

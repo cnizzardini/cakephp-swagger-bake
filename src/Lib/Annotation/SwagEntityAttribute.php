@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Annotation;
 
 /**
- * Class level annotation for customizing Schema Attributes.
- *
- * Use this in your Entity classes (i.e. App\Model\Entity)
- *
+ * @deprecated Use OpenApiSchemaProperty
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"CLASS"})
  * @Attributes({
@@ -34,11 +32,6 @@ namespace SwaggerBake\Lib\Annotation;
  * @Attribute("enum", type = "array"),
  * @Attribute("example", type = "mixed"),
  * })
- *
- * Read OpenAPI specification for exact usage of the attributes:
- * @see https://swagger.io/specification/ search for "Schema Object"
- * @see https://swagger.io/docs/specification/data-models/data-types search for "data formats"
- * @see AbstractSchemaProperty
  */
 class SwagEntityAttribute extends AbstractSchemaProperty
 {

@@ -14,14 +14,14 @@ use JsonSerializable;
 class OperationExternalDoc implements JsonSerializable
 {
     /**
-     * @var string
+     * @param string $url URL to the documentation
+     * @param string $description Description of the link
      */
-    private $description = '';
-
-    /**
-     * @var string
-     */
-    private $url = '';
+    public function __construct(
+        private string $url,
+        private string $description = ''
+    ) {
+    }
 
     /**
      * @return array
@@ -48,32 +48,10 @@ class OperationExternalDoc implements JsonSerializable
     }
 
     /**
-     * @param string $description Describes the external documentation
-     * @return $this
-     */
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getUrl(): string
     {
         return $this->url;
-    }
-
-    /**
-     * @param string $url The Url (hyperlink) to the external documentation
-     * @return $this
-     */
-    public function setUrl(string $url)
-    {
-        $this->url = $url;
-
-        return $this;
     }
 }

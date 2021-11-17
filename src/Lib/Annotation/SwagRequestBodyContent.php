@@ -6,6 +6,8 @@ namespace SwaggerBake\Lib\Annotation;
 use Cake\Log\Log;
 
 /**
+ * @deprecated Use OpenApiRequestBody
+ * @codeCoverageIgnore
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({

@@ -1,13 +1,13 @@
 {
     "name": "cnizzardini/cakephp-swagger-bake",
-    "description": "Automatically generate Swagger documentation from your exist routes with minimal comments and configuration",
+    "description": "Automatically generate OpenApi, Swagger, and Redoc documentation from your existing code",
     "type": "cakephp-plugin",
     "license": "MIT",
     "keywords": ["cakephp swagger","cakephp4 swagger","cake swagger"],
     "require": {
-        "php": ">=7.2",
+        "php": "^8.0",
         "ext-json": "*",
-        "cakephp/cakephp": "^4.0",
+        "cakephp/cakephp": "^4.2",
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
         "doctrine/annotations": "^1.10",
@@ -15,18 +15,18 @@
         "mixerapi/core": "^0.2"
     },
     "suggest": {
-        "friendsofcake/search": "Easy model searching with @SwagSearch",
-        "cakephp/authentication": "Automates OpenApi security schemes"
+        "cakephp/authentication": "Used by SwaggerBake #[OpenApiSecurity]",
+        "cakephp/bake": "Used by SwaggerBake bake templates",
+        "friendsofcake/search": "Required by SwaggerBake #[OpenApiSearch]"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0",
+        "phpunit/phpunit": "^9.0",
         "friendsofcake/search": "^6.0",
         "cakephp/authentication": "^2.0",
         "cakephp/cakephp-codesniffer": "^4.2",
         "phpstan/phpstan": "^0.12.32",
         "phpmd/phpmd": "^2.10",
-        "cakephp/bake": "^2.1",
-        "php-coveralls/php-coveralls": "^2.4"
+        "cakephp/bake": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -47,16 +47,17 @@
             "@phpstan",
             "@phpmd"
         ],
-        "phpcs": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/",
-        "phpcbf": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/",
+        "phpcs": "phpcs --colors -p --standard=phpcs.xml src/",
+        "phpcbf": "phpcbf --colors --standard=phpcs.xml src/",
         "phpstan": "phpstan analyse src/",
         "test": "phpunit --colors=always",
         "phpmd": "phpmd src/ ansi phpmd.xml",
-        "coverage": "phpunit --coverage-html coverage-reports/"
+        "coverage": "phpunit --coverage-html coverage-reports/",
+        "grumphp-init": "grumphp git:init",
+        "grumphp": "grumphp"
     },
     "support": {
         "issues": "https://github.com/cnizzardini/cakephp-swagger-bake/issues",
-        "wiki": "https://github.com/cnizzardini/cakephp-swagger-bake/wiki",
         "source": "https://github.com/cnizzardini/cakephp-swagger-bake"
     },
     "authors": [

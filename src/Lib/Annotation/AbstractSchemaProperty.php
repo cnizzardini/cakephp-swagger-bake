@@ -6,10 +6,8 @@ namespace SwaggerBake\Lib\Annotation;
 use InvalidArgumentException;
 
 /**
- * Read OpenAPI specification for exact usage of the attributes:
- *
- * @see https://swagger.io/specification/ search for "Parameter Object"
- * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format search for "data format"
+ * @deprecated
+ * @codeCoverageIgnore
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
 abstract class AbstractSchemaProperty

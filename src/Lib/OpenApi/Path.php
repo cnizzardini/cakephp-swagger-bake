@@ -4,41 +4,40 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
+use SwaggerBake\Lib\Utility\ArrayUtility;
 
 /**
  * Class Path
  *
  * @package SwaggerBake\Lib\OpenApi
- * @see https://swagger.io/docs/specification/paths-and-operations/
+ * @see https://spec.openapis.org/oas/latest.html#paths-object
  */
 class Path implements JsonSerializable
 {
-    /**
-     * The endpoint (resource) for the path
-     *
-     * @var string
-     */
-    private $resource = '';
+    private const SORT_ORDER = [
+        'post' => 0,
+        'get' => 1,
+        'patch' => 2,
+        'put' => 3,
+        'delete' => 4,
+    ];
 
     /**
-     * @var \SwaggerBake\Lib\OpenApi\Operation[]
+     * @param string $resource The resource (base URL), for example: /pets
+     * @param \SwaggerBake\Lib\OpenApi\Operation[] $operations An array of OpenApi Operations
+     * @param string|null $ref An optional OpenAPI path $ref
+     * @param string|null $summary An optional short summary
+     * @param string|null $description An optional description
      */
-    private $operations = [];
-
-    /**
-     * @var string|null
-     */
-    private $ref;
-
-    /**
-     * @var string|null
-     */
-    private $summary;
-
-    /**
-     * @var string|null
-     */
-    private $description;
+    public function __construct(
+        private string $resource,
+        private array $operations = [],
+        private ?string $ref = null,
+        private ?string $summary = null,
+        private ?string $description = null,
+    ) {
+        $this->setOperations($operations);
+    }
 
     /**
      * @return array
@@ -46,20 +45,21 @@ class Path implements JsonSerializable
     public function toArray(): array
     {
         $vars = get_object_vars($this);
-        unset($vars['resource']);
-        unset($vars['operations']);
-        unset($vars['ref']);
+        $vars = ArrayUtility::removeKeysMatching($vars, ['resource', 'operations', 'ref']);
 
         // remove items if null to reduce JSON clutter
-        foreach (['summary', 'description'] as $v) {
-            if (is_null($vars[$v])) {
-                unset($vars[$v]);
-            }
+        $vars = ArrayUtility::removeNullValues($vars, ['summary', 'description']);
+
+        $operations = [];
+        foreach ($this->getOperations() as $operation) {
+            $operations[strtolower($operation->getHttpMethod())] = $operation;
         }
 
-        foreach ($this->getOperations() as $operation) {
-            $vars[strtolower($operation->getHttpMethod())] = $operation;
-        }
+        uasort($operations, function (Operation $a, Operation $b) {
+            return $a->getSortOrder() < $b->getSortOrder() ? -1 : 1;
+        });
+
+        $vars += $operations;
 
         if ($this->ref !== null) {
             $vars['$ref'] = $this->ref;
