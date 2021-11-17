@@ -35,7 +35,7 @@ This is built for CakePHP 4.x only. Supported versions:
 | Version | Branch | Cake Version  | PHP Version | 
 | ------------- | ------------- | ------------- | ------------- |
 | 2.* | master | 4.2 - 4.3 | 8.0+  |
-| 1.* | 1.x | 4.0 - 4.3 | 7.2+  | 
+| 1.* | 1.next | 4.0 - 4.3 | 7.2+  | 
 
 ## Table of Contents
 - [Installation](#installation)
