@@ -27,7 +27,7 @@ Check out the demo applications for examples.
 | Demos | Source | 
 | ------------- | ------------- |
 | [Swagger Bake Demo (v2)](http://cakephpswaggerbake.cnizz.com/) | https://github.com/cnizzardini/cakephp-swagger-bake-demo |
-| [Swagger Bake Demo (v1)](https://demo.mixerapi.com/) | https://github.com/mixerapi/demo | 
+| [Swagger Bake Demo (v1)](http://cakephpswaggerbake1.cnizz.com/) | https://github.com/cnizzardini/cakephp-swagger-bake-demo/tree/1.next | 
 | [Swagger/MixerAPI Demo (v1)](https://demo.mixerapi.com/) | https://github.com/mixerapi/demo | 
 
 This is built for CakePHP 4.x only. Supported versions:
