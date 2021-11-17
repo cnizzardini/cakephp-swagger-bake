@@ -22,8 +22,13 @@ and controllers.
 [Bake](#bake-theme).
 - Provides additional functionality through Attributes and Doc Blocks.
 
-[Swagger Bake Demo](http://cakephpswaggerbake.cnizz.com/) | [Demo Code](https://github.com/cnizzardini/cakephp-swagger-bake-demo) | 
-[Swagger/MixerAPI Demo](https://demo.mixerapi.com/) | [Demo Code](https://github.com/mixerapi/demo)
+Check out the demo applications for examples.
+
+| Demos | Source | 
+| ------------- | ------------- |
+| [Swagger Bake Demo (v2)](http://cakephpswaggerbake.cnizz.com/) | https://github.com/cnizzardini/cakephp-swagger-bake-demo |
+| [Swagger Bake Demo (v1)](https://demo.mixerapi.com/) | https://github.com/mixerapi/demo | 
+| [Swagger/MixerAPI Demo (v1)](https://demo.mixerapi.com/) | https://github.com/mixerapi/demo | 
 
 This is built for CakePHP 4.x only. Supported versions:
 
