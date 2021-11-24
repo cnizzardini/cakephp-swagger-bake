@@ -57,6 +57,11 @@ class RouteDecorator
     private $controllerFqn;
 
     /**
+     * @var string|null
+     */
+    private $prefix;
+
+    /**
      * @param \Cake\Routing\Route\Route $route Route
      */
     public function __construct(Route $route)
@@ -73,6 +78,7 @@ class RouteDecorator
             ->setName($route->getName())
             ->setPlugin($defaults['plugin'])
             ->setController($defaults['controller'])
+            ->setPrefix($defaults['prefix'] ?? null)
             ->setAction($defaults['action'])
             ->setMethods($methods);
     }
@@ -225,6 +231,25 @@ class RouteDecorator
     public function setControllerFqn(string $controllerFqn)
     {
         $this->controllerFqn = $controllerFqn;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string|null $prefix The routing prefix, for example "Admin" when controller is in App\Controller\Admin
+     * @return $this
+     */
+    public function setPrefix(?string $prefix)
+    {
+        $this->prefix = $prefix;
 
         return $this;
     }

@@ -90,13 +90,12 @@ class RouteScanner
             }
 
             $routeDecorator = new RouteDecorator($route);
+            $path = 'Controller\\';
+            $path .= $routeDecorator->getPrefix() ? $routeDecorator->getPrefix() . '\\' : '';
+            $path .= $routeDecorator->getController() . 'Controller';
 
-            $controller = $routeDecorator->getController();
-
-            $results = array_filter($classes, function ($fqn) use ($controller, $route) {
-                $prefix = !empty($route->defaults['prefix']) ? $route->defaults['prefix'] . '\\' : '';
-
-                return strstr($fqn, '\\' . $prefix . $controller . 'Controller');
+            $results = array_filter($classes, function ($fqn) use ($path) {
+                return strstr($fqn, $path);
             });
 
             if (count($results) === 1) {
