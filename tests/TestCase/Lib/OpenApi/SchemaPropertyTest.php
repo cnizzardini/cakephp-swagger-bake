@@ -12,4 +12,10 @@ class SchemaPropertyTest extends TestCase
     {
         $this->assertArrayNotHasKey('example', (new SchemaProperty())->setTitle('title')->toArray());
     }
+
+    public function test_example_is_json_encoded_when_blank(): void
+    {
+        $property = (new SchemaProperty())->setTitle('title')->setExample('');
+        $this->assertArrayHasKey('example', $property->toArray());
+    }
 }
