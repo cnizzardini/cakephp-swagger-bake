@@ -31,17 +31,17 @@ class SchemaFactory
     private $validator;
 
     /**
-     * @var string
+     * @var int
      */
     public const WRITEABLE_PROPERTIES = 2;
 
     /**
-     * @var string
+     * @var int
      */
     public const READABLE_PROPERTIES = 4;
 
     /**
-     * @var string
+     * @var int
      */
     public const ALL_PROPERTIES = 6;
 
