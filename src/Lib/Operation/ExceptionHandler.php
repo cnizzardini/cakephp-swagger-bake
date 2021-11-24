@@ -66,7 +66,7 @@ class ExceptionHandler
                     '403' => '\Cake\Http\Exception\ForbiddenException',
                     '404' => '\Cake\Datasource\Exception\RecordNotFoundException',
                     '405' => '\Cake\Http\Exception\MethodNotAllowedException',
-                    '500' => '\Exception'
+                    '500' => '\Exception',
                 ];
 
                 $code = array_search($exceptionClass, $exceptions);
