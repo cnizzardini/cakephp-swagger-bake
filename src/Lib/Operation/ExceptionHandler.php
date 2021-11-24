@@ -58,7 +58,23 @@ class ExceptionHandler
             $instance = new $exceptionClass();
             if ($instance instanceof CakeException && $instance->getCode() > 0) {
                 $httpCode = (int)$instance->getCode();
+            } else {
+                // Handle older version of CakePHP 4.x that predate CakeException
+                $exceptions = [
+                    '400' => '\Cake\Http\Exception\BadRequestException',
+                    '401' => '\Cake\Http\Exception\UnauthorizedException',
+                    '403' => '\Cake\Http\Exception\ForbiddenException',
+                    '404' => '\Cake\Datasource\Exception\RecordNotFoundException',
+                    '405' => '\Cake\Http\Exception\MethodNotAllowedException',
+                    '500' => '\Exception',
+                ];
+
+                $code = array_search($exceptionClass, $exceptions);
+                if ($code) {
+                    $httpCode = $code;
+                }
             }
+
             if (empty($message)) {
                 $class = get_class($instance);
                 $pieces = explode('\\', $class);
