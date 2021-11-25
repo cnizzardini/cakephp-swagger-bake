@@ -97,7 +97,7 @@ class OperationResponse
             foreach ($mimeTypes as $mimeType) {
                 $response = new Response($openApiResponse->statusCode, $openApiResponse->description);
 
-                // push text/plain response and the continue to next mime/type
+                // push text/plain response and continue to next mime/type
                 if ($mimeType == 'text/plain') {
                     $schema = (new Schema())->setType('string')->setFormat($openApiResponse->schemaFormat ?? '');
                     $response->pushContent(new Content($mimeType, $schema));
@@ -106,7 +106,7 @@ class OperationResponse
                 }
 
                 // push basic response since no entity or format was defined and continue to next mime/type
-                if (empty($openApiResponse->ref) && empty($openApiResponse->associations)) {
+                if (empty($openApiResponse->ref) && empty($openApiResponse->associations) && is_null($this->schema)) {
                     $response->pushContent(new Content($mimeType, ''));
                     $this->operation->pushResponse($response);
                     continue;
@@ -116,6 +116,10 @@ class OperationResponse
                 if (is_array($openApiResponse->associations)) {
                     $assocSchema = (new OperationResponseAssociation($this->swagger, $this->route, $this->schema))
                         ->build($openApiResponse);
+                } elseif ($this->schema != null) {
+                    $response->pushContent(new Content($mimeType, $this->schema));
+                    $this->operation->pushResponse($response);
+                    continue;
                 }
 
                 $schema = $this->getMimeTypeSchema(
