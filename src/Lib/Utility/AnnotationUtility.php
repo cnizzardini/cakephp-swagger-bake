@@ -140,8 +140,8 @@ class AnnotationUtility
             triggerWarning(
                 sprintf(
                     'Replace %s with %s in %s',
-                    static::DEPRECATIONS[$annotation],
                     $annotation,
+                    static::DEPRECATIONS[$annotation],
                     $class . ($method !== null ? ":$method" : '')
                 )
             );
