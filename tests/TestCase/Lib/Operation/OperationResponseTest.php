@@ -44,7 +44,8 @@ class OperationResponseTest extends TestCase
                     'create',
                     'delete',
                     'noResponsesDefined',
-                    'textPlain'
+                    'textPlain',
+                    'options'
                 ],
                 'map' => [
                     'noResponsesDefined'  => [
@@ -57,6 +58,11 @@ class OperationResponseTest extends TestCase
                         'action' => 'textPlain',
                         'path' => 'text-plain'
                     ],
+                    'options' => [
+                        'method' => ['options'],
+                        'action' => 'options',
+                        'path' => 'options'
+                    ]
                 ]
             ]);
         });
@@ -118,10 +124,7 @@ class OperationResponseTest extends TestCase
     {
         $route = $this->routes['employees:add'];
 
-        $schema = (new Schema())
-            ->setName('Employee')
-            ->setType('object')
-        ;
+        $schema = (new Schema())->setName('Employee')->setType('object');
 
         $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
         $mockReflectionMethod->expects($this->once())
@@ -145,6 +148,45 @@ class OperationResponseTest extends TestCase
         $operation = $operationResponse->getOperationWithResponses();
 
         $this->assertInstanceOf(Response::class, $operation->getResponseByCode('200'));
+    }
+
+    public function test_add_operation_with_open_api_response_of_201(): void
+    {
+        $route = $this->routes['employees:add'];
+
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiResponse::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiResponse::class, [
+                        'statusCode' => '201',
+                    ]),
+                ])
+            );
+
+        $schema = (new Schema())->setName('Employee')->setType('object');
+
+        $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->config,
+            new Operation('employees:add', 'post'),
+            $route,
+            $schema,
+            $mockReflectionMethod
+        );
+
+        $operation = $operationResponse->getOperationWithResponses();
+        $response = $operation->getResponseByCode('201');
+        $this->assertNotEmpty($response);
+
+        $content = $response->getContentByMimeType('application/json');
+
+        $this->assertNotEmpty($content);
+        $this->assertNotEmpty($content->getSchema());
     }
 
     public function test_add_operation_with_no_response_defined(): void
@@ -376,5 +418,21 @@ class OperationResponseTest extends TestCase
             ->getContentByMimeType('text/plain');
 
         $this->assertEquals('text/plain', $content->getMimeType());
+    }
+
+    public function test_http_options(): void
+    {
+        $route = $this->routes['employees:options'];
+
+        $operationResponse = new OperationResponse(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->config,
+            new Operation('hello', 'options'),
+            $route,
+            null,
+            null
+        );
+
+        $this->assertNotEmpty($operationResponse->getOperationWithResponses()->getResponseByCode('200'));
     }
 }
