@@ -190,7 +190,7 @@ class OperationResponse
                 ->setXml((new OpenApiXml())->setName('response')),
             'application/hal+json','application/vnd.hal+json' => (new HalJson())->buildSchema($schema, $schemaType),
             'application/ld+json' => (new JsonLd())->buildSchema($schema, $schemaType),
-            'application/text/plain' => (new Schema())->setType('string'),
+            'text/plain' => (new Schema())->setType('string'),
             default => (new Generic($this->swagger))->buildSchema($schema, $schemaType)
         };
     }
