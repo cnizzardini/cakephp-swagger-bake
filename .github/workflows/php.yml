@@ -49,8 +49,8 @@ jobs:
           composer analyze
           echo ${{ matrix.php-versions }}
 
-      - name: Upload coverage results to Coveralls
-        if: ${{ matrix.php-versions == '8.0' }}
+      - name: Upload coverage results to Coveralls (8.1 only)
+        if: ${{ matrix.php-versions == '8.1' }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
