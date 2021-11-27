@@ -35,8 +35,14 @@ jobs:
           composer validate
           composer install --prefer-dist --no-progress
 
-      - name: Test + Static Analysis (8.0 only)
+      - name: Test Suite (8.0 only)
         if: ${{ matrix.php-versions == '8.0' }}
+        run: |
+          composer test
+          echo ${{ matrix.php-versions }}
+
+      - name: Test Suite + Static Analysis (8.1 only)
+        if: ${{ matrix.php-versions == '8.1' }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -66,7 +72,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: '8.1'
           extensions: mbstring, intl
 
       - name: PHP Version
