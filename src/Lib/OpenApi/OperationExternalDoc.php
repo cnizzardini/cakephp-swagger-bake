@@ -32,9 +32,9 @@ class OperationExternalDoc implements JsonSerializable
     }
 
     /**
-     * @return array|mixed
+     * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }
