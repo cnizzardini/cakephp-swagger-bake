@@ -95,9 +95,9 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @return array|mixed
+     * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

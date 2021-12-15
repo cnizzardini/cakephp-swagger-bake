@@ -66,9 +66,9 @@ class Parameter implements JsonSerializable
     }
 
     /**
-     * @return array|mixed
+     * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $vars = $this->toArray();
 
