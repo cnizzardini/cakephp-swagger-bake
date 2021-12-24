@@ -17,7 +17,6 @@ use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
-use SwaggerBake\Lib\Utility\AnnotationUtility;
 
 /**
  * Creates an instance of SwaggerBake\Lib\OpenApi\Schema per OpenAPI specifications
@@ -70,8 +69,6 @@ class SchemaFactory
                 'modelDecorator' => $modelDecorator,
             ])
         );
-
-        AnnotationUtility::checkClassAnnotationsFromInstance($modelDecorator->getModel()->getEntity());
 
         return $schema;
     }
