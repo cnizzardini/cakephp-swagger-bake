@@ -19,7 +19,6 @@ use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
-use SwaggerBake\Lib\Utility\AnnotationUtility;
 use SwaggerBake\Lib\Utility\DocBlockUtility;
 
 /**
@@ -69,8 +68,6 @@ class OperationFromRouteFactory
             $refMethod = null;
             $openApiOperation = null;
         }
-
-        AnnotationUtility::checkMethodAnnotations($fqn, $route->getAction());
 
         if ($openApiOperation != null && !$openApiOperation->isVisible) {
             return null;
