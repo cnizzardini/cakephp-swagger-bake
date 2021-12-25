@@ -67,57 +67,81 @@ class OperationDocBlockTest extends TestCase
     /**
      * @throws InternalErrorException
      */
-    public function test()
+    public function test_external_documentation_tags(): void
     {
+
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
         $swagger = new Swagger($cakeModels);
 
-        $block = <<<EOT
+        foreach (['see','link'] as $tag) {
+            $block = <<<EOT
 /** 
- * @see http://www.cakephp.org CakePHP
- * @deprecated 
+ * @$tag https://www.cakephp.org CakePHP
  */
 EOT;
-        $docBlock = DocBlockFactory::createInstance()->create($block);
-        $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
-        $doc = $operation->getExternalDocs();
+            $docBlock = DocBlockFactory::createInstance()->create($block);
+            $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
+            $doc = $operation->getExternalDocs();
 
-        $this->assertEquals('CakePHP', $doc->getDescription());
-        $this->assertEquals('http://www.cakephp.org', $doc->getUrl());
-        $this->assertTrue($operation->isDeprecated());
+            $this->assertEquals('CakePHP', $doc->getDescription());
+            $this->assertEquals('https://www.cakephp.org', $doc->getUrl());
+        }
+
     }
 
     /**
      * @throws InternalErrorException|\ReflectionException
      */
-    public function test_without_description()
+    public function test_external_documentation_tags_without_description(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
         $swagger = new Swagger($cakeModels);
 
-        $block = <<<EOT
+        foreach (['see','link'] as $tag) {
+            $block = <<<EOT
 /** 
- * @see http://www.cakephp.org
- * @deprecated 
+ * @$tag https://www.cakephp.org
  */
 EOT;
-        $docBlock = DocBlockFactory::createInstance()->create($block);
-        $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
-        $doc = $operation->getExternalDocs();
+            $docBlock = DocBlockFactory::createInstance()->create($block);
+            $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
+            $doc = $operation->getExternalDocs();
 
-        $this->assertEquals('', $doc->getDescription());
-        $this->assertEquals('http://www.cakephp.org', $doc->getUrl());
-        $this->assertTrue($operation->isDeprecated());
+            $this->assertEquals('', $doc->getDescription());
+            $this->assertEquals('https://www.cakephp.org', $doc->getUrl());
+        }
     }
 
     /**
      * @throws \ReflectionException
      */
-    public function test_invalid_url(): void
+    public function test_external_documentation_not_set_when_url_invalid(): void
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeModels = new ModelScanner($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
+
+        foreach (['see','link'] as $tag) {
+            $block = <<<EOT
+/** 
+ * @$tag htt:/www.cakephp.org 
+ */
+EOT;
+            $docBlock = DocBlockFactory::createInstance()->create($block);
+            $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
+            $this->assertNull($operation->getExternalDocs());
+        }
+    }
+
+    /**
+     * @throws InternalErrorException
+     */
+    public function test_link_tag_takes_precedence_over_see_tag(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
@@ -126,12 +150,36 @@ EOT;
 
         $block = <<<EOT
 /** 
- * @see htt:/www.cakephp.org
- * @deprecated 
+ * @see https://google.com nope
+ * @link https://duckduckgo.com yep
  */
 EOT;
         $docBlock = DocBlockFactory::createInstance()->create($block);
         $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
-        $this->assertNull($operation->getExternalDocs());
+        $doc = $operation->getExternalDocs();
+        $this->assertEquals('yep', $doc->getDescription());
+        $this->assertEquals('https://duckduckgo.com', $doc->getUrl());
+    }
+
+    /**
+     * @throws InternalErrorException
+     */
+    public function test_deprecated_tag(): void
+    {
+
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeModels = new ModelScanner($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
+
+        $block = <<<EOT
+/** 
+ * @deprecated 
+ */
+EOT;
+            $docBlock = DocBlockFactory::createInstance()->create($block);
+            $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
+            $this->assertTrue($operation->isDeprecated());
+
     }
 }
