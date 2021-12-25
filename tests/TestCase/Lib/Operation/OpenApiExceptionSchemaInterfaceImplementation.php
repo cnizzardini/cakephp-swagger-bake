@@ -19,7 +19,7 @@ class OpenApiExceptionSchemaInterfaceImplementation implements OpenApiExceptionS
     /**
      * @inheritDoc
      */
-    public static function getExceptionDescription(): string
+    public static function getExceptionDescription(): ?string
     {
         return 'A Description';
     }

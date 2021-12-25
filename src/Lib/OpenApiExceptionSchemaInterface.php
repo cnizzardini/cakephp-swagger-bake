@@ -16,7 +16,8 @@ interface OpenApiExceptionSchemaInterface
     public static function getExceptionCode(): string;
 
     /**
-     * The OpenAPI response description. This value will be used to build the OpenAPI response.
+     * The OpenAPI response description. This value will be used to build the OpenAPI response. Returning null will
+     * omit the response description.
      *
      * @link https://spec.openapis.org/oas/v3.0.3#responses-object
      * @return string|null

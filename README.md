@@ -232,9 +232,9 @@ class MyException implements OpenApiExceptionSchemaInterface
         return '400';
     }
 
-    public static function getExceptionDescription(): string
+    public static function getExceptionDescription(): ?string
     {
-        return 'A Description';
+        return 'An optional description'; // returning null omits the response description
     }
 
     public static function getExceptionSchema(): Schema|string
@@ -243,7 +243,8 @@ class MyException implements OpenApiExceptionSchemaInterface
             ->setTitle('MyException')
             ->setProperties([
                 (new SchemaProperty())->setType('string')->setName('code')->setExample('400'),
-                (new SchemaProperty())->setType('string')->setName('message')->setExample('error')
+                (new SchemaProperty())->setType('string')->setName('message')->setExample('error'),
+                (new SchemaProperty())->setType('string')->setName('wherever')->setExample('whatever you want')
             ]);
     }
 }
