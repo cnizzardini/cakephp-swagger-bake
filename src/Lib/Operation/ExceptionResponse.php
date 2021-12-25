@@ -87,6 +87,7 @@ class ExceptionResponse
     }
 
     /**
+     * @deprecated this method will be removed in version 3.
      * @param string $exceptionFqn The FQN of the exception class.
      * @return string|null
      */
