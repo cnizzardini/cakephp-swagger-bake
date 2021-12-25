@@ -90,12 +90,13 @@ class OperationDocBlock
         });
 
         foreach ($throws as $throw) {
-            $exception = new ExceptionHandler($throw, $this->swagger, $this->config);
-
-            $response = new Response($exception->getCode(), $exception->getMessage());
-
-            foreach ($this->config->getResponseContentTypes() as $mimeType) {
-                $response->pushContent(new Content($mimeType, $exception->getSchema()));
+            $exception = (new ExceptionResponse($this->swagger, $this->config))->build($throw);
+            $response = new Response($exception->getCode(), $exception->getDescription());
+            $schema = $exception->getSchema();
+            if ($schema != null) {
+                foreach ($this->config->getResponseContentTypes() as $mimeType) {
+                    $response->pushContent(new Content($mimeType, $exception->getSchema()));
+                }
             }
 
             $this->operation->pushResponse($response);

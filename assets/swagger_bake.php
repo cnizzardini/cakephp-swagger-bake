@@ -43,7 +43,7 @@ use Cake\Core\Configure;
  * @var string $docType The default doc type. Options are swagger and redoc.
  *      Default: swagger
  *
- * @var string $exceptionSchema The name of your Exception schema in components > schemas defined in your swagger.yml.
+ * @var string|null $exceptionSchema The short name of your Exception schema in swagger.yaml components > schemas.
  *      Default: Exception.
  *
  * @var array[] $namespaces Array of namespaces. Useful if your controllers or entities exist in non-standard

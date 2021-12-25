@@ -8,16 +8,18 @@ use Cake\TestSuite\TestCase;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
-use SwaggerBake\Lib\Operation\ExceptionHandler;
+use SwaggerBake\Lib\Operation\ExceptionResponse;
 
-class ExceptionHandlerTest extends TestCase
+class ExceptionResponseTest extends TestCase
 {
+    /**
+     * @var string[]
+     */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 
-    private $router;
-    private $config;
+    private array $config;
 
     public function setUp(): void
     {
@@ -29,7 +31,6 @@ class ExceptionHandlerTest extends TestCase
                 'only' => ['index','update']
             ]);
         });
-        $this->router = $router;
 
         $this->config = [
             'prefix' => '/',
@@ -48,7 +49,7 @@ class ExceptionHandlerTest extends TestCase
         ];
     }
 
-    public function testErrorCodes(): void
+    public function test_error_codes(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
@@ -66,11 +67,12 @@ class ExceptionHandlerTest extends TestCase
         foreach ($exceptions as $code => $exception) {
             /** @var \phpDocumentor\Reflection\DocBlock\Tags\Throws $throws */
             $throws = $factory->create("/** @throws $exception */ */")->getTagsByName('throws')[0];
-            $this->assertEquals($code, (new ExceptionHandler($throws, $swagger, $config))->getCode());
+            $exception = (new ExceptionResponse($swagger, $config))->build($throws);
+            $this->assertEquals($code, $exception->getCode());
         }
     }
 
-    public function testMessage(): void
+    public function test_description(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
@@ -78,10 +80,11 @@ class ExceptionHandlerTest extends TestCase
         $factory = DocBlockFactory::createInstance();
         /** @var \phpDocumentor\Reflection\DocBlock\Tags\Throws $throws */
         $throws = $factory->create("/** @throws \Exception description */")->getTagsByName('throws')[0];
-        $this->assertEquals('description', (new ExceptionHandler($throws, $swagger, $config))->getMessage());
+        $exception = (new ExceptionResponse($swagger, $config))->build($throws);
+        $this->assertEquals('description', $exception->getDescription());
     }
 
-    public function testSchema(): void
+    public function test_schema(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
@@ -89,13 +92,11 @@ class ExceptionHandlerTest extends TestCase
         $factory = DocBlockFactory::createInstance();
         /** @var \phpDocumentor\Reflection\DocBlock\Tags\Throws $throws */
         $throws = $factory->create("/** @throws \Exception description */")->getTagsByName('throws')[0];
-        $this->assertEquals(
-            '#/components/schemas/Exception',
-            (new ExceptionHandler($throws, $swagger, $config))->getSchema()
-        );
+        $exception = (new ExceptionResponse($swagger, $config))->build($throws);
+        $this->assertEquals('#/components/schemas/Exception', $exception->getSchema());
     }
 
-    public function testCustomSchema(): void
+    public function test_custom_schema(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
@@ -107,9 +108,30 @@ class ExceptionHandlerTest extends TestCase
             ->create("/** @throws \MixerApi\ExceptionRender\ValidationException */")
             ->getTagsByName('throws')[0];
 
+        $exception = (new ExceptionResponse($swagger, $config))->build($throws);
+
         $this->assertEquals(
             '#/x-swagger-bake/components/schemas/app-exceptions/ValidationException',
-            (new ExceptionHandler($throws, $swagger, $config))->getSchema()
+            $exception->getSchema()
         );
+    }
+
+    public function test_exception_schema_interface(): void
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $swagger = (new SwaggerFactory($config))->create();
+
+        $factory = DocBlockFactory::createInstance();
+        /** @var \phpDocumentor\Reflection\DocBlock\Tags\Throws $throws */
+
+        $exceptionFqn = '\SwaggerBake\Test\TestCase\Lib\Operation\OpenApiExceptionSchemaInterfaceImplementation';
+        $throws = $factory
+            ->create("/** @throws $exceptionFqn */")
+            ->getTagsByName('throws')[0];
+
+        $schema = (new ExceptionResponse($swagger, $config))->build($throws)->getSchema();
+
+        $this->assertEquals('MyException', $schema->getTitle());
+        $this->assertCount(2, $schema->getProperties());
     }
 }
