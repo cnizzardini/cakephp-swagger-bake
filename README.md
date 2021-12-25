@@ -141,7 +141,7 @@ actions for additional OpenAPI data.
  * 
  * This displays as the operations long description
  * 
- * @see https://book.cakephp.org/4/en/index.html The link and this description appear in OpenAPI
+ * @link https://book.cakephp.org/4/en/index.html The link and this description appear in OpenAPI
  * @deprecated Indicates the operation is deprecated
  * @throws \Cake\Http\Exception\BadRequestException An optional description for the HTTP 400
  * @throws \Exception An optional description for the HTTP 500
