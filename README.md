@@ -86,7 +86,10 @@ bin/cake swagger install
 [here](assets/swagger.yml). 
 
 - Create a [swagger_bake.php](assets/swagger_bake.php) config file at `config/swagger_bake.php` file. See the example 
-file [here](assets/swagger_bake.php) for further explanation. Then just add a route.
+file [here](assets/swagger_bake.php) for further explanation. Then just [add a route](#add-route).
+
+For more read sections on [Multiple Instances of SwaggerBake](#multiple-instances-of-swagger-bake) 
+and [Extending Views and Controllers](#extending-views-and-controllers)
 
 ### Add Route
 

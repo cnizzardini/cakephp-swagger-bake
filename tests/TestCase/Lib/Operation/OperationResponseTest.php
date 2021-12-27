@@ -371,8 +371,10 @@ class OperationResponseTest extends TestCase
                 ])
             );
 
+        $swagger = (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create();
+
         $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $swagger,
             $this->config,
             new Operation('hello', 'get'),
             $route,
@@ -383,6 +385,10 @@ class OperationResponseTest extends TestCase
         $operation = $operationResponse->getOperationWithResponses();
         $content = $operation->getResponseByCode('200')->getContentByMimeType('application/json');
         $this->assertArrayHasKey('department_employees', $content->getSchema()->getProperties());
+
+        // issue #363 association schema should only modify the operations response schema and not the main schema.
+        $schema = $swagger->getSchemaByName('Employee-Read');
+        $this->assertArrayNotHasKey('department_employees', $schema->getProperties());
     }
 
     public function test_text_plain_mime_type(): void

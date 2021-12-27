@@ -178,8 +178,12 @@ class OperationResponseAssociation
 
         $entityName = $this->inflector::singularize($table->getAlias());
 
-        return $this->swagger->getSchemaByName($entityName . '-' . $schemaMode) ??
-            $this->buildAssociatedSchema($entityName, $table->getAlias());
+        $schema = $this->swagger->getSchemaByName($entityName . '-' . $schemaMode);
+        if ($schema) {
+            return clone $schema;
+        }
+
+        return clone $this->buildAssociatedSchema($entityName, $table->getAlias());
     }
 
     /**
