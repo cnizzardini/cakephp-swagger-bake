@@ -18,62 +18,50 @@ class Schema implements JsonSerializable, SchemaInterface
 {
     use SchemaTrait;
 
-    /**
-     * @var string|null
-     */
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string[]
      */
-    private $required = [];
+    private array $required = [];
 
     /**
      * A mixed array of Schema and SchemaProperty
      *
      * @var array
      */
-    private $properties = [];
+    private array $properties = [];
 
-    /**
-     * @var string
-     */
-    private $refEntity;
+    private ?string $refEntity = null;
 
     /**
      * @var string[]
      */
-    private $items = [];
+    private array $items = [];
 
     /**
      * @var array
      */
-    private $oneOf = [];
+    private array $oneOf = [];
 
     /**
      * @var array
      */
-    private $anyOf = [];
+    private array $anyOf = [];
 
     /**
      * @var array
      */
-    private $allOf = [];
+    private array $allOf = [];
 
     /**
      * @var array
      */
-    private $not = [];
+    private array $not = [];
 
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Xml|null
-     */
-    private $xml;
+    private ?Xml $xml = null;
 
-    /**
-     * @var bool
-     */
-    private $isPublic = true;
+    private bool $isPublic = true;
 
     private int $visibility = OpenApiSchema::VISIBILE_DEFAULT;
 
@@ -82,7 +70,7 @@ class Schema implements JsonSerializable, SchemaInterface
      *
      * @var string|null
      */
-    private $refPath;
+    private ?string $refPath = null;
 
     /**
      * @return array
@@ -94,12 +82,8 @@ class Schema implements JsonSerializable, SchemaInterface
         // always unset
         $vars = ArrayUtility::removeKeysMatching($vars, ['name','refEntity','isPublic', 'refPath','visibility']);
 
-        if (empty($vars['required'])) {
-            unset($vars['required']);
-        } else {
-            // must stay in this order to prevent https://github.com/cnizzardini/cakephp-swagger-bake/issues/30
-            $vars['required'] = array_values(array_unique($vars['required']));
-        }
+        // must stay in this order to prevent https://github.com/cnizzardini/cakephp-swagger-bake/issues/30
+        $vars['required'] = array_values(array_unique($vars['required']));
 
         if (!empty($this->refEntity)) {
             $vars['$ref'] = $this->refEntity;
@@ -108,20 +92,11 @@ class Schema implements JsonSerializable, SchemaInterface
         // remove null or empty properties to avoid swagger.json clutter
         $vars = ArrayUtility::removeEmptyAndNullValues(
             $vars,
-            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml']
-        );
-
-        $vars = ArrayUtility::removeEmptyAndNullValues(
-            $vars,
-            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml']
+            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml','required']
         );
 
         // remove null properties only
-        foreach (['description'] as $v) {
-            if (array_key_exists($v, $vars) && is_null($vars[$v])) {
-                unset($vars[$v]);
-            }
-        }
+        $vars = ArrayUtility::removeNullValues($vars, ['description']);
 
         return $vars;
     }
@@ -245,9 +220,9 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRefEntity(): string
+    public function getRefEntity(): ?string
     {
         return $this->refEntity;
     }

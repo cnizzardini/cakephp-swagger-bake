@@ -69,6 +69,9 @@ class Operation implements JsonSerializable
         // remove openapi properties that are not required (if they are empty)
         $vars = ArrayUtility::removeEmptyVars($vars, ['security', 'externalDocs']);
 
+        // remove openapi properties matching their default value
+        $vars = ArrayUtility::removeValuesMatching($vars, ['deprecated' => false]);
+
         // security should be numerically indexed
         if (isset($vars['security'])) {
             $vars['security'] = array_values($vars['security']);

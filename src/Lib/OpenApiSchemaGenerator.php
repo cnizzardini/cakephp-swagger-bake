@@ -47,7 +47,7 @@ class OpenApiSchemaGenerator
             } elseif ($schema->getVisibility() == OpenApiSchema::VISIBILE_HIDDEN) {
                 $openapi = $this->addVendorSchema($openapi, $schema);
             }
-
+            /*
             $readSchema = $schemaFactory->create($model, $schemaFactory::READABLE_PROPERTIES);
             $openapi = $this->addVendorSchema(
                 $openapi,
@@ -91,6 +91,7 @@ class OpenApiSchemaGenerator
                     ])
                     ->setRequired(array_keys($propertiesRequiredOnUpdate))
             );
+            */
         }
 
         return $openapi;

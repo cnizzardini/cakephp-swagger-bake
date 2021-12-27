@@ -1,10 +1,7 @@
 name: Build
 
 on:
-  push:
-    branches: [ master, 2.next ]
   pull_request:
-    branches: [ master, 2.next ]
 
 jobs:
   build:

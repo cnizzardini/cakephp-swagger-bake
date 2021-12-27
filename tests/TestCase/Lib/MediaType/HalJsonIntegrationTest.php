@@ -14,7 +14,7 @@ use SwaggerBake\Lib\Swagger;
 
 class HalJsonIntegrationTest extends TestCase
 {
-    private const SCHEMA = '#/x-swagger-bake/components/schemas/';
+    private const SCHEMA = '#/components/schemas/';
 
     /**
      * @var string[]
@@ -23,15 +23,9 @@ class HalJsonIntegrationTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
-    /**
-     * @var Router
-     */
-    private $router;
+    private Router $router;
 
-    /**
-     * @var Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     public function setUp(): void
     {
@@ -58,8 +52,6 @@ class HalJsonIntegrationTest extends TestCase
                 'tables' => ['\SwaggerBakeTest\App\\'],
             ]
         ], SWAGGER_BAKE_TEST_APP);
-
-        
     }
 
     public function test_collection(): void
@@ -78,7 +70,7 @@ class HalJsonIntegrationTest extends TestCase
             $schema->getProperties()['_embedded']->getItems()['allOf'][0]['$ref']
         );
         $this->assertEquals(
-            self::SCHEMA . 'Employee-Read',
+            self::SCHEMA . 'Employee',
             $schema->getProperties()['_embedded']->getItems()['allOf'][1]['$ref']
         );
     }
@@ -98,7 +90,7 @@ class HalJsonIntegrationTest extends TestCase
             $schema->getAllOf()[0]['$ref']
         );
         $this->assertEquals(
-            self::SCHEMA . 'Employee-Read',
+            self::SCHEMA . 'Employee',
             $schema->getAllOf()[1]['$ref']
         );
     }
