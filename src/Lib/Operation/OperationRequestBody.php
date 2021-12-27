@@ -13,7 +13,6 @@ use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\OpenApi\Xml;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
@@ -228,11 +227,11 @@ class OperationRequestBody
         $isUpdate = count(array_intersect($this->route->getMethods(), ['PATCH'])) >= 1;
         $isCreate = count(array_intersect($this->route->getMethods(), ['POST', 'PUT'])) >= 1;
 
-        /** @var SchemaProperty $schemaProperty */
+        /** @var \SwaggerBake\Lib\OpenApi\SchemaProperty $schemaProperty */
         foreach ($newSchema->getProperties() as $schemaProperty) {
             if ($isUpdate > 1 && $schemaProperty->isRequirePresenceOnUpdate()) {
                 $newSchema->pushRequired($schemaProperty->getName());
-            } else if ($isCreate && $schemaProperty->isRequirePresenceOnCreate()) {
+            } elseif ($isCreate && $schemaProperty->isRequirePresenceOnCreate()) {
                 $newSchema->pushRequired($schemaProperty->getName());
             }
         }
