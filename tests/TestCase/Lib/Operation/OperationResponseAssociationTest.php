@@ -10,6 +10,7 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationResponseAssociation;
 use SwaggerBake\Lib\Route\RouteScanner;
 
@@ -182,11 +183,9 @@ class OperationResponseAssociationTest extends TestCase
             associations: ['table' => 'EmployeeSalaries', 'whiteList' => ['Employees']]
         ));
 
+        /** @var SchemaProperty $schemaProperty */
         $schemaProperty = $schema->getProperties()['employee'];
 
-        $this->assertEquals(
-            '#/x-swagger-bake/components/schemas/Employee-Read',
-            $schemaProperty->getRefEntity()
-        );
+        $this->assertEquals('employee', $schemaProperty->getName());
     }
 }

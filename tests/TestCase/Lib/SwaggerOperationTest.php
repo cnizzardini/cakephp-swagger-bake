@@ -96,7 +96,7 @@ class SwaggerOperationTest extends TestCase
         $schema =  $employee['responses'][200]['content']['application/json']['schema'];
 
         $this->assertEquals('array', $schema['type']);
-        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['items']['$ref']);
+        $this->assertEquals('#/components/schemas/Employee', $schema['items']['$ref']);
     }
 
     public function test_default_request_schema_on_add_method(): void
@@ -106,7 +106,9 @@ class SwaggerOperationTest extends TestCase
         $employee = $arr['paths']['/employees']['post'];
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
 
-        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Add', $schema['$ref']);
+        $this->assertArrayHasKey('$ref', $schema['allOf'][0]);
+        $this->assertNotEmpty($schema['required']);
+        $this->assertContains('#/components/schemas/Employee', $schema['allOf'][0]);
     }
 
     public function test_default_response_schema_on_add_method(): void
@@ -114,9 +116,9 @@ class SwaggerOperationTest extends TestCase
         $arr = json_decode($this->swagger->toString(), true);
 
         $employee = $arr['paths']['/employees']['post'];
-        $schema =  $employee['responses'][200]['content']['application/json']['schema'];
+        $schema = $employee['responses'][200]['content']['application/json']['schema'];
 
-        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['$ref']);
+        $this->assertEquals('#/components/schemas/Employee', $schema['$ref']);
     }
 
     public function test_default_request_body_schema_on_edit_method(): void
@@ -124,9 +126,11 @@ class SwaggerOperationTest extends TestCase
         $arr = json_decode($this->swagger->toString(), true);
 
         $employee = $arr['paths']['/employees/{id}']['patch'];
-        $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
+        $schema = $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
 
-        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Edit', $schema['$ref']);
+        $this->assertArrayHasKey('$ref', $schema['allOf'][0]);
+        $this->assertNotEmpty($schema['required']);
+        $this->assertContains('#/components/schemas/Employee', $schema['allOf'][0]);
     }
 
     public function test_default_response_schema_on_edit_method(): void
@@ -134,9 +138,10 @@ class SwaggerOperationTest extends TestCase
         $arr = json_decode($this->swagger->toString(), true);
 
         $employee = $arr['paths']['/employees/{id}']['patch'];
-        $schema =  $employee['responses'][200]['content']['application/json']['schema'];
 
-        $this->assertEquals('#/x-swagger-bake/components/schemas/Employee-Read', $schema['$ref']);
+        $schema = $employee['responses'][200]['content']['application/json']['schema'];
+
+        $this->assertEquals('#/components/schemas/Employee', $schema['$ref']);
     }
 
     public function test_exception_response_schema(): void

@@ -24,15 +24,9 @@ class HalJsonTest extends TestCase
         'plugin.SwaggerBake.DepartmentEmployees',
     ];
 
-    /**
-     * @var Router
-     */
-    private $router;
+    private Router $router;
 
-    /**
-     * @var Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     public function setUp(): void
     {
@@ -87,11 +81,6 @@ class HalJsonTest extends TestCase
             HalJson::HAL_ITEM,
             $object->items->properties->_embedded->items->allOf[0]->{'$ref'}
         );
-
-        $this->assertEquals(
-            '#/x-swagger-bake/components/schemas/DepartmentEmployee-Read',
-            $object->items->properties->_embedded->items->allOf[1]->{'$ref'}
-        );
     }
 
     /**
@@ -122,6 +111,5 @@ class HalJsonTest extends TestCase
         $allOf = $object->properties->_embedded->items->properties->_embedded->items->allOf;
 
         $this->assertEquals(HalJson::HAL_ITEM, $allOf[0]->{'$ref'});
-        $this->assertEquals('#/x-swagger-bake/components/schemas/DepartmentEmployee-Read', $allOf[1]->{'$ref'});
     }
 }

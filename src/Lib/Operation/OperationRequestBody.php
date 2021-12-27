@@ -13,6 +13,7 @@ use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\OpenApi\Xml;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
@@ -86,7 +87,7 @@ class OperationRequestBody
         if (!empty($openApiRequestBody->ref)) {
             $pieces = explode('/', $openApiRequestBody->ref);
             $entity = end($pieces);
-            $schema = $this->getSchemaWithWritablePropertiesOnly(
+            $schema = $this->getSchemaWithRequiredProperties(
                 $this->swagger->getSchemaByName($entity)
             );
         }
@@ -207,48 +208,33 @@ class OperationRequestBody
 
             $schema = clone $this->schema;
             $schema = $this->applyRootNodeToXmlSchema($schema, $mimeType, $schema->getName());
+            $schema = $this->getSchemaWithRequiredProperties($schema);
 
-            $isPost = in_array($this->operation->getHttpMethod(), ['POST']);
-
-            if ($isPost && $this->swagger->getSchemaByName($schema->getAddSchemaName())) {
-                $contentSchema = $this->swagger->getSchemaByName($schema->getAddSchemaName())->getRefPath();
-            } elseif ($this->swagger->getSchemaByName($schema->getEditSchemaName())) {
-                $contentSchema = $this->swagger->getSchemaByName($schema->getEditSchemaName())->getRefPath();
-            } else {
-                $contentSchema = $this->swagger->getSchemaByName($schema->getName())->getRefPath();
-            }
-
-            $requestBody->pushContent(new Content($mimeType, $contentSchema));
+            $requestBody->pushContent(new Content($mimeType, $schema));
         }
 
         $this->operation->setRequestBody($requestBody);
     }
 
     /**
-     * Returns new Schema instance with only writable properties
+     * Returns new Schema instance with required properties
      *
      * @param \SwaggerBake\Lib\OpenApi\Schema $schema instance of Schema
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function getSchemaWithWritablePropertiesOnly(Schema $schema): Schema
+    private function getSchemaWithRequiredProperties(Schema $schema): Schema
     {
         $newSchema = clone $schema;
-        $newSchema->setProperties([]);
+        $isUpdate = count(array_intersect($this->route->getMethods(), ['PATCH'])) >= 1;
+        $isCreate = count(array_intersect($this->route->getMethods(), ['POST', 'PUT'])) >= 1;
 
-        $schemaProperties = array_filter($schema->getProperties(), function ($property) {
-            return $property->isReadOnly() === false;
-        });
-
-        $httpMethods = $this->route->getMethods();
-
-        foreach ($schemaProperties as $schemaProperty) {
-            $requireOnUpdate = $schemaProperty->isRequirePresenceOnUpdate();
-            $requireOnCreate = $schemaProperty->isRequirePresenceOnCreate();
-            $hasRequestBody = count(array_intersect($httpMethods, ['POST','PUT', 'PATCH'])) > 1;
-            if ($hasRequestBody && ($requireOnUpdate || $requireOnCreate)) {
-                $schemaProperty->setRequired(true);
+        /** @var SchemaProperty $schemaProperty */
+        foreach ($newSchema->getProperties() as $schemaProperty) {
+            if ($isUpdate > 1 && $schemaProperty->isRequirePresenceOnUpdate()) {
+                $newSchema->pushRequired($schemaProperty->getName());
+            } else if ($isCreate && $schemaProperty->isRequirePresenceOnCreate()) {
+                $newSchema->pushRequired($schemaProperty->getName());
             }
-            $newSchema->pushProperty($schemaProperty);
         }
 
         return $newSchema;
