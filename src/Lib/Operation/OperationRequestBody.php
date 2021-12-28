@@ -229,7 +229,7 @@ class OperationRequestBody
 
         /** @var \SwaggerBake\Lib\OpenApi\SchemaProperty $schemaProperty */
         foreach ($newSchema->getProperties() as $schemaProperty) {
-            if ($isUpdate > 1 && $schemaProperty->isRequirePresenceOnUpdate()) {
+            if ($isUpdate && $schemaProperty->isRequirePresenceOnUpdate()) {
                 $newSchema->pushRequired($schemaProperty->getName());
             } elseif ($isCreate && $schemaProperty->isRequirePresenceOnCreate()) {
                 $newSchema->pushRequired($schemaProperty->getName());
