@@ -353,38 +353,6 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @return string
-     */
-    public function getWriteSchemaName(): string
-    {
-        return $this->name . '-Write';
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddSchemaName(): string
-    {
-        return $this->name . '-Add';
-    }
-
-    /**
-     * @return string
-     */
-    public function getEditSchemaName(): string
-    {
-        return $this->name . '-Edit';
-    }
-
-    /**
-     * @return string
-     */
-    public function getReadSchemaName(): string
-    {
-        return $this->name . '-Read';
-    }
-
-    /**
      * @return bool
      */
     public function isPublic(): bool

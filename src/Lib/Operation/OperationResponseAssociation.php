@@ -102,7 +102,7 @@ class OperationResponseAssociation
     }
 
     /**
-     * @param string $schemaName the schema name such as Model-Read (e.g. Actor-Read, Actor-Add, Actor-Edit)
+     * @param string $schemaName the schema name
      * @param string $tableName the table name (e.g. Actors, FilmActors)
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
