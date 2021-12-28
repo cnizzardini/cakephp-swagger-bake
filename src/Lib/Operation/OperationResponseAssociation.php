@@ -69,9 +69,7 @@ class OperationResponseAssociation
         }
 
         $table = $this->locator->get($associations['table']);
-
-        $schemaMode = $this->whichSchemaMode();
-        $schema = $this->findSchema($table, $schemaMode);
+        $schema = $this->findSchema($table);
 
         $hasWhiteList = false;
         if (isset($associations['whiteList'])) {
@@ -90,7 +88,7 @@ class OperationResponseAssociation
             }
 
             $assocEntityName = $this->inflector::singularize($tableName);
-            $assocSchema = $this->buildAssociatedSchema("$assocEntityName-$schemaMode", $tableName);
+            $assocSchema = $this->buildAssociatedSchema("$assocEntityName", $tableName);
 
             if ($association instanceof HasMany || $association instanceof BelongsToMany) {
                 $schema->pushProperty($this->associateMany($tableName, $assocSchema));
@@ -101,44 +99,6 @@ class OperationResponseAssociation
         }
 
         return $schema;
-    }
-
-    /**
-     * Returns the schema mode (i.e. Add, Edit, Read) for an HTTP method. For example, POST returns Add, while GET
-     * returns Read.
-     *
-     * @return string
-     * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException if HTTP method is unknown
-     */
-    private function whichSchemaMode(): string
-    {
-        $types = [
-            'POST' => 'Add',
-            'PUT' => 'Edit',
-            'PATCH' => 'Edit',
-            'GET' => 'Read',
-            'DELETE' => 'Read',
-        ];
-
-        $schemaModes = array_filter(
-            $types,
-            function (string $method) {
-                return in_array($method, $this->route->getMethods());
-            },
-            ARRAY_FILTER_USE_KEY
-        );
-
-        if (empty($schemaModes)) {
-            throw new SwaggerBakeRunTimeException(
-                sprintf(
-                    'Could not find schema mode for HTTP `%s`, expected one of `%s` for the HTTP method.',
-                    implode(', ', $this->route->getMethods()),
-                    implode(', ', array_keys($types))
-                )
-            );
-        }
-
-        return reset($schemaModes);
     }
 
     /**
@@ -167,10 +127,9 @@ class OperationResponseAssociation
 
     /**
      * @param \Cake\ORM\Table $table Table instance
-     * @param string $schemaMode the schema mode (i.e. Read, Add, Edit)
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function findSchema(Table $table, string $schemaMode): Schema
+    private function findSchema(Table $table): Schema
     {
         if ($this->schema instanceof Schema) {
             return clone $this->schema;
@@ -178,7 +137,7 @@ class OperationResponseAssociation
 
         $entityName = $this->inflector::singularize($table->getAlias());
 
-        $schema = $this->swagger->getSchemaByName($entityName . '-' . $schemaMode);
+        $schema = $this->swagger->getSchemaByName($entityName);
         if ($schema) {
             return clone $schema;
         }
