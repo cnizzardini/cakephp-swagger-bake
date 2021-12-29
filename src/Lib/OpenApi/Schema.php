@@ -202,12 +202,6 @@ class Schema implements JsonSerializable, SchemaInterface
      */
     public function pushProperty(SchemaInterface $property)
     {
-        /*        if (empty($property->getName())) {
-                    throw new \LogicException(
-                        'Name must be set on ' . get_class($property)
-                    );
-                }*/
-
         $this->properties[$property->getName()] = $property;
 
         if ($property instanceof SchemaProperty && $property->isRequired()) {
@@ -266,7 +260,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param array $oneOf One Of
+     * @param array $oneOf One Of e.g. [['$ref' => '#']]
      * @return $this
      */
     public function setOneOf(array $oneOf)
@@ -285,7 +279,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param array $anyOf Any Of
+     * @param array $anyOf Any Of e.g. [['$ref' => '#']]
      * @return $this
      */
     public function setAnyOf(array $anyOf)
@@ -304,7 +298,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param array $allOf All Of
+     * @param array $allOf All Of e.g. [['$ref' => '#']]
      * @return $this
      */
     public function setAllOf(array $allOf)
@@ -323,7 +317,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param array $not Not
+     * @param array $not Not e.g. [['$ref' => '#']]
      * @return $this
      */
     public function setNot(array $not)
@@ -399,10 +393,10 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param string $refPath the openapi ref location (e.g. #/components/schemas/Model)
+     * @param string|null $refPath the openapi ref location (e.g. #/components/schemas/Model)
      * @return $this
      */
-    public function setRefPath(string $refPath)
+    public function setRefPath(?string $refPath)
     {
         $this->refPath = $refPath;
 

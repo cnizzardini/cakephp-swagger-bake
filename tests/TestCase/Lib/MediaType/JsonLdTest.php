@@ -2,12 +2,14 @@
 
 namespace SwaggerBake\Test\TestCase\Lib\MediaType;
 
+use Cake\Collection\Collection;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
+use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\MediaType\JsonLd;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Operation\OperationResponseAssociation;
@@ -69,20 +71,24 @@ class JsonLdTest extends TestCase
             $routes['employees:view'],
             null
         ))->build(new OpenApiResponse(
-            associations: ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
+            associations: ['whiteList' => ['DepartmentEmployees']]
         ));
 
         $schema = (new JsonLd())->buildSchema($schema, 'object');
         $object = json_decode(json_encode($schema->jsonSerialize()));
 
         $this->assertTrue(isset($object->items->properties->department_employees->items->allOf));
-
-        $this->assertEquals(
-            JsonLd::JSONLD_ITEM,
-            $object->items->properties->department_employees->items->allOf[0]->{'$ref'}
+        $allOf = $object->items->properties->department_employees->items->allOf;
+        $this->assertNotEmpty(
+            (new Collection($allOf))->filter(function($item) {
+                return isset($item['$ref']) && $item['$ref'] == JsonLd::JSONLD_ITEM;
+            })
         );
-
-        $this->assertTrue(isset($object->items->properties->department_employees));
+        $this->assertNotEmpty(
+            (new Collection($allOf))->filter(function($item) {
+                return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
+            })
+        );
     }
 
     /**
@@ -100,21 +106,25 @@ class JsonLdTest extends TestCase
             null
         ))->build(new OpenApiResponse(
             schemaType: 'array',
-            associations: ['depth' => 1, 'whiteList' => ['DepartmentEmployees']]
+            associations: ['whiteList' => ['DepartmentEmployees']]
         ));
 
         $schema = (new JsonLd())->buildSchema($schema, 'array');
         $object = json_decode(json_encode($schema->jsonSerialize()));
 
         $this->assertEquals(JsonLd::JSONLD_COLLECTION, $object->allOf[0]->{'$ref'});
-
         $this->assertTrue(isset($object->properties->member->items->properties->department_employees->items->allOf));
 
-        $this->assertEquals(
-            JsonLd::JSONLD_ITEM,
-            $object->properties->member->items->properties->department_employees->items->allOf[0]->{'$ref'}
+        $allOf = $object->properties->member->items->properties->department_employees->items->allOf;
+        $this->assertNotEmpty(
+            (new Collection($allOf))->filter(function($item) {
+                return isset($item['$ref']) && $item['$ref'] == JsonLd::JSONLD_ITEM;
+            })
         );
-
-        $this->assertTrue(isset($object->properties->member->items->properties->department_employees));
+        $this->assertNotEmpty(
+            (new Collection($allOf))->filter(function($item) {
+                return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
+            })
+        );
     }
 }

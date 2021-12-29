@@ -128,20 +128,6 @@ class OperationResponseAssociationTest extends TestCase
         $this->assertArrayHasKey('employee_titles', $schema->getProperties());
     }
 
-    public function test_non_positive_depth_throws_exception(): void
-    {
-        $this->expectException(SwaggerBakeRunTimeException::class);
-
-        (new OperationResponseAssociation(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
-            $this->routes['employees:view'],
-            null
-        ))->build(new OpenApiResponse(
-            schemaType: 'object',
-            associations: ['depth' => 0]
-        ));
-    }
-
     public function test_invalid_table_throws_exception(): void
     {
         $this->expectException(SwaggerBakeRunTimeException::class);

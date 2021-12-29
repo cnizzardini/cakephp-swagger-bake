@@ -6,6 +6,7 @@ namespace SwaggerBake\Lib\Operation;
 use Cake\Controller\Controller;
 use Cake\Database\Exception\DatabaseException;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Locator\LocatorInterface;
@@ -23,6 +24,9 @@ use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Schema\SchemaFactory;
 use SwaggerBake\Lib\Swagger;
 
+/**
+ * Handles OpenApiResponse attributes containing the association option.
+ */
 class OperationResponseAssociation
 {
     /**
@@ -58,55 +62,82 @@ class OperationResponseAssociation
             $associations['table'] = $this->route->getController();
         }
 
-        if ($associations['depth'] <> 1) {
-            throw new SwaggerBakeRunTimeException(
-                sprintf(
-                    'SwagResponseSchema association depth must be a positive integer, but only a depth of `1` ' .
-                    'is currently supported. Given depth of `%s`.',
-                    $associations['depth']
-                )
-            );
-        }
-
         $table = $this->locator->get($associations['table']);
         $schema = $this->findSchema($table);
+        $schema
+            ->setAllOf([['$ref' => $schema->getRefPath()]])
+            ->setRefPath(null)
+            ->setProperties([]);
 
-        $hasWhiteList = false;
-        if (isset($associations['whiteList'])) {
-            if (!is_array($associations['whiteList'])) {
-                throw new SwaggerBakeRunTimeException('whiteList must be an array');
+        if (!isset($associations['whiteList']) || !count($associations['whiteList'])) {
+            $associations['whiteList'] = [];
+            /** @var Association $association */
+            foreach ($table->associations() as $association) {
+                $associations['whiteList'][] = $association->getAlias();
             }
-            $hasWhiteList = true;
         }
 
-        /**
-         * @todo support recursion
-         */
-        foreach ($table->associations() as $tableName => $association) {
-            if ($hasWhiteList && !in_array($tableName, $associations['whiteList'])) {
-                continue;
-            }
-
-            $assocEntityName = $this->inflector::singularize($tableName);
-            $assocSchema = $this->buildAssociatedSchema("$assocEntityName", $tableName);
-
-            if ($association instanceof HasMany || $association instanceof BelongsToMany) {
-                $schema->pushProperty($this->associateMany($tableName, $assocSchema));
-                continue;
-            }
-
-            $schema->pushProperty($this->associateOne($assocEntityName, $assocSchema));
+        foreach ($associations['whiteList'] as $item) {
+            $schema = $this->associate($table, $schema, explode('.', $item));
         }
 
         return $schema;
     }
 
     /**
+     * Recursively associates schemas.
+     *
+     * @param \Cake\ORM\Table $table The base table
+     * @param \SwaggerBake\Lib\OpenApi\Schema $schema The base schema
+     * @param array $assoc An array of tables to be associated matching the order of the association tree.
+     * @param array|null $current Passed by recursion. Holds the current depth in the association tree
+     * @param Schema|null $baseSchema Passed by recursion. Holds the base schema.
+     * @return Schema
+     * @throws \ReflectionException
+     */
+    private function associate(
+        Table $table,
+        Schema $schema,
+        array $assoc,
+        ?array $current = null,
+        ?Schema $baseSchema = null
+    ): Schema {
+        $current = $current ?? array_slice($assoc,0 ,1);
+        $baseSchema = $baseSchema ?? $schema;
+        $association = $table->getAssociation(implode('.', $current));
+        $entity = $this->inflector::singularize($association->getAlias());
+        $associatedSchema = $this->getOrCreateAssociatedSchema($entity, $association->getAlias());
+        $associatedSchema
+            ->setAllOf([['$ref' => $associatedSchema->getRefPath()]])
+            ->setProperties([]);
+
+        if ($associatedSchema->getRefPath()) {
+            $associatedSchema->setRefPath(null);
+        }
+
+        if (count($current) != count($assoc)) {
+            $current = array_slice($assoc, 0, count($current)+1);
+            $associatedSchema = $this->associate($table, $associatedSchema, $assoc, $current);
+        }
+
+        if ($association instanceof HasMany || $association instanceof BelongsToMany) {
+            $baseSchema->pushProperty($this->associateMany($entity, $associatedSchema));
+        } else {
+            $baseSchema->pushProperty($this->associateOne($entity, $associatedSchema));
+        }
+
+        return $baseSchema;
+    }
+
+    /**
+     * Gets or creates the Schema if it cannot be found. Returns a cloned instance.
+     *
      * @param string $schemaName the schema name
      * @param string $tableName the table name (e.g. Actors, FilmActors)
      * @return \SwaggerBake\Lib\OpenApi\Schema
+     * @throws \ReflectionException
      */
-    private function buildAssociatedSchema(string $schemaName, string $tableName): Schema
+    private function getOrCreateAssociatedSchema(string $schemaName, string $tableName): Schema
     {
         $schema = $this->swagger->getSchemaByName($schemaName);
 
@@ -122,12 +153,15 @@ class OperationResponseAssociation
             $schema = (new SchemaFactory())->createAlways($decorator, SchemaFactory::READABLE_PROPERTIES);
         }
 
-        return $schema;
+        return clone $schema;
     }
 
     /**
+     * Find the Schema and return a cloned instance.
+     *
      * @param \Cake\ORM\Table $table Table instance
      * @return \SwaggerBake\Lib\OpenApi\Schema
+     * @throws \ReflectionException
      */
     private function findSchema(Table $table): Schema
     {
@@ -142,7 +176,7 @@ class OperationResponseAssociation
             return clone $schema;
         }
 
-        return clone $this->buildAssociatedSchema($entityName, $table->getAlias());
+        return $this->getOrCreateAssociatedSchema($entityName, $table->getAlias());
     }
 
     /**
@@ -163,10 +197,16 @@ class OperationResponseAssociation
             ]);
         }
 
-        return $schemaProperty->setItems([
+        $items = [
             'type' => 'object',
             'properties' => $assocSchema->getProperties(),
-        ]);
+        ];
+
+        if ($assocSchema->getAllOf()) {
+            $items['allOf'] = $assocSchema->getAllOf();
+        }
+
+        return $schemaProperty->setItems($items);
     }
 
     /**

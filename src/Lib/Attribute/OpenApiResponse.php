@@ -38,7 +38,7 @@ class OpenApiResponse
         $this->schemaFormat = $schemaFormat ?? '';
         if (is_array($associations)) {
             $this->associations = array_replace(
-                ['depth' => 1, 'table' => null, 'whiteList' => null],
+                ['table' => null, 'whiteList' => null],
                 $associations
             );
         }

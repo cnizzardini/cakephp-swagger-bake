@@ -554,28 +554,28 @@ OpenAPI:
 #### Associations
 
 The association property allows you to include associations defined in your Table class within your OpenAPI response
-schema. To include all immediately associated tables (deep nested associations are not yet supported):
+sample schema. To include all immediately associated tables (depth of one):
 
 ```php
 #[OpenApiResponse(associations: [])]
+```
+
+We can restrict the associations using the `whiteList` option which supports dot notation:
+
+```php
+#[OpenApiResponse(associations: ['whiteList' => ['Films.Languages', 'City']])]
+```
+
+Remember `schemaType` defaults to `object`. We can specify `array` if we are returning many records:
+
+```php
+#[OpenApiResponse(associations: [], schemaType: 'array')]
 ```
 
 Since the base table is inferred using CakePHP naming conventions we can change the base table if necessary:
 
 ```php
 #[OpenApiResponse(associations: ['table' => 'OtherTable'])]
-```
-
-We can restrict the associations using the `whiteList` option:
-
-```php
-#[OpenApiResponse(schemaType: 'array', associations: ['whiteList' => ['Films']])]
-```
-
-Remember `schemaType` defaults to `object`. We can specify `array` if we are returning many records:
-
-```php
-#[OpenApiResponse(schemaType: 'array', associations: [])]
 ```
 
 ### OpenApiSchema
