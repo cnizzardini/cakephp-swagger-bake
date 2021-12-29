@@ -10,8 +10,9 @@ class ResponseTest extends TestCase
 {
     public function test_get_set(): void
     {
-        $response = new Response('200', $desc = 'desc', [new Content('application/json', '')]);
-        $this->assertEquals($desc, $response->getDescription());
+        $response = new Response('200', '', [new Content('application/json', '')]);
         $this->assertInstanceOf(Content::class, $response->getContent()[0]);
+        $this->assertEquals($code = '201', $response->setCode($code)->getCode());
+        $this->assertEquals($desc = 'desc..', $response->setDescription($desc)->getDescription());
     }
 }

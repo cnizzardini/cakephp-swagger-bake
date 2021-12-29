@@ -42,24 +42,6 @@ class ArrayUtility
     }
 
     /**
-     * Removes null values from an array
-     *
-     * @param array $array The array to scan
-     * @param array $keys A list of keys to check for null values
-     * @return array
-     */
-    public static function removeEmptyAndNullValues(array $array, array $keys): array
-    {
-        foreach ($keys as $key) {
-            if (array_key_exists($key, $array) && (is_null($array[$key]) || empty($array[$key]))) {
-                unset($array[$key]);
-            }
-        }
-
-        return $array;
-    }
-
-    /**
      * Removes matching values from the array
      *
      * @param array $array The array to scan on
