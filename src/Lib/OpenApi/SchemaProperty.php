@@ -68,7 +68,8 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             $vars,
             [
                 'format','title','description','multipleOf','minimum','maximum','minLength','maxLength','pattern',
-                'minItems','maxItems','minProperties','maxProperties','items','enum',
+                'minItems','maxItems','minProperties','maxProperties','items','enum','default','exclusiveMinimum',
+                'exclusiveMaximum','uniqueItems','nullable',
             ]
         );
 
@@ -81,7 +82,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false, 'nullable' => false]
         );
 
-        return $this->removeEmptyVars($vars);
+        return $vars;
     }
 
     /**

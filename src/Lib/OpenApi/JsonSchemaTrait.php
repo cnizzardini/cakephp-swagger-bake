@@ -24,26 +24,6 @@ trait JsonSchemaTrait
     private bool $deprecated = false;
 
     /**
-     * @param array $vars Object properties as a key-value pair
-     * @return array
-     */
-    public function removeEmptyVars(array $vars): array
-    {
-        $empties = [
-            'title','default','multipleOf','minimum','maximum','exclusiveMinimum','exclusiveMaximum','minLength',
-            'maxLength','pattern','minItems','maxItems','uniqueItems','minProperties','maxProperties','nullable',
-        ];
-
-        foreach ($vars as $name => $value) {
-            if (in_array($name, $empties) && (empty($value) || $value == null)) {
-                unset($vars[$name]);
-            }
-        }
-
-        return $vars;
-    }
-
-    /**
      * @return string|null
      */
     public function getTitle(): ?string
