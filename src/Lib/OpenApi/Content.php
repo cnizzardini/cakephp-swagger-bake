@@ -16,6 +16,7 @@ class Content implements JsonSerializable
     /**
      * @param string $mimeType A mimetype such as "application/json"
      * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema An instance of the schema or an OpenApi $ref string
+     * @todo add enum for $mimeType argument in PHP 8.1
      */
     public function __construct(
         private string $mimeType,
@@ -82,9 +83,9 @@ class Content implements JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return \SwaggerBake\Lib\OpenApi\Schema|string
      */
-    public function getSchema()
+    public function getSchema(): Schema|string
     {
         return $this->schema;
     }
@@ -95,7 +96,7 @@ class Content implements JsonSerializable
      * @param \SwaggerBake\Lib\OpenApi\Schema|string $schema Schema
      * @return $this
      */
-    public function setSchema($schema)
+    public function setSchema(Schema|string $schema)
     {
         $this->schema = $schema;
 
