@@ -5,30 +5,11 @@ namespace SwaggerBake\Lib\OpenApi;
 
 trait SchemaTrait
 {
-    /**
-     * @var string
-     */
-    private $name = '';
-
-    /**
-     * @var string
-     */
-    private $description;
-
-    /**
-     * @var string
-     */
-    private $type = '';
-
-    /**
-     * @var string
-     */
-    private $format;
-
-    /**
-     * @var array
-     */
-    private $enum = [];
+    private ?string $name = null;
+    private ?string $description = null;
+    private ?string $type = null;
+    private ?string $format = null;
+    private array $enum = [];
 
     /**
      * @return string

@@ -29,23 +29,13 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
         'isDeprecated' => 'deprecated',
     ];
 
-    /**
-     * @var mixed
-     */
-    private $example;
-
+    private mixed $example;
     private bool $isReadOnly = false;
-
     private bool $isWriteOnly = false;
-
     private bool $isRequired = false;
-
     private bool $requirePresenceOnCreate = false;
-
     private bool $requirePresenceOnUpdate = false;
-
     private array $items = [];
-
     private ?string $refEntity = null;
 
     /**

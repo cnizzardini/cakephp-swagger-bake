@@ -5,90 +5,23 @@ namespace SwaggerBake\Lib\OpenApi;
 
 trait JsonSchemaTrait
 {
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var mixed
-     */
-    protected $default;
-
-    /**
-     * @var bool
-     */
-    protected $nullable;
-
-    /**
-     * @var float|null
-     */
-    protected $multipleOf;
-
-    /**
-     * @var float|null
-     */
-    protected $minimum;
-
-    /**
-     * @var float|null
-     */
-    protected $maximum;
-
-    /**
-     * @var bool
-     */
-    protected $exclusiveMinimum;
-
-    /**
-     * @var bool
-     */
-    protected $exclusiveMaximum;
-
-    /**
-     * @var int|null
-     */
-    protected $minLength;
-
-    /**
-     * @var int|null
-     */
-    protected $maxLength;
-
-    /**
-     * @var string
-     */
-    protected $pattern;
-
-    /**
-     * @var int|null
-     */
-    protected $minItems;
-
-    /**
-     * @var int|null
-     */
-    protected $maxItems;
-
-    /**
-     * @var bool
-     */
-    protected $uniqueItems;
-
-    /**
-     * @var int|null
-     */
-    protected $minProperties;
-
-    /**
-     * @var int|null
-     */
-    protected $maxProperties;
-
-    /**
-     * @var bool
-     */
-    private $deprecated = false;
+    protected ?string $title = null;
+    protected mixed $default;
+    protected bool $nullable = false;
+    protected ?float $multipleOf = null;
+    protected ?float $minimum = null;
+    protected ?float $maximum = null;
+    protected bool $exclusiveMinimum = false;
+    protected bool $exclusiveMaximum = false;
+    protected ?int $minLength = null;
+    protected ?int $maxLength = null;
+    protected ?string $pattern = null;
+    protected ?int $minItems = null;
+    protected ?int $maxItems = null;
+    protected bool $uniqueItems = false;
+    protected ?int $minProperties = null;
+    protected ?int $maxProperties = null;
+    private bool $deprecated = false;
 
     /**
      * @param array $vars Object properties as a key-value pair
@@ -111,9 +44,9 @@ trait JsonSchemaTrait
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -132,7 +65,7 @@ trait JsonSchemaTrait
     /**
      * @return mixed
      */
-    public function getDefault()
+    public function getDefault(): mixed
     {
         return $this->default;
     }
@@ -141,7 +74,7 @@ trait JsonSchemaTrait
      * @param mixed $default Default
      * @return $this
      */
-    public function setDefault($default)
+    public function setDefault(mixed $default)
     {
         $this->default = $default;
 
