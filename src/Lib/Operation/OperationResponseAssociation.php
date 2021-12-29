@@ -201,6 +201,10 @@ class OperationResponseAssociation
             'properties' => $assocSchema->getProperties(),
         ];
 
+        if (empty($items['properties'])) {
+            unset($items['properties']);
+        }
+
         if ($assocSchema->getAllOf()) {
             $items['allOf'] = $assocSchema->getAllOf();
         }
