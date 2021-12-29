@@ -560,7 +560,7 @@ sample schema. To include all immediately associated tables (depth of one):
 #[OpenApiResponse(associations: [])]
 ```
 
-We can restrict the associations using the `whiteList` option which supports dot notation:
+To include deeper associations or restrict the associations, use the `whiteList` option. This supports dot notation:
 
 ```php
 #[OpenApiResponse(associations: ['whiteList' => ['Films.Languages', 'City']])]
