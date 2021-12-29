@@ -6,7 +6,6 @@ namespace SwaggerBake\Lib\Operation;
 use Cake\Controller\Controller;
 use Cake\Database\Exception\DatabaseException;
 use Cake\Datasource\ConnectionManager;
-use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Locator\LocatorInterface;
@@ -71,7 +70,7 @@ class OperationResponseAssociation
 
         if (!isset($associations['whiteList']) || !count($associations['whiteList'])) {
             $associations['whiteList'] = [];
-            /** @var Association $association */
+            /** @var \Cake\ORM\Association $association */
             foreach ($table->associations() as $association) {
                 $associations['whiteList'][] = $association->getAlias();
             }
@@ -91,8 +90,8 @@ class OperationResponseAssociation
      * @param \SwaggerBake\Lib\OpenApi\Schema $schema The base schema
      * @param array $assoc An array of tables to be associated matching the order of the association tree.
      * @param array|null $current Passed by recursion. Holds the current depth in the association tree
-     * @param Schema|null $baseSchema Passed by recursion. Holds the base schema.
-     * @return Schema
+     * @param \SwaggerBake\Lib\OpenApi\Schema|null $baseSchema Passed by recursion. Holds the base schema.
+     * @return \SwaggerBake\Lib\OpenApi\Schema
      * @throws \ReflectionException
      */
     private function associate(
@@ -102,7 +101,7 @@ class OperationResponseAssociation
         ?array $current = null,
         ?Schema $baseSchema = null
     ): Schema {
-        $current = $current ?? array_slice($assoc,0 ,1);
+        $current = $current ?? array_slice($assoc, 0, 1);
         $baseSchema = $baseSchema ?? $schema;
         $association = $table->getAssociation(implode('.', $current));
         $entity = $this->inflector::singularize($association->getAlias());
@@ -116,7 +115,7 @@ class OperationResponseAssociation
         }
 
         if (count($current) != count($assoc)) {
-            $current = array_slice($assoc, 0, count($current)+1);
+            $current = array_slice($assoc, 0, count($current) + 1);
             $associatedSchema = $this->associate($table, $associatedSchema, $assoc, $current);
         }
 
