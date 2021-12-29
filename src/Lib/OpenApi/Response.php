@@ -58,7 +58,7 @@ class Response implements JsonSerializable
      * @param string|int $code Http status code
      * @return $this
      */
-    public function setCode($code)
+    public function setCode(string|int $code)
     {
         $this->code = (string)$code;
 
@@ -66,9 +66,9 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
