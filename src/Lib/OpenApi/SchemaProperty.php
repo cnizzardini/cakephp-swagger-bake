@@ -74,7 +74,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
         }
 
         // Removing empty and null items from OpenAPI
-        $vars = ArrayUtility::removeEmptyAndNullValues(
+        $vars = ArrayUtility::removeEmptyVars(
             $vars,
             [
                 'format','title','description','multipleOf','minimum','maximum','minLength','maxLength','pattern',

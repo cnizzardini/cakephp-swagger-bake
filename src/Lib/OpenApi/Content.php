@@ -42,6 +42,9 @@ class Content implements JsonSerializable
                     $vars['schema']['allOf'][] = [
                         '$ref' => $this->schema->getRefPath(),
                     ];
+                    if (empty($vars['schema']['required'])) {
+                        unset($vars['schema']['required']);
+                    }
                     break;
                 }
                 $vars['schema'] = $this->schema;

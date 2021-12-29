@@ -90,7 +90,7 @@ class Schema implements JsonSerializable, SchemaInterface
         }
 
         // remove null or empty properties to avoid swagger.json clutter
-        $vars = ArrayUtility::removeEmptyAndNullValues(
+        $vars = ArrayUtility::removeEmptyVars(
             $vars,
             ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml','required']
         );

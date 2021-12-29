@@ -35,7 +35,7 @@ class Response implements JsonSerializable
         $vars = ArrayUtility::removeKeysMatching($vars, ['code']);
         $vars = ArrayUtility::convertNullToEmptyString($vars, ['description']);
 
-        return ArrayUtility::removeEmptyAndNullValues($vars, ['content']);
+        return ArrayUtility::removeEmptyVars($vars, ['content']);
     }
 
     /**
