@@ -116,11 +116,20 @@ class Schema implements JsonSerializable, SchemaInterface
      * @param mixed $value value
      * @return $this
      */
-    public function setVendorProperty(string $name, $value)
+    public function setVendorProperty(string $name, mixed $value)
     {
         $this->{$name} = $value;
 
         return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function getVendorProperty(string $name): mixed
+    {
+        return $this->{$name} ?? null;
     }
 
     /**
