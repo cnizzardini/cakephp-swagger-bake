@@ -124,7 +124,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param string $name
+     * @param string $name name of the attribute
      * @return mixed
      */
     public function getVendorProperty(string $name): mixed
