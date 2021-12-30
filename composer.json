@@ -6,11 +6,9 @@
     "keywords": ["cakephp swagger","cakephp4 swagger","cake swagger"],
     "require": {
         "php": "^8.0",
-        "ext-json": "*",
         "cakephp/cakephp": "^4.2",
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
-        "doctrine/annotations": "^1.10",
         "thecodingmachine/class-explorer": "^1.1",
         "mixerapi/core": "^0.2"
     },

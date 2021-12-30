@@ -49,7 +49,7 @@ class Xml implements JsonSerializable
         $vars = ArrayUtility::removeValuesMatching($vars, ['attribute' => false, 'wrapped' => false]);
 
         // remove empty properties to avoid swagger.json clutter
-        return ArrayUtility::removeEmptyAndNullValues($vars, ['namespace','prefix','attribute','wrapped']);
+        return ArrayUtility::removeEmptyVars($vars, ['namespace','prefix','attribute','wrapped']);
     }
 
     /**

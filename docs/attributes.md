@@ -554,10 +554,22 @@ OpenAPI:
 #### Associations
 
 The association property allows you to include associations defined in your Table class within your OpenAPI response
-schema. To include all immediately associated tables (deep nested associations are not yet supported):
+sample schema. To include all immediately associated tables (depth of one):
 
 ```php
 #[OpenApiResponse(associations: [])]
+```
+
+To include deeper associations or restrict the associations, use the `whiteList` option. This supports dot notation:
+
+```php
+#[OpenApiResponse(associations: ['whiteList' => ['Films.Languages', 'City']])]
+```
+
+Remember `schemaType` defaults to `object`. We can specify `array` if we are returning many records:
+
+```php
+#[OpenApiResponse(associations: [], schemaType: 'array')]
 ```
 
 Since the base table is inferred using CakePHP naming conventions we can change the base table if necessary:
@@ -566,21 +578,9 @@ Since the base table is inferred using CakePHP naming conventions we can change 
 #[OpenApiResponse(associations: ['table' => 'OtherTable'])]
 ```
 
-We can restrict the associations using the `whiteList` option:
-
-```php
-#[OpenApiResponse(schemaType: 'array', associations: ['whiteList' => ['Films']])]
-```
-
-Remember `schemaType` defaults to `object`. We can specify `array` if we are returning many records:
-
-```php
-#[OpenApiResponse(schemaType: 'array', associations: [])]
-```
-
 ### OpenApiSchema
 
-Class level attribute for modifying OpenAPI Schema to Swagger UI.
+Class level attribute for modifying OpenAPI Schema.
 
 | Property | Type / Default | OA Spec | Description | 
 | ------------- | ------------- | ------------- | ------------- |
@@ -594,10 +594,10 @@ You can use the constants below when defining `visibility`:
 
 | Name  | Value  | Description  |
 |---|---|---|
-| `OpenApiSchema::VISIBILE_DEFAULT`  |  1  |  Default behavior. Adds the schema to default & vendor locations if it matches a controller with a restful route. |
-| `OpenApiSchema::VISIBILE_ALWAYS`  |  2  |  Always add the schema to default & vendor locations.  |
-| `OpenApiSchema::VISIBILE_HIDDEN` |  3  | Never add the schema to the default location, but adds it to vendor location. This hides the schema from the Swagger UIs Schemas section, but still allows the schema to be used for request and response bodies.  |
-| `OpenApiSchema::VISIBILE_NEVER`  |  4  | Never add the schema anywhere (default or vendor location). Warning this can break request body definitions and response samples. |
+| `OpenApiSchema::VISIBILE_DEFAULT`  |  1  |  Default behavior. Adds the schema to `#/components/schema/{SchemaName}` if it matches a controller with a RESTful route. |
+| `OpenApiSchema::VISIBILE_ALWAYS`  |  2  |  Always add the schema to `#/components/schema/{SchemaName}`.  |
+| `OpenApiSchema::VISIBILE_HIDDEN` |  3  | Never add the schema to `#/components/schema/{SchemaName}` and instead adds it to `#/x-swagger-bake/components/schema/{SchemaName}`. This hides the schema from the Swagger UIs Schemas section, but still allows the schema to be used for request and response bodies.  |
+| `OpenApiSchema::VISIBILE_NEVER`  |  4  | Never add the schema anywhere. Warning this can break request body definitions and response samples. |
 
 Example:
 

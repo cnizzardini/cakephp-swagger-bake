@@ -18,62 +18,50 @@ class Schema implements JsonSerializable, SchemaInterface
 {
     use SchemaTrait;
 
-    /**
-     * @var string|null
-     */
-    private $title;
+    private ?string $title = null;
 
     /**
      * @var string[]
      */
-    private $required = [];
+    private array $required = [];
 
     /**
      * A mixed array of Schema and SchemaProperty
      *
      * @var array
      */
-    private $properties = [];
+    private array $properties = [];
 
-    /**
-     * @var string
-     */
-    private $refEntity;
+    private ?string $refEntity = null;
 
     /**
      * @var string[]
      */
-    private $items = [];
+    private array $items = [];
 
     /**
      * @var array
      */
-    private $oneOf = [];
+    private array $oneOf = [];
 
     /**
      * @var array
      */
-    private $anyOf = [];
+    private array $anyOf = [];
 
     /**
      * @var array
      */
-    private $allOf = [];
+    private array $allOf = [];
 
     /**
      * @var array
      */
-    private $not = [];
+    private array $not = [];
 
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Xml|null
-     */
-    private $xml;
+    private ?Xml $xml = null;
 
-    /**
-     * @var bool
-     */
-    private $isPublic = true;
+    private bool $isPublic = true;
 
     private int $visibility = OpenApiSchema::VISIBILE_DEFAULT;
 
@@ -82,7 +70,7 @@ class Schema implements JsonSerializable, SchemaInterface
      *
      * @var string|null
      */
-    private $refPath;
+    private ?string $refPath = null;
 
     /**
      * @return array
@@ -94,34 +82,21 @@ class Schema implements JsonSerializable, SchemaInterface
         // always unset
         $vars = ArrayUtility::removeKeysMatching($vars, ['name','refEntity','isPublic', 'refPath','visibility']);
 
-        if (empty($vars['required'])) {
-            unset($vars['required']);
-        } else {
-            // must stay in this order to prevent https://github.com/cnizzardini/cakephp-swagger-bake/issues/30
-            $vars['required'] = array_values(array_unique($vars['required']));
-        }
+        // must stay in this order to prevent https://github.com/cnizzardini/cakephp-swagger-bake/issues/30
+        $vars['required'] = array_values(array_unique($vars['required']));
 
         if (!empty($this->refEntity)) {
             $vars['$ref'] = $this->refEntity;
         }
 
         // remove null or empty properties to avoid swagger.json clutter
-        $vars = ArrayUtility::removeEmptyAndNullValues(
+        $vars = ArrayUtility::removeEmptyVars(
             $vars,
-            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml']
-        );
-
-        $vars = ArrayUtility::removeEmptyAndNullValues(
-            $vars,
-            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml']
+            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml','required']
         );
 
         // remove null properties only
-        foreach (['description'] as $v) {
-            if (array_key_exists($v, $vars) && is_null($vars[$v])) {
-                unset($vars[$v]);
-            }
-        }
+        $vars = ArrayUtility::removeNullValues($vars, ['description']);
 
         return $vars;
     }
@@ -141,11 +116,20 @@ class Schema implements JsonSerializable, SchemaInterface
      * @param mixed $value value
      * @return $this
      */
-    public function setVendorProperty(string $name, $value)
+    public function setVendorProperty(string $name, mixed $value)
     {
         $this->{$name} = $value;
 
         return $this;
+    }
+
+    /**
+     * @param string $name name of the attribute
+     * @return mixed
+     */
+    public function getVendorProperty(string $name): mixed
+    {
+        return $this->{$name} ?? null;
     }
 
     /**
@@ -227,12 +211,6 @@ class Schema implements JsonSerializable, SchemaInterface
      */
     public function pushProperty(SchemaInterface $property)
     {
-        /*        if (empty($property->getName())) {
-                    throw new \LogicException(
-                        'Name must be set on ' . get_class($property)
-                    );
-                }*/
-
         $this->properties[$property->getName()] = $property;
 
         if ($property instanceof SchemaProperty && $property->isRequired()) {
@@ -245,9 +223,9 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRefEntity(): string
+    public function getRefEntity(): ?string
     {
         return $this->refEntity;
     }
@@ -291,7 +269,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param array $oneOf One Of
+     * @param array $oneOf One Of e.g. [['$ref' => '#']]
      * @return $this
      */
     public function setOneOf(array $oneOf)
@@ -310,7 +288,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param array $anyOf Any Of
+     * @param array $anyOf Any Of e.g. [['$ref' => '#']]
      * @return $this
      */
     public function setAnyOf(array $anyOf)
@@ -329,7 +307,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param array $allOf All Of
+     * @param array $allOf All Of e.g. [['$ref' => '#']]
      * @return $this
      */
     public function setAllOf(array $allOf)
@@ -348,7 +326,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param array $not Not
+     * @param array $not Not e.g. [['$ref' => '#']]
      * @return $this
      */
     public function setNot(array $not)
@@ -375,38 +353,6 @@ class Schema implements JsonSerializable, SchemaInterface
         $this->xml = $xml;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWriteSchemaName(): string
-    {
-        return $this->name . '-Write';
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddSchemaName(): string
-    {
-        return $this->name . '-Add';
-    }
-
-    /**
-     * @return string
-     */
-    public function getEditSchemaName(): string
-    {
-        return $this->name . '-Edit';
-    }
-
-    /**
-     * @return string
-     */
-    public function getReadSchemaName(): string
-    {
-        return $this->name . '-Read';
     }
 
     /**
@@ -456,10 +402,10 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param string $refPath the openapi ref location (e.g. #/components/schemas/Model)
+     * @param string|null $refPath the openapi ref location (e.g. #/components/schemas/Model)
      * @return $this
      */
-    public function setRefPath(string $refPath)
+    public function setRefPath(?string $refPath)
     {
         $this->refPath = $refPath;
 

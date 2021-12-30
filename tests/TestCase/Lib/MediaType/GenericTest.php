@@ -12,15 +12,9 @@ use SwaggerBake\Lib\Swagger;
 
 class GenericTest extends TestCase
 {
-    /**
-     * @var Router
-     */
-    private $router;
+    private Router $router;
 
-    /**
-     * @var Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     public function setUp(): void
     {

@@ -353,6 +353,9 @@ class OperationResponseTest extends TestCase
         $this->assertEquals('date-time', $content->getSchema()->getFormat());
     }
 
+    /**
+     * @link https://github.com/cnizzardini/cakephp-swagger-bake/issues/363
+     */
     public function test_associations(): void
     {
         $route = $this->routes['employees:index'];
@@ -386,8 +389,8 @@ class OperationResponseTest extends TestCase
         $content = $operation->getResponseByCode('200')->getContentByMimeType('application/json');
         $this->assertArrayHasKey('department_employees', $content->getSchema()->getProperties());
 
-        // issue #363 association schema should only modify the operations response schema and not the main schema.
-        $schema = $swagger->getSchemaByName('Employee-Read');
+        // issue #363 association schema should only modify the operations' response schema and not the main schema.
+        $schema = $swagger->getSchemaByName('Employee');
         $this->assertArrayNotHasKey('department_employees', $schema->getProperties());
     }
 

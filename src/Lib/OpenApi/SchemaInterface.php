@@ -6,9 +6,9 @@ namespace SwaggerBake\Lib\OpenApi;
 interface SchemaInterface
 {
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string;
+    public function getName(): ?string;
 
     /**
      * @param string $name Name
@@ -17,9 +17,9 @@ interface SchemaInterface
     public function setName(string $name);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getType(): string;
+    public function getType(): ?string;
 
     /**
      * @param string $type Type

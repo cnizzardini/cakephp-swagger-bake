@@ -55,7 +55,7 @@ class OperationRequestBodyYamlTest extends TestCase
     }
 
     /**
-     * @see https://github.com/cnizzardini/cakephp-swagger-bake/issues/274
+     * @link https://github.com/cnizzardini/cakephp-swagger-bake/issues/274
      */
     public function test_yaml_schema_overwriting_cakephp_model_schema(): void
     {
@@ -80,6 +80,6 @@ class OperationRequestBodyYamlTest extends TestCase
             ->getRequestBody()
             ->getContentByType('application/x-www-form-urlencoded');
 
-        $this->assertEquals('#/components/schemas/Employee', $content->getSchema());
+        $this->assertEquals('#/components/schemas/Employee', $content->getSchema()->getRefPath());
     }
 }

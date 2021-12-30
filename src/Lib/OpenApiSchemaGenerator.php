@@ -47,50 +47,6 @@ class OpenApiSchemaGenerator
             } elseif ($schema->getVisibility() == OpenApiSchema::VISIBILE_HIDDEN) {
                 $openapi = $this->addVendorSchema($openapi, $schema);
             }
-
-            $readSchema = $schemaFactory->create($model, $schemaFactory::READABLE_PROPERTIES);
-            $openapi = $this->addVendorSchema(
-                $openapi,
-                $readSchema->setName($readSchema->getReadSchemaName())
-            );
-
-            $writeSchema = $schemaFactory->create($model, $schemaFactory::WRITEABLE_PROPERTIES);
-            $openapi = $this->addVendorSchema(
-                $openapi,
-                $writeSchema->setName($writeSchema->getWriteSchemaName())
-            );
-
-            $propertiesRequiredOnCreate = array_filter($writeSchema->getProperties(), function ($property) {
-                return $property->isRequirePresenceOnCreate() || $property->isRequired();
-            });
-
-            $addSchema = clone $writeSchema;
-            $openapi = $this->addVendorSchema(
-                $openapi,
-                $addSchema
-                    ->setName($schema->getAddSchemaName())
-                    ->setProperties([])
-                    ->setAllOf([
-                        ['$ref' => $this->getSchemaByName($openapi, $schema->getWriteSchemaName())->getRefPath()],
-                    ])
-                    ->setRequired(array_keys($propertiesRequiredOnCreate))
-            );
-
-            $propertiesRequiredOnUpdate = array_filter($writeSchema->getProperties(), function ($property) {
-                return $property->isRequirePresenceOnUpdate() || $property->isRequired();
-            });
-
-            $editSchema = clone $writeSchema;
-            $openapi = $this->addVendorSchema(
-                $openapi,
-                $editSchema
-                    ->setName($schema->getEditSchemaName())
-                    ->setProperties([])
-                    ->setAllOf([
-                        ['$ref' => $this->getSchemaByName($openapi, $schema->getWriteSchemaName())->getRefPath()],
-                    ])
-                    ->setRequired(array_keys($propertiesRequiredOnUpdate))
-            );
         }
 
         return $openapi;

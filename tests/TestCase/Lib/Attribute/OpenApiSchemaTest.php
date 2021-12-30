@@ -5,6 +5,7 @@ namespace SwaggerBake\Test\TestCase\Lib\Attribute;
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
@@ -66,7 +67,10 @@ class OpenApiSchemaTest extends TestCase
         $this->assertArrayHasKey('Employee', $arr['components']['schemas']);
     }
 
-    public function test_entity_is_not_visible(): void
+    /**
+     * @see OpenApiSchema::VISIBILE_NEVER
+     */
+    public function test_schema_never_visible(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
@@ -78,7 +82,10 @@ class OpenApiSchemaTest extends TestCase
         $this->assertArrayNotHasKey('EmployeeSalary', $arr['x-swagger-bake']['components']['schemas']);
     }
 
-    public function test_entity_is_not_public(): void
+    /**
+     * @see OpenApiSchema::VISIBILE_HIDDEN
+     */
+    public function test_schema_is_hidden(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 

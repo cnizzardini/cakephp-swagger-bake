@@ -12,6 +12,7 @@ use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationResponseAssociation;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
 
 class OperationResponseAssociationTest extends TestCase
@@ -31,9 +32,9 @@ class OperationResponseAssociationTest extends TestCase
     private Configuration $config;
 
     /**
-     * @var array
+     * @var RouteDecorator[]
      */
-    private $routes;
+    private array $routes;
 
     public function setUp(): void
     {
@@ -61,10 +62,8 @@ class OperationResponseAssociationTest extends TestCase
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
-        if (empty($this->routes)) {
-            $cakeRoute = new RouteScanner($this->router, $this->config);
-            $this->routes = $cakeRoute->getRoutes();
-        }
+        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $this->routes = $cakeRoute->getRoutes();
     }
 
     public function test_schema_type_object(): void
@@ -100,13 +99,11 @@ class OperationResponseAssociationTest extends TestCase
 
         $schema = $assoc->build(new OpenApiResponse(
             schemaType: 'object',
-            associations: ['whiteList' => ['EmployeeTitles']]
+            associations: ['table' => 'DepartmentEmployees','whiteList' => ['Employees.EmployeeTitles']]
         ));
 
-        $this->assertInstanceOf(Schema::class, $schema);
-        $this->assertArrayNotHasKey('department_employees', $schema->getProperties());
-        $this->assertArrayNotHasKey('employee_salaries', $schema->getProperties());
-        $this->assertArrayHasKey('employee_titles', $schema->getProperties());
+        $this->assertArrayHasKey('employee', $schema->getProperties());
+        $this->assertArrayHasKey('employee_titles', $schema->getProperties()['employee']->getProperties());
     }
 
     public function test_null_schema(): void
@@ -126,20 +123,6 @@ class OperationResponseAssociationTest extends TestCase
         $this->assertArrayHasKey('department_employees', $schema->getProperties());
         $this->assertArrayHasKey('employee_salaries', $schema->getProperties());
         $this->assertArrayHasKey('employee_titles', $schema->getProperties());
-    }
-
-    public function test_non_positive_depth_throws_exception(): void
-    {
-        $this->expectException(SwaggerBakeRunTimeException::class);
-
-        (new OperationResponseAssociation(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
-            $this->routes['employees:view'],
-            null
-        ))->build(new OpenApiResponse(
-            schemaType: 'object',
-            associations: ['depth' => 0]
-        ));
     }
 
     public function test_invalid_table_throws_exception(): void
@@ -183,11 +166,9 @@ class OperationResponseAssociationTest extends TestCase
             associations: ['table' => 'EmployeeSalaries', 'whiteList' => ['Employees']]
         ));
 
+        /** @var SchemaProperty $schemaProperty */
         $schemaProperty = $schema->getProperties()['employee'];
 
-        $this->assertEquals(
-            '#/x-swagger-bake/components/schemas/Employee-Read',
-            $schemaProperty->getRefEntity()
-        );
+        $this->assertEquals('employee', $schemaProperty->getName());
     }
 }

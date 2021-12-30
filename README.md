@@ -42,7 +42,7 @@ This is built for CakePHP 4.x only. Supported versions:
 - [Getting Started](#getting-started)
 - [Attributes](#attributes)
 - [Events](#event-system)
-- [Customizing Exception Responses](#customizing-exception-responses)
+- [Customizing Exception Responses](#customizing-exception-response-samples)
 - [Extending Views and Controllers](#extending-views-and-controllers)
 - [Multiple Instances of SwaggerBake](#multiple-instances-of-swagger-bake)
 - [Debug Commands](#debug-commands)
@@ -144,10 +144,10 @@ actions for additional OpenAPI data.
  * 
  * This displays as the operations long description
  * 
- * @see https://book.cakephp.org/4/en/index.html The link and this description appear in OpenAPI
+ * @link https://book.cakephp.org/4/en/index.html External documentation
  * @deprecated Indicates the operation is deprecated
- * @throws \Cake\Http\Exception\BadRequestException An optional description for the HTTP 400
- * @throws \Exception An optional description for the HTTP 500
+ * @throws \Cake\Http\Exception\BadRequestException Appears as 400 response with this description
+ * @throws \Exception Appears as 500 response with this description
  */
 public function index() {}
 ```
@@ -213,45 +213,44 @@ Using the [OpenApiResponse](docs/attributes.md#OpenApiResponse) attribute:
 #[OpenApiResponse(statusCode: '422', ref: '#/components/schemas/BadRequest')]
 ```
 
-### `@throws` tag
+### Using the `@throws` tag and OpenApiExceptionSchemaInterface
 
-You can provide custom schemas for exceptions by adding schema to your YAML at 
-`#/x-swagger-bake/components/schemas/app-exceptions`, referencing the FQN of the exception with `x-exception-fqn`, and 
-then adding the exception to your doc block:
+Implement `SwaggerBake\Lib\OpenApi\Schema\OpenApiExceptionSchemaInterface` on your exception class, then document 
+the exception with a `@throws` tag in your controller action's doc block.
 
 ```php
 /**
- * @throws \MixerApi\ExceptionRender\ValidationException
+ * @throws \App\Exception\MyException
  */
+public function add(){}
 ```
 
-OpenAPI YAML:
+Example exception class:
 
-```yaml
-x-swagger-bake:
-  components:
-    schemas:
-      app-exceptions:
-        ValidationException:
-          x-exception-fqn: '\MixerApi\ExceptionRender\ValidationException'
-          type: object
-          properties:
-            exception:
-              type: string
-              example: ValidationException
-            message:
-              type: string
-              example: Error saving resource `Schema`
-            url:
-              type: string
-              example: /url/path
-            code:
-              type: integer
-              example: 422
-            violations:
-              type: array
-              items:
-                $ref: '#/x-swagger-bake/components/schemas/app-exceptions/Violation'
+```php
+class MyException implements OpenApiExceptionSchemaInterface 
+{
+    public static function getExceptionCode(): string
+    {
+        return '400';
+    }
+
+    public static function getExceptionDescription(): ?string
+    {
+        return 'An optional description'; // returning null omits the response description
+    }
+
+    public static function getExceptionSchema(): Schema|string
+    {
+        return (new \SwaggerBake\Lib\OpenApi\Schema())  
+            ->setTitle('MyException')
+            ->setProperties([
+                (new SchemaProperty())->setType('string')->setName('code')->setExample('400'),
+                (new SchemaProperty())->setType('string')->setName('message')->setExample('error'),
+                (new SchemaProperty())->setType('string')->setName('wherever')->setExample('whatever you want')
+            ]);
+    }
+}
 ```
 
 ## Extending Views and Controllers

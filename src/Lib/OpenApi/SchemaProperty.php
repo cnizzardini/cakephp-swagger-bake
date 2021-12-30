@@ -29,23 +29,13 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
         'isDeprecated' => 'deprecated',
     ];
 
-    /**
-     * @var mixed
-     */
-    private $example;
-
+    private mixed $example;
     private bool $isReadOnly = false;
-
     private bool $isWriteOnly = false;
-
     private bool $isRequired = false;
-
     private bool $requirePresenceOnCreate = false;
-
     private bool $requirePresenceOnUpdate = false;
-
     private array $items = [];
-
     private ?string $refEntity = null;
 
     /**
@@ -74,11 +64,12 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
         }
 
         // Removing empty and null items from OpenAPI
-        $vars = ArrayUtility::removeEmptyAndNullValues(
+        $vars = ArrayUtility::removeEmptyVars(
             $vars,
             [
                 'format','title','description','multipleOf','minimum','maximum','minLength','maxLength','pattern',
-                'minItems','maxItems','minProperties','maxProperties','items','enum',
+                'minItems','maxItems','minProperties','maxProperties','items','enum','default','exclusiveMinimum',
+                'exclusiveMaximum','uniqueItems','nullable',
             ]
         );
 
@@ -91,7 +82,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false, 'nullable' => false]
         );
 
-        return $this->removeEmptyVars($vars);
+        return $vars;
     }
 
     /**

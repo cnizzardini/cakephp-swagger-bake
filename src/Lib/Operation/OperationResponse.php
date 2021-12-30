@@ -162,7 +162,7 @@ class OperationResponse
 
         $schemaType = $actionTypes[$action];
 
-        $schemaMode = $this->swagger->getSchemaByName($this->schema->getName() . '-Read') ?? $this->schema;
+        $schemaMode = $this->swagger->getSchemaByName($this->schema->getName()) ?? $this->schema;
 
         $response = new Response('200');
 
