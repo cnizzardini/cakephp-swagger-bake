@@ -12,6 +12,7 @@ use Cake\ORM\Locator\LocatorInterface;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use InvalidArgumentException;
 use MixerApi\Core\Model\ModelFactory;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
@@ -56,17 +57,19 @@ class OperationResponseAssociation
     public function build(OpenApiResponse $openApiResponse): Schema
     {
         $associations = $openApiResponse->associations;
-
         if (!isset($associations['table'])) {
             $associations['table'] = $this->route->getController();
         }
 
         $table = $this->locator->get($associations['table']);
         $schema = $this->findSchema($table);
-        $schema
-            ->setAllOf([['$ref' => $schema->getRefPath()]])
-            ->setRefPath(null)
-            ->setProperties([]);
+        // recycle existing schema using allOf if we can
+        if ($schema->getRefPath()) {
+            $schema
+                ->setAllOf([['$ref' => $schema->getRefPath()]])
+                ->setRefPath(null)
+                ->setProperties([]);
+        }
 
         if (!isset($associations['whiteList']) || !count($associations['whiteList'])) {
             $associations['whiteList'] = [];
@@ -90,7 +93,6 @@ class OperationResponseAssociation
      * @param \SwaggerBake\Lib\OpenApi\Schema $schema The base schema
      * @param array $assoc An array of tables to be associated matching the order of the association tree.
      * @param array|null $current Passed by recursion. Holds the current depth in the association tree
-     * @param \SwaggerBake\Lib\OpenApi\Schema|null $baseSchema Passed by recursion. Holds the base schema.
      * @return \SwaggerBake\Lib\OpenApi\Schema
      * @throws \ReflectionException
      */
@@ -98,20 +100,29 @@ class OperationResponseAssociation
         Table $table,
         Schema $schema,
         array $assoc,
-        ?array $current = null,
-        ?Schema $baseSchema = null
+        ?array $current = null
     ): Schema {
         $current = $current ?? array_slice($assoc, 0, 1);
-        $baseSchema = $baseSchema ?? $schema;
-        $association = $table->getAssociation(implode('.', $current));
+        try {
+            $association = $table->getAssociation(implode('.', $current));
+        } catch (InvalidArgumentException $e) {
+            throw new SwaggerBakeRunTimeException(
+                sprintf(
+                    'OpenApiResponse association declared on %s not found. %s',
+                    $this->route->getControllerFqn() . '::' . $this->route->getAction(),
+                    $e->getMessage()
+                )
+            );
+        }
+
         $entity = $this->inflector::singularize($association->getAlias());
         $associatedSchema = $this->getOrCreateAssociatedSchema($entity, $association->getAlias());
-        $associatedSchema
-            ->setAllOf([['$ref' => $associatedSchema->getRefPath()]])
-            ->setProperties([]);
-
+        // recycle existing schema using allOf if we can
         if ($associatedSchema->getRefPath()) {
-            $associatedSchema->setRefPath(null);
+            $associatedSchema
+                ->setAllOf([['$ref' => $associatedSchema->getRefPath()]])
+                ->setProperties([])
+                ->setRefPath(null);
         }
 
         if (count($current) != count($assoc)) {
@@ -120,12 +131,12 @@ class OperationResponseAssociation
         }
 
         if ($association instanceof HasMany || $association instanceof BelongsToMany) {
-            $baseSchema->pushProperty($this->associateMany($entity, $associatedSchema));
+            $schema->pushProperty($this->associateMany($entity, $associatedSchema));
         } else {
-            $baseSchema->pushProperty($this->associateOne($entity, $associatedSchema));
+            $schema->pushProperty($this->associateOne($entity, $associatedSchema));
         }
 
-        return $baseSchema;
+        return $schema;
     }
 
     /**
