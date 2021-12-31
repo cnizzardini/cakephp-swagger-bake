@@ -105,7 +105,7 @@ class OperationResponseAssociation
         $current = $current ?? array_slice($assoc, 0, 1);
         try {
             $association = $table->getAssociation(implode('.', $current));
-        } catch(InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw new SwaggerBakeRunTimeException(
                 sprintf(
                     'OpenApiResponse association declared on %s not found. %s',
