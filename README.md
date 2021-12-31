@@ -215,7 +215,7 @@ Using the [OpenApiResponse](docs/attributes.md#OpenApiResponse) attribute:
 
 ### Using the `@throws` tag and OpenApiExceptionSchemaInterface
 
-Implement `SwaggerBake\Lib\OpenApi\Schema\OpenApiExceptionSchemaInterface` on your exception class, then document 
+Implement `SwaggerBake\Lib\OpenApiExceptionSchemaInterface` on your exception class, then document 
 the exception with a `@throws` tag in your controller action's doc block.
 
 ```php
