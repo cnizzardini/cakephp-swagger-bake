@@ -70,7 +70,7 @@ class OpenApiResponseTest extends TestCase
         $operation = $arr['paths']['/employees/custom-response-schema']['get'];
 
         $schema = $operation['responses']['200']['content']['application/json']['schema'];
-        $this->assertEquals('#/components/schemas/Pet', $schema['$ref']);
+        $this->assertEquals('#/components/schemas/Pet', $schema['allOf']['$ref']);
 
         $this->assertArrayHasKey('404', $operation['responses']);
         $this->assertEquals('new statusCode', $operation['responses']['404']['description']);

@@ -15,6 +15,7 @@ use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Operation\OperationResponse;
 use SwaggerBake\Lib\Route\RouteScanner;
+use SwaggerBake\Lib\Swagger;
 
 class OperationResponseTest extends TestCase
 {
@@ -76,7 +77,7 @@ class OperationResponseTest extends TestCase
             'hotReload' => false,
             'exceptionSchema' => 'Exception',
             'requestAccepts' => ['application/x-www-form-urlencoded'],
-            'responseContentTypes' => ['application/json','application/xml'],
+            'responseContentTypes' => ['application/json'],
             'namespaces' => [
                 'controllers' => ['\SwaggerBakeTest\App\\'],
                 'entities' => ['\SwaggerBakeTest\App\\'],
@@ -264,7 +265,7 @@ class OperationResponseTest extends TestCase
             );
 
         $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->mockSwagger('getSchemaByName', null, null),
             $this->config,
             new Operation('employees:noresponsedefined', 'get'),
             $route,
@@ -281,7 +282,7 @@ class OperationResponseTest extends TestCase
         $this->assertNotEmpty($content->getSchema());
     }
 
-    public function test_get_operation_with_swag_response_schema_ref_entity(): void
+    public function test_get_operation_with_openapi_response_ref(): void
     {
         $route = $this->routes['employees:index'];
 
@@ -301,7 +302,7 @@ class OperationResponseTest extends TestCase
             );
 
         $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->mockSwagger('getSchemaByName', 'Employee'),
             $this->config,
             new Operation('employees:index', 'get'),
             $route,
@@ -309,15 +310,17 @@ class OperationResponseTest extends TestCase
             $mockReflectionMethod
         );
 
-        $content = $operationResponse
+        $schema = $operationResponse
             ->getOperationWithResponses()
             ->getResponseByCode('200')
-            ->getContentByMimeType('application/json');
+            ->getContentByMimeType('application/json')
+            ->getSchema();
 
-        $this->assertEquals('#/components/schema/Employee', $content->getSchema()->getItems()['$ref']);
+        $this->assertEquals('array', $schema->getType());
+        $this->assertEquals('#/components/schema/Employee', $schema->getAllOf()['$ref']);
     }
 
-    public function test_get_operation_with_swag_response_schema_text_plain(): void
+    public function test_get_operation_with_openapi_response_schema_text_plain(): void
     {
         $route = $this->routes['employees:textplain'];
 
@@ -337,7 +340,7 @@ class OperationResponseTest extends TestCase
             );
 
         $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->mockSwagger('getSchemaByName', null, null),
             $this->config,
             new Operation('employees:textplain', 'get'),
             $route,
@@ -413,7 +416,7 @@ class OperationResponseTest extends TestCase
             );
 
         $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->mockSwagger('getSchemaByName', 'Employee'),
             $this->config,
             new Operation('hello', 'get'),
             $route,
@@ -434,7 +437,7 @@ class OperationResponseTest extends TestCase
         $route = $this->routes['employees:options'];
 
         $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->mockSwagger(),
             $this->config,
             new Operation('hello', 'options'),
             $route,
@@ -443,5 +446,32 @@ class OperationResponseTest extends TestCase
         );
 
         $this->assertNotEmpty($operationResponse->getOperationWithResponses()->getResponseByCode('200'));
+    }
+
+    /**
+     * Builds a partial mock of Swagger.
+     *
+     * @param string $method The method to mock.
+     * @param mixed $withArg Defaults to anything if let null,
+     * @param mixed $willReturn Defaults to null.
+     * @return Swagger
+     */
+    private function mockSwagger(?string $method = null , mixed $withArg = null, mixed $willReturn = null): Swagger
+    {
+        if ($method == null) {
+            return $this->createPartialMock(Swagger::class, []);
+        }
+
+        $mockSwagger = $this->createPartialMock(Swagger::class, [$method]);
+        $mockSwagger->expects($this->any())
+            ->method(
+                $method
+            )
+            ->with($withArg ?? $this->anything())
+            ->will(
+                $this->returnValue($willReturn)
+            );
+
+        return $mockSwagger;
     }
 }

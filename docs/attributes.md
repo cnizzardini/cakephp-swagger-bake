@@ -508,17 +508,24 @@ OpenAPI:
 ### OpenApiResponse
 
 Method level attribute for controller actions defining
-[response objects](https://spec.openapis.org/oas/latest.html#response-object) and their schema/content.
+[response objects](https://spec.openapis.org/oas/latest.html#response-object) and their schema/content. The following 
+order of operatoins is used to build the response:
 
-| Property | Type / Default | OA Spec | Description |
-| ------------- | ------------- | ------------- |  ------------- |
-| schemaType | string `object` | Y | The schema response type, generally `"object"` or `"array"` |
-| statusCode | string `200` | Y | The HTTP response code |
-| mimeTypes | array `null` | Y | An array of mime types the response can, if null settings from swagger_bake config are used. |
-| description | string `` | Y | Description of the response |
-| ref | string `` | Y | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"` |
-| schemaFormat | string `` | Y | The schema format, generally only used for schemaType of string. |
-| [associations](#Associations) | array `null` | N | Adds associated tables to the response sample schema, see examples below. |
+1. `ref` and `schemaType` take precedence.
+2. If `ref` is not defined then `associations`.
+3. If `text/plain` is in the `mimeTypes` then `schemaFormat` is used.
+4. The schema inferred from CakePHP conventions.
+
+| Property                      | Type / Default | OA Spec | Description                                                                                  |
+|-------------------------------| ------------- |---------|----------------------------------------------------------------------------------------------|
+| schemaType                    | string `object` | Y       | The schema response type, generally `"object"` or `"array"`                                  |
+| statusCode                    | string `200` | Y       | The HTTP response code                                                                       |
+| ref                           | string `` | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                  |
+| schema                        | string `` | N       | todo, new features needs documentation                                                       |
+| description                   | string `` | Y       | Description of the response                                                                  |
+| mimeTypes                     | array `null` | Y       | An array of mime types the response can, if null settings from swagger_bake config are used. |
+| [associations](#Associations) | array `null` | N       | Adds associated tables to the response sample schema, see examples below.                    |
+| schemaFormat                  | string `` | Y       | The schema format, generally only used for schemaType of string.                             |
 
 Defining a multiple mimeTypes and 400-409 status code range and an expected 200 response:
 
