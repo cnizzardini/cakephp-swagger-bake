@@ -16,6 +16,8 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationRequestBody;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotion;
 
 class OperationRequestBodyTest extends TestCase
 {
@@ -102,53 +104,50 @@ class OperationRequestBodyTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
 
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->any())
-            ->method(
-                'getAttributes'
-            )
-            ->will(
-                $this->onConsecutiveCalls(
-                    $this->returnValue([
-
-                    ]),
-                    $this->returnValue([
-
-                    ]),
-                    $this->returnValue([
-                        new ReflectionAttribute(OpenApiDto::class, [
-                            'class' => '\SwaggerBakeTest\App\Dto\EmployeeDataRequest',
-                        ])
-                    ]),
-                    $this->returnValue([
-
-                    ]),
+        foreach ([EmployeeDataRequest::class, EmployeeDataRequestConstructorPromotion::class] as $class) {
+            $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+            $mockReflectionMethod->expects($this->any())
+                ->method(
+                    'getAttributes'
                 )
+                ->will(
+                    $this->onConsecutiveCalls(
+                        $this->returnValue([
+
+                        ]),
+                        $this->returnValue([
+
+                        ]),
+                        $this->returnValue([
+                            new ReflectionAttribute(OpenApiDto::class, [
+                                'class' => $class,
+                            ])
+                        ]),
+                        $this->returnValue([
+
+                        ]),
+                    )
+                );
+
+            $operationRequestBody = new OperationRequestBody(
+                $swagger,
+                new Operation('hello', 'post'),
+                $route,
+                $mockReflectionMethod
             );
 
-        $operationRequestBody = new OperationRequestBody(
-            $swagger,
-            new Operation('hello', 'post'),
-            $route,
-            $mockReflectionMethod
-        );
+            $operation = $operationRequestBody->getOperationWithRequestBody();
 
-        $operation = $operationRequestBody->getOperationWithRequestBody();
+            $requestBody = $operation->getRequestBody();
+            $content = $requestBody->getContentByType('application/x-www-form-urlencoded');
 
-        $requestBody = $operation->getRequestBody();
-        $content = $requestBody->getContentByType('application/x-www-form-urlencoded');
+            $schema = $content->getSchema();
+            $this->assertEquals('object', $schema->getType());
 
-        $schema = $content->getSchema();
-        $this->assertEquals('object', $schema->getType());
-
-        $properties = $schema->getProperties();
-        $this->assertArrayHasKey('last_name', $properties);
-        $this->assertArrayHasKey('first_name', $properties);
-    }
-
-    public function test_openapi_dto_with_constructor_promotion(): void
-    {
-        $this->markTestIncomplete();
+            $properties = $schema->getProperties();
+            $this->assertArrayHasKey('last_name', $properties, "failed for $class");
+            $this->assertArrayHasKey('first_name', $properties, "failed for $class");
+        }
     }
 
     public function test_ignore_schema(): void

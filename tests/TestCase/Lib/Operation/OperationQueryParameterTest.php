@@ -12,6 +12,8 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\Operation\OperationQueryParameter;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotion;
 
 class OperationQueryParameterTest extends TestCase
 {
@@ -237,9 +239,38 @@ class OperationQueryParameterTest extends TestCase
         $this->assertEquals($ref, $parameter->getRef());
     }
 
-    public function test_openapi_dto_query_constructor_promotion(): void
+    public function test_openapi_dto_query(): void
     {
-        $this->markTestIncomplete();
+        foreach ([EmployeeDataRequest::class, EmployeeDataRequestConstructorPromotion::class] as $class) {
+            $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+            $mockReflectionMethod->expects($this->any())
+                ->method(
+                    'getAttributes'
+                )
+                ->will(
+                    $this->onConsecutiveCalls(
+                        $this->returnValue([]),
+                        $this->returnValue([]),
+                        $this->returnValue([
+                            new ReflectionAttribute(OpenApiDto::class, [
+                                'class' => $class,
+                            ])
+                        ]),
+                    )
+                );
+
+            $operationQueryParam = new OperationQueryParameter(
+                operation: (new Operation('hello', 'get'))->setHttpMethod('GET'),
+                controller: new Controller(),
+                refMethod: $mockReflectionMethod
+            );
+
+            $operation = $operationQueryParam->getOperationWithQueryParameters();
+
+            $parameters = $operation->getParameters();
+            $this->assertArrayHasKey('query:last_name', $parameters, "failed for $class");
+            $this->assertArrayHasKey('query:first_name', $parameters, "failed for $class");
+        }
     }
 
     public function test_dto_class_not_found_exception(): void
