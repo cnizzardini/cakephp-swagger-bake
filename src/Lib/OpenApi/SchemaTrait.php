@@ -3,12 +3,15 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
+use InvalidArgumentException;
+use SwaggerBake\Lib\Utility\OpenApiDataType;
+
 trait SchemaTrait
 {
     private ?string $name = null;
-    private ?string $description = null;
     private ?string $type = null;
     private ?string $format = null;
+    private ?string $description = null;
     private array $enum = [];
 
     /**
@@ -25,6 +28,12 @@ trait SchemaTrait
      */
     public function setType(string $type)
     {
+        if (!in_array($type, OpenApiDataType::TYPES)) {
+            throw new InvalidArgumentException(
+                "Type $type is not valid. Must be one of " . implode(',', OpenApiDataType::TYPES)
+            );
+        }
+
         $this->type = $type;
 
         return $this;

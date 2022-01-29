@@ -582,8 +582,8 @@ class MyCustomResponse implements \SwaggerBake\Lib\OpenApi\CustomSchemaInterface
         return (new \SwaggerBake\Lib\OpenApi\Schema())  
             ->setTitle('Custom')
             ->setProperties([
-                (new SchemaProperty())->setType('string')->setName('name')->setExample('Paul'),
-                (new SchemaProperty())->setType('integer')->setName('age')->setExample(32)
+                new SchemaProperty('name', 'string', null, 'Name of person', 'Paul'),
+                new SchemaProperty('age', 'integer', 'int32', 'Age of person', 32)
             ]);
     }
 }
