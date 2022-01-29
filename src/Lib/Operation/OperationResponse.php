@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
+use ReflectionClass;
 use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
@@ -11,10 +12,12 @@ use SwaggerBake\Lib\MediaType\Generic;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\MediaType\JsonLd;
 use SwaggerBake\Lib\OpenApi\Content;
+use SwaggerBake\Lib\OpenApi\CustomSchemaInterface;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\Xml as OpenApiXml;
+use SwaggerBake\Lib\OpenApiExceptionSchemaInterface;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
 
@@ -125,14 +128,33 @@ class OperationResponse
     }
 
     /**
-     * @todo needs to be implemented
+     * Parses the value of OpenApiResponse::schema into an OpenAPI response schema.
+     *
      * @param \SwaggerBake\Lib\OpenApi\Response $response Response
      * @param string $mimeType The mime type
      * @param \SwaggerBake\Lib\Attribute\OpenApiResponse $openApiResponse OpenApiResponse attribute
      * @return bool
+     * @throws \ReflectionException
      */
     private function addResponseSchema(Response $response, string $mimeType, OpenApiResponse $openApiResponse): bool
     {
+        if ($openApiResponse->schema) {
+            $reflection = new ReflectionClass($openApiResponse->schema);
+            if ($reflection->implementsInterface(CustomSchemaInterface::class)) {
+                $schema = $openApiResponse->schema::getOpenApiSchema();
+            } else {
+                $schema = (new Schema())
+                    ->setName($reflection->getShortName())
+                    ->setType($openApiResponse->schemaType)
+                    ->setProperties((new DtoParser($reflection))->getSchemaProperties());
+            }
+
+            $response->pushContent(new Content($mimeType, $schema));
+            $this->operation->pushResponse($response);
+
+            return true;
+        }
+
         return false;
     }
 

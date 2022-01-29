@@ -509,23 +509,23 @@ OpenAPI:
 
 Method level attribute for controller actions defining
 [response objects](https://spec.openapis.org/oas/latest.html#response-object) and their schema/content. The following 
-order of operatoins is used to build the response:
+order of operations is used to build the response:
 
 1. `ref` and `schemaType` take precedence.
 2. If `ref` is not defined then `associations`.
 3. If `text/plain` is in the `mimeTypes` then `schemaFormat` is used.
 4. The schema inferred from CakePHP conventions.
 
-| Property                      | Type / Default | OA Spec | Description                                                                                  |
-|-------------------------------| ------------- |---------|----------------------------------------------------------------------------------------------|
-| schemaType                    | string `object` | Y       | The schema response type, generally `"object"` or `"array"`                                  |
-| statusCode                    | string `200` | Y       | The HTTP response code                                                                       |
-| ref                           | string `` | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                  |
-| schema                        | string `` | N       | todo, new features needs documentation                                                       |
-| description                   | string `` | Y       | Description of the response                                                                  |
-| mimeTypes                     | array `null` | Y       | An array of mime types the response can, if null settings from swagger_bake config are used. |
-| [associations](#Associations) | array `null` | N       | Adds associated tables to the response sample schema, see examples below.                    |
-| schemaFormat                  | string `` | Y       | The schema format, generally only used for schemaType of string.                             |
+| Property                      | Type / Default        | OA Spec | Description                                                                                                                                                                                 |
+|-------------------------------|-----------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| schemaType                    | string `object`       | Y       | The schema response type, generally `"object"` or `"array"`                                                                                                                                 |
+| statusCode                    | string `200`          | Y       | The HTTP response code                                                                                                                                                                      |
+| ref                           | string or null `null` | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                                                                                                                 |
+| [schema](#Schema)             | string or null `null` | Y       | Customizes response schema by referencing the FQN which must have either the `#[OpenApiSchema]` attribute with `#[OpenApiSchemaProperty]` attributes or implement `CustomSchemaInterface`. |
+| description                   | string or null ``     | Y       | Description of the response                                                                                                                                                                 |
+| mimeTypes                     | array or null `null`  | Y       | An array of mime types the response can, if null settings from swagger_bake config are used.                                                                                                |
+| [associations](#Associations) | array or null `null`  | N       | Adds associated tables to the response sample schema, see examples below.                                                                                                                   |
+| schemaFormat                  | string or null ``     | Y       | The schema format, generally only used for schemaType of string.                                                                                                                            |
 
 Defining a multiple mimeTypes and 400-409 status code range and an expected 200 response:
 
@@ -557,6 +557,54 @@ OpenAPI:
                items:
                  $ref: '#/components/schemas/Exception'
 ```
+
+#### Schema
+
+There may be instances where your need to further customize your responses. You can provide a custom schema two
+ways. Both options first require you to provide an FQN to the class which describes your response schema:
+
+```php
+#[OpenApiResponse(schema: '\App\Dto\Response\MyCustomResponse')]
+```
+
+Using `CustomSchemaInterface`:
+
+```php
+namespace App\Dto\Response;
+
+class MyCustomResponse implements \SwaggerBake\Lib\OpenApi\CustomSchemaInterface 
+{
+    /**
+     * @inheritDoc
+     */
+    public static function getOpenApiSchema(): \SwaggerBake\Lib\OpenApi\Schema
+    {
+        return (new \SwaggerBake\Lib\OpenApi\Schema())  
+            ->setTitle('Custom')
+            ->setProperties([
+                (new SchemaProperty())->setType('string')->setName('name')->setExample('Paul'),
+                (new SchemaProperty())->setType('integer')->setName('age')->setExample(32)
+            ]);
+    }
+}
+```
+
+Using `#[OpenApiSchema]` and `#[OpenApiSchemaProperty]`:
+
+```php
+namespace App\Dto\Response;
+
+#[OpenApiSchema]
+class MyCustomResponse 
+{
+    #[OpenApiSchemaProperty(name: 'name')]
+    public string $name;
+    #[OpenApiSchemaProperty(name: 'age', type: 'integer', format: 'int32')]
+    public int $age;
+}
+```
+
+SwaggerBake will convert these into an OpenApi response schema for you.
 
 #### Associations
 
