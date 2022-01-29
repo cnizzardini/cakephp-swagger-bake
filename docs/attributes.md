@@ -512,8 +512,8 @@ Method level attribute for controller actions defining
 order of operations is used to build the response:
 
 1. `ref` and `schemaType` take precedence.
-2. If `ref` is not defined then `associations`.
-3. If `text/plain` is in the `mimeTypes` then `schemaFormat` is used.
+2. `schema`
+3. `associations`
 4. The schema inferred from CakePHP conventions.
 
 | Property                      | Type / Default        | OA Spec | Description                                                                                                                                                                                 |
