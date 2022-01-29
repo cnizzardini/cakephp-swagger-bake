@@ -17,7 +17,6 @@ use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\Xml as OpenApiXml;
-use SwaggerBake\Lib\OpenApiExceptionSchemaInterface;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
 

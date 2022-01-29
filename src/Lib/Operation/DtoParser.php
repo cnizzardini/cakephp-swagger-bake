@@ -15,8 +15,8 @@ use SwaggerBake\Lib\Attribute\OpenApiDtoRequestBody;
 class DtoParser
 {
     /**
-     * @param ReflectionClass|string $reflection ReflectionClass instance or the fully qualified namespace of the DTO
-     *      to be converted into a ReflectionClass instance.
+     * @param \ReflectionClass|string $reflection ReflectionClass instance or the fully qualified namespace of the DTO
+     * to be converted into a ReflectionClass instance.
      * @throws \ReflectionException
      */
     public function __construct(private ReflectionClass|string $reflection)

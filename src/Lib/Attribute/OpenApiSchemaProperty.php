@@ -19,5 +19,4 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class OpenApiSchemaProperty extends AbstractSchemaProperty
 {
-
 }
