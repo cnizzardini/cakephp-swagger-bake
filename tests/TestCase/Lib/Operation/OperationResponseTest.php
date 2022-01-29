@@ -13,6 +13,7 @@ use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationResponse;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
@@ -446,6 +447,92 @@ class OperationResponseTest extends TestCase
         );
 
         $this->assertNotEmpty($operationResponse->getOperationWithResponses()->getResponseByCode('200'));
+    }
+
+    public function test_openapi_response_schema_with_custom_schema_interface(): void
+    {
+        $route = $this->routes['employees:index'];
+
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiResponse::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiResponse::class, [
+                        'schema' => CustomResponseSchemaImpl::class
+                    ]),
+                ])
+            );
+
+        $operationResponse = new OperationResponse(
+            $this->mockSwagger('getSchemaByName', 'Employee'),
+            $this->config,
+            new Operation('hello', 'get'),
+            $route,
+            null,
+            $mockReflectionMethod
+        );
+
+        $schema = $operationResponse
+            ->getOperationWithResponses()
+            ->getResponseByCode('200')
+            ->getContentByMimeType('application/json')
+            ->getSchema();
+
+        $this->assertInstanceOf(Schema::class, $schema);
+        /** @var SchemaProperty[] $properties */
+        $properties = $schema->getProperties();
+        $this->assertCount(2, $properties);
+        $this->assertEquals('string', $properties['name']->getType());
+        $this->assertEquals('Paul', $properties['name']->getExample());
+        $this->assertEquals('integer', $properties['age']->getType());
+        $this->assertEquals(32, $properties['age']->getExample());
+    }
+
+    public function test_openapi_response_schema_with_attributes(): void
+    {
+        $route = $this->routes['employees:index'];
+
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiResponse::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiResponse::class, [
+                        'schema' => CustomResponseSchemaImpl::class
+                    ]),
+                ])
+            );
+
+        $operationResponse = new OperationResponse(
+            $this->mockSwagger('getSchemaByName', 'Employee'),
+            $this->config,
+            new Operation('hello', 'get'),
+            $route,
+            null,
+            $mockReflectionMethod
+        );
+
+        $schema = $operationResponse
+            ->getOperationWithResponses()
+            ->getResponseByCode('200')
+            ->getContentByMimeType('application/json')
+            ->getSchema();
+
+        $this->assertInstanceOf(Schema::class, $schema);
+        /** @var SchemaProperty[] $properties */
+        $properties = $schema->getProperties();
+        $this->assertCount(2, $properties);
+        $this->assertEquals('string', $properties['name']->getType());
+        $this->assertEquals('Paul', $properties['name']->getExample());
+        $this->assertEquals('integer', $properties['age']->getType());
+        $this->assertEquals(32, $properties['age']->getExample());
     }
 
     /**

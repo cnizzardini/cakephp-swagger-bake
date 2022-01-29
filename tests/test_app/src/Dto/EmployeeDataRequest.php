@@ -5,7 +5,7 @@ namespace SwaggerBakeTest\App\Dto;
 use SwaggerBake\Lib\Attribute\OpenApiDtoQuery;
 use SwaggerBake\Lib\Attribute\OpenApiDtoRequestBody;
 
-class EmployeeData
+class EmployeeDataRequest
 {
     #[OpenApiDtoRequestBody(name: 'first_name', description: 'testing')]
     #[OpenApiDtoQuery(name: 'first_name', description: 'testing')]
@@ -37,9 +37,9 @@ class EmployeeData
 
     /**
      * @param string $firstName
-     * @return EmployeeData
+     * @return EmployeeDataRequest
      */
-    public function setFirstName(string $firstName): EmployeeData
+    public function setFirstName(string $firstName): EmployeeDataRequest
     {
         $this->firstName = $firstName;
         return $this;
@@ -55,9 +55,9 @@ class EmployeeData
 
     /**
      * @param string $lastName
-     * @return EmployeeData
+     * @return EmployeeDataRequest
      */
-    public function setLastName(string $lastName): EmployeeData
+    public function setLastName(string $lastName): EmployeeDataRequest
     {
         $this->lastName = $lastName;
         return $this;
@@ -73,7 +73,7 @@ class EmployeeData
 
     /**
      * @param mixed $title
-     * @return EmployeeData
+     * @return EmployeeDataRequest
      */
     public function setTitle($title)
     {
@@ -91,7 +91,7 @@ class EmployeeData
 
     /**
      * @param mixed $age
-     * @return EmployeeData
+     * @return EmployeeDataRequest
      */
     public function setAge($age)
     {
@@ -109,7 +109,7 @@ class EmployeeData
 
     /**
      * @param mixed $date
-     * @return EmployeeData
+     * @return EmployeeDataRequest
      */
     public function setDate($date)
     {

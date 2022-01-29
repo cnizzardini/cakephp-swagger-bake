@@ -6,7 +6,8 @@ namespace SwaggerBake\Lib\Attribute;
 use Attribute;
 
 /**
- * Property level attribute for use in your SwagDto classes. Read the comments to see all supported properties.
+ * Property or Parameter level attribute for use in your SwagDto classes. Read the comments to see all supported
+ * properties.
  *
  * Read OpenAPI specification for exact usage of the attributes:
  *

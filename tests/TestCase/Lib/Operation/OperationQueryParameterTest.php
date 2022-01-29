@@ -15,7 +15,7 @@ use SwaggerBake\Lib\Operation\OperationQueryParameter;
 
 class OperationQueryParameterTest extends TestCase
 {
-    public function test_open_api_query_param(): void
+    public function test_openapi_query_param(): void
     {
         $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
         $mockReflectionMethod->expects($this->any())
@@ -90,7 +90,7 @@ class OperationQueryParameterTest extends TestCase
                     ]),
                     $this->returnValue([
                         new ReflectionAttribute(OpenApiDto::class, [
-                            'class' => '\SwaggerBakeTest\App\Dto\EmployeeData',
+                            'class' => '\SwaggerBakeTest\App\Dto\EmployeeDataRequest',
                         ])
                     ]),
                 )
@@ -109,7 +109,7 @@ class OperationQueryParameterTest extends TestCase
         $this->assertCount(10, $parameters);
     }
 
-    public function test_open_api_paginator(): void
+    public function test_openapi_paginator(): void
     {
         $enums = ['A','B'];
         $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
@@ -140,7 +140,7 @@ class OperationQueryParameterTest extends TestCase
         $this->assertEquals($enums, $parameter->getSchema()->getEnum());
     }
 
-    public function test_open_api_paginator_use_sort_text_input(): void
+    public function test_openapi_paginator_use_sort_text_input(): void
     {
         $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
         $mockReflectionMethod->expects($this->any())
@@ -169,7 +169,7 @@ class OperationQueryParameterTest extends TestCase
         $this->assertArrayHasKey('#/x-swagger-bake/components/parameters/paginatorSort', $operation->getParameters());
     }
 
-    public function test_open_api_paginator_with_component_sortable_fields(): void
+    public function test_openapi_paginator_with_component_sortable_fields(): void
     {
         $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
         $mockReflectionMethod->expects($this->any())
@@ -201,7 +201,7 @@ class OperationQueryParameterTest extends TestCase
         $this->assertEquals(['test'], $parameter->getSchema()->getEnum());
     }
 
-    public function test_open_api_parameter_using_ref(): void
+    public function test_openapi_parameter_using_ref(): void
     {
         $ref = '#/x-swagger-bake/components/parameters/paginatorPage';
 
@@ -235,6 +235,11 @@ class OperationQueryParameterTest extends TestCase
 
         $this->assertInstanceOf(Parameter::class, $parameter);
         $this->assertEquals($ref, $parameter->getRef());
+    }
+
+    public function test_openapi_dto_query_constructor_promotion(): void
+    {
+        $this->markTestIncomplete();
     }
 
     public function test_dto_class_not_found_exception(): void

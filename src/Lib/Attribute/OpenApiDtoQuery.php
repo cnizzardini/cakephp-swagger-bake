@@ -6,7 +6,7 @@ namespace SwaggerBake\Lib\Attribute;
 use Attribute;
 
 /**
- * Property level attribute for use in your SwagDto classes.
+ * Property or Parameter level attribute for use in your SwagDto classes.
  *
  * For use with HTTP GET requests requiring query parameters. Use this in your DTO class (e.g. App\Dto|MyDto)
  *
