@@ -597,9 +597,9 @@ namespace App\Dto\Response;
 #[OpenApiSchema]
 class MyCustomResponse 
 {
-    #[OpenApiSchemaProperty(name: 'name')]
+    #[OpenApiSchemaProperty(name: 'name', type: 'string', example: 'Paul')]
     public string $name;
-    #[OpenApiSchemaProperty(name: 'age', type: 'integer', format: 'int32')]
+    #[OpenApiSchemaProperty(name: 'age', type: 'integer', format: 'int32', example: 32)]
     public int $age;
 }
 ```
