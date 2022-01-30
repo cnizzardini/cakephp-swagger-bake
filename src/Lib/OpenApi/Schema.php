@@ -192,7 +192,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param array $properties A mixed array of Schema and SchemaProperty
+     * @param \SwaggerBake\Lib\OpenApi\Schema[]|\SwaggerBake\Lib\OpenApi\SchemaProperty[] $properties A mixed array of Schema and SchemaProperty
      * @return $this
      */
     public function setProperties(array $properties)

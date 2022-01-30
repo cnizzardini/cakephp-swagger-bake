@@ -3,14 +3,17 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
+use ReflectionClass;
 use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
+use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\MediaType\Generic;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\MediaType\JsonLd;
 use SwaggerBake\Lib\OpenApi\Content;
+use SwaggerBake\Lib\OpenApi\CustomSchemaInterface;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -25,43 +28,22 @@ use SwaggerBake\Lib\Swagger;
  */
 class OperationResponse
 {
-    private Swagger $swagger;
-
-    private Configuration $config;
-
-    private Operation $operation;
-
-    private ?ReflectionMethod $refMethod;
-
-    private RouteDecorator $route;
-
-    /**
-     * @var \SwaggerBake\Lib\OpenApi\Schema|null
-     */
-    private $schema;
-
     /**
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
-     * @param \SwaggerBake\Lib\OpenApi\Schema $schema Schema or null
-     * @param \ReflectionMethod $refMethod ReflectionMethod or null
+     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema or null
+     * @param \ReflectionMethod|null $refMethod ReflectionMethod of the controller action or null
      */
     public function __construct(
-        Swagger $swagger,
-        Configuration $config,
-        Operation $operation,
-        RouteDecorator $route,
-        ?Schema $schema = null,
-        ?ReflectionMethod $refMethod = null
+        private Swagger $swagger,
+        private Configuration $config,
+        private Operation $operation,
+        private RouteDecorator $route,
+        private ?Schema $schema = null,
+        private ?ReflectionMethod $refMethod = null
     ) {
-        $this->swagger = $swagger;
-        $this->config = $config;
-        $this->operation = $operation;
-        $this->refMethod = $refMethod;
-        $this->route = $route;
-        $this->schema = $schema;
     }
 
     /**
@@ -97,44 +79,166 @@ class OperationResponse
             foreach ($mimeTypes as $mimeType) {
                 $response = new Response($openApiResponse->statusCode, $openApiResponse->description);
 
-                // push text/plain response and continue to next mime/type
-                if ($mimeType == 'text/plain') {
-                    $schema = (new Schema())->setType('string')->setFormat($openApiResponse->schemaFormat ?? '');
-                    $response->pushContent(new Content($mimeType, $schema));
-                    $this->operation->pushResponse($response);
+                if ($this->addResponseRef($response, $mimeType, $openApiResponse)) {
                     continue;
                 }
 
-                // push basic response since no entity or format was defined and continue to next mime/type
-                if (empty($openApiResponse->ref) && empty($openApiResponse->associations) && is_null($this->schema)) {
-                    $response->pushContent(new Content($mimeType, ''));
-                    $this->operation->pushResponse($response);
+                if ($this->addResponseSchema($response, $mimeType, $openApiResponse)) {
                     continue;
                 }
 
-                $assocSchema = null;
-                if (is_array($openApiResponse->associations)) {
-                    $assocSchema = (new OperationResponseAssociation($this->swagger, $this->route, $this->schema))
-                        ->build($openApiResponse);
-                } elseif ($this->schema != null) {
-                    $response->pushContent(new Content($mimeType, $this->schema));
-                    $this->operation->pushResponse($response);
+                if ($this->addAssociatedSchema($response, $mimeType, $openApiResponse)) {
                     continue;
                 }
 
-                $schema = $this->getMimeTypeSchema(
-                    $mimeType,
-                    $openApiResponse->schemaType,
-                    $assocSchema ?? $openApiResponse->ref
-                );
+                if ($this->addPlainText($response, $mimeType, $openApiResponse)) {
+                    continue;
+                }
 
-                $response->pushContent(new Content(
-                    $mimeType,
-                    $openApiResponse->schemaFormat ? $schema->setFormat($openApiResponse->schemaFormat) : $schema
-                ));
+                if ($this->addControllerSchema($response, $mimeType)) {
+                    continue;
+                }
+
+                $response->pushContent(new Content($mimeType, ''));
                 $this->operation->pushResponse($response);
             }
         }
+    }
+
+    /**
+     * @param \SwaggerBake\Lib\OpenApi\Response $response Response
+     * @param string $mimeType The mime type
+     * @param \SwaggerBake\Lib\Attribute\OpenApiResponse $openApiResponse OpenApiResponse attribute
+     * @return bool
+     */
+    private function addResponseRef(Response $response, string $mimeType, OpenApiResponse $openApiResponse): bool
+    {
+        if ($openApiResponse->ref) {
+            $schema = (new Schema())
+                ->setAllOf(['$ref' => $openApiResponse->ref])
+                ->setType($openApiResponse->schemaType);
+
+            $response->pushContent(new Content($mimeType, $schema));
+            $this->operation->pushResponse($response);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Parses the value of OpenApiResponse::schema into an OpenAPI response schema.
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Response $response Response
+     * @param string $mimeType The mime type
+     * @param \SwaggerBake\Lib\Attribute\OpenApiResponse $openApiResponse OpenApiResponse attribute
+     * @return bool
+     * @throws \ReflectionException
+     */
+    private function addResponseSchema(Response $response, string $mimeType, OpenApiResponse $openApiResponse): bool
+    {
+        if ($openApiResponse->schema) {
+            $reflection = new ReflectionClass($openApiResponse->schema);
+            if ($reflection->implementsInterface(CustomSchemaInterface::class)) {
+                $schema = $openApiResponse->schema::getOpenApiSchema();
+            } else {
+                $schema = (new Schema())
+                    ->setName($reflection->getShortName())
+                    ->setType($openApiResponse->schemaType);
+            }
+
+            foreach ($reflection->getProperties() as $reflectionProperty) {
+                $schemaProperty = (new AttributeFactory(
+                    $reflectionProperty,
+                    OpenApiSchemaProperty::class
+                ))->createOneOrNull();
+
+                if ($schemaProperty instanceof OpenApiSchemaProperty) {
+                    $schema->pushProperty($schemaProperty->create());
+                }
+            }
+
+            $response->pushContent(new Content($mimeType, $schema));
+            $this->operation->pushResponse($response);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Adds plain text to the response if mime type is `text/plain` and returns true, otherwise returns false
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Response $response Response
+     * @param string $mimeType The mime type
+     * @param \SwaggerBake\Lib\Attribute\OpenApiResponse $openApiResponse OpenApiResponse attribute
+     * @return bool
+     */
+    private function addPlainText(Response $response, string $mimeType, OpenApiResponse $openApiResponse): bool
+    {
+        if ($mimeType == 'text/plain') {
+            $schema = (new Schema())
+                ->setType('string')
+                ->setFormat($openApiResponse->schemaFormat ?? '');
+            $response->pushContent(new Content($mimeType, $schema));
+            $this->operation->pushResponse($response);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Adds associated schema.
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Response $response Response
+     * @param string $mimeType The mime type
+     * @param \SwaggerBake\Lib\Attribute\OpenApiResponse $openApiResponse OpenApiResponse attribute
+     * @return bool
+     * @throws \ReflectionException
+     */
+    private function addAssociatedSchema(Response $response, string $mimeType, OpenApiResponse $openApiResponse): bool
+    {
+        if (is_array($openApiResponse->associations)) {
+            $assocSchema = (new OperationResponseAssociation($this->swagger, $this->route, $this->schema))
+                ->build($openApiResponse);
+            $schema = $this->getMimeTypeSchema(
+                $mimeType,
+                $openApiResponse->schemaType,
+                $assocSchema
+            );
+            $response->pushContent(new Content(
+                $mimeType,
+                $openApiResponse->schemaFormat ? $schema->setFormat($openApiResponse->schemaFormat) : $schema
+            ));
+            $this->operation->pushResponse($response);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Adds $this->schema which is derived from the Controller per Cake conventions.
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Response $response Response
+     * @param string $mimeType The mime type
+     * @return bool
+     */
+    private function addControllerSchema(Response $response, string $mimeType): bool
+    {
+        if ($this->schema != null) {
+            $response->pushContent(new Content($mimeType, $this->schema));
+            $this->operation->pushResponse($response);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

@@ -16,7 +16,7 @@ use Attribute;
  * @see https://swagger.io/docs/specification/data-models/data-types search for "data formats"
  * @see AbstractSchemaProperty
  */
-#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class OpenApiSchemaProperty extends AbstractSchemaProperty
 {
 }

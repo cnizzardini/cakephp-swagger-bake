@@ -12,10 +12,12 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\Operation\OperationQueryParameter;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotion;
 
 class OperationQueryParameterTest extends TestCase
 {
-    public function test_open_api_query_param(): void
+    public function test_openapi_query_param(): void
     {
         $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
         $mockReflectionMethod->expects($this->any())
@@ -90,7 +92,7 @@ class OperationQueryParameterTest extends TestCase
                     ]),
                     $this->returnValue([
                         new ReflectionAttribute(OpenApiDto::class, [
-                            'class' => '\SwaggerBakeTest\App\Dto\EmployeeData',
+                            'class' => '\SwaggerBakeTest\App\Dto\EmployeeDataRequest',
                         ])
                     ]),
                 )
@@ -109,7 +111,7 @@ class OperationQueryParameterTest extends TestCase
         $this->assertCount(10, $parameters);
     }
 
-    public function test_open_api_paginator(): void
+    public function test_openapi_paginator(): void
     {
         $enums = ['A','B'];
         $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
@@ -140,7 +142,7 @@ class OperationQueryParameterTest extends TestCase
         $this->assertEquals($enums, $parameter->getSchema()->getEnum());
     }
 
-    public function test_open_api_paginator_use_sort_text_input(): void
+    public function test_openapi_paginator_use_sort_text_input(): void
     {
         $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
         $mockReflectionMethod->expects($this->any())
@@ -169,7 +171,7 @@ class OperationQueryParameterTest extends TestCase
         $this->assertArrayHasKey('#/x-swagger-bake/components/parameters/paginatorSort', $operation->getParameters());
     }
 
-    public function test_open_api_paginator_with_component_sortable_fields(): void
+    public function test_openapi_paginator_with_component_sortable_fields(): void
     {
         $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
         $mockReflectionMethod->expects($this->any())
@@ -201,7 +203,7 @@ class OperationQueryParameterTest extends TestCase
         $this->assertEquals(['test'], $parameter->getSchema()->getEnum());
     }
 
-    public function test_open_api_parameter_using_ref(): void
+    public function test_openapi_parameter_using_ref(): void
     {
         $ref = '#/x-swagger-bake/components/parameters/paginatorPage';
 
@@ -235,6 +237,40 @@ class OperationQueryParameterTest extends TestCase
 
         $this->assertInstanceOf(Parameter::class, $parameter);
         $this->assertEquals($ref, $parameter->getRef());
+    }
+
+    public function test_openapi_dto_query(): void
+    {
+        foreach ([EmployeeDataRequest::class, EmployeeDataRequestConstructorPromotion::class] as $class) {
+            $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+            $mockReflectionMethod->expects($this->any())
+                ->method(
+                    'getAttributes'
+                )
+                ->will(
+                    $this->onConsecutiveCalls(
+                        $this->returnValue([]),
+                        $this->returnValue([]),
+                        $this->returnValue([
+                            new ReflectionAttribute(OpenApiDto::class, [
+                                'class' => $class,
+                            ])
+                        ]),
+                    )
+                );
+
+            $operationQueryParam = new OperationQueryParameter(
+                operation: (new Operation('hello', 'get'))->setHttpMethod('GET'),
+                controller: new Controller(),
+                refMethod: $mockReflectionMethod
+            );
+
+            $operation = $operationQueryParam->getOperationWithQueryParameters();
+
+            $parameters = $operation->getParameters();
+            $this->assertArrayHasKey('query:last_name', $parameters, "failed for $class");
+            $this->assertArrayHasKey('query:first_name', $parameters, "failed for $class");
+        }
     }
 
     public function test_dto_class_not_found_exception(): void

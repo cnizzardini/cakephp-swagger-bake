@@ -180,7 +180,7 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @return array
+     * @return \SwaggerBake\Lib\OpenApi\Parameter[]
      */
     public function getParameters(): array
     {

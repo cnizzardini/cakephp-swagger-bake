@@ -14,5 +14,8 @@ class ResponseTest extends TestCase
         $this->assertInstanceOf(Content::class, $response->getContent()[0]);
         $this->assertEquals($code = '201', $response->setCode($code)->getCode());
         $this->assertEquals($desc = 'desc..', $response->setDescription($desc)->getDescription());
+
+        $response->setContent([new Content('application/xml', '')]);
+        $this->assertEquals('application/xml', $response->getContent()[0]->getMimeType());
     }
 }

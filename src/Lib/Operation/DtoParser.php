@@ -8,17 +8,20 @@ use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiDtoQuery;
 use SwaggerBake\Lib\Attribute\OpenApiDtoRequestBody;
 
+/**
+ * Parses the ReflectionClass (or FQN into ReflectionClass) and builds a Schema instance with instances of
+ * SchemaProperty. This is used by DTO attributes and Response attributes.
+ */
 class DtoParser
 {
-    private ReflectionClass $reflection;
-
     /**
-     * @param string $fqn Fully qualified namespace of the DTO
+     * @param \ReflectionClass|string $reflection ReflectionClass instance or the fully qualified namespace of the DTO
+     * to be converted into a ReflectionClass instance.
      * @throws \ReflectionException
      */
-    public function __construct(string $fqn)
+    public function __construct(private ReflectionClass|string $reflection)
     {
-        $this->reflection = new ReflectionClass($fqn);
+        $this->reflection = is_string($this->reflection) ? new ReflectionClass($reflection) : $reflection;
     }
 
     /**
@@ -46,7 +49,7 @@ class DtoParser
     }
 
     /**
-     * Returns an array of SchemaProperty instances for use in Body Requests
+     * Returns an array of SchemaProperty instances for use in Body Requests or Responses.
      *
      * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
      * @throws \ReflectionException

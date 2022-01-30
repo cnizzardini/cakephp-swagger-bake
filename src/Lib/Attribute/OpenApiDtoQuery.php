@@ -6,7 +6,7 @@ namespace SwaggerBake\Lib\Attribute;
 use Attribute;
 
 /**
- * Property level attribute for use in your SwagDto classes.
+ * Property or Parameter level attribute for use in your SwagDto classes.
  *
  * For use with HTTP GET requests requiring query parameters. Use this in your DTO class (e.g. App\Dto|MyDto)
  *
@@ -16,7 +16,7 @@ use Attribute;
  * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format  search for "data format"
  * @see AbstractOpenApiParameter
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER | Attribute::IS_REPEATABLE)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class OpenApiDtoQuery extends AbstractOpenApiParameter
 {
     /**

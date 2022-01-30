@@ -18,4 +18,10 @@ class SchemaPropertyTest extends TestCase
         $property = (new SchemaProperty())->setTitle('title')->setExample('');
         $this->assertArrayHasKey('example', $property->toArray());
     }
+
+    public function test_invalid_type_throws_exception(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new SchemaProperty('test', 'invalid');
+    }
 }
