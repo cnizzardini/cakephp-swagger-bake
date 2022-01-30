@@ -604,7 +604,8 @@ class MyCustomResponse
 }
 ```
 
-SwaggerBake will convert these into an OpenApi response schema for you.
+SwaggerBake will convert these into an OpenApi response schema for you. Note, you can use both the interface and
+attributes in your response class. Attributes take precedence over the Schema returned from `getOpenApiSchema()`.
 
 #### Associations
 

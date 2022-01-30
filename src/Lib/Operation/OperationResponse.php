@@ -7,6 +7,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
+use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\MediaType\Generic;
 use SwaggerBake\Lib\MediaType\HalJson;
@@ -144,8 +145,18 @@ class OperationResponse
             } else {
                 $schema = (new Schema())
                     ->setName($reflection->getShortName())
-                    ->setType($openApiResponse->schemaType)
-                    ->setProperties((new DtoParser($reflection))->getSchemaProperties());
+                    ->setType($openApiResponse->schemaType);
+            }
+
+            foreach ($reflection->getProperties() as $reflectionProperty) {
+                $schemaProperty = (new AttributeFactory(
+                    $reflectionProperty,
+                    OpenApiSchemaProperty::class
+                ))->createOneOrNull();
+
+                if ($schemaProperty instanceof OpenApiSchemaProperty) {
+                    $schema->pushProperty($schemaProperty->create());
+                }
             }
 
             $response->pushContent(new Content($mimeType, $schema));
