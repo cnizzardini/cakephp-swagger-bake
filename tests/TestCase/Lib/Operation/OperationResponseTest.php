@@ -18,6 +18,7 @@ use SwaggerBake\Lib\Operation\OperationResponse;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
 use SwaggerBakeTest\App\Dto\CustomResponseSchema;
+use SwaggerBakeTest\App\Dto\CustomResponseSchemaAttributesOnly;
 use SwaggerBakeTest\App\Dto\CustomResponseSchemaConstructorPromotion;
 use SwaggerBakeTest\App\Dto\CustomResponseSchemaImpl;
 
@@ -495,6 +496,47 @@ class OperationResponseTest extends TestCase
         $this->assertEquals('Paul', $properties['name']->getExample());
         $this->assertEquals('integer', $properties['age']->getType());
         $this->assertEquals(32, $properties['age']->getExample());
+    }
+
+    public function test_openapi_response_schema_with_attributes_only(): void
+    {
+        $route = $this->routes['employees:index'];
+
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiResponse::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiResponse::class, [
+                        'schema' => CustomResponseSchemaAttributesOnly::class
+                    ]),
+                ])
+            );
+
+        $operationResponse = new OperationResponse(
+            $this->mockSwagger('getSchemaByName', 'Employee'),
+            $this->config,
+            new Operation('hello', 'get'),
+            $route,
+            null,
+            $mockReflectionMethod
+        );
+
+        $schema = $operationResponse
+            ->getOperationWithResponses()
+            ->getResponseByCode('200')
+            ->getContentByMimeType('application/json')
+            ->getSchema();
+
+        $this->assertInstanceOf(Schema::class, $schema);
+        /** @var SchemaProperty[] $properties */
+        $properties = $schema->getProperties();
+        $this->assertCount(1, $properties);
+        $this->assertEquals('string', $properties['name']->getType());
+        $this->assertEquals('Paul', $properties['name']->getExample());;
     }
 
     /**
