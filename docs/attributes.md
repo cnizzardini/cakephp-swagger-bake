@@ -589,12 +589,11 @@ class MyCustomResponse implements \SwaggerBake\Lib\OpenApi\CustomSchemaInterface
 }
 ```
 
-Using `#[OpenApiSchema]` and `#[OpenApiSchemaProperty]`:
+Using `#[OpenApiSchemaProperty]`:
 
 ```php
 namespace App\Dto\Response;
 
-#[OpenApiSchema]
 class MyCustomResponse 
 {
     #[OpenApiSchemaProperty(name: 'name', type: 'string', example: 'Paul')]
