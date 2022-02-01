@@ -39,6 +39,28 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     private ?string $refEntity = null;
 
     /**
+     * @param string|null $name Name of the property, this is used for internal storage and must be unique. If not set
+     *      in the constructor then this must be defined with the setter `setName`.
+     * @param string $type The OpenAPI data type (e.g. string, integer, boolean etc.). Defaults to string.
+     * @param string|null $format An optional OpenAPI data format (i.e. int32, date-time, uuid etc.). Defaults to null.
+     * @param string|null $description An optional description. Defaults to null.
+     * @param mixed $example An optional example. Defaults to null.
+     */
+    public function __construct(
+        ?string $name = null,
+        string $type = 'string',
+        ?string $format = null,
+        ?string $description = null,
+        mixed $example = null,
+    ) {
+        $this->name = $name;
+        $this->setType($type);
+        $this->format = $format;
+        $this->description = $description;
+        $this->example = $example;
+    }
+
+    /**
      * @return array
      */
     public function toArray(): array

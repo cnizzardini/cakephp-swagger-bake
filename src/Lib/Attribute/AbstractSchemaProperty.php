@@ -49,7 +49,7 @@ abstract class AbstractSchemaProperty
         public ?string $format = null,
         public ?string $title = null,
         public ?string $description = null,
-        public $example = null,
+        public mixed $example = null,
         public ?string $default = null,
         public bool $isReadOnly = false,
         public bool $isWriteOnly = false,
