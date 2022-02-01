@@ -594,6 +594,7 @@ Using `#[OpenApiSchemaProperty]`:
 ```php
 namespace App\Dto\Response;
 
+#[OpenApiSchemaProperty(name: 'up_here', type: 'string', description: 'yes even up here too')]
 class MyCustomResponse 
 {
     #[OpenApiSchemaProperty(name: 'name', type: 'string', example: 'Paul')]
@@ -663,8 +664,8 @@ class Actor extends Entity{}
 
 ### OpenApiSchemaProperty
 
-Class level attribute for customizing Schema properties. Note that the attribute does not have to exist in your entity.
-You can add adhoc attributes as needed and optionally combine with
+Class or property level attribute for customizing Schema properties. Note that the attribute does not have to exist in 
+your entity. You can add adhoc attributes as needed and optionally combine with
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
 
 | Attribute | Type / Default | OA Spec? | Description | 

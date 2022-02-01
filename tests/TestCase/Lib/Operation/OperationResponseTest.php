@@ -534,9 +534,11 @@ class OperationResponseTest extends TestCase
         $this->assertInstanceOf(Schema::class, $schema);
         /** @var SchemaProperty[] $properties */
         $properties = $schema->getProperties();
-        $this->assertCount(1, $properties);
+        $this->assertCount(2, $properties);
         $this->assertEquals('string', $properties['name']->getType());
-        $this->assertEquals('Paul', $properties['name']->getExample());;
+        $this->assertEquals('Paul', $properties['name']->getExample());
+        $this->assertEquals('integer', $properties['age']->getType());
+        $this->assertEquals(32, $properties['age']->getExample());
     }
 
     /**

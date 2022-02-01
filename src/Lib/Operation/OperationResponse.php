@@ -148,6 +148,16 @@ class OperationResponse
                     ->setType($openApiResponse->schemaType);
             }
 
+            // class level attributes
+            $schemaProperties = (new AttributeFactory(
+                $reflection,
+                OpenApiSchemaProperty::class
+            ))->createMany();
+            foreach ($schemaProperties as $schemaProperty) {
+                $schema->pushProperty($schemaProperty->create());
+            }
+
+            // property level attributes
             foreach ($reflection->getProperties() as $reflectionProperty) {
                 $schemaProperty = (new AttributeFactory(
                     $reflectionProperty,

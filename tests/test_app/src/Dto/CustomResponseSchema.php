@@ -8,7 +8,6 @@ use SwaggerBake\Lib\OpenApi\CustomSchemaInterface;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
-#[OpenApiSchema]
 class CustomResponseSchema implements CustomSchemaInterface
 {
     #[OpenApiSchemaProperty(name: 'name', type: 'string', example: 'Paul')]
