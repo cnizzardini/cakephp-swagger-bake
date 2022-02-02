@@ -641,8 +641,8 @@ Class level attribute for modifying OpenAPI Schema.
 | Property                  | Type / Default | OA Spec | Description                                                                | 
 |---------------------------|----------------|---------|----------------------------------------------------------------------------|
 | [visibility](#visibility) | int `1`        | No      | Determines the visibility of the schema, see OpenApiSchema class constants |
-| title                     | string `""`    | Yes     | Overwrites the default title                                               |
-| description               | string `""`    | Yes     | Overwrites the default description (if any)                                |
+| title                     | ?string `null` | Yes     | Overwrites the default title                                               |
+| description               | ?string `null` | Yes     | Overwrites the default description (if any)                                |
 
 #### Visibility
 
