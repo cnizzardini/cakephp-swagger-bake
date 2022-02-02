@@ -115,7 +115,7 @@ class OperationResponse
     {
         if ($openApiResponse->ref) {
             $schema = (new Schema())
-                ->setAllOf(['$ref' => $openApiResponse->ref])
+                ->setAllOf(['$ref' => [$openApiResponse->ref]])
                 ->setType($openApiResponse->schemaType);
 
             $response->pushContent(new Content($mimeType, $schema));
