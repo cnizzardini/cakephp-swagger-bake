@@ -12,24 +12,24 @@ Just a reminder that many usage examples exist in the
 
 ## Table of Contents
 
-| Attribute | Usage | Description | 
-| ------------- | ------------- | ------------- |
-| [OpenApiDto](#OpenApiDto) | Controller Action | Builds OpenAPI query params and request bodies from Data Transfer Objects |
-| [OpenApiDtoQuery](#OpenApiDtoQuery) | DTO class property |  Builds OpenAPI query param from Data Transfer Objects |
-| [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) | DTO class property | Builds OpenAPI request body property from Data Transfer Objects |
-| [OpenApiForm](#OpenApiForm) | Controller Action | Builds OpenAPI for application/x-www-form-urlencoded request bodies |
-| [OpenApiHeader](#OpenApiHeader) | Controller Action | Create OpenAPI header parameters |
-| [OpenApiOperation](#OpenApiOperation) | Controller Action | Modifies OpenAPI operation |
-| [OpenApiPaginator](#OpenApiPaginator) | Controller Action | Create OpenAPI query params from CakePHP Paginator Component |
-| [OpenApiPath](#OpenApiPath) | Controller | Modifies OpenAPI paths |
-| [OpenApiPathParam](#OpenApiPathParam) | Controller Action | Modify an existing OpenAPI path parameter |
-| [OpenApiQueryParam](#OpenApiQueryParam) | Controller Action | Builds OpenAPI query param |
-| [OpenApiRequestBody](#OpenApiRequestBody) | Controller Action | Modify OpenAPI request body |
-| [OpenApiResponse](#OpenApiResponse) | Controller Action | Modify OpenAPI response |
-| [OpenApiSchema](#OpenApiSchema) | Entity | Modifies OpenAPI schema |
-| [OpenApiSchemaProperty](#OpenApiSchemaProperty) | Entity | Modifies an OpenAPI schema property |
-| [OpenApiSearch](#OpenApiSearch) | Controller Action | Create OpenAPI query params from CakePHP Search plugin |
-| [OpenApiSecurity](#OpenApiSecurity) | Controller Action | Create/modify OpenAPI security |
+| Attribute                                       | Usage              | Description                                                               | 
+|-------------------------------------------------|--------------------|---------------------------------------------------------------------------|
+| [OpenApiDto](#OpenApiDto)                       | Controller Action  | Builds OpenAPI query params and request bodies from Data Transfer Objects |
+| [OpenApiDtoQuery](#OpenApiDtoQuery)             | DTO class property | Builds OpenAPI query param from Data Transfer Objects                     |
+| [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) | DTO class property | Builds OpenAPI request body property from Data Transfer Objects           |
+| [OpenApiForm](#OpenApiForm)                     | Controller Action  | Builds OpenAPI for application/x-www-form-urlencoded request bodies       |
+| [OpenApiHeader](#OpenApiHeader)                 | Controller Action  | Create OpenAPI header parameters                                          |
+| [OpenApiOperation](#OpenApiOperation)           | Controller Action  | Modifies OpenAPI operation                                                |
+| [OpenApiPaginator](#OpenApiPaginator)           | Controller Action  | Create OpenAPI query params from CakePHP Paginator Component              |
+| [OpenApiPath](#OpenApiPath)                     | Controller         | Modifies OpenAPI paths                                                    |
+| [OpenApiPathParam](#OpenApiPathParam)           | Controller Action  | Modify an existing OpenAPI path parameter                                 |
+| [OpenApiQueryParam](#OpenApiQueryParam)         | Controller Action  | Builds OpenAPI query param                                                |
+| [OpenApiRequestBody](#OpenApiRequestBody)       | Controller Action  | Modify OpenAPI request body                                               |
+| [OpenApiResponse](#OpenApiResponse)             | Controller Action  | Modify OpenAPI response                                                   |
+| [OpenApiSchema](#OpenApiSchema)                 | Entity             | Modifies OpenAPI schema                                                   |
+| [OpenApiSchemaProperty](#OpenApiSchemaProperty) | Entity or Class    | Modifies an OpenAPI schema property or defines OpenApiResponse schema     |
+| [OpenApiSearch](#OpenApiSearch)                 | Controller Action  | Create OpenAPI query params from CakePHP Search plugin                    |
+| [OpenApiSecurity](#OpenApiSecurity)             | Controller Action  | Create/modify OpenAPI security                                            |
 
 ### OpenApiDto
 
@@ -37,9 +37,9 @@ Method level attribute for building query or form parameters from a DataTransfer
 the [OpenApiDtoQuery](#OpenApiDtoQuery) or [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) on its properties depending
 on the request type.
 
-| Property | Type / Default | OA Spec | Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| class | string | No | FQN of the DTO class. |
+| Property   | Type / Default | OA Spec | Description                     | 
+|------------|----------------|---------|---------------------------------|
+| class      | string         | No      | Required. FQN of the DTO class. |
 
 Example:
 
@@ -52,21 +52,21 @@ public function index() {}
 
 Property or parameter level attribute for use in your DTO classes.
 
-| Property | Type / Default | OA Spec | Description |
-| ------------- | ------------- | ------------- | ------------- |
-| name | string `""` | Y | Name of the query parameter, required if ref is not set |
-| ref | string `""` | Y | An OpenApi `$ref`, required if name is not set |
-| type | string `string` | Y | The scalar data type |
-| format | string `""` | Y | A data format describing the scalar type such as `date-time`, `uuid`, or `int64` |
-| description | string `""` | Y | Description of the parameter |
-| example | mixed `null` | Y | An example value |
-| allowReserved | bool `false` | Y | Allow reserved URI characters? |
-| explode | bool `false` | Y | See http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| isRequired | bool `false` | Y | Is this parameter required? |
-| isDeprecated | bool `false` | Y | Is this parameter deprecated? |
-| allowEmptyValue | bool `false` | Y | Allow empty values? |
-| enum | array `[]` | Y | An enumerated list of accepted values |
-| style | string `""` | Y | See https://spec.openapis.org/oas/v3.0.3#parameterStyle |
+| Property        | Type / Default  | OA Spec | Description                                                                      |
+|-----------------|-----------------|---------|----------------------------------------------------------------------------------|
+| name            | string `""`     | Y       | Name of the query parameter, required if ref is not set                          |
+| ref             | string `""`     | Y       | An OpenApi `$ref`, required if name is not set                                   |
+| type            | string `string` | Y       | The scalar data type                                                             |
+| format          | string `""`     | Y       | A data format describing the scalar type such as `date-time`, `uuid`, or `int64` |
+| description     | string `""`     | Y       | Description of the parameter                                                     |
+| example         | mixed `""`      | Y       | An example value                                                                 |
+| allowReserved   | bool `false`    | Y       | Allow reserved URI characters?                                                   |
+| explode         | bool `false`    | Y       | See http://spec.openapis.org/oas/v3.0.3#fixed-fields-9                           |
+| isRequired      | bool `false`    | Y       | Is this parameter required?                                                      |
+| isDeprecated    | bool `false`    | Y       | Is this parameter deprecated?                                                    |
+| allowEmptyValue | bool `false`    | Y       | Allow empty values?                                                              |
+| enum            | array `[]`      | Y       | An enumerated list of accepted values                                            |
+| style           | string `""`     | Y       | See https://spec.openapis.org/oas/v3.0.3#parameterStyle                          |
 
 Example:
 
@@ -107,34 +107,34 @@ OpenAPI:
 Property or parameter level attribute for use in your DTO classes. See the OpenAPI documentation on
 [schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail.
 
-| Attribute | Type / Default | OA Spec? | Description |
-| ------------- | ------------- | ------------- |------------- |
-| name | string | N | Name of the schema property |
-| type | string `string` | Y | Date type such as integer, string, array etc... |
-| format | string/null `null` | Y | Date format such as int32, date-time, etc... |
-| title | string/null `null` | Y |  Title of the property |
-| description | string/null `null` | Y |  Description of the property |
-| example | mixed `null` | Y |  An example value |
-| isReadOnly | bool `false` | Y |  Is the property read only? |
-| isWriteOnly | bool `false` | Y |  Is the property write only? |
-| isRequired | bool `false` | Y |  Is the property required? |
-| default | mixed `null` | Y |  A default value |
-| isNullable | bool `false` | Y |  Can the value be null? |
-| isDeprecated | bool `false` | Y |  Is the property deprecated? |
-| multipleOf | float/null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum | float/null `null` | Y |  The minimum allowed numeric value |
-| isExclusiveMinimum | bool `false` | Y |  Is the `minimum` value excluded from the range. |
-| maximum | float/null `null` | Y |  The maximum allowed numeric value |
-| isExclusiveMaximum | bool `false` | Y |  Is the `maximum` value excluded from the range. |
-| minLength | integer/null `null` | Y |  The minimum length of a string |
-| maxLength | integer/null `null` | Y |  The maximum length of a string |
-| pattern | string/null `null` | Y |  A regex pattern the value must follow |
-| minItems | integer/null `null` | Y |  The minimum items allowed in a list |
-| maxItems | integer/null `null` | Y |  The maximum items allowed in a list |
-| hasUniqueItems | bool `false` | Y |  The list must contain unique items |
-| minProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
-| enum | array `[]` | Y |  An enumerated list of of options for the value |
+| Attribute          | Type / Default    | OA Spec? | Description                                                                                            |
+|--------------------|-------------------|----------|--------------------------------------------------------------------------------------------------------|
+| name               | string            | N        | Required. Name of the schema property                                                                  |
+| type               | string `"string"` | Y        | Date type such as integer, string, array etc...                                                        |
+| format             | ?string `null`    | Y        | Date format such as int32, date-time, etc...                                                           |
+| title              | ?string `null`    | Y        | Title of the property                                                                                  |
+| description        | ?string `null`    | Y        | Description of the property                                                                            |
+| example            | mixed `null`      | Y        | An example value                                                                                       |
+| isReadOnly         | bool `false`      | Y        | Is the property read only?                                                                             |
+| isWriteOnly        | bool `false`      | Y        | Is the property write only?                                                                            |
+| isRequired         | bool `false`      | Y        | Is the property required?                                                                              |
+| default            | mixed `null`      | Y        | A default value                                                                                        |
+| isNullable         | bool `false`      | Y        | Can the value be null?                                                                                 |
+| isDeprecated       | bool `false`      | Y        | Is the property deprecated?                                                                            |
+| multipleOf         | ?float `null`     | Y        | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum            | ?float `null`     | Y        | The minimum allowed numeric value                                                                      |
+| isExclusiveMinimum | bool `false`      | Y        | Is the `minimum` value excluded from the range.                                                        |
+| maximum            | ?float `null`     | Y        | The maximum allowed numeric value                                                                      |
+| isExclusiveMaximum | bool `false`      | Y        | Is the `maximum` value excluded from the range.                                                        |
+| minLength          | ?integer  `null`  | Y        | The minimum length of a string                                                                         |
+| maxLength          | ?integer `null`   | Y        | The maximum length of a string                                                                         |
+| pattern            | ?string `null`    | Y        | A regex pattern the value must follow                                                                  |
+| minItems           | ?integer `null`   | Y        | The minimum items allowed in a list                                                                    |
+| maxItems           | ?integer `null`   | Y        | The maximum items allowed in a list                                                                    |
+| hasUniqueItems     | bool `false`      | Y        | The list must contain unique items                                                                     |
+| minProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
+| maxProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
+| enum               | array `[]`        | Y        | An enumerated list of of options for the value                                                         |
 
 Example:
 
@@ -186,34 +186,34 @@ OpenAPI:
 Method level attribute for adding form data fields. See the OpenAPI documentation on
 [schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail.
 
-| Attribute | Type / Default | OA Spec? | Description |
-| ------------- | ------------- | ------------- |------------- |
-| name | string | N | Name of the schema property |
-| type | string `string` | Y | Date type such as integer, string, array etc... |
-| format | string/null `null` | Y | Date format such as int32, date-time, etc... |
-| title | string/null `null` | Y |  Title of the property |
-| description | string/null `null` | Y |  Description of the property |
-| example | mixed `null` | Y |  An example value |
-| isReadOnly | bool `false` | Y |  Is the property read only? |
-| isWriteOnly | bool `false` | Y |  Is the property write only? |
-| isRequired | bool `false` | Y |  Is the property required? |
-| default | mixed `null` | Y |  A default value |
-| isNullable | bool `false` | Y |  Can the value be null? |
-| isDeprecated | bool `false` | Y |  Is the property deprecated? |
-| multipleOf | float/null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum | float/null `null` | Y |  The minimum allowed numeric value |
-| isExclusiveMinimum | bool `false` | Y |  Is the `minimum` value excluded from the range. |
-| maximum | float/null `null` | Y |  The maximum allowed numeric value |
-| isExclusiveMaximum | bool `false` | Y |  Is the `maximum` value excluded from the range. |
-| minLength | integer/null `null` | Y |  The minimum length of a string |
-| maxLength | integer/null `null` | Y |  The maximum length of a string |
-| pattern | string/null `null` | Y |  A regex pattern the value must follow |
-| minItems | integer/null `null` | Y |  The minimum items allowed in a list |
-| maxItems | integer/null `null` | Y |  The maximum items allowed in a list |
-| hasUniqueItems | bool `false` | Y |  The list must contain unique items |
-| minProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
-| enum | array `[]` | Y |  An enumerated list of of options for the value |
+| Attribute          | Type / Default    | OA Spec? | Description                                                                                            |
+|--------------------|-------------------|----------|--------------------------------------------------------------------------------------------------------|
+| name               | string            | N        | Required. Name of the schema property                                                                  |
+| type               | string `"string"` | Y        | Date type such as integer, string, array etc...                                                        |
+| format             | ?string `null`    | Y        | Date format such as int32, date-time, etc...                                                           |
+| title              | ?string `null`    | Y        | Title of the property                                                                                  |
+| description        | ?string `null`    | Y        | Description of the property                                                                            |
+| example            | mixed `null`      | Y        | An example value                                                                                       |
+| isReadOnly         | bool `false`      | Y        | Is the property read only?                                                                             |
+| isWriteOnly        | bool `false`      | Y        | Is the property write only?                                                                            |
+| isRequired         | bool `false`      | Y        | Is the property required?                                                                              |
+| default            | mixed `null`      | Y        | A default value                                                                                        |
+| isNullable         | bool `false`      | Y        | Can the value be null?                                                                                 |
+| isDeprecated       | bool `false`      | Y        | Is the property deprecated?                                                                            |
+| multipleOf         | ?float `null`     | Y        | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum            | ?float `null`     | Y        | The minimum allowed numeric value                                                                      |
+| isExclusiveMinimum | bool `false`      | Y        | Is the `minimum` value excluded from the range.                                                        |
+| maximum            | ?float `null`     | Y        | The maximum allowed numeric value                                                                      |
+| isExclusiveMaximum | bool `false`      | Y        | Is the `maximum` value excluded from the range.                                                        |
+| minLength          | ?integer `null`   | Y        | The minimum length of a string                                                                         |
+| maxLength          | ?integer `null`   | Y        | The maximum length of a string                                                                         |
+| pattern            | ?string `null`    | Y        | A regex pattern the value must follow                                                                  |
+| minItems           | ?integer `null`   | Y        | The minimum items allowed in a list                                                                    |
+| maxItems           | ?integer `null`   | Y        | The maximum items allowed in a list                                                                    |
+| hasUniqueItems     | bool `false`      | Y        | The list must contain unique items                                                                     |
+| minProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
+| maxProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
+| enum               | array `[]`        | Y        | An enumerated list of of options for the value                                                         |
 
 Example:
 
@@ -243,20 +243,20 @@ OpenAPI:
 
 Method level attribute for adding [header](https://spec.openapis.org/oas/latest.html#header-object) parameters.
 
-| Property | Type / Default | OA Spec | Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| name | string `""` | Y | Name of the query parameter. Required if `ref` is not defined |
-| ref | string `""` | Y | An OpenAPI `$ref` such as `#/components/parameters/ParameterName`. Required if name is not defined |
-| type | string `string` | Date type such as integer, string, array etc... |
-| format | string `""` | Date format such as int32, date-time, etc... |
-| description | string `""` | Y |  Description of the parameter |
-| isRequired | bool `false` | Y |  Is this parameter required? |
-| enum | array `[]` | Y |  An enumerated list of accepted values |
-| isDeprecated | bool `false` | Y |  Is this parameter deprecated? |
-| explode | bool `false` | Y |  http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| style | string `""` | Y |  http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| example | mixed `null` | Y | An example value |
-| allowEmptyValue | bool `false` | Y |  Are empty values allowed? |
+| Property        | Type / Default            | OA Spec | Description                                                                                        | 
+|-----------------|---------------------------|---------|----------------------------------------------------------------------------------------------------|
+| name            | string `""`               | Y       | Name of the query parameter. Required if `ref` is not defined                                      |
+| ref             | string `""`               | Y       | An OpenAPI `$ref` such as `#/components/parameters/ParameterName`. Required if name is not defined |
+| type            | string `"string"`         | Y       | Date type such as integer, string, array etc...                                                    |
+| format          | string `""`               | Y       | Date format such as int32, date-time, etc...                                                       |
+| description     | string `""`               | Y       | Description of the parameter                                                                       |
+| isRequired      | bool `false`              | Y       | Is this parameter required?                                                                        |
+| enum            | array `[]`                | Y       | An enumerated list of accepted values                                                              |
+| isDeprecated    | bool `false`              | Y       | Is this parameter deprecated?                                                                      |
+| explode         | bool `false`              | Y       | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9                                                 |
+| style           | string `""`               | Y       | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9                                                 |
+| example         | string, bool, or int `""` | Y       | An example value                                                                                   |
+| allowEmptyValue | bool `false`              | Y       | Are empty values allowed?                                                                          |
 
 Example:
 
@@ -282,15 +282,15 @@ OpenAPI:
 
 Method level attribute for OpenApi Operations.
 
-| Property | Type / Default | OA Spec |Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| summary | string/null `` | Yes | Operation summary, set to null to prevent reading from docblock |
-| description | string/null `` | Yes | Operation description, set to null to prevent reading from docblock |
-| isVisible | bool `true` | No | Setting this to false will prevent the operation from appearing in OpenApi output |
-| tagNames | array `[]` | Yes | Sets tag names |
-| isDeprecated | bool `false` | Yes | Is the operation deprecated? |
-| externalDocs | array/null `null` | Yes | External documentation |
-| sortOrder | int/null `null` | No | The order the operation appears at in OpenAPI output. Defaults to the order the action appears in the controller class. |
+| Property     | Type / Default  | OA Spec | Description                                                                                                             | 
+|--------------|-----------------|---------|-------------------------------------------------------------------------------------------------------------------------|
+| summary      | ?string `""`    | Yes     | Operation summary, set to null to prevent reading from docblock                                                         |
+| description  | ?string `""`    | Yes     | Operation description, set to null to prevent reading from docblock                                                     |
+| isVisible    | bool `true`     | No      | Setting this to false will prevent the operation from appearing in OpenApi output                                       |
+| tagNames     | array `[]`      | Yes     | Sets tag names                                                                                                          |
+| isDeprecated | bool `false`    | Yes     | Is the operation deprecated?                                                                                            |
+| externalDocs | ?array `null`   | Yes     | External documentation                                                                                                  |
+| sortOrder    | ?int `null`     | No      | The order the operation appears at in OpenAPI output. Defaults to the order the action appears in the controller class. |
 
 Example:
 
@@ -334,10 +334,10 @@ public function index()
 Method level attribute for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html)
 query parameters: page, limit, sort, and direction.  OpenApiPaginator only works on `index()` actions.
 
-| Property | Type / Default | OA Spec | Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| sortEnum | array `[]` | No| A list of fields that can be sorted by. This overrides the default `Paginate.sortableFields` |
-| useSortTextInput | boolean `false` | No | Display an input box in Swagger UI instead of a dropdown for sorting |
+| Property         | Type / Default  | OA Spec | Description                                                                                  | 
+|------------------|-----------------|---------|----------------------------------------------------------------------------------------------|
+| sortEnum         | array `[]`      | No      | A list of fields that can be sorted by. This overrides the default `Paginate.sortableFields` |
+| useSortTextInput | boolean `false` | No      | Display an input box in Swagger UI instead of a dropdown for sorting                         |
 
 Default usage:
 
@@ -385,12 +385,12 @@ OpenAPI:
 
 Class level attribute to define scalar [Path](https://spec.openapis.org/oas/latest.html#path-item-object) values.
 
-| Property | Type / Default | OA Spec | Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| isVisible | boolean `true` | No | Is the path and its operations visible in OpenAPI  |
-| ref | string `""` | Yes | An OpenAPI ref such as `#/paths/my-path` |
-| summary | string `""` | Yes | Overwrites the default summary (if any) |
-| description | string `""` | Yes | Overwrites the default description |
+| Property    | Type / Default | OA Spec | Description                                       | 
+|-------------|----------------|---------|---------------------------------------------------|
+| isVisible   | boolean `true` | No      | Is the path and its operations visible in OpenAPI |
+| ref         | string `null`  | Yes     | An OpenAPI ref such as `#/paths/my-path`          |
+| summary     | string `null`  | Yes     | Overwrites the default summary (if any)           |
+| description | string `null`  | Yes     | Overwrites the default description                |
 
 A common use-case for this is to hide a controller from appearing in your OpenApi (the default behavior). For instance,
 you may have a bespoke endpoint that you don't want to publish:
@@ -405,15 +405,15 @@ class UsersController extends AppController
 Method level attribute for modifying path parameters. This is for modifying existing path parameters only. Path
 parameters must first be defined in your routes file.
 
-| Attribute | Type / Default | OA Spec | Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| name | string `""` | Yes | Name of the query parameter |
-| ref | string `""` | Yes | Name of the query parameter |
-| type | string `string` | Yes | Data type |
-| format | string `` | Yes | Data format |
-| description | string `""` | Yes | Description of the parameter |
-| example | mixed `null` | Yes | An example value |
-| allowReserved | bool `false` | Yes | Allow reserved URI characters? |
+| Attribute     | Type / Default  | OA Spec | Description                    | 
+|---------------|-----------------|---------|--------------------------------|
+| name          | string `""`     | Yes     | Name of the query parameter    |
+| ref           | string `""`     | Yes     | Name of the query parameter    |
+| type          | string `string` | Yes     | Data type                      |
+| format        | string `""`     | Yes     | Data format                    |
+| description   | string `""`     | Yes     | Description of the parameter   |
+| example       | mixed `""`      | Yes     | An example value               |
+| allowReserved | bool `false`    | Yes     | Allow reserved URI characters? |
 
 Example:
 
@@ -438,20 +438,20 @@ OpenAPI:
 
 Method level attribute for adding query parameters.
 
-| Property | Type / Default | OA Spec | Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| name | string | Yes | Name of the query parameter. Required if `ref` is empty. |
-| ref | string | Yes | An OpenApi $ref parameter describing the query parameter |
-| type | string `string` | Yes | Data type. Required if `name` is empty.  |
-| format | string `""` | Yes | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| description | string `""` | Yes | Description of the parameter |
-| isRequired | bool `false` | Y |  Is this parameter required? |
-| enum | array `[]` | Y |  An enumerated list of accepted values |
-| isDeprecated | bool `false` | Yes | Is this parameter deprecated? |
-| explode | bool `false` | Yes | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| style | string `""` | Yes | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| example | mixed `null` | Yes | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9 |
-| allowEmptyValue | bool `false` | Yes | Allow empty values? |
+| Property        | Type / Default            | OA Spec | Description                                                                            | 
+|-----------------|---------------------------|---------|----------------------------------------------------------------------------------------|
+| name            | string                    | Yes     | Name of the query parameter. Required if `ref` is empty.                               |
+| ref             | string                    | Yes     | An OpenApi $ref parameter describing the query parameter. Required if `name` is empty. |
+| type            | string `string`           | Yes     | Data type. Required if `name` is empty.                                                |
+| format          | string `""`               | Yes     | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9                                     |
+| description     | string `""`               | Yes     | Description of the parameter                                                           |
+| isRequired      | bool `false`              | Y       | Is this parameter required?                                                            |
+| enum            | array `[]`                | Y       | An enumerated list of accepted values                                                  |
+| isDeprecated    | bool `false`              | Yes     | Is this parameter deprecated?                                                          |
+| explode         | bool `false`              | Yes     | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9                                     |
+| style           | string `""`               | Yes     | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9                                     |
+| example         | string, bool, or int `""` | Yes     | http://spec.openapis.org/oas/v3.0.3#fixed-fields-9                                     |
+| allowEmptyValue | bool `false`              | Yes     | Allow empty values?                                                                    |
 
 Example:
 
@@ -480,13 +480,13 @@ OpenAPI:
 
 Method level attribute for describing request body. Set ignoreCakeSchema for full control over request body.
 
-| Attribute | Type / Default | Description | 
-| ------------- | ------------- | ------------- |
-| ref | string `""` | An optional OpenAPI $ref |
-| description | string `""` | Description of the request body |
-| mimeTypes | array `[]` | An array of strings of mime types to support |
-| required | bool `true` | Is the request body required? |
-| ignoreCakeSchema | bool `false` | Ignore cake schema |
+| Attribute        | Type / Default | Description                                  | 
+|------------------|----------------|----------------------------------------------|
+| ref              | string `""`    | An optional OpenAPI $ref                     |
+| description      | string `""`    | Description of the request body              |
+| mimeTypes        | array `[]`     | An array of strings of mime types to support |
+| required         | bool `true`    | Is the request body required?                |
+| ignoreCakeSchema | bool `false`   | Ignore cake schema                           |
 
 Example:
 
@@ -516,16 +516,16 @@ order of operations is used to build the response:
 3. `associations`
 4. The schema inferred from CakePHP conventions.
 
-| Property                      | Type / Default        | OA Spec | Description                                                                                                                                                                              |
-|-------------------------------|-----------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| schemaType                    | string `object`       | Y       | The schema response type, generally `"object"` or `"array"`                                                                                                                              |
-| statusCode                    | string `200`          | Y       | The HTTP response code                                                                                                                                                                   |
-| ref                           | string or null `null` | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                                                                                                              |
-| [schema](#Schema)             | string or null `null` | Y       | An FQN describing a custom response schema. The class must have either one or more `#[OpenApiSchemaProperty]` attribute, implement `CustomSchemaInterface` or both. |
-| description                   | string or null ``     | Y       | Description of the response                                                                                                                                                              |
-| mimeTypes                     | array or null `null`  | Y       | An array of mime types the response can, if null settings from swagger_bake config are used.                                                                                             |
-| [associations](#Associations) | array or null `null`  | N       | Adds associated tables to the response sample schema, see examples below.                                                                                                                |
-| schemaFormat                  | string or null ``     | Y       | The schema format, generally only used for schemaType of string.                                                                                                                         |
+| Property                      | Type / Default    | OA Spec | Description                                                                                                                                                           |
+|-------------------------------|-------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| schemaType                    | string `"object"` | Y       | The schema response type, generally `"object"` or `"array"`                                                                                                           |
+| statusCode                    | string `"200"`    | Y       | The HTTP response code                                                                                                                                                |
+| ref                           | ?string `null`    | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                                                                                           |
+| [schema](#Schema)             | ?string `null`    | Y       | An FQN describing a custom response schema. The class must have either one or more `#[OpenApiSchemaProperty]` attribute, implement `CustomSchemaInterface` or both.   |
+| description                   | ?string `null`    | Y       | Description of the response                                                                                                                                           |
+| mimeTypes                     | ?array `null`     | Y       | An array of mime types the response can, if null settings from swagger_bake config are used.                                                                          |
+| [associations](#Associations) | ?array `null`     | N       | Adds associated tables to the response sample schema, see examples below.                                                                                             |
+| schemaFormat                  | ?string `null`    | Y       | The schema format, generally only used for schemaType of string.                                                                                                      |
 
 Defining a multiple mimeTypes and 400-409 status code range and an expected 200 response:
 
@@ -638,22 +638,22 @@ Since the base table is inferred using CakePHP naming conventions we can change 
 
 Class level attribute for modifying OpenAPI Schema.
 
-| Property | Type / Default | OA Spec | Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| [visibility](#visibility) | int `1` | No | Determines the visibility of the schema, see OpenApiSchema class constants |
-| title | string `""` | Yes | Overwrites the default title |
-| description | string `""` | Yes | Overwrites the default description (if any) |
+| Property                  | Type / Default | OA Spec | Description                                                                | 
+|---------------------------|----------------|---------|----------------------------------------------------------------------------|
+| [visibility](#visibility) | int `1`        | No      | Determines the visibility of the schema, see OpenApiSchema class constants |
+| title                     | string `""`    | Yes     | Overwrites the default title                                               |
+| description               | string `""`    | Yes     | Overwrites the default description (if any)                                |
 
 #### Visibility
 
 You can use the constants below when defining `visibility`:
 
-| Name  | Value  | Description  |
-|---|---|---|
-| `OpenApiSchema::VISIBILE_DEFAULT`  |  1  |  Default behavior. Adds the schema to `#/components/schema/{SchemaName}` if it matches a controller with a RESTful route. |
-| `OpenApiSchema::VISIBILE_ALWAYS`  |  2  |  Always add the schema to `#/components/schema/{SchemaName}`.  |
-| `OpenApiSchema::VISIBILE_HIDDEN` |  3  | Never add the schema to `#/components/schema/{SchemaName}` and instead adds it to `#/x-swagger-bake/components/schema/{SchemaName}`. This hides the schema from the Swagger UIs Schemas section, but still allows the schema to be used for request and response bodies.  |
-| `OpenApiSchema::VISIBILE_NEVER`  |  4  | Never add the schema anywhere. Warning this can break request body definitions and response samples. |
+| Name                              | Value | Description                                                                                                                                                                                                                                                              |
+|-----------------------------------|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `OpenApiSchema::VISIBILE_DEFAULT` | 1     | Default behavior. Adds the schema to `#/components/schema/{SchemaName}` if it matches a controller with a RESTful route.                                                                                                                                                 |
+| `OpenApiSchema::VISIBILE_ALWAYS`  | 2     | Always add the schema to `#/components/schema/{SchemaName}`.                                                                                                                                                                                                             |
+| `OpenApiSchema::VISIBILE_HIDDEN`  | 3     | Never add the schema to `#/components/schema/{SchemaName}` and instead adds it to `#/x-swagger-bake/components/schema/{SchemaName}`. This hides the schema from the Swagger UIs Schemas section, but still allows the schema to be used for request and response bodies. |
+| `OpenApiSchema::VISIBILE_NEVER`   | 4     | Never add the schema anywhere. Warning this can break request body definitions and response samples.                                                                                                                                                                     |
 
 Example:
 
@@ -668,34 +668,34 @@ Class or property level attribute for customizing Schema properties. Note that t
 your entity. You can add adhoc attributes as needed and optionally combine with
 [Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
 
-| Attribute | Type / Default | OA Spec? | Description | 
-| ------------- | ------------- | ------------- |------------- |
-| name | string | N | Name of the schema property |
-| type | string `string` | Y | Date type such as integer, string, array etc... |
-| format | string/null `null` | Y | Date format such as int32, date-time, etc... |
-| title | string/null `null` | Y |  Title of the property |
-| description | string/null `null` | Y |  Description of the property |
-| example | mixed `null` | Y |  An example value |
-| isReadOnly | bool `false` | Y |  Is the property read only? |
-| isWriteOnly | bool `false` | Y |  Is the property write only? |
-| isRequired | bool `false` | Y |  Is the property required? |
-| default | mixed `null` | Y |  A default value |
-| isNullable | bool `false` | Y |  Can the value be null? |
-| isDeprecated | bool `false` | Y |  Is the property deprecated? |
-| multipleOf | float/null `null` | Y |  The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum | float/null `null` | Y |  The minimum allowed numeric value |
-| isExclusiveMinimum | bool `false` | Y |  Is the `minimum` value excluded from the range. |
-| maximum | float/null `null` | Y |  The maximum allowed numeric value |
-| isExclusiveMaximum | bool `false` | Y |  Is the `maximum` value excluded from the range. |
-| minLength | integer/null `null` | Y |  The minimum length of a string |
-| maxLength | integer/null `null` | Y |  The maximum length of a string |
-| pattern | string/null `null` | Y |  A regex pattern the value must follow |
-| minItems | integer/null `null` | Y |  The minimum items allowed in a list |
-| maxItems | integer/null `null` | Y |  The maximum items allowed in a list |
-| hasUniqueItems | bool `false` | Y |  The list must contain unique items |
-| minProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
-| maxProperties | integer/null `null` | Y |  http://spec.openapis.org/oas/v3.0.3#properties |
-| enum | array `[]` | Y |  An enumerated list of of options for the value |
+| Attribute          | Type / Default    | OA Spec?   | Description                                                                                            | 
+|--------------------|-------------------|------------|--------------------------------------------------------------------------------------------------------|
+| name               | string            | N          | Required. Name of the schema property                                                                  |
+| type               | string `"string"` | Y          | Date type such as integer, string, array etc...                                                        |
+| format             | ?string `null`    | Y          | Date format such as int32, date-time, etc...                                                           |
+| title              | ?string `null`    | Y          | Title of the property                                                                                  |
+| description        | ?string `null`    | Y          | Description of the property                                                                            |
+| example            | mixed `null`      | Y          | An example value                                                                                       |
+| isReadOnly         | bool `false`      | Y          | Is the property read only?                                                                             |
+| isWriteOnly        | bool `false`      | Y          | Is the property write only?                                                                            |
+| isRequired         | bool `false`      | Y          | Is the property required?                                                                              |
+| default            | mixed `null`      | Y          | A default value                                                                                        |
+| isNullable         | bool `false`      | Y          | Can the value be null?                                                                                 |
+| isDeprecated       | bool `false`      | Y          | Is the property deprecated?                                                                            |
+| multipleOf         | ?float `null`     | Y          | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum            | ?float `null`     | Y          | The minimum allowed numeric value                                                                      |
+| isExclusiveMinimum | bool `false`      | Y          | Is the `minimum` value excluded from the range.                                                        |
+| maximum            | ?float `null`     | Y          | The maximum allowed numeric value                                                                      |
+| isExclusiveMaximum | bool `false`      | Y          | Is the `maximum` value excluded from the range.                                                        |
+| minLength          | ?int `null`       | Y          | The minimum length of a string                                                                         |
+| maxLength          | ?int `null`       | Y          | The maximum length of a string                                                                         |
+| pattern            | ?string `null`    | Y          | A regex pattern the value must follow                                                                  |
+| minItems           | ?int `null`       | Y          | The minimum items allowed in a list                                                                    |
+| maxItems           | ?int `null`       | Y          | The maximum items allowed in a list                                                                    |
+| hasUniqueItems     | bool `false`      | Y          | The list must contain unique items                                                                     |
+| minProperties      | ?int `null`       | Y          | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
+| maxProperties      | ?int `null`       | Y          | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
+| enum               | array `[]`        | Y          | An enumerated list of of options for the value                                                         |
 
 ```php
 #[OpenApiSchemaProperty(name: 'example_one', minLength: 5, maxLength: 10)]
@@ -727,10 +727,10 @@ OpenAPI:
 Method level attribute for documenting search parameters using the popular
 [friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
 
-| Attribute | Type / Default | Description | 
-| ------------- | ------------- | ------------- |
-| tableClass | string | FQN to the Table class |
-| collection | string `default` | The Cake Search collection _(see vendor documentation)_ |
+| Attribute   | Type / Default   | Description                                             | 
+|-------------|------------------|---------------------------------------------------------|
+| tableClass  | string           | Required. FQN to the Table class                        |
+| collection  | string `default` | The Cake Search collection _(see vendor documentation)_ |
 
 ```php
  #[OpenApiSearch(tableClass: '\App\Model\Table\FilmsTable', collection: 'default')]
@@ -806,10 +806,10 @@ Method level attribute for documenting security requirements on an Operation. Th
 settings inferred from AuthenticationComponent. See the main documentation for more information. You may define
 multiple.
 
-| Property | Type / Default | OA Spec | Description | 
-| ------------- | ------------- | ------------- | ------------- |
-| name | string | Yes | Name of the security option |
-| scopes | array `[]` | Yes | Security Scopes |
+| Property   | Type / Default | OA Spec | Description                           | 
+|------------|----------------|---------|---------------------------------------|
+| name       | string         | Yes     | Required. Name of the security option |
+| scopes     | array `[]`     | Yes     | Security Scopes                       |
 
 Here is an example of documenting that an index endpoint requires BearerAuth security with read scope. The `name`
 should match what is defined in your YAML [Security Scheme Object](https://spec.openapis.org/oas/latest.html#security-scheme-object).
