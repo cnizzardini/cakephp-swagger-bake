@@ -140,12 +140,14 @@ class OperationResponse
     {
         if ($openApiResponse->schema) {
             $reflection = new ReflectionClass($openApiResponse->schema);
+            if ($openApiResponse->schemaType == 'array') {
+                $baseSchema = new Schema();
+            }
+
             if ($reflection->implementsInterface(CustomSchemaInterface::class)) {
                 $schema = $openApiResponse->schema::getOpenApiSchema();
             } else {
-                $schema = (new Schema())
-                    ->setName($reflection->getShortName())
-                    ->setType($openApiResponse->schemaType);
+                $schema = new Schema();
             }
 
             // class level attributes
@@ -167,6 +169,13 @@ class OperationResponse
                 if ($schemaProperty instanceof OpenApiSchemaProperty) {
                     $schema->pushProperty($schemaProperty->create());
                 }
+            }
+
+            if (isset($baseSchema)) {
+                $schema = $baseSchema->setItems([
+                    'type' => 'object',
+                    'properties' => $schema->getProperties(),
+                ]);
             }
 
             $response->pushContent(new Content($mimeType, $schema));

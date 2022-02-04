@@ -457,88 +457,101 @@ class OperationResponseTest extends TestCase
     {
         $route = $this->routes['employees:index'];
 
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiResponse::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiResponse::class, [
-                        'schema' => CustomResponseSchema::class
-                    ]),
-                ])
+        foreach(['object', 'array'] as $schemaType) {
+            $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+            $mockReflectionMethod->expects($this->once())
+                ->method(
+                    'getAttributes'
+                )
+                ->with(OpenApiResponse::class)
+                ->will(
+                    $this->returnValue([
+                        new ReflectionAttribute(OpenApiResponse::class, [
+                            'schema' => CustomResponseSchema::class,
+                            'schemaType' => $schemaType
+                        ]),
+                    ])
+                );
+
+            $operationResponse = new OperationResponse(
+                $this->mockSwagger('getSchemaByName', 'Employee'),
+                $this->config,
+                new Operation('hello', 'get'),
+                $route,
+                null,
+                $mockReflectionMethod
             );
 
-        $operationResponse = new OperationResponse(
-            $this->mockSwagger('getSchemaByName', 'Employee'),
-            $this->config,
-            new Operation('hello', 'get'),
-            $route,
-            null,
-            $mockReflectionMethod
-        );
+            $schema = $operationResponse
+                ->getOperationWithResponses()
+                ->getResponseByCode('200')
+                ->getContentByMimeType('application/json')
+                ->getSchema();
 
-        $schema = $operationResponse
-            ->getOperationWithResponses()
-            ->getResponseByCode('200')
-            ->getContentByMimeType('application/json')
-            ->getSchema();
-
-        $this->assertInstanceOf(Schema::class, $schema);
-        $this->assertEquals('Custom', $schema->getName());
-        $this->assertEquals('Custom Title', $schema->getTitle());
-        /** @var SchemaProperty[] $properties */
-        $properties = $schema->getProperties();
-        $this->assertCount(2, $properties);
-        $this->assertEquals('string', $properties['name']->getType());
-        $this->assertEquals('Paul', $properties['name']->getExample());
-        $this->assertEquals('integer', $properties['age']->getType());
-        $this->assertEquals(32, $properties['age']->getExample());
+            $this->assertInstanceOf(Schema::class, $schema);
+            /** @var SchemaProperty[] $properties */
+            if ($schemaType == 'array') {
+                $properties = $schema->getItems()['properties'];
+            } else {
+                $properties = $schema->getProperties();
+            }
+            $this->assertCount(2, $properties);
+            $this->assertEquals('string', $properties['name']->getType());
+            $this->assertEquals('Paul', $properties['name']->getExample());
+            $this->assertEquals('integer', $properties['age']->getType());
+            $this->assertEquals(32, $properties['age']->getExample());
+        }
     }
 
     public function test_openapi_response_schema_with_attributes_only(): void
     {
         $route = $this->routes['employees:index'];
 
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiResponse::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiResponse::class, [
-                        'schema' => CustomResponseSchemaAttributesOnly::class
-                    ]),
-                ])
+        foreach(['object', 'array'] as $schemaType) {
+            $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+            $mockReflectionMethod->expects($this->once())
+                ->method(
+                    'getAttributes'
+                )
+                ->with(OpenApiResponse::class)
+                ->will(
+                    $this->returnValue([
+                        new ReflectionAttribute(OpenApiResponse::class, [
+                            'schema' => CustomResponseSchemaAttributesOnly::class,
+                            'schemaType' => $schemaType
+                        ]),
+                    ])
+                );
+
+            $operationResponse = new OperationResponse(
+                $this->mockSwagger('getSchemaByName', 'Employee'),
+                $this->config,
+                new Operation('hello', 'get'),
+                $route,
+                null,
+                $mockReflectionMethod
             );
 
-        $operationResponse = new OperationResponse(
-            $this->mockSwagger('getSchemaByName', 'Employee'),
-            $this->config,
-            new Operation('hello', 'get'),
-            $route,
-            null,
-            $mockReflectionMethod
-        );
+            $schema = $operationResponse
+                ->getOperationWithResponses()
+                ->getResponseByCode('200')
+                ->getContentByMimeType('application/json')
+                ->getSchema();
 
-        $schema = $operationResponse
-            ->getOperationWithResponses()
-            ->getResponseByCode('200')
-            ->getContentByMimeType('application/json')
-            ->getSchema();
+            $this->assertInstanceOf(Schema::class, $schema);
+            /** @var SchemaProperty[] $properties */
+            if ($schemaType == 'array') {
+                $properties = $schema->getItems()['properties'];
+            } else {
+                $properties = $schema->getProperties();
+            }
 
-        $this->assertInstanceOf(Schema::class, $schema);
-        /** @var SchemaProperty[] $properties */
-        $properties = $schema->getProperties();
-        $this->assertCount(2, $properties);
-        $this->assertEquals('string', $properties['name']->getType());
-        $this->assertEquals('Paul', $properties['name']->getExample());
-        $this->assertEquals('integer', $properties['age']->getType());
-        $this->assertEquals(32, $properties['age']->getExample());
+            $this->assertCount(2, $properties);
+            $this->assertEquals('string', $properties['name']->getType());
+            $this->assertEquals('Paul', $properties['name']->getExample());
+            $this->assertEquals('integer', $properties['age']->getType());
+            $this->assertEquals(32, $properties['age']->getExample());
+        }
     }
 
     /**
