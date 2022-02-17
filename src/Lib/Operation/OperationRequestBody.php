@@ -173,8 +173,6 @@ class OperationRequestBody
             $visible = [$openApiSchema::VISIBILE_ALWAYS, $openApiSchema::VISIBILE_DEFAULT];
             if (in_array($openApiSchema->visibility, $visible)) {
                 $schema->setVendorProperty('x-swagger-bake-add-dto-schema', 'schema');
-            } elseif ($openApiSchema->visibility == $openApiSchema::VISIBILE_HIDDEN) {
-                $schema->setVendorProperty('x-swagger-bake-add-dto-schema', 'vendor');
             }
         }
 
