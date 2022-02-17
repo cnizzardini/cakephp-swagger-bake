@@ -136,6 +136,9 @@ Property or parameter level attribute for use in your DTO classes. See the OpenA
 | maxProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
 | enum               | array `[]`        | Y        | An enumerated list of of options for the value                                                         |
 
+By default, OpenApiDtoRequestBody will not be added to `#/components/schemas` and so will not appear in SwaggerUI's 
+schema list. You can add the `#[OpenApiSchema]` attribute to your DTO class to change the default behavior.
+
 Example:
 
 ```php

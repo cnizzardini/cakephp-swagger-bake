@@ -18,6 +18,7 @@ use SwaggerBake\Lib\Operation\OperationRequestBody;
 use SwaggerBake\Lib\Swagger;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotion;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
 
 class OperationRequestBodyTest extends TestCase
 {
@@ -104,7 +105,13 @@ class OperationRequestBodyTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
 
-        foreach ([EmployeeDataRequest::class, EmployeeDataRequestConstructorPromotion::class] as $class) {
+        $dto = [
+            EmployeeDataRequest::class,
+            EmployeeDataRequestConstructorPromotion::class,
+            EmployeeDataRequestPublicSchema::class
+        ];
+
+        foreach ($dto as $class) {
             $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
             $mockReflectionMethod->expects($this->any())
                 ->method(
@@ -143,6 +150,10 @@ class OperationRequestBodyTest extends TestCase
 
             $schema = $content->getSchema();
             $this->assertEquals('object', $schema->getType());
+
+            if ($class == EmployeeDataRequestPublicSchema::class) {
+                $this->assertEquals('schema', $schema->getVendorProperty('x-swagger-bake-add-dto-schema'));
+            }
 
             $properties = $schema->getProperties();
             $this->assertArrayHasKey('last_name', $properties, "failed for $class");

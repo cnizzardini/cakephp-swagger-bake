@@ -8,6 +8,7 @@ use Cake\Event\EventManager;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Path;
+use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
 use Symfony\Component\Yaml\Yaml;
 
@@ -112,6 +113,8 @@ class Swagger
      */
     public function toString()
     {
+        $this->convertDtoToSchema();
+
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.beforeRender', $this)
         );
@@ -194,5 +197,44 @@ class Swagger
     public function __toString(): string
     {
         return $this->toString();
+    }
+
+    /**
+     * Adds DTOs to #/components/schemas
+     *
+     * @todo this should be removed in v3.0.0 in place of a better solution such as global OpenAPI singleton.
+     * @return void
+     */
+    private function convertDtoToSchema(): void
+    {
+        $paths = $this->array['paths'];
+        if (empty($paths)) {
+            return;
+        }
+
+        foreach ($paths as $path) {
+            if (!$path instanceof Path) {
+                continue;
+            }
+            foreach ($path->getOperations() as $operation) {
+                $requestBody = $operation->getRequestBody();
+                if (!$requestBody instanceof RequestBody) {
+                    continue;
+                }
+                foreach ($requestBody->getContent() as $content) {
+                    if (!$content->getSchema() instanceof Schema) {
+                        continue;
+                    }
+                    $schema = $content->getSchema();
+                    if ($schema->getVendorProperty('x-swagger-bake-add-dto-schema') == 'schema') {
+                        $schema->setRefPath('#/components/schemas/' . $schema->getName());
+                        $schema->unsetVendorProperty('x-swagger-bake-add-dto-schema');
+                        $this->array['components']['schemas'][$schema->getName()] = $schema;
+
+                        $content->setSchema($schema->getRefPath());
+                    }
+                }
+            }
+        }
     }
 }

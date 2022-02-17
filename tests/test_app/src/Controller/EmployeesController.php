@@ -15,6 +15,7 @@ use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
 use SwaggerBakeTest\App\Model\Table\EmployeesTable;
 
 #[OpenApiPath(
@@ -169,6 +170,14 @@ class EmployeesController extends AppController
 
     #[OpenApiDto(class: EmployeeDataRequest::class)]
     public function dtoPost(): void
+    {
+        $hello = 'world';
+        $this->set(compact('hello'));
+        $this->viewBuilder()->setOption('serialize', ['hello']);
+    }
+
+    #[OpenApiDto(class: EmployeeDataRequestPublicSchema::class)]
+    public function dtoPublic(): void
     {
         $hello = 'world';
         $this->set(compact('hello'));

@@ -133,6 +133,19 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
+     * Removes the vendor property
+     *
+     * @param string $name name of the attribute
+     * @return void
+     */
+    public function unsetVendorProperty(string $name): void
+    {
+        if ($this->{$name}) {
+            unset($this->{$name});
+        }
+    }
+
+    /**
      * @return string|null
      */
     public function getTitle(): ?string
