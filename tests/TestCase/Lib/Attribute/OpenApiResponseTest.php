@@ -29,10 +29,20 @@ class OpenApiResponseTest extends TestCase
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'map' => [
+                    'customResponseRef' => [
+                        'action' => 'customResponseRef',
+                        'method' => 'GET',
+                        'path' => 'custom-response-ref'
+                    ],
                     'customResponseSchema' => [
                         'action' => 'customResponseSchema',
                         'method' => 'GET',
                         'path' => 'custom-response-schema'
+                    ],
+                    'customResponseSchemaPublic' => [
+                        'action' => 'customResponseSchemaPublic',
+                        'method' => 'GET',
+                        'path' => 'custom-response-schema-public'
                     ],
                     'schemaItems' => [
                         'action' => 'schemaItems',
@@ -63,11 +73,11 @@ class OpenApiResponseTest extends TestCase
         $this->swagger = new Swagger(new ModelScanner($cakeRoute, $config));
     }
 
-    public function test_response(): void
+    public function test_openapi_response_ref(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
 
-        $operation = $arr['paths']['/employees/custom-response-schema']['get'];
+        $operation = $arr['paths']['/employees/custom-response-ref']['get'];
 
         $schema = $operation['responses']['200']['content']['application/json']['schema'];
         $this->assertEquals('#/components/schemas/Pet', $schema['allOf'][0]['$ref']);
@@ -77,5 +87,28 @@ class OpenApiResponseTest extends TestCase
 
         $this->assertArrayHasKey('5XX', $operation['responses']);
         $this->assertEquals('status code range', $operation['responses']['5XX']['description']);
+    }
+
+    public function test_openapi_response_schema(): void
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+        $operation = $arr['paths']['/employees/custom-response-schema']['get'];
+        $schema = $operation['responses'][200]['content']['application/json']['schema'];
+        $this->assertEquals('Custom Title', $schema['title']);
+        $this->assertArrayHasKey('age', $schema['properties']);
+        $this->assertArrayHasKey('name', $schema['properties']);
+    }
+
+    public function test_openapi_response_schema_public(): void
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+        $this->assertArrayHasKey('CustomResponseSchemaPublic', $arr['components']['schemas']);
+        $properties = $arr['components']['schemas']['CustomResponseSchemaPublic']['properties'];
+        $this->assertArrayHasKey('name', $properties);
+        $this->assertArrayHasKey('age', $properties);
+
+        $operation = $arr['paths']['/employees/custom-response-schema-public']['get'];
+        $ref = $operation['responses'][200]['content']['application/json']['schema']['$ref'];
+        $this->assertEquals('#/components/schemas/CustomResponseSchemaPublic', $ref);
     }
 }

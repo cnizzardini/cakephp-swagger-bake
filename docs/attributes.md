@@ -105,7 +105,9 @@ OpenAPI:
 ### OpenApiDtoRequestBody
 
 Property or parameter level attribute for use in your DTO classes. See the OpenAPI documentation on
-[schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail.
+[schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail. By default, OpenApiDtoRequestBody 
+will not be added to `#/components/schemas` and so will not appear in SwaggerUI's schema list. You can add the 
+`#[OpenApiSchema]` attribute to your DTO class to change the default behavior.
 
 | Attribute          | Type / Default    | OA Spec? | Description                                                                                            |
 |--------------------|-------------------|----------|--------------------------------------------------------------------------------------------------------|
@@ -135,9 +137,6 @@ Property or parameter level attribute for use in your DTO classes. See the OpenA
 | minProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
 | maxProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
 | enum               | array `[]`        | Y        | An enumerated list of of options for the value                                                         |
-
-By default, OpenApiDtoRequestBody will not be added to `#/components/schemas` and so will not appear in SwaggerUI's 
-schema list. You can add the `#[OpenApiSchema]` attribute to your DTO class to change the default behavior.
 
 Example:
 

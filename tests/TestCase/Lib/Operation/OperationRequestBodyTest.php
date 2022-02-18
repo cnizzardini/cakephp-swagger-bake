@@ -9,6 +9,7 @@ use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Attribute\OpenApiDto;
 use SwaggerBake\Lib\Attribute\OpenApiForm;
 use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteScanner;
@@ -150,9 +151,10 @@ class OperationRequestBodyTest extends TestCase
 
             $schema = $content->getSchema();
             $this->assertEquals('object', $schema->getType());
+            $this->assertTrue($schema->isCustomSchema());
 
             if ($class == EmployeeDataRequestPublicSchema::class) {
-                $this->assertEquals('schema', $schema->getVendorProperty('x-swagger-bake-add-dto-schema'));
+                $this->assertEquals(OpenApiSchema::VISIBILE_DEFAULT, $schema->getVisibility());
             }
 
             $properties = $schema->getProperties();

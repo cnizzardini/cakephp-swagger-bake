@@ -154,26 +154,28 @@ class OperationRequestBody
             return;
         }
 
+        // check if the DTO contains the OpenApiSchema attribute
         $dtoReflection = new ReflectionClass($openApiDto->class);
-        $schema = (new Schema())
-            ->setType('object')
-            ->setName($dtoReflection->getShortName());
-
-        $properties = (new DtoParser($dtoReflection))->getSchemaProperties();
-        foreach ($properties as $property) {
-            $schema->pushProperty($property);
-        }
-
         $openApiSchema = (new AttributeFactory(
             $dtoReflection,
             OpenApiSchema::class
         ))->createOneOrNull();
 
+        // add schema to #/components/schemas ?
         if ($openApiSchema instanceof OpenApiSchema) {
-            $visible = [$openApiSchema::VISIBILE_ALWAYS, $openApiSchema::VISIBILE_DEFAULT];
-            if (in_array($openApiSchema->visibility, $visible)) {
-                $schema->setVendorProperty('x-swagger-bake-add-dto-schema', 'schema');
-            }
+            $schema = $openApiSchema->createSchema();
+        } else {
+            $schema = (new Schema())->setVisibility(OpenApiSchema::VISIBILE_NEVER);
+        }
+
+        $schema
+            ->setType('object')
+            ->setName($dtoReflection->getShortName())
+            ->setIsCustomSchema(true);
+
+        $properties = (new DtoParser($dtoReflection))->getSchemaProperties();
+        foreach ($properties as $property) {
+            $schema->pushProperty($property);
         }
 
         $requestBody = new RequestBody();

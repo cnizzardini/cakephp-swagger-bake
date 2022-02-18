@@ -18,59 +18,48 @@ class Schema implements JsonSerializable, SchemaInterface
 {
     use SchemaTrait;
 
-    private ?string $title = null;
-
     /**
-     * @var string[]
+     * @var bool
+     * @deprecated This will be removed in a future version
      */
-    private array $required = [];
-
-    /**
-     * A mixed array of Schema and SchemaProperty
-     *
-     * @var array
-     */
-    private array $properties = [];
-
-    private ?string $refEntity = null;
-
-    /**
-     * @var string[]
-     */
-    private array $items = [];
-
-    /**
-     * @var array
-     */
-    private array $oneOf = [];
-
-    /**
-     * @var array
-     */
-    private array $anyOf = [];
-
-    /**
-     * @var array
-     */
-    private array $allOf = [];
-
-    /**
-     * @var array
-     */
-    private array $not = [];
-
-    private ?Xml $xml = null;
-
     private bool $isPublic = true;
 
-    private int $visibility = OpenApiSchema::VISIBILE_DEFAULT;
-
     /**
-     * The openapi ref location (e.g. #/components/schemas/Model)
-     *
-     * @var string|null
+     * @param string|null $title Title of the schema
+     * @param string[] $required A list of required properties
+     * @param array $properties A mixed array of Schema and SchemaProperty
+     * @param string|null $refEntity todo: needs documentation
+     * @param array $items A list of items this Schema contains when this schema is an array.
+     * @param array $oneOf A list of $ref that this Schema is one of, e.g. [['$ref' => '#']].
+     *      See https://swagger.io/docs/specification/data-models/oneof-anyof-allof-not/
+     * @param array $anyOf A list of $ref that this Schema is any of, e.g. [['$ref' => '#']].
+     *      See https://swagger.io/docs/specification/data-models/oneof-anyof-allof-not/
+     * @param array $allOf A list of $ref that this Schema is all of, e.g. [['$ref' => '#']].
+     *      See https://swagger.io/docs/specification/data-models/oneof-anyof-allof-not/
+     * @param array $not A list of $ref that this Schema is note, e.g. [['$ref' => '#']].
+     *      See https://swagger.io/docs/specification/data-models/oneof-anyof-allof-not/
+     * @param \SwaggerBake\Lib\OpenApi\Xml|null $xml todo: needs documentation
+     * @param int $visibility See OpenApiSchema class constants
+     * @param string|null $refPath OpenAPI $ref such as #/components/schema/MyModel
+     * @param bool $isCustomSchema Denotes if this schema was added via a DTO or Response attribute.
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
-    private ?string $refPath = null;
+    public function __construct(
+        private ?string $title = null,
+        private array $required = [],
+        private array $properties = [],
+        private ?string $refEntity = null,
+        private array $items = [],
+        private array $oneOf = [],
+        private array $anyOf = [],
+        private array $allOf = [],
+        private array $not = [],
+        private ?Xml $xml = null,
+        private int $visibility = OpenApiSchema::VISIBILE_DEFAULT,
+        private ?string $refPath = null,
+        private bool $isCustomSchema = false,
+    ) {
+    }
 
     /**
      * @return array
@@ -80,7 +69,10 @@ class Schema implements JsonSerializable, SchemaInterface
         $vars = get_object_vars($this);
 
         // always unset
-        $vars = ArrayUtility::removeKeysMatching($vars, ['name','refEntity','isPublic', 'refPath','visibility']);
+        $vars = ArrayUtility::removeKeysMatching(
+            $vars,
+            ['name','refEntity','isPublic', 'refPath', 'visibility', 'isCustomSchema',]
+        );
 
         // must stay in this order to prevent https://github.com/cnizzardini/cakephp-swagger-bake/issues/30
         $vars['required'] = array_values(array_unique($vars['required']));
@@ -130,19 +122,6 @@ class Schema implements JsonSerializable, SchemaInterface
     public function getVendorProperty(string $name): mixed
     {
         return $this->{$name} ?? null;
-    }
-
-    /**
-     * Removes the vendor property
-     *
-     * @param string $name name of the attribute
-     * @return void
-     */
-    public function unsetVendorProperty(string $name): void
-    {
-        if ($this->{$name}) {
-            unset($this->{$name});
-        }
     }
 
     /**
@@ -370,18 +349,31 @@ class Schema implements JsonSerializable, SchemaInterface
 
     /**
      * @return bool
+     * @deprecated This will be removed in a future version. Use setVisibility() instead.
      */
     public function isPublic(): bool
     {
+        trigger_deprecation(
+            'cnizzardini/cakephp-swagger-bake',
+            'v2.2.3',
+            'This will be removed in a future version. Use setVisibility() instead.'
+        );
+
         return $this->isPublic;
     }
 
     /**
      * @param bool $isPublic indicates visibility
+     * @deprecated This will be removed in a future version. Use getVisibility() instead.
      * @return $this
      */
     public function setIsPublic(bool $isPublic)
     {
+        trigger_deprecation(
+            'cnizzardini/cakephp-swagger-bake',
+            'v2.2.3',
+            'This will be removed in a future version. Use setVisibility() instead.'
+        );
         $this->isPublic = $isPublic;
 
         return $this;
@@ -421,6 +413,25 @@ class Schema implements JsonSerializable, SchemaInterface
     public function setRefPath(?string $refPath)
     {
         $this->refPath = $refPath;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCustomSchema(): bool
+    {
+        return $this->isCustomSchema;
+    }
+
+    /**
+     * @param bool $isCustomSchema Is this a custom schema?
+     * @return $this
+     */
+    public function setIsCustomSchema(bool $isCustomSchema)
+    {
+        $this->isCustomSchema = $isCustomSchema;
 
         return $this;
     }

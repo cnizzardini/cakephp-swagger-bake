@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Attribute;
 
 use Attribute;
+use InvalidArgumentException;
+use SwaggerBake\Lib\OpenApi\Schema;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 class OpenApiSchema
@@ -33,7 +35,6 @@ class OpenApiSchema
      * @param int $visibility See class constants for options.
      * @param string|null $title The title of the schema
      * @param string|null $description The description of the schema
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
@@ -41,5 +42,22 @@ class OpenApiSchema
         public ?string $title = null,
         public ?string $description = null
     ) {
+        if ($this->visibility < 1 || $this->visibility > 4) {
+            throw new InvalidArgumentException(
+                'OpenApiSchema visibility must be 1 through 4. See class constants'
+            );
+        }
+    }
+
+    /**
+     * Create a Schema from this attribute instance.
+     *
+     * @return \SwaggerBake\Lib\OpenApi\Schema
+     */
+    public function createSchema(): Schema
+    {
+        return (new Schema($this->title))
+            ->setVisibility($this->visibility)
+            ->setDescription($this->description);
     }
 }
