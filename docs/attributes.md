@@ -607,7 +607,9 @@ class MyCustomResponse
 ```
 
 SwaggerBake will convert these into an OpenApi response schema for you. Note, you can use both the interface and
-attributes in your response class. Attributes take precedence over the Schema returned from `getOpenApiSchema()`.
+attributes in your response class. Attributes take precedence over the Schema returned from `getOpenApiSchema()`. By 
+default, schema will not be added to `#/components/schemas` and so will not appear in SwaggerUI's schema list. You can 
+add the `#[OpenApiSchema]` attribute to your schema class to change the default behavior.
 
 #### Associations
 
