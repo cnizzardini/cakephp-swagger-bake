@@ -109,4 +109,10 @@ class OpenApiSchemaTest extends TestCase
 
         $this->assertEquals('string', $employee['properties']['gender']['type']);
     }
+
+    public function test_openapi_schema_throws_invalid_arg_exception(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new OpenApiSchema(20);
+    }
 }
