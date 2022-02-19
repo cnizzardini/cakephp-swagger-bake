@@ -33,7 +33,7 @@ Just a reminder that many usage examples exist in the
 
 ### OpenApiDto
 
-Method level attribute for building query or form parameters from a DataTransferObject. 
+Method level attribute for building query parameters or request bodies from a DataTransferObject. 
 
 For versions v2.2.5 or higher use:
 
