@@ -56,7 +56,8 @@ class DtoParser
                 trigger_deprecation(
                     'cnizzardini/cakekphp-swagger-bake',
                     'v2.2.5',
-                    'OpenApiDtoQuery is deprecated and will be removed in v3.0.0, use OpenApiQueryParam in DTOs instead.'
+                    'OpenApiDtoQuery is deprecated and will be removed in v3.0.0, use OpenApiQueryParam in ' .
+                    'DTOs instead.'
                 );
             }
         }
