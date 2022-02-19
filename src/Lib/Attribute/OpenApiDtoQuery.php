@@ -15,6 +15,7 @@ use Attribute;
  * @see https://swagger.io/specification/ search for "Parameter Object"
  * @see https://swagger.io/docs/specification/data-models/data-types/?sbsearch=Data%20Format  search for "data format"
  * @see AbstractOpenApiParameter
+ * @deprecated This will be removed in v3.0.0
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class OpenApiDtoQuery extends AbstractOpenApiParameter
