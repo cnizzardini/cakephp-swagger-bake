@@ -12,8 +12,8 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\Operation\OperationQueryParameter;
-use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
-use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotion;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestLegacy;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotionLegacy;
 
 class OperationQueryParameterTest extends TestCase
 {
@@ -92,7 +92,7 @@ class OperationQueryParameterTest extends TestCase
                     ]),
                     $this->returnValue([
                         new ReflectionAttribute(OpenApiDto::class, [
-                            'class' => '\SwaggerBakeTest\App\Dto\EmployeeDataRequest',
+                            'class' => '\SwaggerBakeTest\App\Dto\EmployeeDataRequestLegacy',
                         ])
                     ]),
                 )
@@ -241,7 +241,7 @@ class OperationQueryParameterTest extends TestCase
 
     public function test_openapi_dto_query(): void
     {
-        foreach ([EmployeeDataRequest::class, EmployeeDataRequestConstructorPromotion::class] as $class) {
+        foreach ([EmployeeDataRequestLegacy::class, EmployeeDataRequestConstructorPromotionLegacy::class] as $class) {
             $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
             $mockReflectionMethod->expects($this->any())
                 ->method(
