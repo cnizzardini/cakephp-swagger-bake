@@ -2,29 +2,34 @@
 
 namespace SwaggerBakeTest\App\Dto;
 
-use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
-use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
+use SwaggerBake\Lib\Attribute\OpenApiDtoQuery;
+use SwaggerBake\Lib\Attribute\OpenApiDtoRequestBody;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 
-class EmployeeDataRequest
+/**
+ * @deprecated remove in v3.0.0
+ */
+#[OpenApiSchema]
+class EmployeeDataRequestPublicSchemaLegacy
 {
-    #[OpenApiSchemaProperty(name: 'first_name', description: 'testing')]
-    #[OpenApiQueryParam(name: 'first_name', description: 'testing')]
+    #[OpenApiDtoRequestBody(name: 'first_name', description: 'testing')]
+    #[OpenApiDtoQuery(name: 'first_name', description: 'testing')]
     private string $firstName;
 
-    #[OpenApiSchemaProperty(name: 'last_name', description: 'testing')]
-    #[OpenApiQueryParam(name: 'last_name', description: 'testing')]
+    #[OpenApiDtoRequestBody(name: 'last_name', description: 'testing')]
+    #[OpenApiDtoQuery(name: 'last_name', description: 'testing')]
     private string $lastName;
 
-    #[OpenApiSchemaProperty(name: 'title', description: 'testing')]
-    #[OpenApiQueryParam(name: 'title', description: 'testing')]
+    #[OpenApiDtoRequestBody(name: 'title', description: 'testing')]
+    #[OpenApiDtoQuery(name: 'title', description: 'testing')]
     private string $title;
 
-    #[OpenApiSchemaProperty(name: 'age', type: 'integer', format: 'int32', description: 'testing')]
-    #[OpenApiQueryParam(name: 'age', type: 'integer', format: 'int32', description: 'testing')]
+    #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', description: 'testing')]
+    #[OpenApiDtoQuery(name: 'age', type: 'integer', format: 'int32', description: 'testing')]
     private string $age;
 
-    #[OpenApiSchemaProperty(name: 'date', type: 'string', format: 'date', description: 'testing')]
-    #[OpenApiQueryParam(name: 'date', type: 'string', format: 'date', description: 'testing')]
+    #[OpenApiDtoRequestBody(name: 'date', type: 'string', format: 'date', description: 'testing')]
+    #[OpenApiDtoQuery(name: 'date', type: 'string', format: 'date', description: 'testing')]
     private string $date;
 
     /**

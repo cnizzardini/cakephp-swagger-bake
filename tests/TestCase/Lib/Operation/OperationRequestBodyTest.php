@@ -19,7 +19,10 @@ use SwaggerBake\Lib\Operation\OperationRequestBody;
 use SwaggerBake\Lib\Swagger;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotion;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestLegacy;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotionLegacy;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchemaLegacy;
 
 class OperationRequestBodyTest extends TestCase
 {
@@ -153,7 +156,78 @@ class OperationRequestBodyTest extends TestCase
             $this->assertEquals('object', $schema->getType());
             $this->assertTrue($schema->isCustomSchema());
 
-            if ($class == EmployeeDataRequestPublicSchema::class) {
+            if ($class == EmployeeDataRequestPublicSchemaLegacy::class) {
+                $this->assertEquals(OpenApiSchema::VISIBILE_DEFAULT, $schema->getVisibility());
+            }
+
+            $properties = $schema->getProperties();
+            $this->assertArrayHasKey('last_name', $properties, "failed for $class");
+            $this->assertArrayHasKey('first_name', $properties, "failed for $class");
+        }
+    }
+
+    /**
+     * @deprecated Remove in v3.0.0
+     */
+    public function test_openapi_dto_legacy(): void
+    {
+        $this->__setUp();
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeModels = new ModelScanner($cakeRoute, $config);
+        $swagger = new Swagger($cakeModels);
+
+        $routes = $cakeRoute->getRoutes();
+        $route = $routes['employees:add'];
+
+        $dto = [
+            EmployeeDataRequestLegacy::class,
+            EmployeeDataRequestConstructorPromotionLegacy::class,
+            EmployeeDataRequestPublicSchemaLegacy::class
+        ];
+
+        foreach ($dto as $class) {
+            $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+            $mockReflectionMethod->expects($this->any())
+                ->method(
+                    'getAttributes'
+                )
+                ->will(
+                    $this->onConsecutiveCalls(
+                        $this->returnValue([
+
+                        ]),
+                        $this->returnValue([
+
+                        ]),
+                        $this->returnValue([
+                            new ReflectionAttribute(OpenApiDto::class, [
+                                'class' => $class,
+                            ])
+                        ]),
+                        $this->returnValue([
+
+                        ]),
+                    )
+                );
+
+            $operationRequestBody = new OperationRequestBody(
+                $swagger,
+                new Operation('hello', 'post'),
+                $route,
+                $mockReflectionMethod
+            );
+
+            $operation = $operationRequestBody->getOperationWithRequestBody();
+
+            $requestBody = $operation->getRequestBody();
+            $content = $requestBody->getContentByType('application/x-www-form-urlencoded');
+
+            $schema = $content->getSchema();
+            $this->assertEquals('object', $schema->getType());
+            $this->assertTrue($schema->isCustomSchema());
+
+            if ($class == EmployeeDataRequestPublicSchemaLegacy::class) {
                 $this->assertEquals(OpenApiSchema::VISIBILE_DEFAULT, $schema->getVisibility());
             }
 

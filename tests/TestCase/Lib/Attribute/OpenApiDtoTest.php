@@ -30,7 +30,7 @@ class OpenApiDtoTest extends TestCase
         $router::scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => ['dtoPost','dtoQuery', 'dtoPublic'],
+                'only' => ['dtoPost','dtoQuery', 'dtoPublic','dtoPostLegacy','dtoQueryLegacy', 'dtoPublicLegacy'],
                 'map' => [
                     'dtoPost' => [
                         'action' => 'dtoPost',
@@ -46,6 +46,21 @@ class OpenApiDtoTest extends TestCase
                         'action' => 'dtoQuery',
                         'method' => 'GET',
                         'path' => 'dto-query'
+                    ],
+                    'dtoPostLegacy' => [
+                        'action' => 'dtoPostLegacy',
+                        'method' => 'POST',
+                        'path' => 'dto-post-legacy'
+                    ],
+                    'dtoPublicLegacy' => [
+                        'action' => 'dtoPublicLegacy',
+                        'method' => 'POST',
+                        'path' => 'dto-public-legacy'
+                    ],
+                    'dtoQueryLegacy' => [
+                        'action' => 'dtoQueryLegacy',
+                        'method' => 'GET',
+                        'path' => 'dto-query-legacy'
                     ],
                 ]
             ]);
@@ -69,56 +84,75 @@ class OpenApiDtoTest extends TestCase
         ], SWAGGER_BAKE_TEST_APP);
     }
 
+    /**
+     * @todo update in v3.0.0
+     */
     public function test_openapi_dto_query(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-
         $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
-        $operation = $arr['paths']['/employees/dto-query']['get'];
+        foreach (['dto-query', 'dto-query-legacy'] as $path) {
+            $operation = $arr['paths']['/employees/' . $path]['get'];
 
-        $this->assertEquals('first_name', $operation['parameters'][0]['name']);
-        $this->assertEquals('last_name', $operation['parameters'][1]['name']);
-        $this->assertEquals('title', $operation['parameters'][2]['name']);
-        $this->assertEquals('age', $operation['parameters'][3]['name']);
-        $this->assertEquals('date', $operation['parameters'][4]['name']);
+            $this->assertEquals('first_name', $operation['parameters'][0]['name']);
+            $this->assertEquals('last_name', $operation['parameters'][1]['name']);
+            $this->assertEquals('title', $operation['parameters'][2]['name']);
+            $this->assertEquals('age', $operation['parameters'][3]['name']);
+            $this->assertEquals('date', $operation['parameters'][4]['name']);
+        }
     }
 
+    /**
+     * @todo update in v3.0.0
+     */
     public function test_openapi_dto_post(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-
         $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
-        $operation = $arr['paths']['/employees/dto-post']['post'];
-        $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
+        foreach (['dto-post' ,'dto-post-legacy'] as $route) {
+            $operation = $arr['paths']['/employees/' . $route]['post'];
+            $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
 
-        $this->assertArrayHasKey('last_name', $properties);
-        $this->assertArrayHasKey('first_name', $properties);
-        $this->assertArrayHasKey('title', $properties);
-        $this->assertArrayHasKey('age', $properties);
-        $this->assertArrayHasKey('date', $properties);
+            $this->assertArrayHasKey('last_name', $properties);
+            $this->assertArrayHasKey('first_name', $properties);
+            $this->assertArrayHasKey('title', $properties);
+            $this->assertArrayHasKey('age', $properties);
+            $this->assertArrayHasKey('date', $properties);
+        }
     }
 
+    /**
+     * @deprecated remove in v3.0.0
+     */
     public function test_openapi_dto_post_with_public_schema(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-
         $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
-        $this->assertArrayHasKey('EmployeeDataRequestPublicSchema', $arr['components']['schemas']);
 
-        $properties = $arr['components']['schemas']['EmployeeDataRequestPublicSchema']['properties'];
-        $this->assertArrayHasKey('last_name', $properties);
-        $this->assertArrayHasKey('first_name', $properties);
-        $this->assertArrayHasKey('title', $properties);
-        $this->assertArrayHasKey('age', $properties);
-        $this->assertArrayHasKey('date', $properties);
+        $parameterized = [
+            'dto-public' => 'EmployeeDataRequestPublicSchema',
+            'dto-public-legacy' => 'EmployeeDataRequestPublicSchemaLegacy'
+        ];
 
-        $operation = $arr['paths']['/employees/dto-public']['post'];
-        $ref = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['$ref'];
-        $this->assertEquals('#/components/schemas/EmployeeDataRequestPublicSchema', $ref);
+        foreach ($parameterized as $path => $class) {
+            $this->assertArrayHasKey($class, $arr['components']['schemas']);
+
+            $properties = $arr['components']['schemas'][$class]['properties'];
+            $this->assertArrayHasKey('last_name', $properties);
+            $this->assertArrayHasKey('first_name', $properties);
+            $this->assertArrayHasKey('title', $properties);
+            $this->assertArrayHasKey('age', $properties);
+            $this->assertArrayHasKey('date', $properties);
+
+            $operation = $arr['paths']['/employees/' . $path]['post'];
+            $ref = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['$ref'];
+            $this->assertEquals('#/components/schemas/' . $class, $ref);
+        }
     }
+
 }

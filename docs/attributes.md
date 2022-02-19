@@ -12,30 +12,39 @@ Just a reminder that many usage examples exist in the
 
 ## Table of Contents
 
-| Attribute                                       | Usage              | Description                                                               | 
-|-------------------------------------------------|--------------------|---------------------------------------------------------------------------|
-| [OpenApiDto](#OpenApiDto)                       | Controller Action  | Builds OpenAPI query params and request bodies from Data Transfer Objects |
-| [OpenApiDtoQuery](#OpenApiDtoQuery)             | DTO class property | Builds OpenAPI query param from Data Transfer Objects                     |
-| [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) | DTO class property | Builds OpenAPI request body property from Data Transfer Objects           |
-| [OpenApiForm](#OpenApiForm)                     | Controller Action  | Builds OpenAPI for application/x-www-form-urlencoded request bodies       |
-| [OpenApiHeader](#OpenApiHeader)                 | Controller Action  | Create OpenAPI header parameters                                          |
-| [OpenApiOperation](#OpenApiOperation)           | Controller Action  | Modifies OpenAPI operation                                                |
-| [OpenApiPaginator](#OpenApiPaginator)           | Controller Action  | Create OpenAPI query params from CakePHP Paginator Component              |
-| [OpenApiPath](#OpenApiPath)                     | Controller         | Modifies OpenAPI paths                                                    |
-| [OpenApiPathParam](#OpenApiPathParam)           | Controller Action  | Modify an existing OpenAPI path parameter                                 |
-| [OpenApiQueryParam](#OpenApiQueryParam)         | Controller Action  | Builds OpenAPI query param                                                |
-| [OpenApiRequestBody](#OpenApiRequestBody)       | Controller Action  | Modify OpenAPI request body                                               |
-| [OpenApiResponse](#OpenApiResponse)             | Controller Action  | Modify OpenAPI response                                                   |
-| [OpenApiSchema](#OpenApiSchema)                 | Entity             | Modifies OpenAPI schema                                                   |
-| [OpenApiSchemaProperty](#OpenApiSchemaProperty) | Entity or Class    | Modifies an OpenAPI schema property or defines OpenApiResponse schema     |
-| [OpenApiSearch](#OpenApiSearch)                 | Controller Action  | Create OpenAPI query params from CakePHP Search plugin                    |
-| [OpenApiSecurity](#OpenApiSecurity)             | Controller Action  | Create/modify OpenAPI security                                            |
+| Attribute                                           | Usage                                               | Description                                                                                                                 | 
+|-----------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| [OpenApiDto](#OpenApiDto)                           | Controller Action                                   | Builds OpenAPI query params and request bodies from Data Transfer Objects                                                   |
+| [OpenApiForm](#OpenApiForm)                         | Controller Action                                   | Builds OpenAPI for application/x-www-form-urlencoded request bodies                                                         |
+| [OpenApiHeader](#OpenApiHeader)                     | Controller Action                                   | Create OpenAPI header parameters                                                                                            |
+| [OpenApiOperation](#OpenApiOperation)               | Controller Action                                   | Modifies OpenAPI operation                                                                                                  |
+| [OpenApiPaginator](#OpenApiPaginator)               | Controller Action                                   | Create OpenAPI query params from CakePHP Paginator Component                                                                |
+| [OpenApiPath](#OpenApiPath)                         | Controller                                          | Modifies OpenAPI paths                                                                                                      |
+| [OpenApiPathParam](#OpenApiPathParam)               | Controller Action                                   | Modify an existing OpenAPI path parameter                                                                                   |
+| [OpenApiQueryParam](#OpenApiQueryParam)             | Controller Action                                   | Builds OpenAPI query param                                                                                                  |
+| [OpenApiRequestBody](#OpenApiRequestBody)           | Controller Action                                   | Modify OpenAPI request body                                                                                                 |
+| [OpenApiResponse](#OpenApiResponse)                 | Controller Action                                   | Modify OpenAPI response                                                                                                     |
+| [OpenApiSchema](#OpenApiSchema)                     | Entity, OpenApiDto class, or OpenApiResponse schema | Modifies OpenAPI schema                                                                                                     |
+| [OpenApiSchemaProperty](#OpenApiSchemaProperty)     | Entity, OpenApiDto class, or OpenApiResponse schema | Modifies an OpenAPI schema property or defines OpenApiResponse schema                                                       |
+| [OpenApiSearch](#OpenApiSearch)                     | Controller Action                                   | Create OpenAPI query params from CakePHP Search plugin                                                                      |
+| [OpenApiSecurity](#OpenApiSecurity)                 | Controller Action                                   | Create/modify OpenAPI security                                                                                              |
+| [~~OpenApiDtoQuery~~](#OpenApiDtoQuery)             | DTO class property                                  | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.4+)                        |
+| [~~OpenApiDtoRequestBody~~](#OpenApiDtoRequestBody) | DTO class property                                  | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.4+)          |
 
 ### OpenApiDto
 
-Method level attribute for building query or form parameters from a DataTransferObject. Your DTO will need to use
-the [OpenApiDtoQuery](#OpenApiDtoQuery) or [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) on its properties depending
-on the request type.
+Method level attribute for building query or form parameters from a DataTransferObject. 
+
+For versions v2.2.4 or higher use:
+
+Your DTO will need to use the [OpenApiQueryParam](#OpenApiQueryParam) or [OpenApiSchemaProperty](#OpenApiSchemaProperty) 
+on its properties depending on the request type. The OpenApiDtoQuery and OpenApiDtoRequestBody attributes are marked 
+deprecated and will be removed in v3.0.0 which will be released for CakePHP 5.
+
+For versions v2.2.3 or lower:
+
+Your DTO will need to use the [OpenApiDtoQuery](#OpenApiDtoQuery) or [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) on 
+its properties depending on the request type.
 
 | Property   | Type / Default | OA Spec | Description                     | 
 |------------|----------------|---------|---------------------------------|
@@ -44,143 +53,8 @@ on the request type.
 Example:
 
 ```php
-#[OpenApiDto(class: '\App\Dto\ActorDto')]
+#[OpenApiDto(class: ActorDto::class)]
 public function index() {}
-```
-
-### OpenApiDtoQuery
-
-Property or parameter level attribute for use in your DTO classes.
-
-| Property        | Type / Default  | OA Spec | Description                                                                      |
-|-----------------|-----------------|---------|----------------------------------------------------------------------------------|
-| name            | string `""`     | Y       | Name of the query parameter, required if ref is not set                          |
-| ref             | string `""`     | Y       | An OpenApi `$ref`, required if name is not set                                   |
-| type            | string `string` | Y       | The scalar data type                                                             |
-| format          | string `""`     | Y       | A data format describing the scalar type such as `date-time`, `uuid`, or `int64` |
-| description     | string `""`     | Y       | Description of the parameter                                                     |
-| example         | mixed `""`      | Y       | An example value                                                                 |
-| allowReserved   | bool `false`    | Y       | Allow reserved URI characters?                                                   |
-| explode         | bool `false`    | Y       | See http://spec.openapis.org/oas/v3.0.3#fixed-fields-9                           |
-| isRequired      | bool `false`    | Y       | Is this parameter required?                                                      |
-| isDeprecated    | bool `false`    | Y       | Is this parameter deprecated?                                                    |
-| allowEmptyValue | bool `false`    | Y       | Allow empty values?                                                              |
-| enum            | array `[]`      | Y       | An enumerated list of accepted values                                            |
-| style           | string `""`     | Y       | See https://spec.openapis.org/oas/v3.0.3#parameterStyle                          |
-
-Example:
-
-```php
-class ActorDto {
-    #[OpenApiDtoQuery(name: 'genre', isRequired: true, enum: ['action','horror'])]
-    private string $genre;
-```
-
-Example with constructor property promotion:
-
-```php
-class ActorDto {
-    public function __construct(
-        #[OpenApiDtoQuery(name: 'genre', isRequired: true, enum: ['action','horror'])]
-        private string $genre
-    ) {
-    }
-```
-
-OpenAPI:
-
-```yaml
-    get:
-      parameters:
-        - in: query
-          name: genre
-          required: true
-          schema:
-            type: string
-            enum:
-              - action
-              - horror
-```
-
-### OpenApiDtoRequestBody
-
-Property or parameter level attribute for use in your DTO classes. See the OpenAPI documentation on
-[schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail. By default, OpenApiDtoRequestBody 
-will not be added to `#/components/schemas` and so will not appear in SwaggerUI's schema list. You can add the 
-`#[OpenApiSchema]` attribute to your DTO class to change the default behavior.
-
-| Attribute          | Type / Default    | OA Spec? | Description                                                                                            |
-|--------------------|-------------------|----------|--------------------------------------------------------------------------------------------------------|
-| name               | string            | N        | Required. Name of the schema property                                                                  |
-| type               | string `"string"` | Y        | Date type such as integer, string, array etc...                                                        |
-| format             | ?string `null`    | Y        | Date format such as int32, date-time, etc...                                                           |
-| title              | ?string `null`    | Y        | Title of the property                                                                                  |
-| description        | ?string `null`    | Y        | Description of the property                                                                            |
-| example            | mixed `null`      | Y        | An example value                                                                                       |
-| isReadOnly         | bool `false`      | Y        | Is the property read only?                                                                             |
-| isWriteOnly        | bool `false`      | Y        | Is the property write only?                                                                            |
-| isRequired         | bool `false`      | Y        | Is the property required?                                                                              |
-| default            | mixed `null`      | Y        | A default value                                                                                        |
-| isNullable         | bool `false`      | Y        | Can the value be null?                                                                                 |
-| isDeprecated       | bool `false`      | Y        | Is the property deprecated?                                                                            |
-| multipleOf         | ?float `null`     | Y        | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum            | ?float `null`     | Y        | The minimum allowed numeric value                                                                      |
-| isExclusiveMinimum | bool `false`      | Y        | Is the `minimum` value excluded from the range.                                                        |
-| maximum            | ?float `null`     | Y        | The maximum allowed numeric value                                                                      |
-| isExclusiveMaximum | bool `false`      | Y        | Is the `maximum` value excluded from the range.                                                        |
-| minLength          | ?integer  `null`  | Y        | The minimum length of a string                                                                         |
-| maxLength          | ?integer `null`   | Y        | The maximum length of a string                                                                         |
-| pattern            | ?string `null`    | Y        | A regex pattern the value must follow                                                                  |
-| minItems           | ?integer `null`   | Y        | The minimum items allowed in a list                                                                    |
-| maxItems           | ?integer `null`   | Y        | The maximum items allowed in a list                                                                    |
-| hasUniqueItems     | bool `false`      | Y        | The list must contain unique items                                                                     |
-| minProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
-| maxProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
-| enum               | array `[]`        | Y        | An enumerated list of of options for the value                                                         |
-
-Example:
-
-```php
-class ActorDto {
-    #[OpenApiDtoRequestBody(name: 'name', isRequired: true)]
-    private string $name;
-    #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum: 1, maximum: 100)]
-    private int $age;
-```
-
-Example with constructor property promotion:
-
-```php
-class ActorDto {
-    public function __construct(
-        #[OpenApiDtoRequestBody(name: 'name', isRequired: true)]
-        public string $name,
-        #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum: 1, maximum: 100)]
-        private int $age
-    ) {
-    }
-```
-
-OpenAPI:
-
-```yaml
-    post:
-      operationId: examples:dtorequestbodyexample:post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              required:
-                - name
-                - age
-              properties:
-                name:
-                  type: string
-                age:
-                  type: integer
-                  format: int32
-                  minimum: 1
-                  maximum: 100
 ```
 
 ### OpenApiForm
@@ -822,4 +696,143 @@ should match what is defined in your YAML [Security Scheme Object](https://spec.
 #[OpenApiSecurity(name: 'BearerAuth', scopes: ['read'])]
 #[OpenApiSecurity(name: 'ApiKey')]
 public function index(){}
+```
+
+### OpenApiDtoQuery
+
+Note: This has been marked for deprecation, use OpenApiQueryParam instead in your DTOs in v2.4.4 or greater.
+
+Property or parameter level attribute for use in your DTO classes.
+
+| Property        | Type / Default  | OA Spec | Description                                                                      |
+|-----------------|-----------------|---------|----------------------------------------------------------------------------------|
+| name            | string `""`     | Y       | Name of the query parameter, required if ref is not set                          |
+| ref             | string `""`     | Y       | An OpenApi `$ref`, required if name is not set                                   |
+| type            | string `string` | Y       | The scalar data type                                                             |
+| format          | string `""`     | Y       | A data format describing the scalar type such as `date-time`, `uuid`, or `int64` |
+| description     | string `""`     | Y       | Description of the parameter                                                     |
+| example         | mixed `""`      | Y       | An example value                                                                 |
+| allowReserved   | bool `false`    | Y       | Allow reserved URI characters?                                                   |
+| explode         | bool `false`    | Y       | See http://spec.openapis.org/oas/v3.0.3#fixed-fields-9                           |
+| isRequired      | bool `false`    | Y       | Is this parameter required?                                                      |
+| isDeprecated    | bool `false`    | Y       | Is this parameter deprecated?                                                    |
+| allowEmptyValue | bool `false`    | Y       | Allow empty values?                                                              |
+| enum            | array `[]`      | Y       | An enumerated list of accepted values                                            |
+| style           | string `""`     | Y       | See https://spec.openapis.org/oas/v3.0.3#parameterStyle                          |
+
+Example:
+
+```php
+class ActorDto {
+    #[OpenApiDtoQuery(name: 'genre', isRequired: true, enum: ['action','horror'])]
+    private string $genre;
+```
+
+Example with constructor property promotion:
+
+```php
+class ActorDto {
+    public function __construct(
+        #[OpenApiDtoQuery(name: 'genre', isRequired: true, enum: ['action','horror'])]
+        private string $genre
+    ) {
+    }
+```
+
+OpenAPI:
+
+```yaml
+    get:
+      parameters:
+        - in: query
+          name: genre
+          required: true
+          schema:
+            type: string
+            enum:
+              - action
+              - horror
+```
+
+### OpenApiDtoRequestBody
+
+Note: This has been marked for deprecation, use OpenApiSchemaProperty instead in your DTOs in v2.4.4 or greater.
+
+Property or parameter level attribute for use in your DTO classes. See the OpenAPI documentation on
+[schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail. By default, OpenApiDtoRequestBody
+will not be added to `#/components/schemas` and so will not appear in SwaggerUI's schema list. You can add the
+`#[OpenApiSchema]` attribute to your DTO class to change the default behavior.
+
+| Attribute          | Type / Default    | OA Spec? | Description                                                                                            |
+|--------------------|-------------------|----------|--------------------------------------------------------------------------------------------------------|
+| name               | string            | N        | Required. Name of the schema property                                                                  |
+| type               | string `"string"` | Y        | Date type such as integer, string, array etc...                                                        |
+| format             | ?string `null`    | Y        | Date format such as int32, date-time, etc...                                                           |
+| title              | ?string `null`    | Y        | Title of the property                                                                                  |
+| description        | ?string `null`    | Y        | Description of the property                                                                            |
+| example            | mixed `null`      | Y        | An example value                                                                                       |
+| isReadOnly         | bool `false`      | Y        | Is the property read only?                                                                             |
+| isWriteOnly        | bool `false`      | Y        | Is the property write only?                                                                            |
+| isRequired         | bool `false`      | Y        | Is the property required?                                                                              |
+| default            | mixed `null`      | Y        | A default value                                                                                        |
+| isNullable         | bool `false`      | Y        | Can the value be null?                                                                                 |
+| isDeprecated       | bool `false`      | Y        | Is the property deprecated?                                                                            |
+| multipleOf         | ?float `null`     | Y        | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
+| minimum            | ?float `null`     | Y        | The minimum allowed numeric value                                                                      |
+| isExclusiveMinimum | bool `false`      | Y        | Is the `minimum` value excluded from the range.                                                        |
+| maximum            | ?float `null`     | Y        | The maximum allowed numeric value                                                                      |
+| isExclusiveMaximum | bool `false`      | Y        | Is the `maximum` value excluded from the range.                                                        |
+| minLength          | ?integer  `null`  | Y        | The minimum length of a string                                                                         |
+| maxLength          | ?integer `null`   | Y        | The maximum length of a string                                                                         |
+| pattern            | ?string `null`    | Y        | A regex pattern the value must follow                                                                  |
+| minItems           | ?integer `null`   | Y        | The minimum items allowed in a list                                                                    |
+| maxItems           | ?integer `null`   | Y        | The maximum items allowed in a list                                                                    |
+| hasUniqueItems     | bool `false`      | Y        | The list must contain unique items                                                                     |
+| minProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
+| maxProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
+| enum               | array `[]`        | Y        | An enumerated list of of options for the value                                                         |
+
+Example:
+
+```php
+class ActorDto {
+    #[OpenApiDtoRequestBody(name: 'name', isRequired: true)]
+    private string $name;
+    #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum: 1, maximum: 100)]
+    private int $age;
+```
+
+Example with constructor property promotion:
+
+```php
+class ActorDto {
+    public function __construct(
+        #[OpenApiDtoRequestBody(name: 'name', isRequired: true)]
+        public string $name,
+        #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum: 1, maximum: 100)]
+        private int $age
+    ) {
+    }
+```
+
+OpenAPI:
+
+```yaml
+    post:
+      operationId: examples:dtorequestbodyexample:post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - age
+              properties:
+                name:
+                  type: string
+                age:
+                  type: integer
+                  format: int32
+                  minimum: 1
+                  maximum: 100
 ```

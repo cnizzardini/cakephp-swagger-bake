@@ -2,31 +2,31 @@
 
 namespace SwaggerBakeTest\App\Dto;
 
-use SwaggerBake\Lib\Attribute\OpenApiDtoQuery;
-use SwaggerBake\Lib\Attribute\OpenApiDtoRequestBody;
+use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
+use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 
 #[OpenApiSchema]
 class EmployeeDataRequestPublicSchema
 {
-    #[OpenApiDtoRequestBody(name: 'first_name', description: 'testing')]
-    #[OpenApiDtoQuery(name: 'first_name', description: 'testing')]
+    #[OpenApiSchemaProperty(name: 'first_name', description: 'testing')]
+    #[OpenApiQueryParam(name: 'first_name', description: 'testing')]
     private string $firstName;
 
-    #[OpenApiDtoRequestBody(name: 'last_name', description: 'testing')]
-    #[OpenApiDtoQuery(name: 'last_name', description: 'testing')]
+    #[OpenApiSchemaProperty(name: 'last_name', description: 'testing')]
+    #[OpenApiQueryParam(name: 'last_name', description: 'testing')]
     private string $lastName;
 
-    #[OpenApiDtoRequestBody(name: 'title', description: 'testing')]
-    #[OpenApiDtoQuery(name: 'title', description: 'testing')]
+    #[OpenApiSchemaProperty(name: 'title', description: 'testing')]
+    #[OpenApiQueryParam(name: 'title', description: 'testing')]
     private string $title;
 
-    #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', description: 'testing')]
-    #[OpenApiDtoQuery(name: 'age', type: 'integer', format: 'int32', description: 'testing')]
+    #[OpenApiSchemaProperty(name: 'age', type: 'integer', format: 'int32', description: 'testing')]
+    #[OpenApiQueryParam(name: 'age', type: 'integer', format: 'int32', description: 'testing')]
     private string $age;
 
-    #[OpenApiDtoRequestBody(name: 'date', type: 'string', format: 'date', description: 'testing')]
-    #[OpenApiDtoQuery(name: 'date', type: 'string', format: 'date', description: 'testing')]
+    #[OpenApiSchemaProperty(name: 'date', type: 'string', format: 'date', description: 'testing')]
+    #[OpenApiQueryParam(name: 'date', type: 'string', format: 'date', description: 'testing')]
     private string $date;
 
     /**
@@ -39,9 +39,9 @@ class EmployeeDataRequestPublicSchema
 
     /**
      * @param string $firstName
-     * @return EmployeeDataRequest
+     * @return EmployeeDataRequestLegacy
      */
-    public function setFirstName(string $firstName): EmployeeDataRequest
+    public function setFirstName(string $firstName): EmployeeDataRequestLegacy
     {
         $this->firstName = $firstName;
         return $this;
@@ -57,9 +57,9 @@ class EmployeeDataRequestPublicSchema
 
     /**
      * @param string $lastName
-     * @return EmployeeDataRequest
+     * @return EmployeeDataRequestLegacy
      */
-    public function setLastName(string $lastName): EmployeeDataRequest
+    public function setLastName(string $lastName): EmployeeDataRequestLegacy
     {
         $this->lastName = $lastName;
         return $this;
@@ -75,7 +75,7 @@ class EmployeeDataRequestPublicSchema
 
     /**
      * @param mixed $title
-     * @return EmployeeDataRequest
+     * @return EmployeeDataRequestLegacy
      */
     public function setTitle($title)
     {
@@ -93,7 +93,7 @@ class EmployeeDataRequestPublicSchema
 
     /**
      * @param mixed $age
-     * @return EmployeeDataRequest
+     * @return EmployeeDataRequestLegacy
      */
     public function setAge($age)
     {
@@ -111,7 +111,7 @@ class EmployeeDataRequestPublicSchema
 
     /**
      * @param mixed $date
-     * @return EmployeeDataRequest
+     * @return EmployeeDataRequestLegacy
      */
     public function setDate($date)
     {
