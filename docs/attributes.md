@@ -28,20 +28,20 @@ Just a reminder that many usage examples exist in the
 | [OpenApiSchemaProperty](#OpenApiSchemaProperty)     | Entity, OpenApiDto class, or OpenApiResponse schema | Modifies an OpenAPI schema property or defines OpenApiResponse schema                                                       |
 | [OpenApiSearch](#OpenApiSearch)                     | Controller Action                                   | Create OpenAPI query params from CakePHP Search plugin                                                                      |
 | [OpenApiSecurity](#OpenApiSecurity)                 | Controller Action                                   | Create/modify OpenAPI security                                                                                              |
-| [~~OpenApiDtoQuery~~](#OpenApiDtoQuery)             | DTO class property                                  | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.4+)                        |
-| [~~OpenApiDtoRequestBody~~](#OpenApiDtoRequestBody) | DTO class property                                  | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.4+)          |
+| [~~OpenApiDtoQuery~~](#OpenApiDtoQuery)             | DTO class property                                  | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.5+)                        |
+| [~~OpenApiDtoRequestBody~~](#OpenApiDtoRequestBody) | DTO class property                                  | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.5+)          |
 
 ### OpenApiDto
 
 Method level attribute for building query or form parameters from a DataTransferObject. 
 
-For versions v2.2.4 or higher use:
+For versions v2.2.5 or higher use:
 
 Your DTO will need to use the [OpenApiQueryParam](#OpenApiQueryParam) or [OpenApiSchemaProperty](#OpenApiSchemaProperty) 
 on its properties depending on the request type. The OpenApiDtoQuery and OpenApiDtoRequestBody attributes are marked 
 deprecated and will be removed in v3.0.0 which will be released for CakePHP 5.
 
-For versions v2.2.3 or lower:
+For versions v2.2.4 or lower:
 
 Your DTO will need to use the [OpenApiDtoQuery](#OpenApiDtoQuery) or [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) on 
 its properties depending on the request type.
