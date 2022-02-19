@@ -171,22 +171,22 @@ may be used. These can be imported individually from the
 
 | Attribute                                           | Usage              | Description                                                                                                        | 
 |-----------------------------------------------------|--------------------|--------------------------------------------------------------------------------------------------------------------|
-| [OpenApiDto](#OpenApiDto)                           | Controller Action  | Builds OpenAPI query params and request bodies from Data Transfer Objects                                          |
-| [OpenApiForm](#OpenApiForm)                         | Controller Action  | Builds OpenAPI for application/x-www-form-urlencoded request bodies                                                |
-| [OpenApiHeader](#OpenApiHeader)                     | Controller Action  | Create OpenAPI header parameters                                                                                   |
-| [OpenApiOperation](#OpenApiOperation)               | Controller Action  | Modifies OpenAPI operation                                                                                         |
-| [OpenApiPaginator](#OpenApiPaginator)               | Controller Action  | Create OpenAPI query params from CakePHP Paginator Component                                                       |
-| [OpenApiPath](#OpenApiPath)                         | Controller         | Modifies OpenAPI paths                                                                                             |
-| [OpenApiPathParam](#OpenApiPathParam)               | Controller Action  | Modify an existing OpenAPI path parameter                                                                          |
-| [OpenApiQueryParam](#OpenApiQueryParam)             | Controller Action  | Builds OpenAPI query param                                                                                         |
-| [OpenApiRequestBody](#OpenApiRequestBody)           | Controller Action  | Modify OpenAPI request body                                                                                        |
-| [OpenApiResponse](#OpenApiResponse)                 | Controller Action  | Modify OpenAPI response                                                                                            |
-| [OpenApiSchema](#OpenApiSchema)                     | Entity             | Modifies OpenAPI schema                                                                                            |
-| [OpenApiSchemaProperty](#OpenApiSchemaProperty)     | Entity or Class    | Modifies an OpenAPI schema property or defines OpenApiResponse schema                                              |
-| [OpenApiSearch](#OpenApiSearch)                     | Controller Action  | Create OpenAPI query params from CakePHP Search plugin                                                             |
-| [OpenApiSecurity](#OpenApiSecurity)                 | Controller Action  | Create/modify OpenAPI security                                                                                     |
-| [~~OpenApiDtoQuery~~](#OpenApiDtoQuery)             | DTO class property | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.5+)               |
-| [~~OpenApiDtoRequestBody~~](#OpenApiDtoRequestBody) | DTO class property | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.5+) |
+| [OpenApiDto](docs/annotations.md#OpenApiDto)                           | Controller Action  | Builds OpenAPI query params and request bodies from Data Transfer Objects                                          |
+| [OpenApiForm](docs/annotations.md#OpenApiForm)                         | Controller Action  | Builds OpenAPI for application/x-www-form-urlencoded request bodies                                                |
+| [OpenApiHeader](docs/annotations.md#OpenApiHeader)                     | Controller Action  | Create OpenAPI header parameters                                                                                   |
+| [OpenApiOperation](docs/annotations.md#OpenApiOperation)               | Controller Action  | Modifies OpenAPI operation                                                                                         |
+| [OpenApiPaginator](docs/annotations.md#OpenApiPaginator)               | Controller Action  | Create OpenAPI query params from CakePHP Paginator Component                                                       |
+| [OpenApiPath](docs/annotations.md#OpenApiPath)                         | Controller         | Modifies OpenAPI paths                                                                                             |
+| [OpenApiPathParam](docs/annotations.md#OpenApiPathParam)               | Controller Action  | Modify an existing OpenAPI path parameter                                                                          |
+| [OpenApiQueryParam](docs/annotations.md#OpenApiQueryParam)             | Controller Action  | Builds OpenAPI query param                                                                                         |
+| [OpenApiRequestBody](docs/annotations.md#OpenApiRequestBody)           | Controller Action  | Modify OpenAPI request body                                                                                        |
+| [OpenApiResponse](docs/annotations.md#OpenApiResponse)                 | Controller Action  | Modify OpenAPI response                                                                                            |
+| [OpenApiSchema](docs/annotations.md#OpenApiSchema)                     | Entity             | Modifies OpenAPI schema                                                                                            |
+| [OpenApiSchemaProperty](docs/annotations.md#OpenApiSchemaProperty)     | Entity or Class    | Modifies an OpenAPI schema property or defines OpenApiResponse schema                                              |
+| [OpenApiSearch](docs/annotations.md#OpenApiSearch)                     | Controller Action  | Create OpenAPI query params from CakePHP Search plugin                                                             |
+| [OpenApiSecurity](docs/annotations.md#OpenApiSecurity)                 | Controller Action  | Create/modify OpenAPI security                                                                                     |
+| [~~OpenApiDtoQuery~~](docs/annotations.md#OpenApiDtoQuery)             | DTO class property | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.5+)               |
+| [~~OpenApiDtoRequestBody~~](docs/annotations.md#OpenApiDtoRequestBody) | DTO class property | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.5+) |
 
 ## Event System
 
