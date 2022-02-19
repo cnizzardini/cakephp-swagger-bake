@@ -312,7 +312,7 @@ OpenAPI:
 
 ### OpenApiQueryParam
 
-Method level attribute for adding query parameters.
+Attribute for adding query parameters which can be applied as a method attribute on controller actions and a class or property attribute on DTOs.
 
 | Property        | Type / Default            | OA Spec | Description                                                                            | 
 |-----------------|---------------------------|---------|----------------------------------------------------------------------------------------|
