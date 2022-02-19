@@ -185,8 +185,8 @@ may be used. These can be imported individually from the
 | [OpenApiSchemaProperty](#OpenApiSchemaProperty)     | Entity or Class    | Modifies an OpenAPI schema property or defines OpenApiResponse schema                                              |
 | [OpenApiSearch](#OpenApiSearch)                     | Controller Action  | Create OpenAPI query params from CakePHP Search plugin                                                             |
 | [OpenApiSecurity](#OpenApiSecurity)                 | Controller Action  | Create/modify OpenAPI security                                                                                     |
-| [~~OpenApiDtoQuery~~](#OpenApiDtoQuery)             | DTO class property | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.4+)               |
-| [~~OpenApiDtoRequestBody~~](#OpenApiDtoRequestBody) | DTO class property | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.4+) |
+| [~~OpenApiDtoQuery~~](#OpenApiDtoQuery)             | DTO class property | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.5+)               |
+| [~~OpenApiDtoRequestBody~~](#OpenApiDtoRequestBody) | DTO class property | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.5+) |
 
 ## Event System
 
