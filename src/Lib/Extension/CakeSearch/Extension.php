@@ -7,6 +7,7 @@ use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\Table;
+use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
@@ -54,8 +55,11 @@ class Extension implements ExtensionInterface
         /** @var \SwaggerBake\Lib\OpenApi\Operation $operation */
         $operation = $event->getSubject();
 
-        /** @var \ReflectionMethod $refMethod */
+        /** @var ReflectionMethod $refMethod */
         $refMethod = $event->getData('reflectionMethod');
+        if (!$refMethod instanceof ReflectionMethod) {
+            return $operation;
+        }
 
         $openApiSearch = (new AttributeFactory($refMethod, OpenApiSearch::class))->createOneOrNull();
         if (!$openApiSearch instanceof OpenApiSearch) {
