@@ -30,12 +30,17 @@ class OpenApiDtoTest extends TestCase
         $router::scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => ['dtoPost','dtoQuery'],
+                'only' => ['dtoPost','dtoQuery', 'dtoPublic'],
                 'map' => [
                     'dtoPost' => [
                         'action' => 'dtoPost',
                         'method' => 'POST',
                         'path' => 'dto-post'
+                    ],
+                    'dtoPublic' => [
+                        'action' => 'dtoPublic',
+                        'method' => 'POST',
+                        'path' => 'dto-public'
                     ],
                     'dtoQuery' => [
                         'action' => 'dtoQuery',
@@ -64,7 +69,7 @@ class OpenApiDtoTest extends TestCase
         ], SWAGGER_BAKE_TEST_APP);
     }
 
-    public function test_swag_dto_query(): void
+    public function test_openapi_dto_query(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
@@ -80,7 +85,7 @@ class OpenApiDtoTest extends TestCase
         $this->assertEquals('date', $operation['parameters'][4]['name']);
     }
 
-    public function test_swag_dto_post(): void
+    public function test_openapi_dto_post(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
@@ -95,5 +100,25 @@ class OpenApiDtoTest extends TestCase
         $this->assertArrayHasKey('title', $properties);
         $this->assertArrayHasKey('age', $properties);
         $this->assertArrayHasKey('date', $properties);
+    }
+
+    public function test_openapi_dto_post_with_public_schema(): void
+    {
+        $cakeRoute = new RouteScanner($this->router, $this->config);
+
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
+        $arr = json_decode($swagger->toString(), true);
+        $this->assertArrayHasKey('EmployeeDataRequestPublicSchema', $arr['components']['schemas']);
+
+        $properties = $arr['components']['schemas']['EmployeeDataRequestPublicSchema']['properties'];
+        $this->assertArrayHasKey('last_name', $properties);
+        $this->assertArrayHasKey('first_name', $properties);
+        $this->assertArrayHasKey('title', $properties);
+        $this->assertArrayHasKey('age', $properties);
+        $this->assertArrayHasKey('date', $properties);
+
+        $operation = $arr['paths']['/employees/dto-public']['post'];
+        $ref = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['$ref'];
+        $this->assertEquals('#/components/schemas/EmployeeDataRequestPublicSchema', $ref);
     }
 }

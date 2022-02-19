@@ -7,6 +7,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\MediaType\Generic;
@@ -140,15 +141,33 @@ class OperationResponse
     {
         if ($openApiResponse->schema) {
             $reflection = new ReflectionClass($openApiResponse->schema);
-            if ($openApiResponse->schemaType == 'array') {
-                $baseSchema = new Schema();
-            }
+            // check if the DTO contains the OpenApiSchema attribute
+            $openApiSchema = (new AttributeFactory(
+                $reflection,
+                OpenApiSchema::class
+            ))->createOneOrNull();
 
             if ($reflection->implementsInterface(CustomSchemaInterface::class)) {
+                /** @var \SwaggerBake\Lib\OpenApi\Schema $schema */
                 $schema = $openApiResponse->schema::getOpenApiSchema();
+                if ($openApiSchema instanceof OpenApiSchema) {
+                    $schema->setVisibility($openApiSchema->visibility);
+                } else {
+                    $schema->setVisibility(OpenApiSchema::VISIBILE_NEVER);
+                }
             } else {
-                $schema = new Schema();
+                // add schema to #/components/schemas ?
+                if ($openApiSchema instanceof OpenApiSchema) {
+                    $schema = $openApiSchema->createSchema();
+                } else {
+                    $schema = (new Schema())->setVisibility(OpenApiSchema::VISIBILE_NEVER);
+                }
+                $schema
+                    ->setName($reflection->getShortName())
+                    ->setType($openApiResponse->schemaType);
             }
+
+            $schema->setIsCustomSchema(true);
 
             // class level attributes
             $schemaProperties = (new AttributeFactory(
@@ -169,13 +188,6 @@ class OperationResponse
                 if ($schemaProperty instanceof OpenApiSchemaProperty) {
                     $schema->pushProperty($schemaProperty->create());
                 }
-            }
-
-            if (isset($baseSchema)) {
-                $schema = $baseSchema->setItems([
-                    'type' => 'object',
-                    'properties' => $schema->getProperties(),
-                ]);
             }
 
             $response->pushContent(new Content($mimeType, $schema));

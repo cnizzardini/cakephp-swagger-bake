@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
+use ReflectionClass;
 use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiDto;
 use SwaggerBake\Lib\Attribute\OpenApiForm;
 use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -152,16 +154,34 @@ class OperationRequestBody
             return;
         }
 
-        $requestBody = new RequestBody();
-        $schema = (new Schema())->setType('object');
+        // check if the DTO contains the OpenApiSchema attribute
+        $dtoReflection = new ReflectionClass($openApiDto->class);
+        $openApiSchema = (new AttributeFactory(
+            $dtoReflection,
+            OpenApiSchema::class
+        ))->createOneOrNull();
 
-        $properties = (new DtoParser($openApiDto->class))->getSchemaProperties();
+        // add schema to #/components/schemas ?
+        if ($openApiSchema instanceof OpenApiSchema) {
+            $schema = $openApiSchema->createSchema();
+        } else {
+            $schema = (new Schema())->setVisibility(OpenApiSchema::VISIBILE_NEVER);
+        }
+
+        $schema
+            ->setType('object')
+            ->setName($dtoReflection->getShortName())
+            ->setIsCustomSchema(true);
+
+        $properties = (new DtoParser($dtoReflection))->getSchemaProperties();
         foreach ($properties as $property) {
             $schema->pushProperty($property);
         }
 
+        $requestBody = new RequestBody();
         foreach ($this->config->getRequestAccepts() as $mimeType) {
-            $requestBody->pushContent(new Content($mimeType, $this->applyRootNodeToXmlSchema($schema, $mimeType)));
+            $schema = $this->applyRootNodeToXmlSchema($schema, $mimeType);
+            $requestBody->pushContent(new Content($mimeType, $schema));
         }
 
         $this->operation->setRequestBody($requestBody);
@@ -172,9 +192,6 @@ class OperationRequestBody
      *
      * @return void
      * @throws \ReflectionException
-     * @todo Reflector to improve PHPMD scoring
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     private function applySchema(): void
     {
@@ -257,7 +274,7 @@ class OperationRequestBody
      * @param string|null $name Name for the XML root node
      * @return \SwaggerBake\Lib\OpenApi\Schema
      */
-    private function applyRootNodeToXmlSchema(Schema $schema, string $mimeType, ?string $name = 'request')
+    private function applyRootNodeToXmlSchema(Schema $schema, string $mimeType, ?string $name = 'request'): Schema
     {
         if ($mimeType !== 'application/xml') {
             return $schema;

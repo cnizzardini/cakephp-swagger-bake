@@ -5,9 +5,12 @@ namespace SwaggerBake\Lib;
 
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Path;
+use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
 use Symfony\Component\Yaml\Yaml;
 
@@ -112,6 +115,8 @@ class Swagger
      */
     public function toString()
     {
+        $this->addAdditionalSchema();
+
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.beforeRender', $this)
         );
@@ -194,5 +199,62 @@ class Swagger
     public function __toString(): string
     {
         return $this->toString();
+    }
+
+    /**
+     * Adds OpenApiResponse schema and OpenApiDtoRequestBody schema to #/components/schemas
+     *
+     * @return void
+     */
+    private function addAdditionalSchema(): void
+    {
+        $paths = $this->array['paths'];
+        if (empty($paths)) {
+            return;
+        }
+
+        foreach ($paths as $path) {
+            if (!$path instanceof Path) {
+                continue;
+            }
+            foreach ($path->getOperations() as $operation) {
+                $requestBody = $operation->getRequestBody();
+                if ($requestBody instanceof RequestBody) {
+                    foreach ($requestBody->getContent() as $content) {
+                        if ($content->getSchema() instanceof Schema) {
+                            $content = $this->addCustomSchema($content);
+                        }
+                    }
+                }
+                foreach ($operation->getResponses() as $response) {
+                    foreach ($response->getContent() as $content) {
+                        $content = $this->addCustomSchema($content);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if the Schema was added as custom and is set with a public visibility. If so, add the schema to
+     * #/component/schema and update the content with the openapi $ref path. Do nothing otherwise.
+     *
+     * @param \SwaggerBake\Lib\OpenApi\Content $content The Content of the Response or RequestBody
+     * @return \SwaggerBake\Lib\OpenApi\Content
+     */
+    private function addCustomSchema(Content $content): Content
+    {
+        $schema = $content->getSchema();
+        if (!$schema instanceof Schema || !$schema->isCustomSchema()) {
+            return $content;
+        }
+
+        if (in_array($schema->getVisibility(), [OpenApiSchema::VISIBILE_ALWAYS, OpenApiSchema::VISIBILE_DEFAULT])) {
+            $schema->setRefPath('#/components/schemas/' . $schema->getName());
+            $this->array['components']['schemas'][$schema->getName()] = $schema;
+            $content->setSchema($schema->getRefPath());
+        }
+
+        return $content;
     }
 }

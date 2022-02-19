@@ -9,6 +9,7 @@ use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Attribute\OpenApiDto;
 use SwaggerBake\Lib\Attribute\OpenApiForm;
 use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
+use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteScanner;
@@ -18,6 +19,7 @@ use SwaggerBake\Lib\Operation\OperationRequestBody;
 use SwaggerBake\Lib\Swagger;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotion;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
 
 class OperationRequestBodyTest extends TestCase
 {
@@ -104,7 +106,13 @@ class OperationRequestBodyTest extends TestCase
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
 
-        foreach ([EmployeeDataRequest::class, EmployeeDataRequestConstructorPromotion::class] as $class) {
+        $dto = [
+            EmployeeDataRequest::class,
+            EmployeeDataRequestConstructorPromotion::class,
+            EmployeeDataRequestPublicSchema::class
+        ];
+
+        foreach ($dto as $class) {
             $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
             $mockReflectionMethod->expects($this->any())
                 ->method(
@@ -143,6 +151,11 @@ class OperationRequestBodyTest extends TestCase
 
             $schema = $content->getSchema();
             $this->assertEquals('object', $schema->getType());
+            $this->assertTrue($schema->isCustomSchema());
+
+            if ($class == EmployeeDataRequestPublicSchema::class) {
+                $this->assertEquals(OpenApiSchema::VISIBILE_DEFAULT, $schema->getVisibility());
+            }
 
             $properties = $schema->getProperties();
             $this->assertArrayHasKey('last_name', $properties, "failed for $class");

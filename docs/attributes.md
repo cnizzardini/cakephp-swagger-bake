@@ -105,7 +105,9 @@ OpenAPI:
 ### OpenApiDtoRequestBody
 
 Property or parameter level attribute for use in your DTO classes. See the OpenAPI documentation on
-[schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail.
+[schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail. By default, OpenApiDtoRequestBody 
+will not be added to `#/components/schemas` and so will not appear in SwaggerUI's schema list. You can add the 
+`#[OpenApiSchema]` attribute to your DTO class to change the default behavior.
 
 | Attribute          | Type / Default    | OA Spec? | Description                                                                                            |
 |--------------------|-------------------|----------|--------------------------------------------------------------------------------------------------------|
@@ -605,7 +607,9 @@ class MyCustomResponse
 ```
 
 SwaggerBake will convert these into an OpenApi response schema for you. Note, you can use both the interface and
-attributes in your response class. Attributes take precedence over the Schema returned from `getOpenApiSchema()`.
+attributes in your response class. Attributes take precedence over the Schema returned from `getOpenApiSchema()`. By 
+default, schema will not be added to `#/components/schemas` and so will not appear in SwaggerUI's schema list. You can 
+add the `#[OpenApiSchema]` attribute to your schema class to change the default behavior.
 
 #### Associations
 

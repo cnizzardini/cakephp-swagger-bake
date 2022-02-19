@@ -14,7 +14,10 @@ use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
+use SwaggerBakeTest\App\Dto\CustomResponseSchema;
+use SwaggerBakeTest\App\Dto\CustomResponseSchemaPublic;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
+use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
 use SwaggerBakeTest\App\Model\Table\EmployeesTable;
 
 #[OpenApiPath(
@@ -135,44 +138,52 @@ class EmployeesController extends AppController
     #[OpenApiResponse(schemaType: 'object', description: "hello world")]
     public function customGet(): void
     {
-        $hello = 'world';
-        $this->set(compact('hello'));
-        $this->viewBuilder()->setOption('serialize', ['hello']);
+
     }
 
     #[OpenApiRequestBody(description: "Hello", ignoreCakeSchema: true)]
     #[OpenApiForm(name: "fieldName", type: "string", isRequired: false)]
     public function customPost(): void
     {
-        $hello = 'world';
-        $this->set(compact('hello'));
-        $this->viewBuilder()->setOption('serialize', ['hello']);
+
     }
 
     #[OpenApiResponse(ref: '#/components/schemas/Pet')]
     #[OpenApiResponse(statusCode: '404', description: "new statusCode")]
     #[OpenApiResponse(statusCode: '5XX', description: "status code range")]
+    public function customResponseRef(): void
+    {
+
+    }
+
+    #[OpenApiResponse(schema: CustomResponseSchema::class)]
     public function customResponseSchema(): void
     {
-        $hello = 'world';
-        $this->set(compact('hello'));
-        $this->viewBuilder()->setOption('serialize', ['hello']);
+
+    }
+
+    #[OpenApiResponse(schema: CustomResponseSchemaPublic::class)]
+    public function customResponseSchemaPublic(): void
+    {
+
     }
 
     #[OpenApiDto(class: EmployeeDataRequest::class)]
     public function dtoQuery(): void
     {
-        $hello = 'world';
-        $this->set(compact('hello'));
-        $this->viewBuilder()->setOption('serialize', ['hello']);
+
     }
 
     #[OpenApiDto(class: EmployeeDataRequest::class)]
     public function dtoPost(): void
     {
-        $hello = 'world';
-        $this->set(compact('hello'));
-        $this->viewBuilder()->setOption('serialize', ['hello']);
+
+    }
+
+    #[OpenApiDto(class: EmployeeDataRequestPublicSchema::class)]
+    public function dtoPublic(): void
+    {
+
     }
 
     #[OpenApiSearch(tableClass: EmployeesTable::class)]
