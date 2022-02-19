@@ -6,13 +6,10 @@ use Cake\Controller\Controller;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 use MixerApi\Core\Model\ModelFactory;
-use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Decorator\EntityDecorator;
 use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Schema\SchemaFactory;
-use SwaggerBakeTest\App\Model\Entity\Department;
 use SwaggerBakeTest\App\Model\Table\DepartmentsTable;
 
 class SchemaFactoryTest extends TestCase
@@ -21,7 +18,8 @@ class SchemaFactoryTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         $department = (new ModelFactory($connection, new DepartmentsTable()))->create();
-        $decorator = new ModelDecorator($department, new Controller());
+        $decorator = new ModelDecorator($department, $controller = new Controller());
+        $this->assertEquals($controller, $decorator->getController());
         $schema = (new SchemaFactory())->create($decorator);
         $this->assertInstanceOf(Schema::class, $schema);
 
