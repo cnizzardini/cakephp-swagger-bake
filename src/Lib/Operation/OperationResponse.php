@@ -147,26 +147,31 @@ class OperationResponse
                 OpenApiSchema::class
             ))->createOneOrNull();
 
+            // create base schema from implementation
             if ($reflection->implementsInterface(CustomSchemaInterface::class)) {
                 /** @var \SwaggerBake\Lib\OpenApi\Schema $schema */
                 $schema = $openApiResponse->schema::getOpenApiSchema();
+                // if OpenApiSchema attribute exists set the visibility from that
                 if ($openApiSchema instanceof OpenApiSchema) {
                     $schema->setVisibility($openApiSchema->visibility);
                 } else {
                     $schema->setVisibility(OpenApiSchema::VISIBILE_NEVER);
                 }
+            // create base schema from attributes only
             } else {
-                // add schema to #/components/schemas ?
+                // if OpenApiSchema attribute exists set the visibility from that
                 if ($openApiSchema instanceof OpenApiSchema) {
                     $schema = $openApiSchema->createSchema();
                 } else {
                     $schema = (new Schema())->setVisibility(OpenApiSchema::VISIBILE_NEVER);
                 }
-                $schema
-                    ->setName($reflection->getShortName())
-                    ->setType($openApiResponse->schemaType);
             }
 
+            $schema
+                ->setName($schema->getName() ?? $reflection->getShortName())
+                ->setType($schema->getType() ?? 'object');
+
+            // denote this is a user created schema
             $schema->setIsCustomSchema(true);
 
             // class level attributes
@@ -188,6 +193,19 @@ class OperationResponse
                 if ($schemaProperty instanceof OpenApiSchemaProperty) {
                     $schema->pushProperty($schemaProperty->create());
                 }
+            }
+
+            if ($openApiResponse->schemaType == 'array' && $schema->getType() == 'object') {
+                $schema->setType('array');
+                /*
+                $clonedSchema = clone $schema;
+                $schema = $clonedSchema
+                    ->setName($schema->getName() . 'List')
+                    ->setProperties([])
+                    ->setItems(['properties' => $schema->getProperties()])
+                    ->setType('array');
+                unset($clonedSchema);
+                */
             }
 
             $response->pushContent(new Content($mimeType, $schema));

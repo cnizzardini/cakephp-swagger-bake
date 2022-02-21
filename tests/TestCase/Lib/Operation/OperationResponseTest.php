@@ -455,7 +455,12 @@ class OperationResponseTest extends TestCase
         $this->assertNotEmpty($operationResponse->getOperationWithResponses()->getResponseByCode('200'));
     }
 
-    public function test_openapi_response_schema_with_custom_schema_interface(): void
+    /**
+     * @dataProvider dataProviderSchemaInterface
+     * @param string $schemaType The type, i.e. array or object
+     * @return void
+     */
+    public function test_openapi_response_schema_with_custom_schema_interface(string $schemaType): void
     {
         $route = $this->routes['employees:index'];
 
@@ -468,7 +473,8 @@ class OperationResponseTest extends TestCase
             ->will(
                 $this->returnValue([
                     new ReflectionAttribute(OpenApiResponse::class, [
-                        'schema' => CustomResponseSchema::class
+                        'schema' => CustomResponseSchema::class,
+                        'schemaType' => $schemaType,
                     ]),
                 ])
             );
@@ -488,6 +494,7 @@ class OperationResponseTest extends TestCase
             ->getContentByMimeType('application/json')
             ->getSchema();
 
+        $this->assertEquals($schemaType, $schema->getType());
         $this->assertTrue($schema->isCustomSchema());
         $this->assertInstanceOf(Schema::class, $schema);
         $this->assertEquals('Custom', $schema->getName());
@@ -501,54 +508,60 @@ class OperationResponseTest extends TestCase
         $this->assertEquals(32, $properties['age']->getExample());
     }
 
-    public function test_openapi_response_schema_with_attributes_only(): void
+    /**
+     * @dataProvider dataProviderSchemaAttributesOnly
+     * @param string $class The schema FQN
+     * @param string $schemaType The type, i.e. array or object
+     * @return void
+     */
+    public function test_openapi_response_schema_with_attributes_only(string $class, string $schemaType): void
     {
-        foreach ([CustomResponseSchemaAttributesOnly::class, CustomResponseSchemaPublic::class] as $response) {
-            $route = $this->routes['employees:index'];
+        $route = $this->routes['employees:index'];
 
-            $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-            $mockReflectionMethod->expects($this->once())
-                ->method(
-                    'getAttributes'
-                )
-                ->with(OpenApiResponse::class)
-                ->will(
-                    $this->returnValue([
-                        new ReflectionAttribute(OpenApiResponse::class, [
-                            'schema' => $response
-                        ]),
-                    ])
-                );
-
-            $operationResponse = new OperationResponse(
-                $this->mockSwagger('getSchemaByName', 'Employee'),
-                $this->config,
-                new Operation('hello', 'get'),
-                $route,
-                null,
-                $mockReflectionMethod
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiResponse::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiResponse::class, [
+                        'schema' => $class,
+                        'schemaType' => $schemaType,
+                    ]),
+                ])
             );
 
-            $schema = $operationResponse
-                ->getOperationWithResponses()
-                ->getResponseByCode('200')
-                ->getContentByMimeType('application/json')
-                ->getSchema();
+        $operationResponse = new OperationResponse(
+            $this->mockSwagger('getSchemaByName', 'Employee'),
+            $this->config,
+            new Operation('hello', 'get'),
+            $route,
+            null,
+            $mockReflectionMethod
+        );
 
-            if ($response == CustomResponseSchemaPublic::class) {
-                $this->assertEquals(OpenApiSchema::VISIBILE_DEFAULT, $schema->getVisibility());
-            }
+        $schema = $operationResponse
+            ->getOperationWithResponses()
+            ->getResponseByCode('200')
+            ->getContentByMimeType('application/json')
+            ->getSchema();
 
-            $this->assertTrue($schema->isCustomSchema());
-            $this->assertInstanceOf(Schema::class, $schema);
-            /** @var SchemaProperty[] $properties */
-            $properties = $schema->getProperties();
-            $this->assertCount(2, $properties);
-            $this->assertEquals('string', $properties['name']->getType());
-            $this->assertEquals('Paul', $properties['name']->getExample());
-            $this->assertEquals('integer', $properties['age']->getType());
-            $this->assertEquals(32, $properties['age']->getExample());
+        if ($class == CustomResponseSchemaPublic::class) {
+            $this->assertEquals(OpenApiSchema::VISIBILE_DEFAULT, $schema->getVisibility());
         }
+
+        $this->assertEquals($schemaType, $schema->getType());
+        $this->assertTrue($schema->isCustomSchema());
+        $this->assertInstanceOf(Schema::class, $schema);
+        /** @var SchemaProperty[] $properties */
+        $properties = $schema->getProperties();
+        $this->assertCount(2, $properties);
+        $this->assertEquals('string', $properties['name']->getType());
+        $this->assertEquals('Paul', $properties['name']->getExample());
+        $this->assertEquals('integer', $properties['age']->getType());
+        $this->assertEquals(32, $properties['age']->getExample());
     }
 
     /**
@@ -576,5 +589,33 @@ class OperationResponseTest extends TestCase
             );
 
         return $mockSwagger;
+    }
+
+    /**
+     * Data provider for OpenApiResponse(schemaType: '?')
+     *
+     * @return array
+     */
+    public function dataProviderSchemaInterface(): array
+    {
+        return [
+            ['object'],
+            ['array'],
+        ];
+    }
+
+    /**
+     * Data provider for OpenApiResponse(schema: '?', schemaType: '?')
+     *
+     * @return array
+     */
+    public function dataProviderSchemaAttributesOnly(): array
+    {
+        return [
+            [CustomResponseSchemaAttributesOnly::class, 'object'],
+            [CustomResponseSchemaAttributesOnly::class, 'array'],
+            [CustomResponseSchemaPublic::class, 'object'],
+            [CustomResponseSchemaPublic::class, 'array'],
+        ];
     }
 }
