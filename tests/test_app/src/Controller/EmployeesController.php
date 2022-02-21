@@ -170,6 +170,12 @@ class EmployeesController extends AppController
 
     }
 
+    #[OpenApiResponse(schemaType: 'array', schema: CustomResponseSchemaPublic::class)]
+    public function customResponseSchemaPublicArray(): void
+    {
+
+    }
+
     #[OpenApiDto(class: EmployeeDataRequest::class)]
     public function dtoQuery(): void
     {

@@ -44,6 +44,11 @@ class OpenApiResponseTest extends TestCase
                         'method' => 'GET',
                         'path' => 'custom-response-schema-public'
                     ],
+                    'customResponseSchemaPublicArray' => [
+                        'action' => 'customResponseSchemaPublicArray',
+                        'method' => 'GET',
+                        'path' => 'custom-response-schema-public-array'
+                    ],
                     'schemaItems' => [
                         'action' => 'schemaItems',
                         'method' => 'GET',
@@ -109,6 +114,14 @@ class OpenApiResponseTest extends TestCase
 
         $operation = $arr['paths']['/employees/custom-response-schema-public']['get'];
         $ref = $operation['responses'][200]['content']['application/json']['schema']['$ref'];
+        $this->assertEquals('#/components/schemas/CustomResponseSchemaPublic', $ref);
+    }
+
+    public function test_openapi_response_schema_public_array(): void
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+        $operation = $arr['paths']['/employees/custom-response-schema-public-array']['get'];
+        $ref = $operation['responses'][200]['content']['application/json']['schema']['items']['$ref'];
         $this->assertEquals('#/components/schemas/CustomResponseSchemaPublic', $ref);
     }
 }

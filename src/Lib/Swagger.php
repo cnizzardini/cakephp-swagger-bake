@@ -251,8 +251,22 @@ class Swagger
 
         if (in_array($schema->getVisibility(), [OpenApiSchema::VISIBILE_ALWAYS, OpenApiSchema::VISIBILE_DEFAULT])) {
             $schema->setRefPath('#/components/schemas/' . $schema->getName());
-            $this->array['components']['schemas'][$schema->getName()] = $schema;
-            $content->setSchema($schema->getRefPath());
+            if ($schema->getType() == 'array') {
+                $schema->setType('object');
+                $content->setSchema(
+                    (new Schema())
+                        ->setType('array')
+                        ->setItems([
+                            '$ref' => $schema->getRefPath(),
+                        ])
+                );
+            } else {
+                $content->setSchema($schema->getRefPath());
+            }
+
+            if (!isset($this->array['components']['schemas'][$schema->getName()])) {
+                $this->array['components']['schemas'][$schema->getName()] = $schema;
+            }
         }
 
         return $content;
