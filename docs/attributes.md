@@ -65,7 +65,8 @@ class ActorDto
     public function __construct(
         #[OpenApiSchemaProperty(name: "first_name")]
         private string $firstName
-    )
+    ) {
+    }
 }
 ```
 
