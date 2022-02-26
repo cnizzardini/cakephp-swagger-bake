@@ -50,12 +50,25 @@ its properties depending on the request type.
 |------------|----------------|---------|---------------------------------|
 | class      | string         | No      | Required. FQN of the DTO class. |
 
-Example:
+Example DTO declaration:
 
 ```php
 #[OpenApiDto(class: ActorDto::class)]
 public function index() {}
 ```
+
+Example DTO class:
+
+```php
+class ActorDto
+{
+    public function __construct(
+        #[OpenApiSchemaProperty(name: "first_name")]
+        private string $firstName
+    )
+}
+```
+
 
 ### OpenApiForm
 
