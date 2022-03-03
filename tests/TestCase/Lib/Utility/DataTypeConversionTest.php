@@ -38,6 +38,7 @@ class DataTypeConversionTest extends TestCase
             'datetime' => self::OA_TYPE_STRING,
             'boolean' => self::OA_TYPE_BOOLEAN,
             'bool' => self::OA_TYPE_BOOLEAN,
+            'timestampfractional' => self::OA_TYPE_STRING,
         ];
 
         foreach ($types as $dbType => $openApiType) {
@@ -67,6 +68,7 @@ class DataTypeConversionTest extends TestCase
             'date' => 'date',
             'time' => 'time',
             'datetime' => 'date-time',
+            'timestampfractional' => 'date-time',
         ];
 
         foreach ($types as $dbType => $openApiFormat) {
