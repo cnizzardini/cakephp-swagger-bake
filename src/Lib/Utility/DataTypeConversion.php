@@ -22,7 +22,7 @@ class DataTypeConversion
             // openapi type => ['cake','types']
             'integer' => ['int','integer','tinyinteger','smallinteger','biginteger','mediuminteger'],
             'number' => ['decimal','float'],
-            'string' => ['uuid','text','varchar','char','date','time','datetime'],
+            'string' => ['uuid','text','varchar','char','date','time','datetime','timestampfractional'],
             'boolean' => ['bool','boolean'],
         ];
 
@@ -52,7 +52,7 @@ class DataTypeConversion
             'string' => ['text','varchar','char'],
             'date' => ['date'],
             'time' => ['time'],
-            'date-time' => ['datetime'],
+            'date-time' => ['datetime','timestampfractional'],
         ];
 
         foreach ($typeMap as $type => $types) {
