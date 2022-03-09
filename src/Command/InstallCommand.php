@@ -49,8 +49,9 @@ class InstallCommand extends Command
         $io->out('| SwaggerBake Install');
         $io->hr();
 
+        /** @var string $assets */
         $assets = $args->getOption('assets_test') ?? __DIR__ . DS . '..' . DS . '..' . DS . 'assets';
-        if (!is_dir($assets)) {
+        if (empty($assets) || !is_string($assets) || !is_dir($assets)) {
             $io->error('Unable to locate assets directory, please install manually');
             $this->abort();
         }
@@ -94,11 +95,22 @@ class InstallCommand extends Command
             $this->abort();
         }
 
+        /** @var string $contents */
         $contents = file_get_contents($swaggerYml);
+        if (!$contents) {
+            $io->error("Unable to get contents of $swaggerYml");
+            $this->abort();
+        }
+
         $contents = str_replace('YOUR-SERVER-HERE', $path, $contents);
         file_put_contents($swaggerYml, $contents);
 
+        /** @var string $contents */
         $contents = file_get_contents($configDir . 'swagger_bake.php');
+        if (!$contents) {
+            $io->error('Unable to get contents of swagger_bake.php');
+            $this->abort();
+        }
         $contents = str_replace('/your-relative-api-url', $path, $contents);
         file_put_contents($configDir . 'swagger_bake.php', $contents);
 
