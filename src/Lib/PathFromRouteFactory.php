@@ -46,7 +46,7 @@ class PathFromRouteFactory
             return $path;
         }
 
-        /** @var OpenApiPath|null $openApiPath */
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiPath|null $openApiPath */
         $openApiPath = (new AttributeFactory($reflection, OpenApiPath::class))->createOneOrNull();
         if ($openApiPath instanceof OpenApiPath && !$openApiPath->isVisible) {
             return null;

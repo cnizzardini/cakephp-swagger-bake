@@ -69,14 +69,20 @@ class OperationFromRouteFactory
             $openApiOperation = null;
         }
 
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiOperation|null $openApiOperation */
         if ($openApiOperation != null && !$openApiOperation->isVisible) {
             return null;
+        }
+
+        $sortOrder = key($keys ?? []);
+        if (!is_int($sortOrder)) {
+            $sortOrder = 100;
         }
 
         $operation = new Operation(
             operationId: $route->getName() . ':' . strtolower($httpMethod),
             httpMethod: $httpMethod,
-            sortOrder: key($keys ?? []) ?? 100
+            sortOrder: $sortOrder
         );
 
         $operation = $this->createOperation($operation, $route, $openApiOperation);

@@ -16,14 +16,16 @@ use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
  */
 class DtoParser
 {
+    private ReflectionClass $reflection;
+
     /**
      * @param \ReflectionClass|string $reflection ReflectionClass instance or the fully qualified namespace of the DTO
      * to be converted into a ReflectionClass instance.
      * @throws \ReflectionException
      */
-    public function __construct(private ReflectionClass|string $reflection)
+    public function __construct(ReflectionClass|string $reflection)
     {
-        $this->reflection = is_string($this->reflection) ? new ReflectionClass($reflection) : $reflection;
+        $this->reflection = is_string($reflection) ? new ReflectionClass($reflection) : $reflection;
     }
 
     /**
