@@ -15,7 +15,7 @@ x-swagger-bake:
         schema:
           type: integer
       paginatorSort:
-        name: direction
+        name: sort
         in: query
         required: false
         schema:
