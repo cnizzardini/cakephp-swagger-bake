@@ -165,7 +165,7 @@ class OperationRequestBody
         if ($openApiSchema instanceof OpenApiSchema) {
             $schema = $openApiSchema->createSchema();
         } else {
-            $schema = (new Schema())->setVisibility(OpenApiSchema::VISIBILE_NEVER);
+            $schema = (new Schema())->setVisibility(OpenApiSchema::VISIBLE_NEVER);
         }
 
         $schema

@@ -111,9 +111,9 @@ class Swagger
     /**
      * Returns OpenAPI 3.0 spec as a JSON string
      *
-     * @return false|string
+     * @return string
      */
-    public function toString()
+    public function toString(): string
     {
         $this->addAdditionalSchema();
 
@@ -121,7 +121,12 @@ class Swagger
             new Event('SwaggerBake.beforeRender', $this)
         );
 
-        return json_encode($this->getArray(), $this->config->get('jsonOptions'));
+        $json = json_encode($this->getArray(), $this->config->get('jsonOptions'));
+        if (!$json) {
+            throw new SwaggerBakeRunTimeException('Error converting OpenAPI to JSON.');
+        }
+
+        return $json;
     }
 
     /**
@@ -249,7 +254,7 @@ class Swagger
             return $content;
         }
 
-        if (in_array($schema->getVisibility(), [OpenApiSchema::VISIBILE_ALWAYS, OpenApiSchema::VISIBILE_DEFAULT])) {
+        if (in_array($schema->getVisibility(), [OpenApiSchema::VISIBLE_ALWAYS, OpenApiSchema::VISIBLE_DEFAULT])) {
             $schema->setRefPath('#/components/schemas/' . $schema->getName());
             if ($schema->getType() == 'array') {
                 $schema->setType('object');

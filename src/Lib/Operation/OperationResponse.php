@@ -155,7 +155,7 @@ class OperationResponse
                 if ($openApiSchema instanceof OpenApiSchema) {
                     $schema->setVisibility($openApiSchema->visibility);
                 } else {
-                    $schema->setVisibility(OpenApiSchema::VISIBILE_NEVER);
+                    $schema->setVisibility(OpenApiSchema::VISIBLE_NEVER);
                 }
             // create base schema from attributes only
             } else {
@@ -163,7 +163,7 @@ class OperationResponse
                 if ($openApiSchema instanceof OpenApiSchema) {
                     $schema = $openApiSchema->createSchema();
                 } else {
-                    $schema = (new Schema())->setVisibility(OpenApiSchema::VISIBILE_NEVER);
+                    $schema = (new Schema())->setVisibility(OpenApiSchema::VISIBLE_NEVER);
                 }
             }
 
