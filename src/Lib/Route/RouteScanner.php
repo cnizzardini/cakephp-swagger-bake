@@ -102,7 +102,10 @@ class RouteScanner
         });
 
         if (count($results) === 1) {
-            $routeDecorator->setControllerFqn('\\' . reset($results));
+            $fqn = reset($results);
+            if (is_string($fqn) && class_exists($fqn)) {
+                $routeDecorator->setControllerFqn("\\$fqn");
+            }
         }
 
         return $routeDecorator;
