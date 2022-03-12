@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
-use Exception;
 use ReflectionClass;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiPath;
@@ -34,17 +33,12 @@ class PathFromRouteFactory
         }
 
         $fqn = $this->route->getControllerFqn();
-        if (is_null($fqn)) {
+        if (is_null($fqn) || !class_exists($fqn)) {
             return null;
         }
 
         $path = new Path($this->route->templateToOpenApiPath());
-
-        try {
-            $reflection = new ReflectionClass($fqn);
-        } catch (Exception) {
-            return $path;
-        }
+        $reflection = new ReflectionClass($fqn);
 
         /** @var \SwaggerBake\Lib\Attribute\OpenApiPath|null $openApiPath */
         $openApiPath = (new AttributeFactory($reflection, OpenApiPath::class))->createOneOrNull();
