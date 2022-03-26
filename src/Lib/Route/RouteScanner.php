@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Route;
 
-use Cake\Core\Configure;
 use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
 use InvalidArgumentException;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Utility\NamespaceUtility;
 
 /**
  * Finds all RESTful routes that can be included in OpenAPI output based on userland configurations
@@ -30,17 +28,11 @@ class RouteScanner
     private array $routes;
 
     /**
-     * @param \Cake\Routing\Router $router Router
-     * @param \SwaggerBake\Lib\Configuration $config Configuration
-     * @param \Cake\Core\Configure|null $cakeConfigure CakePHP's Configure class, if null an instance will be created
-     * @throws \Exception
+     * @param \Cake\Routing\Router $router CakePHP Router
+     * @param \SwaggerBake\Lib\Configuration $config Swagger Configuration
      */
-    public function __construct(
-        private Router $router,
-        private Configuration $config,
-        private ?Configure $cakeConfigure = null
-    ) {
-        $this->cakeConfigure = $cakeConfigure ?? new Configure();
+    public function __construct(private Router $router, Configuration $config)
+    {
         $this->prefix = $config->getPrefix();
         $this->loadRoutes();
     }
@@ -54,17 +46,13 @@ class RouteScanner
     }
 
     /**
-     * Reads RESTful routes from Cakes Router that matches the user land configured prefix
+     * Reads RESTful routes from the CakePHP Router. Routes must the prefix config option in the `swagger_bake` config.
      *
      * @return void
-     * @throws \Exception
      */
     private function loadRoutes(): void
     {
-        $namespaces = $this->config->getNamespaces();
-        $classes = NamespaceUtility::getClasses($namespaces['controllers'], 'Controller');
-
-        if (empty($this->prefix) || !filter_var('http://foo.com' . $this->prefix, FILTER_VALIDATE_URL)) {
+        if (empty($this->prefix) || !filter_var('http://example.com' . $this->prefix, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException('route prefix is invalid');
         }
 
@@ -75,34 +63,12 @@ class RouteScanner
                 continue;
             }
 
-            $routes[$route->getName()] = $this->createRouteDecorator($route, $classes);
+            $routes[$route->getName()] = new RouteDecorator($route);
         }
 
         ksort($routes);
 
         $this->routes = $routes;
-    }
-
-    /**
-     * Creates a RouteDecorator from a route. The $classes argument should provide a list of all controller classes
-     * so the route can be matched to a Controller class.
-     *
-     * @param \Cake\Routing\Route\Route $route The Route to be decorated
-     * @param array $classes An array of controller classes
-     * @return \SwaggerBake\Lib\Route\RouteDecorator
-     */
-    private function createRouteDecorator(Route $route, array $classes): RouteDecorator
-    {
-        $routeDecorator = new RouteDecorator($route);
-
-        $app = $this->cakeConfigure::read('App.namespace');
-        $path = $routeDecorator->getPlugin() ? $routeDecorator->getPlugin() . '\\' : $app . '\\';
-        $path .= 'Controller\\';
-        $path .= $routeDecorator->getPrefix() ? $routeDecorator->getPrefix() . '\\' : '';
-        $path .= $routeDecorator->getController() . 'Controller';
-        $routeDecorator->setControllerFqn('\\' . $path);
-
-        return $routeDecorator;
     }
 
     /**
@@ -115,12 +81,10 @@ class RouteScanner
             return false;
         }
 
-        $defaults = (array)$route->defaults;
-
-        if (!isset($defaults['_method']) || empty($defaults['_method'])) {
+        $defaults = $route->defaults;
+        if (empty($defaults['_method'])) {
             return false;
         }
-
         if (isset($defaults['plugin']) && in_array($defaults['plugin'], self::EXCLUDED_PLUGINS)) {
             return false;
         }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Route;
 
+use Cake\Core\Configure;
 use Cake\Routing\Route\Route;
 use MixerApi\Core\Model\Model;
 
@@ -35,10 +36,13 @@ class RouteDecorator
 
     private ?Model $model = null;
 
+    private ?Configure $cakeConfigure = null;
+
     /**
-     * @param \Cake\Routing\Route\Route $route Route
+     * @param \Cake\Routing\Route\Route $route CakePHP Route instance
+     * @param \Cake\Core\Configure|null $cakeConfigure CakePHP Configure class, if null an instance will be created.
      */
-    public function __construct(Route $route)
+    public function __construct(Route $route, ?Configure $cakeConfigure = null)
     {
         $defaults = (array)$route->defaults;
 
@@ -46,6 +50,8 @@ class RouteDecorator
         if (isset($defaults['_method']) && !is_array($defaults['_method'])) {
             $methods = explode(', ', $defaults['_method']);
         }
+
+        $this->cakeConfigure = $cakeConfigure ?? new Configure();
 
         $this
             ->setRoute($route)
@@ -56,6 +62,11 @@ class RouteDecorator
             ->setController($defaults['controller'] ?? null)
             ->setAction($defaults['action'])
             ->setMethods($methods ?? []);
+
+        $fqn = $this->findControllerFqn();
+        if ($fqn) {
+            $this->setControllerFqn($fqn);
+        }
     }
 
     /**
@@ -267,5 +278,25 @@ class RouteDecorator
         );
 
         return implode('/', $pieces);
+    }
+
+    /**
+     * Returns the FQN of the controller or null.
+     *
+     * @return string|null
+     */
+    private function findControllerFqn(): ?string
+    {
+        if (empty($this->controller)) {
+            return null;
+        }
+
+        $app = $this->cakeConfigure::read('App.namespace');
+        $fqn = $this->plugin ? $this->plugin . '\\' : $app . '\\';
+        $fqn .= 'Controller\\';
+        $fqn .= $this->prefix ? $this->prefix . '\\' : '';
+        $fqn .= $this->controller . 'Controller';
+
+        return $fqn;
     }
 }
