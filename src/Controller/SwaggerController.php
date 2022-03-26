@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Controller;
 
-use SwaggerBake\Controller\Component\SwaggerUiComponent;
-
 /**
- * @property SwaggerUiComponent $SwaggerUi
+ * @property \SwaggerBake\Controller\Component\SwaggerUiComponent $SwaggerUi
  */
 class SwaggerController extends AppController
 {
