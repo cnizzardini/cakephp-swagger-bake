@@ -297,6 +297,10 @@ class RouteDecorator
         $fqn .= $this->prefix ? $this->prefix . '\\' : '';
         $fqn .= $this->controller . 'Controller';
 
+        if (!class_exists($fqn)) {
+            return null;
+        }
+
         return $fqn;
     }
 }

@@ -13,7 +13,7 @@ class RouteDecoratorTest extends TestCase
         $defaults = [
             'plugin' => null,
             'prefix' => null,
-            'controller' => 'Test',
+            'controller' => 'Departments',
             'action' => 'index',
             '_method' => 'GET'
         ];
@@ -25,15 +25,21 @@ class RouteDecoratorTest extends TestCase
         $this->assertEquals($defaults['controller'], $routeDecorator->getController());
         $this->assertEquals($defaults['action'], $routeDecorator->getAction());
         $this->assertEquals([$defaults['_method']], $routeDecorator->getMethods());
-        $this->assertEquals([$defaults['_method']], $routeDecorator->getMethods());
-        $this->assertEquals('SwaggerBakeTest\App\Controller\TestController', $routeDecorator->getControllerFqn());
+        $this->assertEquals(
+            'SwaggerBakeTest\App\Controller\DepartmentsController',
+            $routeDecorator->getControllerFqn()
+        );
 
         // Plugin controller + multiple methods
-        $defaults['plugin'] = 'TestPlugin';
+        $defaults['plugin'] = 'Demo';
         $defaults['_method'] = ['GET', 'POST'];
+        $defaults['controller'] = 'Test';
         $routeDecorator = (new RouteDecorator(new Route('/test/template', $defaults)));
         $this->assertEquals($defaults['plugin'], $routeDecorator->getPlugin());
         $this->assertEquals($defaults['_method'], $routeDecorator->getMethods());
-        $this->assertEquals('TestPlugin\Controller\TestController', $routeDecorator->getControllerFqn());
+        $this->assertEquals(
+            'Demo\Controller\TestController',
+            $routeDecorator->getControllerFqn()
+        );
     }
 }
