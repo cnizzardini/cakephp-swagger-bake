@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Route;
 
+use Cake\Core\Configure;
 use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
 use InvalidArgumentException;
@@ -19,11 +20,7 @@ class RouteScanner
         'DebugKit',
     ];
 
-    private Router $router;
-
     private string $prefix;
-
-    private Configuration $config;
 
     /**
      * Array of RouteDecorator instances
@@ -35,11 +32,15 @@ class RouteScanner
     /**
      * @param \Cake\Routing\Router $router Router
      * @param \SwaggerBake\Lib\Configuration $config Configuration
+     * @param \Cake\Core\Configure|null $cakeConfigure CakePHP's Configure class, if null an instance will be created
+     * @throws \Exception
      */
-    public function __construct(Router $router, Configuration $config)
-    {
-        $this->router = $router;
-        $this->config = $config;
+    public function __construct(
+        private Router $router,
+        private Configuration $config,
+        private ?Configure $cakeConfigure = null
+    ) {
+        $this->cakeConfigure = $cakeConfigure ?? new Configure();
         $this->prefix = $config->getPrefix();
         $this->loadRoutes();
     }
@@ -93,17 +94,13 @@ class RouteScanner
     private function createRouteDecorator(Route $route, array $classes): RouteDecorator
     {
         $routeDecorator = new RouteDecorator($route);
-        $path = 'Controller\\';
+
+        $app = $this->cakeConfigure::read('App.namespace');
+        $path = $routeDecorator->getPlugin() ? $routeDecorator->getPlugin() . '\\' : $app . '\\';
+        $path .= 'Controller\\';
         $path .= $routeDecorator->getPrefix() ? $routeDecorator->getPrefix() . '\\' : '';
         $path .= $routeDecorator->getController() . 'Controller';
-
-        $results = array_filter($classes, function ($fqn) use ($path) {
-            return str_contains($fqn, $path);
-        });
-
-        if (count($results) === 1) {
-            $routeDecorator->setControllerFqn('\\' . reset($results));
-        }
+        $routeDecorator->setControllerFqn('\\' . $path);
 
         return $routeDecorator;
     }
