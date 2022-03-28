@@ -185,8 +185,11 @@ class OperationFromRouteFactory
         }
 
         if (!count($operation->getTags())) {
+            $tag = $route->getPlugin() ?? '';
+            $tag .= ' ' . Inflector::humanize(Inflector::underscore($route->getController()));
+
             $operation->setTags([
-                Inflector::humanize(Inflector::underscore($route->getController())),
+                trim($tag),
             ]);
         }
 
