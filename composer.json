@@ -35,6 +35,7 @@
         "psr-4": {
             "SwaggerBake\\Test\\": "tests/",
             "SwaggerBakeTest\\App\\": "tests/test_app/src/",
+            "Demo\\": "tests/test_app/plugins/Demo/src/",
             "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
         }
     },

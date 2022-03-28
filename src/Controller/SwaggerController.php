@@ -3,15 +3,14 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Controller;
 
+/**
+ * @property \SwaggerBake\Controller\Component\SwaggerUiComponent $SwaggerUi
+ */
 class SwaggerController extends AppController
 {
     /**
-     * @var \SwaggerBake\Controller\Component\SwaggerUiComponent
-     */
-    public $SwaggerUi;
-
-    /**
      * @return void
+     * @throws \Exception
      */
     public function initialize(): void
     {
