@@ -65,10 +65,6 @@ class OpenApiPathGenerator
                     continue;
                 }
 
-                if (count($path->getTags()) && $operation->getTags()) {
-
-                }
-
                 $path->pushOperation($operation);
             }
 
