@@ -28,7 +28,7 @@ class Path implements JsonSerializable
      * @param string|null $ref An optional OpenAPI path $ref
      * @param string|null $summary An optional short summary
      * @param string|null $description An optional description
-     * @param array $tags Sets the tag for all operations in the path. Tags set on individual operations will take
+     * @param string[] $tags Sets the tag for all operations in the path. Tags set on individual operations will take
      *  precedence.
      */
     public function __construct(
@@ -198,12 +198,13 @@ class Path implements JsonSerializable
     }
 
     /**
-     * @param array $tags
-     * @return Path
+     * @param string[] $tags A list of OpenApi tags
+     * @return $this
      */
-    public function setTags(array $tags): Path
+    public function setTags(array $tags)
     {
         $this->tags = $tags;
+
         return $this;
     }
 }
