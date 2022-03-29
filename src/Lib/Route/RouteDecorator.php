@@ -16,8 +16,6 @@ use MixerApi\Core\Model\Model;
  */
 class RouteDecorator
 {
-    private Route $route;
-
     private ?string $name;
 
     private ?string $plugin;
@@ -36,13 +34,11 @@ class RouteDecorator
 
     private ?Model $model = null;
 
-    private ?Configure $cakeConfigure = null;
-
     /**
      * @param \Cake\Routing\Route\Route $route CakePHP Route instance
      * @param \Cake\Core\Configure|null $cakeConfigure CakePHP Configure class, if null an instance will be created.
      */
-    public function __construct(Route $route, ?Configure $cakeConfigure = null)
+    public function __construct(private Route $route, private ?Configure $cakeConfigure = null)
     {
         $defaults = (array)$route->defaults;
 
