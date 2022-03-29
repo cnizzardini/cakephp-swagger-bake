@@ -12,6 +12,8 @@ use Cake\Console\ConsoleOptionParser;
  * Class InstallCommand
  *
  * @package SwaggerBake\Command
+ * @SuppressWarnings(PHPMD.NPathComplexity)
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  */
 class InstallCommand extends Command
 {

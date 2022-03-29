@@ -103,17 +103,22 @@ final class JsonLd implements MediaTypeInterface
     private function recursion(array $properties): array
     {
         foreach ($properties as $key => $property) {
+            // @phpstan-ignore-next-line
             if (!in_array($property->getType(), ['object','array'])) {
                 continue;
             }
 
             unset($properties[$key]);
+            // @phpstan-ignore-next-line
             $items = $property->getItems();
             $items['allOf'][] = ['$ref' => self::JSONLD_ITEM];
+            // @phpstan-ignore-next-line
             if ($property->getRefEntity()) {
+                // @phpstan-ignore-next-line
                 $items['allOf'][] = ['$ref' => $property->getRefEntity()];
             }
 
+            // @phpstan-ignore-next-line
             if ($property->getType() === 'object') {
                 $properties[$key] = $items;
             } else {
@@ -121,6 +126,7 @@ final class JsonLd implements MediaTypeInterface
                     $items['allOf'][] = ['$ref' => $items['$ref']];
                     unset($items['$ref']);
                 }
+                // @phpstan-ignore-next-line
                 $properties[$key]['items'] = $items;
             }
         }

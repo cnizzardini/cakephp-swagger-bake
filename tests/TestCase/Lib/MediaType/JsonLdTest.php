@@ -12,6 +12,8 @@ use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\MediaType\JsonLd;
 use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationResponseAssociation;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
@@ -126,5 +128,34 @@ class JsonLdTest extends TestCase
                 return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
             })
         );
+    }
+
+    public function test_nested_associations(): void
+    {
+        $schema = new Schema();
+        $schema->setProperties([
+            (new SchemaProperty())
+                ->setType('string')
+                ->setName('test_string'),
+            (new SchemaProperty())
+                ->setType('object')
+                ->setName('test_ref_entity')
+                ->setRefEntity('#/components/schemas/TestEntity'),
+            (new Schema())
+                ->setType('object')
+                ->setName('test_object')
+                ->setProperties([
+                    (new SchemaProperty())
+                        ->setType('string')->setName('test_string')
+                ])
+        ]);
+
+        $schema = (new JsonLd())->buildSchema($schema, 'object');
+        $object = json_decode(json_encode($schema->jsonSerialize()));
+
+        $this->assertObjectHasAttribute('test_string', $object->items->properties);
+        $this->assertObjectHasAttribute('test_ref_entity', $object->items->properties);
+        $this->assertCount(2, $object->items->properties->test_ref_entity->allOf);
+        $this->assertObjectHasAttribute('test_object', $object->items->properties);
     }
 }
