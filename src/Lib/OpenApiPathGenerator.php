@@ -36,7 +36,6 @@ class OpenApiPathGenerator
     public function generate(array $openapi = []): array
     {
         $routes = $this->routeScanner->getRoutes();
-        $operationFactory = new OperationFromRouteFactory($this->swagger);
 
         $ignorePaths = array_keys($openapi['paths']);
 
@@ -55,6 +54,8 @@ class OpenApiPathGenerator
                 $methods = $route->getMethods();
             }
 
+            $operationFactory = new OperationFromRouteFactory($this->swagger, $path);
+
             foreach ($methods as $httpMethod) {
                 $schema = $this->getSchemaFromRoute($route);
 
@@ -62,6 +63,10 @@ class OpenApiPathGenerator
 
                 if (!$operation instanceof Operation) {
                     continue;
+                }
+
+                if (count($path->getTags()) && $operation->getTags()) {
+
                 }
 
                 $path->pushOperation($operation);

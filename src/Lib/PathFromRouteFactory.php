@@ -49,6 +49,7 @@ class PathFromRouteFactory
         return $path
             ->setRef($openApiPath->ref ?? $path->getRef())
             ->setDescription($openApiPath->description ?? $path->getDescription())
-            ->setSummary($openApiPath->summary ?? $path->getSummary());
+            ->setSummary($openApiPath->summary ?? $path->getSummary())
+            ->setTags($openApiPath->tags ?? []);
     }
 }
