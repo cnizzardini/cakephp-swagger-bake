@@ -290,7 +290,7 @@ class SchemaPropertyValidation
     private function defineMinItems()
     {
         $result = $this->getValidationRuleValueFromClosure('hasAtLeast');
-        if (is_numeric($result)) {
+        if (is_int($result)) {
             $this->schemaProperty->setMinItems($result);
         }
 
@@ -304,7 +304,7 @@ class SchemaPropertyValidation
     private function defineMaxItems()
     {
         $result = $this->getValidationRuleValueFromClosure('hasAtMost');
-        if (is_numeric($result)) {
+        if (is_int($result)) {
             $this->schemaProperty->setMaxItems($result);
         }
 

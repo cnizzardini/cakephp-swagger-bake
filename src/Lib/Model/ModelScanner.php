@@ -143,7 +143,7 @@ class ModelScanner
             return $routeDecorator !== null;
         }
 
-        return $schema->visibility != OpenApiSchema::VISIBILE_NEVER;
+        return $schema->visibility != OpenApiSchema::VISIBLE_NEVER;
     }
 
     /**

@@ -549,7 +549,7 @@ class OperationResponseTest extends TestCase
             ->getSchema();
 
         if ($class == CustomResponseSchemaPublic::class) {
-            $this->assertEquals(OpenApiSchema::VISIBILE_DEFAULT, $schema->getVisibility());
+            $this->assertEquals(OpenApiSchema::VISIBLE_DEFAULT, $schema->getVisibility());
         }
 
         $this->assertEquals($schemaType, $schema->getType());

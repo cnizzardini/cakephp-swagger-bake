@@ -33,23 +33,20 @@ class Content implements JsonSerializable
         unset($vars['mimeType']);
         unset($vars['schema']);
 
-        switch (gettype($this->schema)) {
-            case 'string':
-                $vars['schema']['$ref'] = $this->schema;
-                break;
-            case 'object':
-                if ($this->schema->getRefPath()) {
-                    $vars['schema']['required'] = array_values($this->schema->getRequired());
-                    $vars['schema']['allOf'][] = [
-                        '$ref' => $this->schema->getRefPath(),
-                    ];
-                    if (empty($vars['schema']['required'])) {
-                        unset($vars['schema']['required']);
-                    }
-                    break;
+        if ($this->schema instanceof Schema) {
+            if ($this->schema->getRefPath()) {
+                $vars['schema']['required'] = array_values($this->schema->getRequired());
+                $vars['schema']['allOf'][] = [
+                    '$ref' => $this->schema->getRefPath(),
+                ];
+                if (empty($vars['schema']['required'])) {
+                    unset($vars['schema']['required']);
                 }
+            } else {
                 $vars['schema'] = $this->schema;
-                break;
+            }
+        } elseif (is_string($this->schema)) {
+            $vars['schema']['$ref'] = $this->schema;
         }
 
         return $vars;

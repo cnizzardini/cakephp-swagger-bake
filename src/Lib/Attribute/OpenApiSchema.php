@@ -13,21 +13,41 @@ class OpenApiSchema
     /**
      *  Default behavior. Adds the schema if it matches a controller with a restful route.
      */
-    public const VISIBILE_DEFAULT = 1;
+    public const VISIBLE_DEFAULT = 1;
 
     /**
      * Always add the schema.
      */
-    public const VISIBILE_ALWAYS = 2;
+    public const VISIBLE_ALWAYS = 2;
 
     /**
      * Never add the schema to the default location, but adds it to vendor location. This hides the schema from the
      * Swagger UIs Schemas section, but still allows the schema to be used for request and response bodies.
      */
-    public const VISIBILE_HIDDEN = 3;
+    public const VISIBLE_HIDDEN = 3;
 
     /**
      * Never add the Schema. Warning this can break request body definitions and response samples.
+     */
+    public const VISIBLE_NEVER = 4;
+
+    /**
+     * @deprecated deprecated because of misspelling
+     */
+    public const VISIBILE_DEFAULT = 1;
+
+    /**
+     * @deprecated deprecated because of misspelling
+     */
+    public const VISIBILE_ALWAYS = 2;
+
+    /**
+     * @deprecated deprecated because of misspelling
+     */
+    public const VISIBILE_HIDDEN = 3;
+
+    /**
+     * @deprecated deprecated because of misspelling
      */
     public const VISIBILE_NEVER = 4;
 

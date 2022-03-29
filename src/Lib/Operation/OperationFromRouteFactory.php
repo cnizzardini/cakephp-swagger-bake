@@ -57,7 +57,11 @@ class OperationFromRouteFactory
         $docBlock = $this->getDocBlock($route);
 
         try {
-            $refClass = new ReflectionClass($route->getControllerFqn());
+            $fqn = $route->getControllerFqn();
+            if (!is_string($fqn) || !class_exists($fqn)) {
+                throw new Exception("Class $fqn does not exist");
+            }
+            $refClass = new ReflectionClass($fqn);
             $refMethod = $refClass->getMethod($route->getAction());
             $keys = (new Collection($refClass->getMethods()))->filter(function (ReflectionMethod $method) use ($route) {
                 return $route->getAction() == $method->getName();
@@ -69,14 +73,20 @@ class OperationFromRouteFactory
             $openApiOperation = null;
         }
 
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiOperation|null $openApiOperation */
         if ($openApiOperation != null && !$openApiOperation->isVisible) {
             return null;
+        }
+
+        $sortOrder = key($keys ?? []);
+        if (!is_int($sortOrder)) {
+            $sortOrder = 100;
         }
 
         $operation = new Operation(
             operationId: $route->getName() . ':' . strtolower($httpMethod),
             httpMethod: $httpMethod,
-            sortOrder: key($keys ?? []) ?? 100
+            sortOrder: $sortOrder
         );
 
         $operation = $this->createOperation($operation, $route, $openApiOperation);

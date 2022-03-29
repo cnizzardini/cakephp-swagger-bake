@@ -48,13 +48,18 @@ class BakeCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $this->loadConfig($args->getOption('config'));
+        $this->loadConfig($args);
 
         $io->out('Running...');
 
         $config = new Configuration();
         ValidateConfiguration::validate($config);
+        /** @var string $output */
         $output = $args->getOption('output') ?? $config->getJson();
+        if (empty($output) || !is_string($output)) {
+            $io->out('<error>Output must be a string in file path format</error>');
+            $this->abort();
+        }
 
         $swagger = (new SwaggerFactory())->create();
         foreach ($swagger->getOperationsWithNoHttp20x() as $operation) {

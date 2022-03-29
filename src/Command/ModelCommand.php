@@ -53,7 +53,7 @@ class ModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $this->loadConfig($args->getOption('config'));
+        $this->loadConfig($args);
 
         $io->hr();
         $io->out('| SwaggerBake is checking your models...');

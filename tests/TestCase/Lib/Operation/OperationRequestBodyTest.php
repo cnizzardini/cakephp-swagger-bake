@@ -157,7 +157,7 @@ class OperationRequestBodyTest extends TestCase
             $this->assertTrue($schema->isCustomSchema());
 
             if ($class == EmployeeDataRequestPublicSchemaLegacy::class) {
-                $this->assertEquals(OpenApiSchema::VISIBILE_DEFAULT, $schema->getVisibility());
+                $this->assertEquals(OpenApiSchema::VISIBLE_DEFAULT, $schema->getVisibility());
             }
 
             $properties = $schema->getProperties();
@@ -228,7 +228,7 @@ class OperationRequestBodyTest extends TestCase
             $this->assertTrue($schema->isCustomSchema());
 
             if ($class == EmployeeDataRequestPublicSchemaLegacy::class) {
-                $this->assertEquals(OpenApiSchema::VISIBILE_DEFAULT, $schema->getVisibility());
+                $this->assertEquals(OpenApiSchema::VISIBLE_DEFAULT, $schema->getVisibility());
             }
 
             $properties = $schema->getProperties();

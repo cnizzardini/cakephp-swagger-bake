@@ -67,7 +67,7 @@ class PathFromRouteFactoryTest extends TestCase
         $this->assertEquals('/employees', $path->getResource());
     }
 
-    public function test_create_returning_null_on_empty_http_methods(): void
+    public function test_create_returns_null_on_empty_http_methods(): void
     {
         $decorator = new RouteDecorator(new Route('/template', []));
         $decorator->setControllerFqn('\App\Controller\EmployeesController');
@@ -75,18 +75,17 @@ class PathFromRouteFactoryTest extends TestCase
         $this->assertNull($path->create());
     }
 
-    public function test_create_returning_null_on_null_controller(): void
+    public function test_create_returns_null_when_controller_does_not_exist(): void
     {
+        // null controller should return null
         $decorator = new RouteDecorator(new Route('/template', ['_method' => 'GET']));
         $path = new PathFromRouteFactory($decorator);
         $this->assertNull($path->create());
-    }
 
-    public function test_create_returning_path_on_reflection_exception(): void
-    {
+        // class does not exist should return null
         $decorator = new RouteDecorator(new Route('/template', ['_method' => 'GET']));
         $decorator->setControllerFqn('\App\Controller\Nope');
         $path = new PathFromRouteFactory($decorator);
-        $this->assertInstanceOf(Path::class, $path->create());
+        $this->assertNull($path->create());
     }
 }
