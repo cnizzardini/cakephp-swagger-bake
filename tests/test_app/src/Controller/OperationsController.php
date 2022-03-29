@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace SwaggerBakeTest\App\Controller;
 
 use SwaggerBake\Lib\Attribute\OpenApiOperation;
+use SwaggerBake\Lib\Attribute\OpenApiPath;
 
+#[OpenApiPath(tags: ['Test', 'Another Test'])]
 class OperationsController extends AppController
 {
     #[OpenApiOperation(isVisible: false)]

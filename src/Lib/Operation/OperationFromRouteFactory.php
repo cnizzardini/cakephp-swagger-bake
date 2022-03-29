@@ -16,6 +16,7 @@ use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiOperation;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
+use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
@@ -26,13 +27,15 @@ use SwaggerBake\Lib\Utility\DocBlockUtility;
  *
  * @package SwaggerBake\Lib\Operation
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @internal
  */
 class OperationFromRouteFactory
 {
     /**
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
+     * @param \SwaggerBake\Lib\OpenApi\Path $path OpenApi Path
      */
-    public function __construct(private Swagger $swagger)
+    public function __construct(private Swagger $swagger, private Path $path)
     {
     }
 
@@ -185,12 +188,16 @@ class OperationFromRouteFactory
         }
 
         if (!count($operation->getTags())) {
-            $tag = $route->getPlugin() ?? '';
-            $tag .= ' ' . Inflector::humanize(Inflector::underscore($route->getController()));
+            if (count($this->path->getTags())) {
+                $operation->setTags($this->path->getTags());
+            } else {
+                $tag = $route->getPlugin() ?? '';
+                $tag .= ' ' . Inflector::humanize(Inflector::underscore($route->getController()));
 
-            $operation->setTags([
-                trim($tag),
-            ]);
+                $operation->setTags([
+                    trim($tag),
+                ]);
+            }
         }
 
         return $operation;

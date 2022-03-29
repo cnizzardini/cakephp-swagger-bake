@@ -276,12 +276,13 @@ OpenAPI:
 
 Class level attribute to define scalar [Path](https://spec.openapis.org/oas/latest.html#path-item-object) values.
 
-| Property    | Type / Default | OA Spec | Description                                       | 
-|-------------|----------------|---------|---------------------------------------------------|
-| isVisible   | boolean `true` | No      | Is the path and its operations visible in OpenAPI |
-| ref         | string `null`  | Yes     | An OpenAPI ref such as `#/paths/my-path`          |
-| summary     | string `null`  | Yes     | Overwrites the default summary (if any)           |
-| description | string `null`  | Yes     | Overwrites the default description                |
+| Property    | Type / Default | OA Spec | Description                                                                                          | 
+|-------------|----------------|---------|------------------------------------------------------------------------------------------------------|
+| isVisible   | boolean `true` | No      | Is the path and its operations visible in OpenAPI                                                    |
+| ref         | string `null`  | Yes     | An OpenAPI ref such as `#/paths/my-path`                                                             |
+| summary     | string `null`  | Yes     | Overwrites the default summary (if any)                                                              |
+| description | string `null`  | Yes     | Overwrites the default description                                                                   |
+| tags        | array `[]`     | Yes     | Sets the tags for all operations in the path. Tags set on individual operations will tak precedence. |
 
 A common use-case for this is to hide a controller from appearing in your OpenApi (the default behavior). For instance,
 you may have a bespoke endpoint that you don't want to publish:

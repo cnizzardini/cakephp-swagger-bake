@@ -5,6 +5,7 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
@@ -64,7 +65,7 @@ class OperationFromRouteFactoryTest extends TestCase
 
         $routes = $cakeRoute->getRoutes();
 
-        $operation = (new OperationFromRouteFactory($swagger))->create(
+        $operation = (new OperationFromRouteFactory($swagger, new Path('/')))->create(
             $routes['employees:index'],
             'GET',
             null
@@ -91,7 +92,7 @@ class OperationFromRouteFactoryTest extends TestCase
         $cakeRoute = new RouteScanner($router, $config);
 
         $routes = $cakeRoute->getRoutes();
-        $operation = (new OperationFromRouteFactory($swagger))->create(
+        $operation = (new OperationFromRouteFactory($swagger, new Path('/')))->create(
             $routes['employees:edit'],
             'PUT',
             null
@@ -118,6 +119,8 @@ class OperationFromRouteFactoryTest extends TestCase
 
         $route = $cakeRoute->getRoutes()['employees:edit'];
         $route->setMethods([]);
-        $this->assertNull((new OperationFromRouteFactory($swagger))->create($route,'GET',null));
+        $this->assertNull(
+            (new OperationFromRouteFactory($swagger, new Path('/')))->create($route,'GET',null)
+        );
     }
 }
