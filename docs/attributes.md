@@ -276,12 +276,13 @@ OpenAPI:
 
 Class level attribute to define scalar [Path](https://spec.openapis.org/oas/latest.html#path-item-object) values.
 
-| Property    | Type / Default | OA Spec | Description                                       | 
-|-------------|----------------|---------|---------------------------------------------------|
-| isVisible   | boolean `true` | No      | Is the path and its operations visible in OpenAPI |
-| ref         | string `null`  | Yes     | An OpenAPI ref such as `#/paths/my-path`          |
-| summary     | string `null`  | Yes     | Overwrites the default summary (if any)           |
-| description | string `null`  | Yes     | Overwrites the default description                |
+| Property    | Type / Default | OA Spec | Description                                                                                          | 
+|-------------|----------------|---------|------------------------------------------------------------------------------------------------------|
+| isVisible   | boolean `true` | No      | Is the path and its operations visible in OpenAPI                                                    |
+| ref         | string `null`  | Yes     | An OpenAPI ref such as `#/paths/my-path`                                                             |
+| summary     | string `null`  | Yes     | Overwrites the default summary (if any)                                                              |
+| description | string `null`  | Yes     | Overwrites the default description                                                                   |
+| tags        | array `[]`     | Yes     | Sets the tags for all operations in the path. Tags set on individual operations will tak precedence. |
 
 A common use-case for this is to hide a controller from appearing in your OpenApi (the default behavior). For instance,
 you may have a bespoke endpoint that you don't want to publish:
@@ -541,17 +542,17 @@ Class level attribute for modifying OpenAPI Schema.
 
 You can use the constants below when defining `visibility`:
 
-| Name                              | Value | Description                                                                                                                                                                                                                                                              |
-|-----------------------------------|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `OpenApiSchema::VISIBILE_DEFAULT` | 1     | Default behavior. Adds the schema to `#/components/schema/{SchemaName}` if it matches a controller with a RESTful route.                                                                                                                                                 |
-| `OpenApiSchema::VISIBILE_ALWAYS`  | 2     | Always add the schema to `#/components/schema/{SchemaName}`.                                                                                                                                                                                                             |
-| `OpenApiSchema::VISIBILE_HIDDEN`  | 3     | Never add the schema to `#/components/schema/{SchemaName}` and instead adds it to `#/x-swagger-bake/components/schema/{SchemaName}`. This hides the schema from the Swagger UIs Schemas section, but still allows the schema to be used for request and response bodies. |
-| `OpenApiSchema::VISIBILE_NEVER`   | 4     | Never add the schema anywhere. Warning this can break request body definitions and response samples.                                                                                                                                                                     |
+| Name                             | Value | Description                                                                                                                                                                                                                                                              |
+|----------------------------------|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `OpenApiSchema::VISIBLE_DEFAULT` | 1     | Default behavior. Adds the schema to `#/components/schema/{SchemaName}` if it matches a controller with a RESTful route.                                                                                                                                                 |
+| `OpenApiSchema::VISIBLE_ALWAYS`  | 2     | Always add the schema to `#/components/schema/{SchemaName}`.                                                                                                                                                                                                             |
+| `OpenApiSchema::VISIBLE_HIDDEN`  | 3     | Never add the schema to `#/components/schema/{SchemaName}` and instead adds it to `#/x-swagger-bake/components/schema/{SchemaName}`. This hides the schema from the Swagger UIs Schemas section, but still allows the schema to be used for request and response bodies. |
+| `OpenApiSchema::VISIBLE_NEVER`   | 4     | Never add the schema anywhere. Warning this can break request body definitions and response samples.                                                                                                                                                                     |
 
 Example:
 
 ```php
-#[OpenApiSchema(visbility: OpenApiSchema::VISIBILE_ALWAYS, title: 'Always visible schema')]
+#[OpenApiSchema(visbility: OpenApiSchema::VISIBLE_ALWAYS, title: 'Always visible schema')]
 class Actor extends Entity{}
 ```
 

@@ -16,6 +16,7 @@ use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiOperation;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
+use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
@@ -26,13 +27,15 @@ use SwaggerBake\Lib\Utility\DocBlockUtility;
  *
  * @package SwaggerBake\Lib\Operation
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @internal
  */
 class OperationFromRouteFactory
 {
     /**
      * @param \SwaggerBake\Lib\Swagger $swagger Swagger
+     * @param \SwaggerBake\Lib\OpenApi\Path $path OpenApi Path
      */
-    public function __construct(private Swagger $swagger)
+    public function __construct(private Swagger $swagger, private Path $path)
     {
     }
 
@@ -57,7 +60,11 @@ class OperationFromRouteFactory
         $docBlock = $this->getDocBlock($route);
 
         try {
-            $refClass = new ReflectionClass($route->getControllerFqn());
+            $fqn = $route->getControllerFqn();
+            if (!is_string($fqn) || !class_exists($fqn)) {
+                throw new Exception("Class $fqn does not exist");
+            }
+            $refClass = new ReflectionClass($fqn);
             $refMethod = $refClass->getMethod($route->getAction());
             $keys = (new Collection($refClass->getMethods()))->filter(function (ReflectionMethod $method) use ($route) {
                 return $route->getAction() == $method->getName();
@@ -69,14 +76,20 @@ class OperationFromRouteFactory
             $openApiOperation = null;
         }
 
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiOperation|null $openApiOperation */
         if ($openApiOperation != null && !$openApiOperation->isVisible) {
             return null;
+        }
+
+        $sortOrder = key($keys ?? []);
+        if (!is_int($sortOrder)) {
+            $sortOrder = 100;
         }
 
         $operation = new Operation(
             operationId: $route->getName() . ':' . strtolower($httpMethod),
             httpMethod: $httpMethod,
-            sortOrder: key($keys ?? []) ?? 100
+            sortOrder: $sortOrder
         );
 
         $operation = $this->createOperation($operation, $route, $openApiOperation);
@@ -175,12 +188,16 @@ class OperationFromRouteFactory
         }
 
         if (!count($operation->getTags())) {
-            $tag = $route->getPlugin() ?? '';
-            $tag .= ' ' . Inflector::humanize(Inflector::underscore($route->getController()));
+            if (count($this->path->getTags())) {
+                $operation->setTags($this->path->getTags());
+            } else {
+                $tag = $route->getPlugin() ?? '';
+                $tag .= ' ' . Inflector::humanize(Inflector::underscore($route->getController()));
 
-            $operation->setTags([
-                trim($tag),
-            ]);
+                $operation->setTags([
+                    trim($tag),
+                ]);
+            }
         }
 
         return $operation;

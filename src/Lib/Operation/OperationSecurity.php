@@ -96,14 +96,10 @@ class OperationSecurity
         $scheme = array_keys($array['components']['securitySchemes'])[0];
 
         $securities = $this->operation->getSecurity();
-        if (array_key_exists($scheme, $securities)) {
+        if (array_key_exists($scheme, $securities) || !is_string($scheme)) {
             return;
         }
 
-        $this->operation->pushSecurity(
-            (new PathSecurity())
-                ->setName($scheme)
-                ->setScopes([])
-        );
+        $this->operation->pushSecurity(new PathSecurity($scheme));
     }
 }

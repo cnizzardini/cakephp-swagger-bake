@@ -116,6 +116,7 @@ final class HalJson implements MediaTypeInterface
             }
 
             if ($property->getType() === 'object') {
+                // @phpstan-ignore-next-line
                 $properties['_embedded']['type'] = 'object';
                 $properties['_embedded']['properties'][$key] = $items;
             } else {
@@ -123,6 +124,7 @@ final class HalJson implements MediaTypeInterface
                     $items['allOf'][] = ['$ref' => $items['$ref']];
                     unset($items['$ref']);
                 }
+                // @phpstan-ignore-next-line
                 $properties['_embedded']['items'] = $items;
             }
         }

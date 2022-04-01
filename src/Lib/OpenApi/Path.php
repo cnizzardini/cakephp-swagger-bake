@@ -28,6 +28,8 @@ class Path implements JsonSerializable
      * @param string|null $ref An optional OpenAPI path $ref
      * @param string|null $summary An optional short summary
      * @param string|null $description An optional description
+     * @param string[] $tags Sets the tag for all operations in the path. Tags set on individual operations will take
+     *  precedence.
      */
     public function __construct(
         private string $resource,
@@ -35,6 +37,7 @@ class Path implements JsonSerializable
         private ?string $ref = null,
         private ?string $summary = null,
         private ?string $description = null,
+        private array $tags = []
     ) {
         $this->setOperations($operations);
     }
@@ -182,6 +185,25 @@ class Path implements JsonSerializable
     public function setDescription(?string $description)
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param string[] $tags A list of OpenApi tags
+     * @return $this
+     */
+    public function setTags(array $tags)
+    {
+        $this->tags = $tags;
 
         return $this;
     }

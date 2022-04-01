@@ -14,17 +14,18 @@ use JsonSerializable;
 class PathSecurity implements JsonSerializable
 {
     /**
-     * @var string
+     * @todo needs documentation
+     * @param string $name needs documentation
+     * @param array $scopes needs documentation
      */
-    private $name = '';
+    public function __construct(
+        private string $name = '',
+        private array $scopes = []
+    ) {
+    }
 
     /**
-     * @var string[]
-     */
-    private $scopes = [];
-
-    /**
-     * @return array|array[]
+     * @return array
      */
     public function toArray(): array
     {

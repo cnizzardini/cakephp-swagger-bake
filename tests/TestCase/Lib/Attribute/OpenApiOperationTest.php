@@ -101,7 +101,7 @@ class OpenApiOperationTest extends TestCase
         $this->assertArrayNotHasKey('/operations/is-visible', $arr['paths']);
     }
 
-    public function test_tags_names(): void
+    public function test_operation_tags_names_should_take_precedence(): void
     {
         $arr = json_decode($this->swagger->toString(), true);
         $this->assertCount(4, $arr['paths']['/operations/tag-names']['get']['tags']);
@@ -119,5 +119,12 @@ class OpenApiOperationTest extends TestCase
         $externalDocs = $arr['paths']['/operations/external-docs']['get']['externalDocs'];
         $this->assertEquals('http://localhost', $externalDocs['url']);
         $this->assertEquals('desc...', $externalDocs['description']);
+    }
+
+    public function test_path_tags_should_take_precedence(): void
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+        $this->assertCount(2, $arr['paths']['/operations/deprecated']['get']['tags']);
+        $this->assertCount(2, $arr['paths']['/operations/external-docs']['get']['tags']);
     }
 }

@@ -4,13 +4,14 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Operation;
 
 use Cake\Core\Exception\CakeException;
+use Exception;
 use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 use ReflectionClass;
-use ReflectionException;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApiExceptionSchemaInterface;
 use SwaggerBake\Lib\Swagger;
+use Throwable;
 
 /**
  * Defines an error responses.
@@ -50,6 +51,9 @@ class ExceptionResponse
         $exceptionFqn = $throw->getType()->__toString();
 
         try {
+            if (!class_exists($exceptionFqn)) {
+                throw new Exception("Class $exceptionFqn does not exist");
+            }
             $reflection = new ReflectionClass($exceptionFqn);
             if ($reflection->implementsInterface(OpenApiExceptionSchemaInterface::class)) {
                 $this->code = $exceptionFqn::getExceptionCode();
@@ -58,7 +62,7 @@ class ExceptionResponse
 
                 return $this;
             }
-        } catch (ReflectionException $e) {
+        } catch (Throwable $e) {
             $reflection = null;
         }
 

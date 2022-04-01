@@ -55,13 +55,14 @@ class SchemaFactory
         $reflection = new ReflectionClass($modelDecorator->getModel()->getEntity());
         $openApiSchema = (new AttributeFactory($reflection, OpenApiSchema::class))->createOneOrNull();
 
-        if ($openApiSchema instanceof OpenApiSchema && $openApiSchema->visibility === OpenApiSchema::VISIBILE_NEVER) {
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiSchema $openApiSchema */
+        if ($openApiSchema instanceof OpenApiSchema && $openApiSchema->visibility === OpenApiSchema::VISIBLE_NEVER) {
             return null;
         }
 
         $schema = $this
             ->createSchema($modelDecorator->getModel(), $propertyType)
-            ->setVisibility($openApiSchema->visibility ?? OpenApiSchema::VISIBILE_DEFAULT)
+            ->setVisibility($openApiSchema->visibility ?? OpenApiSchema::VISIBLE_DEFAULT)
             ->setDescription($openApiSchema->description ?? '');
 
         EventManager::instance()->dispatch(

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Command;
 
+use Cake\Console\Arguments;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
@@ -13,13 +14,17 @@ trait CommandTrait
     /**
      * Loads configuration
      *
-     * @param string $config your applications swagger_bake config
+     * @param \Cake\Console\Arguments $args Cli Arguments instance
      * @return void
      * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException if config file not found
      * @throws \RuntimeException if config var SwaggerBake not found
      */
-    public function loadConfig(string $config = 'swagger_bake'): void
+    public function loadConfig(Arguments $args): void
     {
+        $config = $args->getOption('config');
+        if (!is_string($config) || empty($config)) {
+            $config = 'swagger_bake';
+        }
         if ($config !== 'swagger_bake') {
             Configure::delete('SwaggerBake');
         }

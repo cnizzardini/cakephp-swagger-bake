@@ -42,9 +42,9 @@ class OpenApiSchemaGenerator
                 continue;
             }
 
-            if (in_array($schema->getVisibility(), [OpenApiSchema::VISIBILE_DEFAULT, OpenApiSchema::VISIBILE_ALWAYS])) {
+            if (in_array($schema->getVisibility(), [OpenApiSchema::VISIBLE_DEFAULT, OpenApiSchema::VISIBLE_ALWAYS])) {
                 $openapi = $this->addSchema($openapi, $schema);
-            } elseif ($schema->getVisibility() == OpenApiSchema::VISIBILE_HIDDEN) {
+            } elseif ($schema->getVisibility() == OpenApiSchema::VISIBLE_HIDDEN) {
                 $openapi = $this->addVendorSchema($openapi, $schema);
             }
         }

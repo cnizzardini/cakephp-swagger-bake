@@ -68,7 +68,7 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @see OpenApiSchema::VISIBILE_NEVER
+     * @see OpenApiSchema::VISIBLE_NEVER
      */
     public function test_schema_never_visible(): void
     {
@@ -83,7 +83,7 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @see OpenApiSchema::VISIBILE_HIDDEN
+     * @see OpenApiSchema::VISIBLE_HIDDEN
      */
     public function test_schema_is_hidden(): void
     {

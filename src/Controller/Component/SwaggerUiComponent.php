@@ -83,11 +83,12 @@ class SwaggerUiComponent extends Component
      */
     public function getDocType(ServerRequest $request): string
     {
-        $docType = 'swagger';
-        if (!empty($request->getQuery('doctype'))) {
-            $docType = h(strtolower($request->getQuery('doctype')));
+        if (empty($request->getQuery('doctype')) || !is_string($request->getQuery('doctype'))) {
+            return 'swagger';
         }
 
-        return in_array(strtolower($docType), ['swagger','redoc']) ? $docType : 'swagger';
+        $docType = h(strtolower($request->getQuery('doctype')));
+
+        return in_array($docType, ['swagger','redoc']) ? $docType : 'swagger';
     }
 }

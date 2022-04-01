@@ -55,7 +55,7 @@ class Schema implements JsonSerializable, SchemaInterface
         private array $allOf = [],
         private array $not = [],
         private ?Xml $xml = null,
-        private int $visibility = OpenApiSchema::VISIBILE_DEFAULT,
+        private int $visibility = OpenApiSchema::VISIBLE_DEFAULT,
         private ?string $refPath = null,
         private bool $isCustomSchema = false,
     ) {
