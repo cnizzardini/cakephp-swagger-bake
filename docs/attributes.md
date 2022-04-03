@@ -61,6 +61,7 @@ public function index() {}
 Example DTO class:
 
 ```php
+#[OpenApiSchemaProperty(name: "a_property")] // in >= v2.2.11 you can target at the class level.
 class ActorDto
 {
     public function __construct(

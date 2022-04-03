@@ -5,6 +5,8 @@ namespace SwaggerBakeTest\App\Dto;
 use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
 use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 
+#[OpenApiSchemaProperty(name: 'lazy', description: 'testing')]
+#[OpenApiQueryParam(name: 'lazy', description: 'testing')]
 class EmployeeDataRequest
 {
     #[OpenApiSchemaProperty(name: 'first_name', description: 'testing')]

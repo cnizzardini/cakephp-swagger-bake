@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Operation;
 
 use Cake\Controller\Controller;
+use ReflectionClass;
 use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiDto;
@@ -161,7 +162,18 @@ class OperationQueryParameter
             );
         }
 
-        $parameters = (new DtoParser($dto->class))->getParameters();
+        // get openapi schema query params defined on the class
+        $queryParams = (new AttributeFactory(
+            new ReflectionClass($dto->class),
+            OpenApiQueryParam::class
+        ))->createMany();
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiQueryParam[] $queryParams */
+        $parameters = array_map(function ($param) {
+            return $param->createParameter();
+        }, $queryParams);
+
+        // get openapi query params defined per class property
+        $parameters = array_merge($parameters, (new DtoParser($dto->class))->getParameters());
         foreach ($parameters as $parameter) {
             $this->operation->pushParameter($parameter);
         }
