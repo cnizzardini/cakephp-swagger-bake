@@ -10,6 +10,7 @@ use SwaggerBake\Lib\Attribute\OpenApiDto;
 use SwaggerBake\Lib\Attribute\OpenApiForm;
 use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
+use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
@@ -173,7 +174,18 @@ class OperationRequestBody
             ->setName($dtoReflection->getShortName())
             ->setIsCustomSchema(true);
 
-        $properties = (new DtoParser($dtoReflection))->getSchemaProperties();
+        // get openapi schema properties defined on the class
+        $schemaProperties = (new AttributeFactory(
+            $dtoReflection,
+            OpenApiSchemaProperty::class
+        ))->createMany();
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiSchemaProperty[] $schemaProperties */
+        $properties = array_map(function ($prop) {
+            return $prop->create();
+        }, $schemaProperties);
+
+        // get openapi schema properties defined per class property
+        $properties = array_merge($properties, (new DtoParser($dtoReflection))->getSchemaProperties());
         foreach ($properties as $property) {
             $schema->pushProperty($property);
         }

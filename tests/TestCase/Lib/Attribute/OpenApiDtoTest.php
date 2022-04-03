@@ -93,14 +93,16 @@ class OpenApiDtoTest extends TestCase
         $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
-        foreach (['dto-query', 'dto-query-legacy'] as $path) {
-            $operation = $arr['paths']['/employees/' . $path]['get'];
+        $operation = $arr['paths']['/employees/dto-query-legacy']['get'];
+        $properties = ['first_name', 'last_name', 'title', 'age', 'date'];
+        foreach ($properties as $x => $property) {
+            $this->assertEquals($property, $operation['parameters'][$x]['name']);
+        }
 
-            $this->assertEquals('first_name', $operation['parameters'][0]['name']);
-            $this->assertEquals('last_name', $operation['parameters'][1]['name']);
-            $this->assertEquals('title', $operation['parameters'][2]['name']);
-            $this->assertEquals('age', $operation['parameters'][3]['name']);
-            $this->assertEquals('date', $operation['parameters'][4]['name']);
+        $operation = $arr['paths']['/employees/dto-query']['get'];
+        $properties = array_merge(['lazy'], $properties);
+        foreach ($properties as $x => $property) {
+            $this->assertEquals($property, $operation['parameters'][$x]['name']);
         }
     }
 
@@ -113,15 +115,18 @@ class OpenApiDtoTest extends TestCase
         $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
         $arr = json_decode($swagger->toString(), true);
 
-        foreach (['dto-post' ,'dto-post-legacy'] as $route) {
-            $operation = $arr['paths']['/employees/' . $route]['post'];
-            $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
+        $operation = $arr['paths']['/employees/dto-post-legacy']['post'];
+        $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
+        $names = ['first_name', 'last_name', 'title', 'age', 'date'];
+        foreach ($names as $property) {
+            $this->assertArrayHasKey($property, $properties);
+        }
 
-            $this->assertArrayHasKey('last_name', $properties);
-            $this->assertArrayHasKey('first_name', $properties);
-            $this->assertArrayHasKey('title', $properties);
-            $this->assertArrayHasKey('age', $properties);
-            $this->assertArrayHasKey('date', $properties);
+        $operation = $arr['paths']['/employees/dto-post']['post'];
+        $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
+        $names = array_merge(['lazy'], $names);
+        foreach ($names as $property) {
+            $this->assertArrayHasKey($property, $properties);
         }
     }
 
@@ -135,19 +140,19 @@ class OpenApiDtoTest extends TestCase
         $arr = json_decode($swagger->toString(), true);
 
         $parameterized = [
+            'dto-public-legacy' => 'EmployeeDataRequestPublicSchemaLegacy',
             'dto-public' => 'EmployeeDataRequestPublicSchema',
-            'dto-public-legacy' => 'EmployeeDataRequestPublicSchemaLegacy'
         ];
+
+        $names = ['first_name', 'last_name', 'title', 'age', 'date'];
 
         foreach ($parameterized as $path => $class) {
             $this->assertArrayHasKey($class, $arr['components']['schemas']);
 
             $properties = $arr['components']['schemas'][$class]['properties'];
-            $this->assertArrayHasKey('last_name', $properties);
-            $this->assertArrayHasKey('first_name', $properties);
-            $this->assertArrayHasKey('title', $properties);
-            $this->assertArrayHasKey('age', $properties);
-            $this->assertArrayHasKey('date', $properties);
+            foreach ($names as $property) {
+                $this->assertArrayHasKey($property, $properties);
+            }
 
             $operation = $arr['paths']['/employees/' . $path]['post'];
             $ref = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['$ref'];
