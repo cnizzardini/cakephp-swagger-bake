@@ -10,7 +10,6 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Routing\Router;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Route\RouteScanner;
-use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**
  * Class RouteCommand
@@ -60,7 +59,6 @@ class RouteCommand extends Command
         ];
 
         $config = new Configuration();
-        ValidateConfiguration::validate($config);
 
         if (!empty($args->getOption('prefix'))) {
             $config->set('prefix', $args->getOption('prefix'));

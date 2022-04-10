@@ -14,7 +14,6 @@ use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
-use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**
  * Class ModelCommand
@@ -60,7 +59,6 @@ class ModelCommand extends Command
         $io->hr();
 
         $config = new Configuration();
-        ValidateConfiguration::validate($config);
 
         if (!empty($args->getOption('prefix'))) {
             $config->set('prefix', $args->getOption('prefix'));
