@@ -9,7 +9,6 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
-use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**
  * Class BakeCommand
@@ -53,7 +52,7 @@ class BakeCommand extends Command
         $io->out('Running...');
 
         $config = new Configuration();
-        ValidateConfiguration::validate($config);
+
         /** @var string $output */
         $output = $args->getOption('output') ?? $config->getJson();
         if (empty($output) || !is_string($output)) {
