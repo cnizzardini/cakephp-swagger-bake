@@ -34,6 +34,7 @@ class SwaggerFactory
      * Creates an instance of Swagger
      *
      * @return \SwaggerBake\Lib\Swagger
+     * @throws \ReflectionException
      */
     public function create(): Swagger
     {
