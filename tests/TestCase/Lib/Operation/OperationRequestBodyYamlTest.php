@@ -62,7 +62,7 @@ class OperationRequestBodyYamlTest extends TestCase
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels);
+        $swagger = new Swagger($cakeModels, $config);
 
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];

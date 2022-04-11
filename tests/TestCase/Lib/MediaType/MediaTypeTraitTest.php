@@ -32,7 +32,7 @@ class MediaTypeTraitTest extends TestCase
         ], SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new RouteScanner(new Router(), $config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
 
         $this->expectException(InvalidArgumentException::class);
 

@@ -60,8 +60,9 @@ class ModelCommand extends Command
 
         $config = new Configuration();
 
-        if (!empty($args->getOption('prefix'))) {
-            $config->set('prefix', $args->getOption('prefix'));
+        $prefix = $args->getOption('prefix');
+        if (!empty($prefix) && is_string($prefix)) {
+            $config->setPrefix($prefix);
         }
 
         $routeScanner = new RouteScanner(new Router(), $config);

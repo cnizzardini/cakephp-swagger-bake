@@ -49,7 +49,7 @@ class OpenApiPathGenerator
             }
 
             if ($route->getAction() == 'edit') {
-                $methods = $this->config->get('editActionMethods');
+                $methods = $this->config->getEditActionMethods();
             } else {
                 $methods = $route->getMethods();
             }

@@ -32,11 +32,12 @@ class Swagger
 
     /**
      * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
+     * @param \SwaggerBake\Lib\Configuration $configuration Configuration instance
      * @throws \ReflectionException
      */
-    public function __construct(ModelScanner $modelScanner)
+    public function __construct(ModelScanner $modelScanner, Configuration $configuration)
     {
-        $this->config = $modelScanner->getConfig();
+        $this->config = $configuration;
 
         $this->array = (new OpenApiFromYaml())->build(Yaml::parseFile($this->config->getYml()));
 
@@ -121,7 +122,7 @@ class Swagger
             new Event('SwaggerBake.beforeRender', $this)
         );
 
-        $json = json_encode($this->getArray(), $this->config->get('jsonOptions'));
+        $json = json_encode($this->getArray(), $this->config->getJsonOptions());
         if (!$json) {
             throw new SwaggerBakeRunTimeException('Error converting OpenAPI to JSON.');
         }
