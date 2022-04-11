@@ -41,9 +41,8 @@ class SwaggerFactory
         $routes = $this->routeScanner->getRoutes();
 
         if (empty($routes)) {
-            $prefixes = implode(', ', $this->config->getPrefixes());
             throw new SwaggerBakeRunTimeException(
-                'No restful routes were found for your prefix `' . $prefixes . '`. ' .
+                'No restful routes were found for your prefix `' . $this->config->getPrefix() . '`. ' .
                 'Try adding restful routes to your `config/routes.php`.'
             );
         }

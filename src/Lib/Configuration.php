@@ -22,17 +22,9 @@ class Configuration
     private string $root;
 
     /**
-     * @deprecated use $prefixes
      * @var string The base prefix for your API, e.g. `/` or `/api/`
      */
     private string $prefix;
-
-    /**
-     * @var string[] The base prefixes for your API, e.g. `/` or `/api/`. This will add these paths to your OpenAPI
-     * documentation. For instance, ['/'] will load everything, while ['/api'] would only load route under '/api'.
-     * You can provide multiple prefixes, for instance ['/public/api', '/admin/api'].
-     */
-    private array $prefixes;
 
     /**
      * @var string A base Swagger YML file, see example in assets (e.g. `/config/swagger.yml`).
@@ -138,63 +130,25 @@ class Configuration
     }
 
     /**
-     * @deprecated use getPrefixes()
      * @return string
      */
     public function getPrefix(): string
     {
-        trigger_deprecation(
-            'cnizzardini/cakephp-swagger-bake',
-            'v2.3.0',
-            'Configuration::getPrefix() will be removed in v3.0.0, use getPrefixes() instead'
-        );
-
         return $this->prefix;
     }
 
     /**
-     * @deprecated use setPrefixes()
-     * @param string $prefix This method is deprecated, it will call setPrefixes().
+     * @param string $prefix The base prefix for your API, e.g. `/` or `/api/`
      * @return $this
      */
     public function setPrefix(string $prefix)
     {
-        trigger_deprecation(
-            'cnizzardini/cakephp-swagger-bake',
-            'v2.3.0',
-            'Configuration::setPrefix() will be removed in v3.0.0, use setPrefixes() instead'
+        $this->throwInvalidArgExceptionIfPrefixInvalid(
+            $prefix,
+            "Invalid prefix: $prefix. Prefix must be a valid URI path such as `/` or `/api`."
         );
 
         $this->prefix = $prefix;
-        $this->setPrefixes([$prefix]);
-
-        return $this;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getPrefixes(): array
-    {
-        return $this->prefixes;
-    }
-
-    /**
-     * @param string[] $prefixes The base prefixes for your API, e.g. `/` or `/api/`. This will add these paths to your
-     * OpenAPI documentation. For instance, ['/'] will load everything, while ['/api'] would only load route under
-     * '/api'. You can provide multiple prefixes, for instance ['/public/api', '/admin/api'].
-     * @return $this
-     */
-    public function setPrefixes(array $prefixes)
-    {
-        foreach ($prefixes as $prefix) {
-            $this->throwInvalidArgExceptionIfPrefixInvalid(
-                $prefix,
-                "Invalid prefix: $prefix. Prefix must be a valid URI path such as `/` or `/api`."
-            );
-        }
-
-        $this->prefixes = $prefixes;
 
         return $this;
     }
