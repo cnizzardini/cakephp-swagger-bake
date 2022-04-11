@@ -23,9 +23,9 @@ class Configuration
 
     /**
      * @deprecated use $prefixes
-     * @var string|null The base prefix for your API, e.g. `/` or `/api/`
+     * @var string The base prefix for your API, e.g. `/` or `/api/`
      */
-    private ?string $prefix = null;
+    private string $prefix;
 
     /**
      * @var string[] The base prefixes for your API, e.g. `/` or `/api/`. This will add these paths to your OpenAPI
@@ -115,7 +115,7 @@ class Configuration
 
         if (!array_key_exists(key: 'prefix', array: $config) && !array_key_exists(key: 'prefixes', array: $config)) {
             throw new InvalidArgumentException(
-                "Property `prefixes` must be defined in your config/swagger_bake.php configuration file."
+                'Property `prefixes` must be defined in your config/swagger_bake.php configuration file.'
             );
         }
 
@@ -139,9 +139,9 @@ class Configuration
 
     /**
      * @deprecated use getPrefixes()
-     * @return string|null
+     * @return string
      */
-    public function getPrefix(): ?string
+    public function getPrefix(): string
     {
         trigger_deprecation(
             'cnizzardini/cakephp-swagger-bake',
@@ -154,10 +154,10 @@ class Configuration
 
     /**
      * @deprecated use setPrefixes()
-     * @param string|null $prefix This method is deprecated, it will call setPrefixes().
+     * @param string $prefix This method is deprecated, it will call setPrefixes().
      * @return $this
      */
-    public function setPrefix(?string $prefix = null)
+    public function setPrefix(string $prefix)
     {
         trigger_deprecation(
             'cnizzardini/cakephp-swagger-bake',
@@ -180,7 +180,7 @@ class Configuration
     }
 
     /**
-     * @param string[] $prefix The base prefixes for your API, e.g. `/` or `/api/`. This will add these paths to your
+     * @param string[] $prefixes The base prefixes for your API, e.g. `/` or `/api/`. This will add these paths to your
      * OpenAPI documentation. For instance, ['/'] will load everything, while ['/api'] would only load route under
      * '/api'. You can provide multiple prefixes, for instance ['/public/api', '/admin/api'].
      * @return $this
