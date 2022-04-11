@@ -57,7 +57,7 @@ class HalJsonIntegrationTest extends TestCase
     public function test_collection(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
 
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */
         $path = $swagger->getArray()['paths']['/employees'];
@@ -78,7 +78,7 @@ class HalJsonIntegrationTest extends TestCase
     public function test_item(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
 
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */
         $path = $swagger->getArray()['paths']['/employees/{id}'];

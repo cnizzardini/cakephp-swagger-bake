@@ -32,11 +32,12 @@ class Swagger
 
     /**
      * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
+     * @param \SwaggerBake\Lib\Configuration $configuration Configuration instance
      * @throws \ReflectionException
      */
-    public function __construct(ModelScanner $modelScanner)
+    public function __construct(ModelScanner $modelScanner, Configuration $configuration)
     {
-        $this->config = $modelScanner->getConfig();
+        $this->config = $configuration;
 
         $this->array = (new OpenApiFromYaml())->build(Yaml::parseFile($this->config->getYml()));
 

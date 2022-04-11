@@ -73,7 +73,7 @@ class OperationDocBlockTest extends TestCase
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels);
+        $swagger = new Swagger($cakeModels, $config);
 
         foreach (['see','link'] as $tag) {
             $block = <<<EOT
@@ -99,7 +99,7 @@ EOT;
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels);
+        $swagger = new Swagger($cakeModels, $config);
 
         foreach (['see','link'] as $tag) {
             $block = <<<EOT
@@ -124,7 +124,7 @@ EOT;
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels);
+        $swagger = new Swagger($cakeModels, $config);
 
         foreach (['see','link'] as $tag) {
             $block = <<<EOT
@@ -146,7 +146,7 @@ EOT;
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels);
+        $swagger = new Swagger($cakeModels, $config);
 
         $block = <<<EOT
 /** 
@@ -170,7 +170,7 @@ EOT;
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels);
+        $swagger = new Swagger($cakeModels, $config);
 
         $block = <<<EOT
 /** 

@@ -41,7 +41,7 @@ class GenericTest extends TestCase
     public function test_collection(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
         $schema = (new Generic($swagger))->buildSchema('#/components/schemas/thing', 'array');
         $this->assertEquals(
             '#/x-swagger-bake/components/schemas/Generic-Collection',

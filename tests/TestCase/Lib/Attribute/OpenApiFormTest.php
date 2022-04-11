@@ -64,7 +64,7 @@ class OpenApiFormTest extends TestCase
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
         $arr = json_decode($swagger->toString(), true);
 
         $operation = $arr['paths']['/employees/custom-post']['post'];

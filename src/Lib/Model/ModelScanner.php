@@ -153,22 +153,4 @@ class ModelScanner
     {
         return $this->routeScanner;
     }
-
-    /**
-     * The user-defined `prefix` from the swagger_bake config file.
-     *
-     * @return string
-     */
-    public function getPrefix(): string
-    {
-        return $this->config->getPrefix();
-    }
-
-    /**
-     * @return \SwaggerBake\Lib\Configuration
-     */
-    public function getConfig(): Configuration
-    {
-        return $this->config;
-    }
 }

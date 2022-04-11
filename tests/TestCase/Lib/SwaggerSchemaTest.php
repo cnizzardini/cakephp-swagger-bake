@@ -56,7 +56,7 @@ class SwaggerSchemaTest extends TestCase
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
 
         $arr = json_decode($swagger->toString(), true);
 
@@ -73,7 +73,7 @@ class SwaggerSchemaTest extends TestCase
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
 
         $arr = json_decode($swagger->toString(), true);
 

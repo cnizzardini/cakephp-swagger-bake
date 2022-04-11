@@ -77,7 +77,7 @@ class SwaggerTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
-        $openApi = (new Swagger(new ModelScanner($cakeRoute, $config)))->getArray();
+        $openApi = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->getArray();
 
         $this->assertArrayHasKey('/departments', $openApi['paths']);
         $this->assertArrayHasKey('/pets', $openApi['paths']);
@@ -92,7 +92,7 @@ class SwaggerTest extends TestCase
 
         $cakeRoute = new RouteScanner($this->router, $config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
         $arr = json_decode($swagger->toString(), true);
 
         $this->assertArrayHasKey('/departments', $arr['paths']);
@@ -107,7 +107,7 @@ class SwaggerTest extends TestCase
 
         $cakeRoute = new RouteScanner($this->router, $config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
         $jsonString = $swagger->toString();
 
         $this->assertStringNotContainsString('"\/departments"', $jsonString);
@@ -128,7 +128,7 @@ class SwaggerTest extends TestCase
 
         $cakeRoute = new RouteScanner($this->router, $config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config));
+        $swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
         $openApi = $swagger->getArray();
         /** @var Path $path */
         $path = $openApi['paths']['/employees/{id}'];
