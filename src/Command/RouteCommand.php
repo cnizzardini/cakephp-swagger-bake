@@ -61,7 +61,7 @@ class RouteCommand extends Command
         $config = new Configuration();
 
         if (!empty($args->getOption('prefix'))) {
-            $config->set('prefix', $args->getOption('prefix'));
+            $config->setPrefix($args->getOption('prefix'));
         }
 
         $prefix = $config->getPrefix();

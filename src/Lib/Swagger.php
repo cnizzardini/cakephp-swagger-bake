@@ -121,7 +121,7 @@ class Swagger
             new Event('SwaggerBake.beforeRender', $this)
         );
 
-        $json = json_encode($this->getArray(), $this->config->get('jsonOptions'));
+        $json = json_encode($this->getArray(), $this->config->getJsonOptions());
         if (!$json) {
             throw new SwaggerBakeRunTimeException('Error converting OpenAPI to JSON.');
         }
