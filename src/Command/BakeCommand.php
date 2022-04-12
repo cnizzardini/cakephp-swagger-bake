@@ -20,6 +20,9 @@ class BakeCommand extends Command
 {
     use CommandTrait;
 
+    /**
+     * @param \SwaggerBake\Lib\Service\OpenApiBakerService $service OpenApiBakerService
+     */
     public function __construct(private OpenApiBakerService $service)
     {
         parent::__construct();
@@ -71,8 +74,7 @@ class BakeCommand extends Command
                     $io->out("<warning>$warning</warning>");
                 }
             }
-
-        } catch(SwaggerBakeRunTimeException $e) {
+        } catch (SwaggerBakeRunTimeException $e) {
             $io->out('<error>' . $e->getMessage() . '</error>');
         }
     }

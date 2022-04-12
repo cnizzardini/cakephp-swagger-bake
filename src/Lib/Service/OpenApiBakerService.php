@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Service;
 
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Swagger;
 
 class OpenApiBakerService
@@ -12,11 +12,10 @@ class OpenApiBakerService
     /**
      * Creates the OpenAPI json file.
      *
-     * @param Swagger $swagger
-     * @param string $filePath
-     *
+     * @param \SwaggerBake\Lib\Swagger $swagger Swagger
+     * @param string $filePath The file path to write the openapi json to
      * @return string
-     * @throws SwaggerBakeRunTimeException
+     * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
      */
     public function bake(Swagger $swagger, string $filePath): string
     {
