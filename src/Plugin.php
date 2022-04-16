@@ -6,9 +6,12 @@ namespace SwaggerBake;
 use Cake\Console\CommandCollection;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
+use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use SwaggerBake\Command as Commands;
 use SwaggerBake\Lib\ExtensionLoader;
+use SwaggerBake\Lib\Service\InstallerService;
+use SwaggerBake\Lib\Service\OpenApiBakerService;
 
 /**
  * Class Plugin
@@ -35,8 +38,7 @@ class Plugin extends BasePlugin
     protected $middleware = false;
 
     /**
-     * @param \Cake\Core\PluginApplicationInterface $app PluginApplicationInterface
-     * @return void
+     * @inheritDoc
      */
     public function bootstrap(PluginApplicationInterface $app): void
     {
@@ -53,8 +55,7 @@ class Plugin extends BasePlugin
     }
 
     /**
-     * @param \Cake\Console\CommandCollection $commands CommandCollection
-     * @return \Cake\Console\CommandCollection
+     * @inheritDoc
      */
     public function console(CommandCollection $commands): CommandCollection
     {
@@ -64,5 +65,26 @@ class Plugin extends BasePlugin
         $commands->add('swagger install', Commands\InstallCommand::class);
 
         return $commands;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function services(ContainerInterface $container): void
+    {
+        parent::services($container);
+
+        if (PHP_SAPI === 'cli') {
+            $container->add(OpenApiBakerService::class);
+            $container->add(InstallerService::class);
+
+            $container
+                ->add(Commands\BakeCommand::class)
+                ->addArgument(OpenApiBakerService::class);
+
+            $container
+                ->add(Commands\InstallCommand::class)
+                ->addArgument(InstallerService::class);
+        }
     }
 }
