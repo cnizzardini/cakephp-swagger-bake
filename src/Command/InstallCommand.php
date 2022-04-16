@@ -7,16 +7,16 @@ use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use SwaggerBake\Lib\Exception\InstallException;
+use SwaggerBake\Lib\Service\InstallerService;
 
-/**
- * Class InstallCommand
- *
- * @package SwaggerBake\Command
- * @SuppressWarnings(PHPMD.NPathComplexity)
- * @SuppressWarnings(PHPMD.CyclomaticComplexity)
- */
 class InstallCommand extends Command
 {
+    public function __construct(private InstallerService $service)
+    {
+        parent::__construct();
+    }
+
     /**
      * @param \Cake\Console\ConsoleOptionParser $parser ConsoleOptionParser
      * @return \Cake\Console\ConsoleOptionParser
@@ -24,16 +24,6 @@ class InstallCommand extends Command
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         $parser->setDescription('SwaggerBake Installer');
-
-        if (defined('TEST')) {
-            $parser
-                ->addOption('config_test', [
-                    'help' => '(FOR TESTING ONLY) - Sets the CONFIG directory path',
-                ])
-                ->addOption('assets_test', [
-                    'help' => '(FOR TESTING ONLY) - Sets the assets directory path',
-                ]);
-        }
 
         return $parser;
     }
@@ -51,72 +41,32 @@ class InstallCommand extends Command
         $io->out('| SwaggerBake Install');
         $io->hr();
 
-        /** @var string $assets */
-        $assets = $args->getOption('assets_test') ?? __DIR__ . DS . '..' . DS . '..' . DS . 'assets';
-        if (empty($assets) || !is_string($assets) || !is_dir($assets)) {
-            $io->error('Unable to locate assets directory, please install manually');
-            $this->abort();
-        }
-
-        $io->info('This will create, but not overwrite config/swagger.yml and config/swagger_bake.php');
-
-        $io->out(
+        $continue = $io->ask(
             'If your API exists in a plugin or you have some other non-standard setup, please follow ' .
-            'the manual installation steps.'
+            'the manual installation steps. Do you want to continue?', 'Y'
         );
 
-        if (strtoupper($io->ask('Continue?', 'Y')) !== 'Y') {
+        if (strtoupper($continue) !== 'Y') {
             $io->out('Exiting install');
             $this->abort();
         }
 
-        $configDir = $args->getOption('config_test') ?? CONFIG;
+        $path = $io->ask('What is your APIs path prefix e.g. `/` or `/api`?');
 
-        if (file_exists($configDir . 'swagger.yml') || file_exists($configDir . 'swagger_bake.php')) {
-            $answer = $io->ask('The installer found existing SwaggerBake config files. Overwrite?', 'Y');
-            if (strtoupper($answer) !== 'Y') {
-                $io->out('Exiting install');
-                $this->abort();
+        $installComplete = $skipErrors = false;
+        do {
+            try {
+                $installComplete = $this->service->install($path, $skipErrors);
+            } catch (InstallException $e) {
+                if ($e->getQuestion() === null) {
+                    $io->out('<error>' . $e->getMessage() . '</error>');
+                    $this->abort();
+                }
+                $skipErrors = strtoupper($io->ask($e->getQuestion(), 'Y')) === 'Y';
             }
-        }
+        } while($installComplete != true);
 
-        $swaggerYml = $configDir . 'swagger.yml';
-        if (!copy("$assets/swagger.yml", $swaggerYml)) {
-            $io->error('Unable to copy swagger.yml, check permissions');
-            $this->abort();
-        }
-
-        $path = trim($io->ask('What is your APIs path prefix (e.g. /api)'));
-        if (empty($path) || !filter_var('http://localhost' . $path, FILTER_VALIDATE_URL)) {
-            $io->error('A valid API path prefix is required');
-            $this->abort();
-        }
-
-        if (!copy("$assets/swagger_bake.php", $configDir . 'swagger_bake.php')) {
-            $io->error('Unable to copy swagger_bake.php, check permissions');
-            $this->abort();
-        }
-
-        /** @var string $contents */
-        $contents = file_get_contents($swaggerYml);
-        if (!$contents) {
-            $io->error("Unable to get contents of $swaggerYml");
-            $this->abort();
-        }
-
-        $contents = str_replace('YOUR-SERVER-HERE', $path, $contents);
-        file_put_contents($swaggerYml, $contents);
-
-        /** @var string $contents */
-        $contents = file_get_contents($configDir . 'swagger_bake.php');
-        if (!$contents) {
-            $io->error('Unable to get contents of swagger_bake.php');
-            $this->abort();
-        }
-        $contents = str_replace('/your-relative-api-url', $path, $contents);
-        file_put_contents($configDir . 'swagger_bake.php', $contents);
-
-        $io->out('Now just add a route in your config/routes.php for SwaggerUI and you\'re ready to go!');
+        $io->out("Now just add a route in your config/routes.php for SwaggerUI and you're ready to go!");
 
         $io->success('Installation Complete!');
     }
