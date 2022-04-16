@@ -12,6 +12,9 @@ use SwaggerBake\Lib\Service\InstallerService;
 
 class InstallCommand extends Command
 {
+    /**
+     * @param \SwaggerBake\Lib\Service\InstallerService $service InstallerService
+     */
     public function __construct(private InstallerService $service)
     {
         parent::__construct();
@@ -43,7 +46,8 @@ class InstallCommand extends Command
 
         $continue = $io->ask(
             'If your API exists in a plugin or you have some other non-standard setup, please follow ' .
-            'the manual installation steps. Do you want to continue?', 'Y'
+            'the manual installation steps. Do you want to continue?',
+            'Y'
         );
 
         if (strtoupper($continue) !== 'Y') {
@@ -64,7 +68,7 @@ class InstallCommand extends Command
                 }
                 $skipErrors = strtoupper($io->ask($e->getQuestion(), 'Y')) === 'Y';
             }
-        } while($installComplete != true);
+        } while ($installComplete != true);
 
         $io->out("Now just add a route in your config/routes.php for SwaggerUI and you're ready to go!");
 

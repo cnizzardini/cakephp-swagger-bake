@@ -26,23 +26,23 @@ class InstallerService
      * @param string $prefix The users desired api prefix such as `/` or `/api`
      * @param bool $skipErrors Skip errors which can be skipped
      * @return bool
-     * @throws InstallException
+     * @throws \SwaggerBake\Lib\Exception\InstallException
      */
     public function install(string $prefix, bool $skipErrors = false): bool
     {
         $prefix = trim($prefix);
         $this->validate($prefix, $skipErrors);
 
-        $fromAssets = self::ASSETS . "/swagger.yml";
-        $swaggerYml = $this->configDir . "swagger.yml";
+        $fromAssets = self::ASSETS . '/swagger.yml';
+        $swaggerYml = $this->configDir . 'swagger.yml';
         if (!$this->fileUtility->copy($fromAssets, $swaggerYml)) {
             throw new InstallException(
                 "Error copying base OpenAPI YAML from `$fromAssets` to `$swaggerYml`"
             );
         }
 
-        $fromAssets = self::ASSETS . "/swagger_bake.php";
-        $swaggerBake = $this->configDir . "swagger_bake.php";
+        $fromAssets = self::ASSETS . '/swagger_bake.php';
+        $swaggerBake = $this->configDir . 'swagger_bake.php';
         if (!$this->fileUtility->copy($fromAssets, $swaggerBake)) {
             throw new InstallException(
                 "Error copying swagger_bake config from `$fromAssets` to `$swaggerBake`"
@@ -76,7 +76,7 @@ class InstallerService
      * @param string $prefix The users desired api prefix such as `/` or `/api`
      * @param bool $skipErrors Skip errors which can be skipped
      * @return void
-     * @throws InstallException
+     * @throws \SwaggerBake\Lib\Exception\InstallException
      */
     private function validate(string $prefix, bool $skipErrors): void
     {
@@ -89,7 +89,7 @@ class InstallerService
         if (!$this->fileUtility->isDir(self::ASSETS)) {
             throw new InstallException(
                 sprintf(
-                    "Assets directory `%s` does not exist. Please correct the issue or install manually.",
+                    'Assets directory `%s` does not exist. Please correct the issue or install manually.',
                     self::ASSETS
                 )
             );
