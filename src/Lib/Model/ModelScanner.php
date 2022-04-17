@@ -54,7 +54,7 @@ class ModelScanner
                     continue;
                 }
 
-                $routeDecorator = $this->getRouteDecorator($model);
+                $routeDecorator = $this->findRouteDecoratorByModel($model);
                 if (!$this->isVisible($model, $routeDecorator)) {
                     continue;
                 }
@@ -73,18 +73,12 @@ class ModelScanner
     }
 
     /**
-     * Returns the RouteDecorator associated with the Model using the loadedModel from the Controller.
-     *
-     * 1. Use CakePHP naming convention to determine the table.
-     * 2. Check if the Controller has an instance of a \Cake\ORM\Table and match on the table alias.
-     *
-     * If no model is found, attempt finding a matching table for the controller using CakePHP naming conventions,
-     * otherwise return null.
+     * Finds the RouteDecorator (if any) associated with the Model, otherwise returns null.
      *
      * @param \MixerApi\Core\Model\Model $model Model instance
      * @return \SwaggerBake\Lib\Route\RouteDecorator|null
      */
-    private function getRouteDecorator(Model $model): ?RouteDecorator
+    private function findRouteDecoratorByModel(Model $model): ?RouteDecorator
     {
         $routes = $this->routeScanner->getRoutes();
 
