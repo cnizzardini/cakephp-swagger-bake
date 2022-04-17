@@ -40,7 +40,7 @@ class SwaggerController extends Controller
         /*
          * Render either the swagger or redoc view
          *
-         * @see vendor/cnizzardini/cakephp-swagger-bake/templates/layout
+         * @see vendor/cnizzardini/cakephp-swagger-bake/templates/Swagger
          */
         return $this->render($config->getView($doctype));
     }
