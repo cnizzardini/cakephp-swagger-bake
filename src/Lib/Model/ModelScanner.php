@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Model;
 
 use Cake\Collection\Collection;
-use Cake\Controller\Controller;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use MixerApi\Core\Model\Model;
@@ -132,8 +131,8 @@ class ModelScanner
      * 1. Use LocatorAwareTrait::fetchTable (4.3 or higher) and
      * 2. See ModelScanner::routeHasModelFallback()
      *
-     * @param RouteDecorator $routeDecorator RouteDecorator that will be checked
-     * @param Model $model Model that will be searched for in the RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $routeDecorator RouteDecorator that will be checked
+     * @param \MixerApi\Core\Model\Model $model Model that will be searched for in the RouteDecorator
      * @return bool
      */
     private function routeHasModel(RouteDecorator $routeDecorator, Model $model): bool
@@ -142,7 +141,7 @@ class ModelScanner
          * Attempt using LocatorAwareTrait::fetchTable (4.3 or higher)
          */
         $fqn = $routeDecorator->getControllerFqn();
-        /** @var Controller $controllerInstance */
+        /** @var \Cake\Controller\Controller $controllerInstance */
         $controllerInstance = new $fqn();
         if (method_exists($controllerInstance, 'fetchTable')) {
             return $controllerInstance->fetchTable()->getAlias() == $model->getTable()->getAlias();
@@ -159,8 +158,8 @@ class ModelScanner
      *
      * @codeCoverageIgnore
      * @deprecated Consider for removal in future versions.
-     * @param RouteDecorator $routeDecorator RouteDecorator that will be checked
-     * @param Model $model Model that will be searched for in the RouteDecorator
+     * @param \SwaggerBake\Lib\Route\RouteDecorator $routeDecorator RouteDecorator that will be checked
+     * @param \MixerApi\Core\Model\Model $model Model that will be searched for in the RouteDecorator
      * @return bool
      */
     private function routeHasModelFallback(RouteDecorator $routeDecorator, Model $model): bool
