@@ -174,7 +174,7 @@ class ModelScanner
             return $item instanceof Table;
         });
         if ($results->count() > 0) {
-            return $results->first()->getAlias() == $model->getTable()->getAlias();
+            return $results->first()->getAlias() === $model->getTable()->getAlias();
         }
 
         return false;
