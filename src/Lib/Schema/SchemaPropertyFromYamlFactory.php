@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Schema;
 
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 /**
