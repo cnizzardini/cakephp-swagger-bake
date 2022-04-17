@@ -15,6 +15,7 @@ use SwaggerBake\Lib\Extension\ExtensionInterface;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\Utility\OpenApiDataType;
 
 /**
  * Class Extension
@@ -116,10 +117,12 @@ class Extension implements ExtensionInterface
      */
     private function createParameter(FilterDecorator $filter): Parameter
     {
-        return (new Parameter(in: 'query', name: $filter->getName()))
-            ->setSchema(
-                (new Schema())->setType('string')
-            );
+        $parameter = new Parameter(in: 'query', name: $filter->getName());
+        $parameter->setSchema(
+            (new Schema())->setDescription($filter->getComparison())
+        );
+
+        return $parameter;
     }
 
     /**
@@ -135,11 +138,6 @@ class Extension implements ExtensionInterface
         $manager = $this->getSearchManager($table, $openApiSearch);
 
         $filters = $manager->getFilters($openApiSearch->collection);
-
-        if (empty($filters)) {
-            return $decoratedFilters;
-        }
-
         foreach ($filters as $filter) {
             $decoratedFilters[] = (new FilterDecorator($filter));
         }

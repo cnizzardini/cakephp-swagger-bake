@@ -7,7 +7,6 @@ use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
-use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Extension\CakeSearch\Extension;
@@ -17,13 +16,14 @@ use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
-use SwaggerBakeTest\App\Model\Table\EmployeesTable;
+use SwaggerBakeTest\App\Model\Table\DepartmentsTable;
 
 class ExtensionTest extends TestCase
 {
     /** @var string[] */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
+        'plugin.SwaggerBake.Departments',
     ];
 
     private array $config;
@@ -146,5 +146,27 @@ class ExtensionTest extends TestCase
         $this->expectException(SwaggerBakeRunTimeException::class);
         $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
         $this->assertStringContainsString('Unable to build OpenApiSearch', $this->getExpectedExceptionMessage());
+    }
+
+    public function test_getOperation_when_no_filters_exist(): void
+    {
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiSearch::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiSearch::class, [
+                        'tableClass' => DepartmentsTable::class,
+                    ]),
+                ])
+            );
+
+        $event = new Event('test', (new Operation('id', 'GET')), [
+            'reflectionMethod' => $mockReflectionMethod
+        ]);
+        $this->assertEmpty((new Extension())->getOperation($event)->getParameters());
     }
 }

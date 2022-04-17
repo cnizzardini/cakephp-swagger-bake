@@ -5,6 +5,8 @@ namespace SwaggerBake\Lib\Extension\CakeSearch;
 
 use ReflectionClass;
 use Search\Model\Filter\Base;
+use Search\Model\Filter\Boolean;
+use SwaggerBake\Lib\Utility\OpenApiDataType;
 
 /**
  * Class FilterDecorator
@@ -36,14 +38,6 @@ class FilterDecorator
     public function getName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFilter()
-    {
-        return $this->filter;
     }
 
     /**
