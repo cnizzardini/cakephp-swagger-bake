@@ -131,9 +131,6 @@ class ModelScanner
      */
     private function routeHasModel(RouteDecorator $routeDecorator, Model $model): bool
     {
-        /*
-         * Attempt using LocatorAwareTrait::fetchTable (4.3 or higher)
-         */
         $fqn = $routeDecorator->getControllerFqn();
         /** @var \Cake\Controller\Controller $controllerInstance */
         $controllerInstance = new $fqn();
