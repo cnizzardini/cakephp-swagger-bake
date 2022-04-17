@@ -57,7 +57,7 @@ class OpenApiControllerService
     public function getDocType(ServerRequest $request): string
     {
         if (empty($request->getQuery('doctype')) || !is_string($request->getQuery('doctype'))) {
-            return 'swagger';
+            return $this->config->getDocType();
         }
 
         $docType = h(strtolower($request->getQuery('doctype')));
