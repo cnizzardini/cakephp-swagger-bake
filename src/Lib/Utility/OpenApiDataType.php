@@ -26,6 +26,6 @@ class OpenApiDataType
         self::INTEGER,
         self::NUMBER,
         self::OBJECT,
-        self::STRING
+        self::STRING,
     ];
 }

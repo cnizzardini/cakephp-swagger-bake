@@ -5,8 +5,6 @@ namespace SwaggerBake\Lib\Extension\CakeSearch;
 
 use ReflectionClass;
 use Search\Model\Filter\Base;
-use Search\Model\Filter\Boolean;
-use SwaggerBake\Lib\Utility\OpenApiDataType;
 
 /**
  * Class FilterDecorator

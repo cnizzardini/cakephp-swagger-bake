@@ -15,7 +15,6 @@ use SwaggerBake\Lib\Extension\ExtensionInterface;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\Utility\OpenApiDataType;
 
 /**
  * Class Extension
