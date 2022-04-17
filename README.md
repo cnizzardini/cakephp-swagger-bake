@@ -296,6 +296,11 @@ configurations should point to your plugins paths and namespaces. Next, create a
     {
         parent::initialize();
         Configure::load('OtherApi.swagger_bake', 'default', false); // note: `false` for the third argument is important
+         
+        /*
+         * Only load the component if you are using a version older than v2.3.0. This component will be deprecated 
+         * in v3.0.0
+         */ 
         $this->loadComponent('SwaggerBake.SwaggerUi');
     }
 ```
