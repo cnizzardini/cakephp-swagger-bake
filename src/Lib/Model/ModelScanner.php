@@ -173,10 +173,7 @@ class ModelScanner
         $results = (new Collection(get_object_vars(new $fqn())))->filter(function ($item) {
             return $item instanceof Table;
         });
-        if ($results->count() > 0) {
-            return $results->first()->getAlias() === $model->getTable()->getAlias();
-        }
 
-        return false;
+        return $results->count() > 0 && $results->first()->getAlias() === $model->getTable()->getAlias();
     }
 }
