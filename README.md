@@ -274,6 +274,8 @@ $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 
 
 To get started, copy [SwaggerController](src/Controller/SwaggerController.php) into your project.
 
+Note: SwaggerUiComponent has been deprecated in version 2.3.0 and will be removed in version 3.
+
 #### Using Your Own Layout and Templates
 
 You will need to use your own controller (see above). From there you can copy the [layouts](templates/layout) and 

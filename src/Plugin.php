@@ -12,6 +12,7 @@ use SwaggerBake\Command as Commands;
 use SwaggerBake\Lib\ExtensionLoader;
 use SwaggerBake\Lib\Service\InstallerService;
 use SwaggerBake\Lib\Service\OpenApiBakerService;
+use SwaggerBake\Lib\Service\OpenApiControllerService;
 
 /**
  * Class Plugin
@@ -73,6 +74,8 @@ class Plugin extends BasePlugin
     public function services(ContainerInterface $container): void
     {
         parent::services($container);
+
+        $container->add(OpenApiControllerService::class);
 
         if (PHP_SAPI === 'cli') {
             $container->add(OpenApiBakerService::class);

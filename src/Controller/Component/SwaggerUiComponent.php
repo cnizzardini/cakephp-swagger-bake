@@ -11,9 +11,8 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Factory\SwaggerFactory;
 
 /**
- * Class SwaggerUiComponent
- *
- * @package SwaggerBake\Controller\Component
+ * @deprecated Use \SwaggerBake\Lib\Service\OpenApiControllerService instead
+ * @codeCoverageIgnore
  */
 class SwaggerUiComponent extends Component
 {
@@ -38,6 +37,13 @@ class SwaggerUiComponent extends Component
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
         parent::__construct($registry, $config);
+
+        trigger_deprecation(
+            'cnizzardini/cakephp-swagger-bake',
+            'v2.3.0',
+            'This component has been deprecated and will be removed in v3.0.0. Use ' .
+            '\SwaggerBake\Lib\Service\OpenApiControllerService instead'
+        );
     }
 
     /**
