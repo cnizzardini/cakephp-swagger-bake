@@ -43,16 +43,8 @@ class Plugin extends BasePlugin
      */
     public function bootstrap(PluginApplicationInterface $app): void
     {
-        if (file_exists(CONFIG . 'swagger_bake.php')) {
-            Configure::load('swagger_bake', 'default');
-            ExtensionLoader::load();
-
-            return;
-        }
-
-        if (PHP_SAPI !== 'cli') {
-            triggerWarning('SwaggerBake configuration file `config/swagger_bake.php` is missing');
-        }
+        Configure::load('swagger_bake', 'default');
+        ExtensionLoader::load();
     }
 
     /**
