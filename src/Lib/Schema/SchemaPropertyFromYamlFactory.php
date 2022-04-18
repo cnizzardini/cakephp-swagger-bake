@@ -35,25 +35,23 @@ class SchemaPropertyFromYamlFactory
             ->setFormat($yaml['format'] ?? '');
 
         $properties = [
-            'maxLength',
             'minLength',
+            'maxLength',
             'pattern',
-            'maxItems',
             'minItems',
+            'maxItems',
             'uniqueItems',
-            'maxProperties',
-            'exclusiveMaximum',
             'exclusiveMinimum',
-            'uniqueItems',
-            'maxProperties',
+            'exclusiveMaximum',
             'minProperties',
+            'maxProperties',
         ];
 
         foreach ($properties as $property) {
-            if (!isset($yaml[$property])) {
+            $setterMethod = 'set' . ucfirst($property);
+            if (!isset($yaml[$property]) || !method_exists(SchemaProperty::class, $setterMethod)) {
                 continue;
             }
-            $setterMethod = 'set' . ucfirst($property);
             $schemaProperty->{$setterMethod}($yaml[$property]);
         }
 

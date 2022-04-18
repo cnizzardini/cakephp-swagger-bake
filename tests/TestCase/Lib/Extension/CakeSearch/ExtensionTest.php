@@ -2,21 +2,28 @@
 
 namespace SwaggerBake\Test\TestCase\Lib\Extension\CakeSearch;
 
+use Cake\Event\Event;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Configuration;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
+use SwaggerBake\Lib\Extension\CakeSearch\Extension;
 use SwaggerBake\Lib\ExtensionLoader;
 use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
 use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBakeTest\App\Model\Table\DepartmentsTable;
 
 class ExtensionTest extends TestCase
 {
     /** @var string[] */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
+        'plugin.SwaggerBake.Departments',
     ];
 
     private array $config;
@@ -63,7 +70,7 @@ class ExtensionTest extends TestCase
         ExtensionLoader::load();
     }
 
-    public function test_get_operation(): void
+    public function test_search_parameters_exist_in_openapi_output(): void
     {
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
 
@@ -76,5 +83,90 @@ class ExtensionTest extends TestCase
         $search = $arr['paths']['/employees/search']['get'];
 
         $this->assertEquals('first_name', $search['parameters'][0]['name']);
+    }
+
+    public function test_getOperation_throws_exception_when_event_subject_is_invalid(): void
+    {
+        $this->expectException(SwaggerBakeRunTimeException::class);
+        $event = new Event('test', 'no');
+        $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
+        $this->assertStringContainsString('subject must be an instance of', $this->getExpectedExceptionMessage());
+    }
+
+    public function test_getOperation_returns_early(): void
+    {
+        /*
+         * Should exit early when Operation is not HTTP Get
+         */
+        $event = new Event('test', (new Operation('id', 'POST')));
+        $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
+
+        /*
+         * Should exit early when no reflectionMethod attribute exists in event data
+         */
+        $event = new Event('test', (new Operation('id', 'GET')));
+        $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
+
+        /*
+         * Should exit early when reflectionMethod attribute is not an instance of ReflectionMethod
+         */
+        $event = new Event('test', (new Operation('id', 'GET')), [
+            'reflectionMethod' => 'blah'
+        ]);
+        $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
+
+        /*
+         * Should exit early when reflectionMethod attribute does not contain OpenApiSearch Attribute
+         */
+        $event = new Event('test', (new Operation('id', 'GET')), [
+            'reflectionMethod' => new \ReflectionMethod($this, 'test_getOperation_returns_early')
+        ]);
+        $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
+    }
+
+    public function test_getOperation_throws_exception_when_table_class_does_not_exist(): void
+    {
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiSearch::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiSearch::class, [
+                        'tableClass' => 'nope',
+                    ]),
+                ])
+            );
+
+        $event = new Event('test', (new Operation('id', 'GET')), [
+            'reflectionMethod' => $mockReflectionMethod
+        ]);
+        $this->expectException(SwaggerBakeRunTimeException::class);
+        $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
+        $this->assertStringContainsString('Unable to build OpenApiSearch', $this->getExpectedExceptionMessage());
+    }
+
+    public function test_getOperation_when_no_filters_exist(): void
+    {
+        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
+        $mockReflectionMethod->expects($this->once())
+            ->method(
+                'getAttributes'
+            )
+            ->with(OpenApiSearch::class)
+            ->will(
+                $this->returnValue([
+                    new ReflectionAttribute(OpenApiSearch::class, [
+                        'tableClass' => DepartmentsTable::class,
+                    ]),
+                ])
+            );
+
+        $event = new Event('test', (new Operation('id', 'GET')), [
+            'reflectionMethod' => $mockReflectionMethod
+        ]);
+        $this->assertEmpty((new Extension())->getOperation($event)->getParameters());
     }
 }

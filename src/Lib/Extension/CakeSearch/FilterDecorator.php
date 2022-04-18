@@ -39,14 +39,6 @@ class FilterDecorator
     }
 
     /**
-     * @return mixed
-     */
-    public function getFilter()
-    {
-        return $this->filter;
-    }
-
-    /**
      * @return string
      */
     public function getComparison(): string

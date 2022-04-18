@@ -108,7 +108,7 @@ class OperationResponseAssociation
         } catch (InvalidArgumentException $e) {
             throw new SwaggerBakeRunTimeException(
                 sprintf(
-                    'OpenApiResponse association declared on %s not found. %s',
+                    'OpenApiResponse association not found. Declared on %s result in error: %s',
                     $this->route->getControllerFqn() . '::' . $this->route->getAction(),
                     $e->getMessage()
                 )

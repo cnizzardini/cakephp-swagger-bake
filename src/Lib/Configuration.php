@@ -97,18 +97,12 @@ class Configuration
         $this->root = $root;
         $config = !empty($config) ? $config : Configure::read('SwaggerBake');
 
-        foreach (['yml', 'json', 'webPath'] as $property) {
+        foreach (['yml', 'json', 'webPath', 'prefix'] as $property) {
             if (!array_key_exists(key: $property, array: $config)) {
                 throw new InvalidArgumentException(
                     "Property `$property` must be defined in your config/swagger_bake.php configuration file."
                 );
             }
-        }
-
-        if (!array_key_exists(key: 'prefix', array: $config) && !array_key_exists(key: 'prefixes', array: $config)) {
-            throw new InvalidArgumentException(
-                'Property `prefixes` must be defined in your config/swagger_bake.php configuration file.'
-            );
         }
 
         foreach ($config as $property => $value) {

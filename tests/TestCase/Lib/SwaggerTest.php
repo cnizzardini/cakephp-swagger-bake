@@ -9,11 +9,13 @@ use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 use Cake\TestSuite\TestCase;
 
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBake\Lib\Utility\FileUtility;
 
 class SwaggerTest extends TestCase
 {
@@ -134,5 +136,52 @@ class SwaggerTest extends TestCase
         $path = $openApi['paths']['/employees/{id}'];
         $this->assertArrayHasKey('put', $path->getOperations());
         $this->assertArrayNotHasKey('patch', $path->getOperations());
+    }
+
+    public function test_write_file_throws_exception_if_file_not_writable(): void
+    {
+        $vars = $this->config;
+        $vars['yml'] = '/config/swagger-bare-bones.yml';
+        $config = new Configuration($vars, SWAGGER_BAKE_TEST_APP);
+        $routeScanner = new RouteScanner($this->router, $config);
+
+        $mockFileUtility = $this->createMock(FileUtility::class);
+        $mockFileUtility->expects($this->once())->method('isWritable')->willReturn(false);
+
+        $this->expectException(SwaggerBakeRunTimeException::class);
+        $swagger = new Swagger(new ModelScanner($routeScanner, $config), $config, $mockFileUtility);
+        $swagger->writeFile('/anything.json');
+        $this->assertStringContainsString('Output file is not writable', $this->getExpectedExceptionMessage());
+    }
+
+    public function test_write_file_throws_exception_if_file_write_fails(): void
+    {
+        $vars = $this->config;
+        $vars['yml'] = '/config/swagger-bare-bones.yml';
+        $config = new Configuration($vars, SWAGGER_BAKE_TEST_APP);
+        $routeScanner = new RouteScanner($this->router, $config);
+
+        $mockFileUtility = $this->createMock(FileUtility::class);
+        $mockFileUtility->expects($this->once())->method('isWritable')->willReturn(true);
+        $mockFileUtility->expects($this->once())->method('putContents')->willReturn(false);
+
+        $this->expectException(SwaggerBakeRunTimeException::class);
+        $swagger = new Swagger(new ModelScanner($routeScanner, $config), $config, $mockFileUtility);
+        $swagger->writeFile('/anything.json');
+        $this->assertStringContainsString(
+            'Error encountered while writing swagger file',
+            $this->getExpectedExceptionMessage()
+        );
+    }
+
+    public function test_components_is_removed_if_empty(): void
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $routeScanner = new RouteScanner($this->router, $config);
+        $swagger = new Swagger(new ModelScanner($routeScanner, $config), $config);
+        $array = $swagger->getArray();
+        $array['components'] = [];
+        $swagger->setArray($array);
+        $this->assertArrayNotHasKey('components', $swagger->getArray());
     }
 }

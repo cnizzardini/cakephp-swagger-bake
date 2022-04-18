@@ -52,8 +52,20 @@ class Extension implements ExtensionInterface
      */
     public function getOperation(Event $event): Operation
     {
-        /** @var \SwaggerBake\Lib\OpenApi\Operation $operation */
         $operation = $event->getSubject();
+        if (!$operation instanceof Operation) {
+            throw new SwaggerBakeRunTimeException(
+                sprintf(
+                    'Extension `%s` could not be run because the subject must be an instance of `%s`',
+                    self::class,
+                    Operation::class
+                )
+            );
+        }
+
+        if ($operation->getHttpMethod() != 'GET') {
+            return $operation;
+        }
 
         /** @var \ReflectionMethod $refMethod */
         $refMethod = $event->getData('reflectionMethod');
@@ -80,18 +92,17 @@ class Extension implements ExtensionInterface
      */
     private function getOperationWithQueryParameters(Operation $operation, OpenApiSearch $openApiSearch): Operation
     {
-        if ($operation->getHttpMethod() != 'GET') {
-            return $operation;
-        }
-
         $tableFqn = $openApiSearch->tableClass;
-
         if (!class_exists($tableFqn)) {
-            throw new SwaggerBakeRunTimeException("tableClass `$tableFqn` does not exist");
+            throw new SwaggerBakeRunTimeException(
+                sprintf(
+                    'Unable to build OpenApiSearch because tableClass `%s` does not exist',
+                    $tableFqn
+                )
+            );
         }
 
         $filters = $this->getFilterDecorators(new $tableFqn(), $openApiSearch);
-
         foreach ($filters as $filter) {
             $operation->pushParameter($this->createParameter($filter));
         }
@@ -105,10 +116,12 @@ class Extension implements ExtensionInterface
      */
     private function createParameter(FilterDecorator $filter): Parameter
     {
-        return (new Parameter(in: 'query', name: $filter->getName()))
-            ->setSchema(
-                (new Schema())->setType('string')
-            );
+        $parameter = new Parameter(in: 'query', name: $filter->getName());
+        $parameter->setSchema(
+            (new Schema())->setDescription($filter->getComparison())
+        );
+
+        return $parameter;
     }
 
     /**
@@ -124,11 +137,6 @@ class Extension implements ExtensionInterface
         $manager = $this->getSearchManager($table, $openApiSearch);
 
         $filters = $manager->getFilters($openApiSearch->collection);
-
-        if (empty($filters)) {
-            return $decoratedFilters;
-        }
-
         foreach ($filters as $filter) {
             $decoratedFilters[] = (new FilterDecorator($filter));
         }

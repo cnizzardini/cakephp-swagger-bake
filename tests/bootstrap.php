@@ -143,16 +143,12 @@ Log::setConfig([
     //     'scopes' => ['queriesLog']
     // ],
     'debug' => [
-        'engine' => 'Cake\Log\Engine\FileLog',
+        'engine' => \Cake\Log\Engine\ArrayLog::class,
         'levels' => ['notice', 'info', 'debug'],
-        'file' => 'debug',
-        'path' => LOGS,
     ],
     'error' => [
-        'engine' => 'Cake\Log\Engine\FileLog',
+        'engine' => \Cake\Log\Engine\ArrayLog::class,
         'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
-        'file' => 'error',
-        'path' => LOGS,
     ],
 ]);
 

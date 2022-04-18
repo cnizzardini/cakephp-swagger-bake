@@ -3,6 +3,7 @@
 namespace SwaggerBake\Test\TestCase\Lib;
 
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Test\TestCase\Helper\ConfigurationHelperTrait;
 
@@ -25,14 +26,21 @@ class ConfigurationTest extends TestCase
         $this->configuration = $this->createConfiguration();
     }
 
-    public function test_get_should_throw_logic_exception(): void
+    public function test_legacy_get_set(): void
+    {
+        $this->assertEquals(self::DEFAULT_CONFIGS['prefix'], $this->configuration->get('prefix'));
+        $this->configuration->set('prefix', $prefix = '/new-prefix');
+        $this->assertEquals($prefix, $this->configuration->get('prefix'));
+    }
+
+    public function test_legacy_get_should_throw_logic_exception(): void
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessageMatches("/Method getNope/");
         $this->configuration->get('nope');
     }
 
-    public function test_set_should_throw_logic_exception(): void
+    public function test_legacy_set_should_throw_logic_exception(): void
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessageMatches("/Method setNope/");
@@ -51,6 +59,13 @@ class ConfigurationTest extends TestCase
         $this->expectExceptionMessageMatches("/Property nope does not exist/");
         $configs = array_merge(self::DEFAULT_CONFIGS, ['nope' => 'nope']);
         new Configuration($configs, SWAGGER_BAKE_TEST_APP);
+    }
+
+    public function test_constructor_throws_exception_when_config_arg_missing_required_data(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new Configuration(['test']);
+        $this->assertStringContainsString('must be defined in your', $this->getExpectedExceptionMessage());
     }
 
     /**
