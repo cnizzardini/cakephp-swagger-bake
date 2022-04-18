@@ -69,4 +69,16 @@ class FileUtility
     {
         return is_dir($directory);
     }
+
+    /**
+     * is_writable() wrapper
+     *
+     * @link https://www.php.net/manual/en/function.is_writable.php
+     * @param string $file The file
+     * @return bool
+     */
+    public function isWritable(string $file): bool
+    {
+        return is_writable($file);
+    }
 }
