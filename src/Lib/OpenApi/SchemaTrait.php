@@ -28,9 +28,9 @@ trait SchemaTrait
      */
     public function setType(string $type)
     {
-        if (!in_array($type, OpenApiDataType::TYPES)) {
+        if (!empty($type) && !in_array($type, OpenApiDataType::TYPES)) {
             throw new InvalidArgumentException(
-                "Type $type is not valid. Must be one of " . implode(',', OpenApiDataType::TYPES)
+                "Type `$type` is not valid. Must be one of " . implode(',', OpenApiDataType::TYPES)
             );
         }
 
