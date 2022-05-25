@@ -141,38 +141,13 @@ class OperationResponse
     {
         if ($openApiResponse->schema) {
             $reflection = new ReflectionClass($openApiResponse->schema);
-            // check if the DTO contains the OpenApiSchema attribute
+            /** @var \SwaggerBake\Lib\Attribute\OpenApiSchema|null $openApiSchema */
             $openApiSchema = (new AttributeFactory(
                 $reflection,
                 OpenApiSchema::class
             ))->createOneOrNull();
 
-            // create base schema from implementation
-            if ($reflection->implementsInterface(CustomSchemaInterface::class)) {
-                /** @var \SwaggerBake\Lib\OpenApi\Schema $schema */
-                $schema = $openApiResponse->schema::getOpenApiSchema();
-                // if OpenApiSchema attribute exists set the visibility from that
-                if ($openApiSchema instanceof OpenApiSchema) {
-                    $schema->setVisibility($openApiSchema->visibility);
-                } else {
-                    $schema->setVisibility(OpenApiSchema::VISIBLE_NEVER);
-                }
-            // create base schema from attributes only
-            } else {
-                // if OpenApiSchema attribute exists set the visibility from that
-                if ($openApiSchema instanceof OpenApiSchema) {
-                    $schema = $openApiSchema->createSchema();
-                } else {
-                    $schema = (new Schema())->setVisibility(OpenApiSchema::VISIBLE_NEVER);
-                }
-            }
-
-            $schema
-                ->setName($schema->getName() ?? $reflection->getShortName())
-                ->setType($schema->getType() ?? 'object');
-
-            // denote this is a user created schema
-            $schema->setIsCustomSchema(true);
+            $schema = $this->createResponseSchema($reflection, $openApiResponse, $openApiSchema);
 
             // class level attributes
             $schemaProperties = (new AttributeFactory(
@@ -195,17 +170,19 @@ class OperationResponse
                 }
             }
 
-            if ($openApiResponse->schemaType == 'array' && $schema->getType() == 'object') {
+            if ($openApiResponse->schemaType == 'array') {
                 $schema->setType('array');
-                /*
-                $clonedSchema = clone $schema;
-                $schema = $clonedSchema
-                    ->setName($schema->getName() . 'List')
-                    ->setProperties([])
-                    ->setItems(['properties' => $schema->getProperties()])
-                    ->setType('array');
-                unset($clonedSchema);
-                */
+                if (
+                    !$openApiSchema instanceof OpenApiSchema
+                    || $openApiSchema->visibility === OpenApiSchema::VISIBLE_NEVER
+                ) {
+                    $clonedSchema = clone $schema;
+                    $schema = $clonedSchema
+                        ->setName($schema->getName())
+                        ->setProperties([])
+                        ->setItems(['properties' => $schema->getProperties()]);
+                    unset($clonedSchema);
+                }
             }
 
             $response->pushContent(new Content($mimeType, $schema));
@@ -215,6 +192,47 @@ class OperationResponse
         }
 
         return false;
+    }
+
+    /**
+     * @param \ReflectionClass $reflectionClass A reflected instance of OpenApiResponse::schema class
+     * @param \SwaggerBake\Lib\Attribute\OpenApiResponse $openApiResponse The attribute
+     * @param \SwaggerBake\Lib\Attribute\OpenApiSchema|null $openApiSchema An instance of OpenApiResponse::schema or null if none was set
+     * @return \SwaggerBake\Lib\OpenApi\Schema
+     */
+    private function createResponseSchema(
+        ReflectionClass $reflectionClass,
+        OpenApiResponse $openApiResponse,
+        ?OpenApiSchema $openApiSchema
+    ): Schema {
+        // create base schema from implementation
+        if ($reflectionClass->implementsInterface(CustomSchemaInterface::class)) {
+            /** @var \SwaggerBake\Lib\OpenApi\Schema $schema */
+            $schema = $openApiResponse->schema::getOpenApiSchema();
+            // if OpenApiSchema attribute exists set the visibility from that
+            if ($openApiSchema instanceof OpenApiSchema) {
+                $schema->setVisibility($openApiSchema->visibility);
+            } else {
+                $schema->setVisibility(OpenApiSchema::VISIBLE_NEVER);
+            }
+            // create base schema from attributes only
+        } else {
+            // if OpenApiSchema attribute exists set the visibility from that
+            if ($openApiSchema instanceof OpenApiSchema) {
+                $schema = $openApiSchema->createSchema();
+            } else {
+                $schema = (new Schema())->setVisibility(OpenApiSchema::VISIBLE_NEVER);
+            }
+        }
+
+        $schema
+            ->setName($schema->getName() ?? $reflectionClass->getShortName())
+            ->setType($schema->getType() ?? 'object');
+
+        // denote this is a user created schema
+        $schema->setIsCustomSchema(true);
+
+        return $schema;
     }
 
     /**
