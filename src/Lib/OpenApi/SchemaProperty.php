@@ -48,13 +48,15 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
      */
     public function __construct(
         ?string $name = null,
-        string $type = 'string',
+        ?string $type = null,
         ?string $format = null,
         ?string $description = null,
         mixed $example = null,
     ) {
         $this->name = $name;
-        $this->setType($type);
+        if ($type !== null) {
+            $this->setType($type);
+        }
         $this->format = $format;
         $this->description = $description;
         $this->example = $example;
@@ -91,7 +93,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             [
                 'format','title','description','multipleOf','minimum','maximum','minLength','maxLength','pattern',
                 'minItems','maxItems','minProperties','maxProperties','items','enum','default','exclusiveMinimum',
-                'exclusiveMaximum','uniqueItems','nullable',
+                'exclusiveMaximum','uniqueItems','nullable','type',
             ]
         );
 

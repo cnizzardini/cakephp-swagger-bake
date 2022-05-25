@@ -28,16 +28,13 @@ class SchemaPropertyFromYamlFactory
             ->setWriteOnly($yaml['writeOnly'] ?? false)
             ->setRequired($yaml['required'] ?? false)
             ->setEnum($yaml['enum'] ?? [])
-            ->setExample($yaml['example'] ?? '')
+            ->setExample($yaml['example'] ?? null)
             ->setItems($yaml['items'] ?? [])
             ->setRefEntity($yaml['$ref'] ?? '')
             ->setFormat($yaml['format'] ?? '');
 
-        if (isset($yaml['type'])) {
-            $schemaProperty->setType($yaml['type']);
-        }
-
         $properties = [
+            'type',
             'maxLength',
             'minLength',
             'pattern',
