@@ -24,7 +24,6 @@ class SchemaPropertyFromYamlFactory
         $schemaProperty = (new SchemaProperty())
             ->setName($name)
             ->setDescription($yaml['description'] ?? '')
-            ->setType($yaml['type'] ?? '')
             ->setReadOnly($yaml['readonly'] ?? false)
             ->setWriteOnly($yaml['writeOnly'] ?? false)
             ->setRequired($yaml['required'] ?? false)
@@ -33,6 +32,10 @@ class SchemaPropertyFromYamlFactory
             ->setItems($yaml['items'] ?? [])
             ->setRefEntity($yaml['$ref'] ?? '')
             ->setFormat($yaml['format'] ?? '');
+
+        if (isset($yaml['type'])) {
+            $schemaProperty->setType($yaml['type']);
+        }
 
         $properties = [
             'maxLength',
