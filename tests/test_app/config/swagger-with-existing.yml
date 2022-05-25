@@ -164,5 +164,24 @@ components:
           example: error message here
       xml:
         name: response
+# issue: https://github.com/cnizzardini/cakephp-swagger-bake/issues/419
+    Address:
+      type: object
+      properties:
+        city:
+          type: string
+          example: "Brazzaville"
+        zone:
+          type: string
+          example: "Zone 1"
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "De claude"
+        address:
+          $ref: '#/components/schemas/Address'
+# end issue
 security:
   - BearerAuth: []

@@ -24,17 +24,17 @@ class SchemaPropertyFromYamlFactory
         $schemaProperty = (new SchemaProperty())
             ->setName($name)
             ->setDescription($yaml['description'] ?? '')
-            ->setType($yaml['type'] ?? '')
             ->setReadOnly($yaml['readonly'] ?? false)
             ->setWriteOnly($yaml['writeOnly'] ?? false)
             ->setRequired($yaml['required'] ?? false)
             ->setEnum($yaml['enum'] ?? [])
-            ->setExample($yaml['example'] ?? '')
+            ->setExample($yaml['example'] ?? null)
             ->setItems($yaml['items'] ?? [])
             ->setRefEntity($yaml['$ref'] ?? '')
             ->setFormat($yaml['format'] ?? '');
 
         $properties = [
+            'type',
             'maxLength',
             'minLength',
             'pattern',
