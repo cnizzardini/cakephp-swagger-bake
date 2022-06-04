@@ -146,6 +146,7 @@ class SchemaFactory
                 if (!$property->isWriteOnly() && $property->isHidden()) {
                     return false;
                 }
+
                 return true;
             });
         }

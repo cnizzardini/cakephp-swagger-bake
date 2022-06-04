@@ -297,8 +297,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param bool $isHidden
-     *
+     * @param bool $isHidden Is this property in Entity::_hidden?
      * @return $this
      */
     public function setIsHidden(bool $isHidden)
