@@ -17,6 +17,8 @@ use SwaggerBake\Lib\Attribute\OpenApiSecurity;
  */
 class DepartmentsController extends AppController
 {
+    public $defaultTable = 'Departments';
+
     public function initialize() : void
     {
         parent::initialize();

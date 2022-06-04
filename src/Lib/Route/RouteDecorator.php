@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Route;
 
+use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Routing\Route\Route;
 use MixerApi\Core\Model\Model;
@@ -274,6 +275,23 @@ class RouteDecorator
         );
 
         return implode('/', $pieces);
+    }
+
+    /**
+     * Returns an instance of the object if the FQN exists, otherwise returns null.
+     *
+     * @return \Cake\Controller\Controller|null
+     * @throws \ReflectionException
+     */
+    public function getControllerInstance(): ?Controller
+    {
+        if ($this->controllerFqn && class_exists($this->controllerFqn)) {
+            $controller = (new \ReflectionClass($this->controllerFqn))->newInstanceWithoutConstructor();
+
+            return $controller instanceof Controller ? $controller : null;
+        }
+
+        return null;
     }
 
     /**

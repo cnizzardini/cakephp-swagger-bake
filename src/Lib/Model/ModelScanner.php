@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Model;
 
 use Cake\Collection\Collection;
+use Cake\Core\Exception\CakeException;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
 use MixerApi\Core\Model\Model;
 use MixerApi\Core\Model\ModelFactory;
@@ -21,6 +23,8 @@ use SwaggerBake\Lib\Route\RouteScanner;
  */
 class ModelScanner
 {
+    use LocatorAwareTrait;
+
     /**
      * @param \SwaggerBake\Lib\Route\RouteScanner $routeScanner RouteScanner
      * @param \SwaggerBake\Lib\Configuration $config Configuration
@@ -46,10 +50,17 @@ class ModelScanner
 
         foreach ($namespaces['tables'] as $tableNs) {
             $tables = NamespaceUtility::findClasses($tableNs . 'Model\Table');
-
             foreach ($tables as $table) {
                 try {
-                    $model = (new ModelFactory($connection, new $table()))->create();
+                    if (!class_exists($table)) {
+                        continue;
+                    }
+                    $class = (new \ReflectionClass($table))->getShortName();
+                    if (str_ends_with($class, 'Table')) {
+                        $class = substr($class, 0, strlen($class) - 5);
+                    }
+                    $tableInstance = $this->getTableLocator()->get($class);
+                    $model = (new ModelFactory($connection, $tableInstance))->create();
                 } catch (\Exception $e) {
                     continue;
                 }
@@ -61,8 +72,7 @@ class ModelScanner
 
                 if ($routeDecorator) {
                     $routeDecorator->setModel($model);
-                    $controllerFqn = $routeDecorator->getControllerFqn();
-                    $controller = $controllerFqn ? new $controllerFqn() : null;
+                    $controller = $routeDecorator->getControllerInstance();
                 }
 
                 $return[] = new ModelDecorator($model, $controller ?? null);
@@ -128,17 +138,19 @@ class ModelScanner
      * @param \SwaggerBake\Lib\Route\RouteDecorator $routeDecorator RouteDecorator that will be checked
      * @param \MixerApi\Core\Model\Model $model Model that will be searched for in the RouteDecorator
      * @return bool
+     * @throws \ReflectionException
      */
     private function routeHasModel(RouteDecorator $routeDecorator, Model $model): bool
     {
-        $fqn = $routeDecorator->getControllerFqn();
-        /** @var \Cake\Controller\Controller $controllerInstance */
-        $controllerInstance = new $fqn();
-        if (method_exists($controllerInstance, 'fetchTable')) {
-            return $controllerInstance->fetchTable()->getAlias() == $model->getTable()->getAlias();
+        try {
+            $controller = $routeDecorator->getControllerInstance();
+            if ($controller !== null && method_exists($controller, 'fetchTable')) {
+                return $controller->fetchTable()->getAlias() == $model->getTable()->getAlias();
+            }
+        } catch (CakeException $e) {
         }
 
-        return $this->routeHasModelFallback($routeDecorator, $model);
+        return $this->controllerHasModelFallback($routeDecorator, $model);
     }
 
     /**
@@ -148,12 +160,13 @@ class ModelScanner
      * 2. Checking if the table alias exists in the controllers object var properties.
      *
      * @codeCoverageIgnore
-     * @deprecated Consider for removal in future versions.
      * @param \SwaggerBake\Lib\Route\RouteDecorator $routeDecorator RouteDecorator that will be checked
      * @param \MixerApi\Core\Model\Model $model Model that will be searched for in the RouteDecorator
      * @return bool
+     * @throws \ReflectionException
+     * @deprecated Consider for removal in future versions.
      */
-    private function routeHasModelFallback(RouteDecorator $routeDecorator, Model $model): bool
+    private function controllerHasModelFallback(RouteDecorator $routeDecorator, Model $model): bool
     {
         /*
          * Check using CakePHP naming conventions
@@ -169,8 +182,11 @@ class ModelScanner
          *
          * @todo: Can be removed when CakePHP 4.2 is no longer supported
          */
-        $fqn = $routeDecorator->getControllerFqn();
-        $results = (new Collection(get_object_vars(new $fqn())))->filter(function ($item) {
+        $controller = $routeDecorator->getControllerInstance();
+        if (is_null($controller)) {
+            return false;
+        }
+        $results = (new Collection(get_object_vars($controller)))->filter(function ($item) {
             return $item instanceof Table;
         });
 

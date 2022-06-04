@@ -3,16 +3,19 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
-use SwaggerBake\Lib\Extension\ExtensionInterface;
-
 class ExtensionLoader
 {
     /**
-     * @var string[]
+     * Returns a list of Extensions
+     *
+     * @return object[]
      */
-    private const EXTENSIONS = [
-        '\SwaggerBake\Lib\Extension\CakeSearch\Extension',
-    ];
+    private static function extensions(): array
+    {
+        return [
+            \SwaggerBake\Lib\Extension\CakeSearch\Extension::create(),
+        ];
+    }
 
     /**
      * Loads extensions from self::EXTENSIONS
@@ -21,21 +24,9 @@ class ExtensionLoader
      */
     public static function load(): void
     {
-        foreach (self::EXTENSIONS as $extension) {
-            $instance = new $extension();
-
-            if (!$instance instanceof ExtensionInterface) {
-                // @codeCoverageIgnoreStart
-                triggerWarning("$extension must implement ExtensionInterface");
-                continue;
-                // @codeCoverageIgnoreEnd
-            }
-
-            if (!$instance->isSupported()) {
-                continue;
-            }
-
-            $instance->registerListeners();
+        foreach (self::extensions() as $extension) {
+            /** @var \SwaggerBake\Lib\Extension\ExtensionInterface $extension */
+            $extension->registerListeners();
         }
     }
 }
