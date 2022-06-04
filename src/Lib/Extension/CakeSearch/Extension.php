@@ -6,6 +6,7 @@ namespace SwaggerBake\Lib\Extension\CakeSearch;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
 use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
@@ -23,6 +24,16 @@ use SwaggerBake\Lib\OpenApi\Schema;
  */
 class Extension implements ExtensionInterface
 {
+    use LocatorAwareTrait;
+
+    /**
+     * @inheritDoc
+     */
+    public static function create(): object
+    {
+        return new self();
+    }
+
     /**
      * @return void
      * @SuppressWarning(PHPMD)
@@ -102,7 +113,13 @@ class Extension implements ExtensionInterface
             );
         }
 
-        $filters = $this->getFilterDecorators(new $tableFqn(), $openApiSearch);
+        $class = (new \ReflectionClass($tableFqn))->getShortName();
+        if (str_ends_with($class, 'Table')) {
+            $class = substr($class, 0, strlen($class) - 5);
+        }
+        $table = $this->getTableLocator()->get($class);
+
+        $filters = $this->getFilterDecorators($table, $openApiSearch);
         foreach ($filters as $filter) {
             $operation->pushParameter($this->createParameter($filter));
         }

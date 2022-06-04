@@ -28,6 +28,8 @@ use SwaggerBakeTest\App\Model\Table\EmployeesTable;
 )]
 class EmployeesController extends AppController
 {
+    public $defaultTable = 'Employees';
+
     public function initialize() : void
     {
         parent::initialize();

@@ -174,22 +174,6 @@ class SwaggerOperationTest extends TestCase
         $this->assertEquals('phpunit test string', $arr['paths']['/employee-salaries']['get']['description']);
     }
 
-    public function test_security_scheme_from_authentication_component(): void
-    {
-        $config = $this->config;
-        $config['yml'] = '/config/swagger-with-existing.yml';
-        $configuration = new Configuration($config, SWAGGER_BAKE_TEST_APP);
-
-        $cakeRoute = new RouteScanner($this->router, $configuration);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration);
-
-        $arr = json_decode($swagger->toString(), true);
-        $securities = $arr['paths']['/departments']['get']['security'];
-        $security = reset($securities);
-
-        $this->assertEquals('BearerAuth', array_keys($security)[0]);
-    }
-
     public function test_multiple_security_schemes(): void
     {
         $config = $this->config;

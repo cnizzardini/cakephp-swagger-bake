@@ -46,6 +46,7 @@ class OperationFromRouteFactory
      * @param string $httpMethod Http method such i.e. PUT, POST, PATCH, GET, and DELETE
      * @param null|\SwaggerBake\Lib\OpenApi\Schema $schema Schema
      * @return \SwaggerBake\Lib\OpenApi\Operation|null
+     * @throws \ReflectionException
      */
     public function create(RouteDecorator $route, string $httpMethod, ?Schema $schema): ?Operation
     {
@@ -54,9 +55,7 @@ class OperationFromRouteFactory
         }
 
         $config = $this->swagger->getConfig();
-        $fqn = $route->getControllerFqn();
-        $controllerInstance = new $fqn();
-
+        $controllerInstance = $route->getControllerInstance();
         $docBlock = $this->getDocBlock($route);
 
         try {
@@ -102,7 +101,7 @@ class OperationFromRouteFactory
         $operation = (new OperationHeader())
             ->getOperationWithHeaders($operation, $refMethod);
 
-        $operation = (new OperationSecurity($operation, $refMethod, $route, $controllerInstance, $this->swagger))
+        $operation = (new OperationSecurity($operation, $refMethod))
             ->getOperationWithSecurity();
 
         $operation = (new OperationQueryParameter($operation, $controllerInstance, $schema, $refMethod))
@@ -147,10 +146,10 @@ class OperationFromRouteFactory
             return $emptyDocBlock;
         }
 
-        $fqn = $route->getControllerFqn();
+        $controller = $route->getControllerInstance();
 
         try {
-            return DocBlockUtility::getMethodDocBlock(new $fqn(), $route->getAction()) ?? $emptyDocBlock;
+            return DocBlockUtility::getMethodDocBlock($controller, $route->getAction()) ?? $emptyDocBlock;
         } catch (Exception $e) {
             return $emptyDocBlock;
         }

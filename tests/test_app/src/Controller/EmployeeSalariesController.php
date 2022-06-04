@@ -10,6 +10,8 @@ use SwaggerBake\Lib\Attribute\OpenApiPaginator;
  */
 class EmployeeSalariesController extends AppController
 {
+    public $defaultTable = 'EmployeeSalaries';
+
     #[OpenApiPaginator]
     public function index()
     {
