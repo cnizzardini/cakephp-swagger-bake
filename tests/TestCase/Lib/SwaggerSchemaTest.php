@@ -57,16 +57,31 @@ class SwaggerSchemaTest extends TestCase
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
         $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
-
         $arr = json_decode($swagger->toString(), true);
 
         $this->assertArrayHasKey('Employee', $arr['components']['schemas']);
         $employee = $arr['components']['schemas']['Employee'];
-        
+
         $this->assertArrayHasKey('birth_date', $employee['properties']);
 
         $this->assertTrue($employee['properties']['id']['readOnly']);
         $this->assertEquals('integer', $employee['properties']['id']['type']);
+        $this->assertEquals('int64', $employee['properties']['id']['format']);
+
+
+        $this->assertEquals('date', $employee['properties']['birth_date']['format']);
+        $this->assertIsArray($employee['properties']['gender']['enum']);
+        $this->assertEquals('date', $employee['properties']['hire_date']['format']);
+
+        $this->assertTrue($employee['properties']['read']['readOnly']);
+        $this->assertTrue($employee['properties']['write']['writeOnly']);
+        $this->assertArrayNotHasKey('hide', $employee['properties']);
+
+        foreach (['birth_date', 'first_name', 'last_name', 'gender', 'hire_date',] as $property) {
+            $this->assertEquals('string', $employee['properties'][$property]['type'], "$property is not string");
+            $this->assertTrue(!isset($employee['properties'][$property]['readOnly']), "$property should !readOnly");
+            $this->assertTrue(!isset($employee['properties'][$property]['writeOnly']), "$property should !writeOnly");
+        }
     }
 
     public function test_yml_schema_takes_precedence(): void

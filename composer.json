@@ -10,7 +10,7 @@
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
         "thecodingmachine/class-explorer": "^1.1",
-        "mixerapi/core": "^0.2 || ^1.0"
+        "mixerapi/core": "^1.1.1"
     },
     "suggest": {
         "cakephp/authentication": "Used by SwaggerBake #[OpenApiSecurity]",
