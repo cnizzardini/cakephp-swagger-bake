@@ -17,7 +17,7 @@ class SwaggerController extends Controller
     public function index(OpenApiControllerService $service)
     {
         /*
-         * Build OpenAPI json and hot reloads if enabled
+         * Rebuild OpenAPI if hotReload is enabled
          */
         $service->build();
 
