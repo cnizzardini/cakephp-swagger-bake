@@ -278,10 +278,10 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param string $refEntity Reference YAML schema such as #/components/schema/MyEntity
+     * @param null|string $refEntity Reference YAML schema such as #/components/schema/MyEntity
      * @return $this
      */
-    public function setRefEntity(string $refEntity)
+    public function setRefEntity(?string $refEntity)
     {
         $this->refEntity = $refEntity;
 

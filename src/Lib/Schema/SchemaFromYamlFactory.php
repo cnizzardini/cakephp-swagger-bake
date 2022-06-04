@@ -24,9 +24,9 @@ class SchemaFromYamlFactory
     {
         $schema = (new Schema())
             ->setName($name)
-            ->setTitle($yml['title'] ?? '')
-            ->setType($yml['type'] ?? '')
-            ->setDescription($yml['description'] ?? '')
+            ->setTitle($yml['title'] ?? null)
+            ->setType($yml['type'] ?? null)
+            ->setDescription($yml['description'] ?? null)
             ->setItems($yml['items'] ?? [])
             ->setAllOf($yml['allOf'] ?? [])
             ->setAnyOf($yml['anyOf'] ?? [])
