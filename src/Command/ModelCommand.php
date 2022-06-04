@@ -81,7 +81,15 @@ class ModelCommand extends Command
             return strcasecmp($a->getModel()->getSchema()->name(), $b->getModel()->getSchema()->name());
         });
 
-        $header = ['Attribute','Data Type', 'Swagger Type','Default','Primary Key'];
+        $header = [
+            'Attribute',
+            'Data Type',
+            'Swagger Type',
+            'Default',
+            'Primary Key',
+            'Mass Assignment',
+            'Hidden',
+        ];
 
         foreach ($models as $model) {
             $io->out('- ' . (new ReflectionClass($model->getModel()->getEntity()))->getShortName());
@@ -93,6 +101,8 @@ class ModelCommand extends Command
                     DataTypeConversion::toType($property->getType()),
                     $property->getDefault(),
                     $property->isPrimaryKey() ? 'Y' : '',
+                    $property->isAccessible() ? 'Y' : '',
+                    $property->isHidden() ? 'Y' : '',
                 ];
             }
             $io->helper('table')->output($output);
