@@ -34,7 +34,7 @@ The `SwaggerBake.Path.created` is dispatched each time a new`SwaggerBake\Lib\Ope
 example of modifying a summary:
 ```php
 EventManager::instance()
-    ->on('SwaggerBake.Operation.created', function (Event $event) {
+    ->on('SwaggerBake.Path.created', function (Event $event) {
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */
         $path = $event->getSubject();
         $path->setSummary('My new summary')
