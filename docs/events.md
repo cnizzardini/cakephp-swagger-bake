@@ -13,14 +13,18 @@ Swagger Bake uses the [CakePHP Event System](https://book.cakephp.org/4/en/core-
 ### Operation Created
 
 The `SwaggerBake.Operation.created` is dispatched each time a new `SwaggerBake\Lib\OpenApi\Operation` is created. 
-Here is an example of modifying a summary:
+Here is an example of modifying a summary and adding OpenAPI security:
 
 ```php
 EventManager::instance()
     ->on('SwaggerBake.Operation.created', function (Event $event) {
         /** @var \SwaggerBake\Lib\OpenApi\Operation $operation */
         $operation = $event->getSubject();
-        $operation->setSummary('My new summary.')
+        $operation
+            ->setSummary('My new summary.')
+            ->setSecurity(
+                (new \SwaggerBake\Lib\OpenApi\PathSecurity('BearerAuth'))
+            )
     });
 ```
 
