@@ -22,9 +22,9 @@ EventManager::instance()
         $operation = $event->getSubject();
         $operation
             ->setSummary('My new summary.')
-            ->setSecurity(
+            ->setSecurity([
                 (new \SwaggerBake\Lib\OpenApi\PathSecurity('BearerAuth'))
-            )
+            ]);
     });
 ```
 
@@ -37,7 +37,7 @@ EventManager::instance()
     ->on('SwaggerBake.Path.created', function (Event $event) {
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */
         $path = $event->getSubject();
-        $path->setSummary('My new summary')
+        $path->setSummary('My new summary');
     });
 ```
 
