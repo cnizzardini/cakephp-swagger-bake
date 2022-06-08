@@ -34,8 +34,8 @@ This is built for CakePHP 4.x only. Supported versions:
 
 | Version | Branch                                                                    | Cake Version  | PHP Version | 
 |---------|---------------------------------------------------------------------------|---------------|-------------|
-| 2.*     | master                                                                    | 4.2 or higher | 8.0+        |
-| 1.*     | [1.next](https://github.com/cnizzardini/cakephp-swagger-bake/tree/1.next) | 4.0 - 4.3     | 7.2+        | 
+| 2.*     | master                                                                    | ^4.2          | 8.0+        |
+| 1.*     | [1.next](https://github.com/cnizzardini/cakephp-swagger-bake/tree/1.next) | ^4.0          | 7.2+        | 
 
 ## Table of Contents
 - [Installation](#installation)
