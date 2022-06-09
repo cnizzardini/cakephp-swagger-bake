@@ -32,26 +32,6 @@ class OpenApiSchema
     public const VISIBLE_NEVER = 4;
 
     /**
-     * @deprecated deprecated because of misspelling
-     */
-    public const VISIBILE_DEFAULT = 1;
-
-    /**
-     * @deprecated deprecated because of misspelling
-     */
-    public const VISIBILE_ALWAYS = 2;
-
-    /**
-     * @deprecated deprecated because of misspelling
-     */
-    public const VISIBILE_HIDDEN = 3;
-
-    /**
-     * @deprecated deprecated because of misspelling
-     */
-    public const VISIBILE_NEVER = 4;
-
-    /**
      * @param int $visibility See class constants for options.
      * @param string|null $title The title of the schema
      * @param string|null $description The description of the schema

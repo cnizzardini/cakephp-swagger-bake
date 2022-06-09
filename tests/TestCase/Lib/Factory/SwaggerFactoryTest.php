@@ -7,7 +7,7 @@ use Cake\TestSuite\TestCase;
 
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
+use SwaggerBake\Lib\SwaggerFactory;
 
 class SwaggerFactoryTest extends TestCase
 {

@@ -39,9 +39,9 @@ class EmployeeDataRequest
 
     /**
      * @param string $firstName
-     * @return EmployeeDataRequestLegacy
+     * @return $this
      */
-    public function setFirstName(string $firstName): EmployeeDataRequestLegacy
+    public function setFirstName(string $firstName)
     {
         $this->firstName = $firstName;
         return $this;
@@ -57,9 +57,9 @@ class EmployeeDataRequest
 
     /**
      * @param string $lastName
-     * @return EmployeeDataRequestLegacy
+     * @return $this
      */
-    public function setLastName(string $lastName): EmployeeDataRequestLegacy
+    public function setLastName(string $lastName)
     {
         $this->lastName = $lastName;
         return $this;
@@ -75,7 +75,7 @@ class EmployeeDataRequest
 
     /**
      * @param mixed $title
-     * @return EmployeeDataRequestLegacy
+     * @return $this
      */
     public function setTitle($title)
     {
@@ -93,7 +93,7 @@ class EmployeeDataRequest
 
     /**
      * @param mixed $age
-     * @return EmployeeDataRequestLegacy
+     * @return $this
      */
     public function setAge($age)
     {
@@ -111,7 +111,7 @@ class EmployeeDataRequest
 
     /**
      * @param mixed $date
-     * @return EmployeeDataRequestLegacy
+     * @return $this
      */
     public function setDate($date)
     {

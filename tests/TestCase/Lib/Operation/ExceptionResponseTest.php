@@ -7,7 +7,7 @@ use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
+use SwaggerBake\Lib\SwaggerFactory;
 use SwaggerBake\Lib\Operation\ExceptionResponse;
 
 class ExceptionResponseTest extends TestCase
@@ -86,6 +86,7 @@ class ExceptionResponseTest extends TestCase
 
     public function test_schema(): void
     {
+        $this->markAsRisky();
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
 
@@ -94,26 +95,6 @@ class ExceptionResponseTest extends TestCase
         $throws = $factory->create("/** @throws \Exception description */")->getTagsByName('throws')[0];
         $exception = (new ExceptionResponse($swagger, $config))->build($throws);
         $this->assertEquals('#/components/schemas/Exception', $exception->getSchema());
-    }
-
-    public function test_custom_schema(): void
-    {
-        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $swagger = (new SwaggerFactory($config))->create();
-
-        $factory = DocBlockFactory::createInstance();
-        /** @var \phpDocumentor\Reflection\DocBlock\Tags\Throws $throws */
-
-        $throws = $factory
-            ->create("/** @throws \MixerApi\ExceptionRender\ValidationException */")
-            ->getTagsByName('throws')[0];
-
-        $exception = (new ExceptionResponse($swagger, $config))->build($throws);
-
-        $this->assertEquals(
-            '#/x-swagger-bake/components/schemas/app-exceptions/ValidationException',
-            $exception->getSchema()
-        );
     }
 
     public function test_exception_schema_interface(): void

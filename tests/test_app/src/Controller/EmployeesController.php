@@ -17,9 +17,7 @@ use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
 use SwaggerBakeTest\App\Dto\CustomResponseSchema;
 use SwaggerBakeTest\App\Dto\CustomResponseSchemaPublic;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
-use SwaggerBakeTest\App\Dto\EmployeeDataRequestLegacy;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
-use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchemaLegacy;
 use SwaggerBakeTest\App\Model\Table\EmployeesTable;
 
 #[OpenApiPath(
@@ -196,32 +194,6 @@ class EmployeesController extends AppController
 
     }
 
-    /**
-     * @deprecated remove in v3.0.0
-     */
-    #[OpenApiDto(class: EmployeeDataRequestLegacy::class)]
-    public function dtoQueryLegacy(): void
-    {
-
-    }
-
-    /**
-     * @deprecated remove in v3.0.0
-     */
-    #[OpenApiDto(class: EmployeeDataRequestLegacy::class)]
-    public function dtoPostLegacy(): void
-    {
-
-    }
-
-    /**
-     * @deprecated remove in v3.0.0
-     */
-    #[OpenApiDto(class: EmployeeDataRequestPublicSchemaLegacy::class)]
-    public function dtoPublicLegacy(): void
-    {
-
-    }
 
     #[OpenApiSearch(tableClass: EmployeesTable::class)]
     public function search(): void

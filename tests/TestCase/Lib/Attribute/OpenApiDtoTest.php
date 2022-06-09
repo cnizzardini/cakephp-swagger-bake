@@ -84,80 +84,32 @@ class OpenApiDtoTest extends TestCase
         ], SWAGGER_BAKE_TEST_APP);
     }
 
-    /**
-     * @todo update in v3.0.0
-     */
     public function test_openapi_dto_query(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
         $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
         $arr = json_decode($swagger->toString(), true);
 
-        $operation = $arr['paths']['/employees/dto-query-legacy']['get'];
-        $properties = ['first_name', 'last_name', 'title', 'age', 'date'];
-        foreach ($properties as $x => $property) {
-            $this->assertEquals($property, $operation['parameters'][$x]['name']);
-        }
 
+        $properties = ['lazy', 'first_name', 'last_name', 'title', 'age', 'date',];
         $operation = $arr['paths']['/employees/dto-query']['get'];
-        $properties = array_merge(['lazy'], $properties);
         foreach ($properties as $x => $property) {
             $this->assertEquals($property, $operation['parameters'][$x]['name']);
         }
     }
 
-    /**
-     * @todo update in v3.0.0
-     */
     public function test_openapi_dto_post(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
         $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
         $arr = json_decode($swagger->toString(), true);
 
-        $operation = $arr['paths']['/employees/dto-post-legacy']['post'];
-        $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
-        $names = ['first_name', 'last_name', 'title', 'age', 'date'];
-        foreach ($names as $property) {
-            $this->assertArrayHasKey($property, $properties);
-        }
 
+        $names = ['first_name', 'last_name', 'title', 'age', 'date', 'lazy', ];
         $operation = $arr['paths']['/employees/dto-post']['post'];
         $properties = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['properties'];
-        $names = array_merge(['lazy'], $names);
         foreach ($names as $property) {
             $this->assertArrayHasKey($property, $properties);
         }
     }
-
-    /**
-     * @deprecated remove in v3.0.0
-     */
-    public function test_openapi_dto_post_with_public_schema(): void
-    {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
-        $arr = json_decode($swagger->toString(), true);
-
-        $parameterized = [
-            'dto-public-legacy' => 'EmployeeDataRequestPublicSchemaLegacy',
-            'dto-public' => 'EmployeeDataRequestPublicSchema',
-        ];
-
-        $names = ['first_name', 'last_name', 'title', 'age', 'date'];
-
-        foreach ($parameterized as $path => $class) {
-            $this->assertArrayHasKey($class, $arr['components']['schemas']);
-
-            $properties = $arr['components']['schemas'][$class]['properties'];
-            foreach ($names as $property) {
-                $this->assertArrayHasKey($property, $properties);
-            }
-
-            $operation = $arr['paths']['/employees/' . $path]['post'];
-            $ref = $operation['requestBody']['content']['application/x-www-form-urlencoded']['schema']['$ref'];
-            $this->assertEquals('#/components/schemas/' . $class, $ref);
-        }
-    }
-
 }

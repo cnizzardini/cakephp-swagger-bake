@@ -8,7 +8,7 @@ use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
+use SwaggerBake\Lib\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
 
