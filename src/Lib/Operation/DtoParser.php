@@ -5,8 +5,6 @@ namespace SwaggerBake\Lib\Operation;
 
 use ReflectionClass;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
-use SwaggerBake\Lib\Attribute\OpenApiDtoQuery;
-use SwaggerBake\Lib\Attribute\OpenApiDtoRequestBody;
 use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
 use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 
@@ -47,23 +45,6 @@ class DtoParser
 
             if ($queryParam instanceof OpenApiQueryParam) {
                 $parameters[] = $queryParam->createParameter();
-                continue;
-            }
-
-            // @todo: remove OpenApiDtoQuery this code in v3.0.0
-            $openApiDtoQuery = (new AttributeFactory(
-                $reflectionProperty,
-                OpenApiDtoQuery::class
-            ))->createOneOrNull();
-
-            if ($openApiDtoQuery instanceof OpenApiDtoQuery) {
-                $parameters[] = $openApiDtoQuery->create();
-                trigger_deprecation(
-                    'cnizzardini/cakekphp-swagger-bake',
-                    'v2.2.5',
-                    'OpenApiDtoQuery is deprecated and will be removed in v3.0.0, use OpenApiQueryParam in ' .
-                    'DTOs instead.'
-                );
             }
         }
 
@@ -86,22 +67,6 @@ class DtoParser
 
             if ($schemaProperty instanceof OpenApiSchemaProperty) {
                 $schemaProperties[] = $schemaProperty->create();
-                continue;
-            }
-
-            // @todo: remove OpenApiDtoRequestBody in v3.0.0
-            $openApiDtoRequestBody = (new AttributeFactory(
-                $reflectionProperty,
-                OpenApiDtoRequestBody::class
-            ))->createOneOrNull();
-
-            if ($openApiDtoRequestBody instanceof OpenApiDtoRequestBody) {
-                $schemaProperties[] = $openApiDtoRequestBody->create();
-                trigger_deprecation(
-                    'cnizzardini/cakekphp-swagger-bake',
-                    'v2.2.5',
-                    'OpenApiDtoQuery is deprecated and will be removed in v3.0.0, use OpenApiSchemaProperty instead.'
-                );
             }
         }
 

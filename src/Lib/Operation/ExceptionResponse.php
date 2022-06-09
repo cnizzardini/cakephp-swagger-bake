@@ -91,27 +91,12 @@ class ExceptionResponse
     }
 
     /**
-     * @deprecated this method will be removed in version 3.
+     * @deprecated this method may be removed in version 3.
      * @param string $exceptionFqn The FQN of the exception class.
      * @return string|null
      */
     private function fallback(string $exceptionFqn): string|null
     {
-        $array = $this->swagger->getArray();
-        if (isset($array['x-swagger-bake']['components']['schemas']['app-exceptions'])) {
-            foreach ($array['x-swagger-bake']['components']['schemas']['app-exceptions'] as $name => $exception) {
-                if (isset($exception['x-exception-fqn']) && $exception['x-exception-fqn'] === $exceptionFqn) {
-                    trigger_deprecation(
-                        'cnizzardini/cakephp-swagger-bake',
-                        '2.1.0',
-                        'Support for x-exception-fqn will be removed soon. Use OpenApiExceptionSchemaInterface.'
-                    );
-
-                    return '#/x-swagger-bake/components/schemas/app-exceptions/' . $name;
-                }
-            }
-        }
-
         if (empty($this->config->getExceptionSchema())) {
             return null;
         }

@@ -8,7 +8,7 @@ use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
+use SwaggerBake\Lib\SwaggerFactory;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Schema;

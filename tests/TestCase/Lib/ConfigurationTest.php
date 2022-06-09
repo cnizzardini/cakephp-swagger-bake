@@ -26,27 +26,6 @@ class ConfigurationTest extends TestCase
         $this->configuration = $this->createConfiguration();
     }
 
-    public function test_legacy_get_set(): void
-    {
-        $this->assertEquals(self::DEFAULT_CONFIGS['prefix'], $this->configuration->get('prefix'));
-        $this->configuration->set('prefix', $prefix = '/new-prefix');
-        $this->assertEquals($prefix, $this->configuration->get('prefix'));
-    }
-
-    public function test_legacy_get_should_throw_logic_exception(): void
-    {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessageMatches("/Method getNope/");
-        $this->configuration->get('nope');
-    }
-
-    public function test_legacy_set_should_throw_logic_exception(): void
-    {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessageMatches("/Method setNope/");
-        $this->configuration->set('nope', 'value');
-    }
-
     public function test_get_set_docType(): void
     {
         $this->configuration->setDocType('redoc');

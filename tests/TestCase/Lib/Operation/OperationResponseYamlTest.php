@@ -6,7 +6,7 @@ use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
+use SwaggerBake\Lib\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationResponse;
 use SwaggerBake\Lib\Route\RouteScanner;

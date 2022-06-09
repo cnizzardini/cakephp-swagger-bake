@@ -8,8 +8,8 @@ use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
 use SwaggerBake\Lib\Service\OpenApiBakerService;
+use SwaggerBake\Lib\SwaggerFactory;
 
 /**
  * Class BakeCommand

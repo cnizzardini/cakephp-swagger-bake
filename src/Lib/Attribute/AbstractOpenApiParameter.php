@@ -61,15 +61,6 @@ abstract class AbstractOpenApiParameter
     public function create(): Parameter
     {
         switch (static::class) {
-            case OpenApiDtoQuery::class:
-                $parameter = new Parameter(
-                    in: 'query',
-                    ref: $this->ref,
-                    name: $this->name,
-                    allowEmptyValue: $this->allowEmptyValue,
-                    allowReserved: $this->allowReserved
-                );
-                break;
             case OpenApiHeader::class:
                 $parameter = new Parameter('header', $this->ref, $this->name);
                 break;

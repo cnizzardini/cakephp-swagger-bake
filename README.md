@@ -186,8 +186,6 @@ may be used. These can be imported individually from the `SwaggerBake\Lib\Attrib
 | [OpenApiSchemaProperty](docs/attributes.md#OpenApiSchemaProperty)     | Entity or Class    | Modifies an OpenAPI schema property or defines OpenApiResponse schema                                              |
 | [OpenApiSearch](docs/attributes.md#OpenApiSearch)                     | Controller Action  | Create OpenAPI query params from CakePHP Search plugin                                                             |
 | [OpenApiSecurity](docs/attributes.md#OpenApiSecurity)                 | Controller Action  | Create/modify OpenAPI security                                                                                     |
-| [~~OpenApiDtoQuery~~](docs/attributes.md#OpenApiDtoQuery)             | DTO class property | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.5+)               |
-| [~~OpenApiDtoRequestBody~~](docs/attributes.md#OpenApiDtoRequestBody) | DTO class property | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.5+) |
 
 ## Event System
 
@@ -274,8 +272,6 @@ $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 
 
 To get started, copy [SwaggerController](src/Controller/SwaggerController.php) into your project.
 
-Note: SwaggerUiComponent has been deprecated in version 2.3.0 and will be removed in version 3.
-
 #### Using Your Own Layout and Templates
 
 You will need to use your own controller (see above). From there you can copy the [layouts](templates/layout) and 
@@ -295,13 +291,7 @@ configurations should point to your plugins paths and namespaces. Next, create a
     public function initialize(): void
     {
         parent::initialize();
-        Configure::load('OtherApi.swagger_bake', 'default', false); // note: `false` for the third argument is important
-         
-        /*
-         * Only load the component if you are using a version older than v2.3.0. This component will be deprecated 
-         * in v3.0.0
-         */ 
-        $this->loadComponent('SwaggerBake.SwaggerUi');
+        Configure::load('OtherApi.swagger_bake', 'default', false); // note: `false` for the third argument is important         
     }
 ```
 
