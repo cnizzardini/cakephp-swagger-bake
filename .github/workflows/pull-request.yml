@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-20.04 ]
-        php-versions: ['8.0', '8.1']
+        php-versions: ['8.1']
 
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
@@ -33,7 +33,7 @@ jobs:
           composer install --prefer-dist --no-progress
 
       - name: Test Suite (8.0 only)
-        if: ${{ matrix.php-versions == '8.0' }}
+        if: ${{ matrix.php-versions == '8.1' }}
         run: |
           composer test
           echo ${{ matrix.php-versions }}
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['~4.2.0', '~4.3.0', '^4.4']
+        version: ['^4.4']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -69,7 +69,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: '8.1'
           extensions: mbstring, intl
 
       - name: PHP Version
