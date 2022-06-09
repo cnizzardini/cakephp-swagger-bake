@@ -8,9 +8,9 @@ when reading this documentation. Annotations exist in the following namespaces:
 - `SwaggerBake\Lib\Extension`
 
 Just a reminder that many usage examples exist in the 
-[SwaggerBake Demo](https://github.com/cnizzardini/cakephp-swagger-bake-demo). 
-If you are using version 1 then you'll need to use 
-[annotations](https://github.com/cnizzardini/cakephp-swagger-bake/blob/1.next/docs/annotations.md) instead.
+[SwaggerBake Demo](https://github.com/cnizzardini/cakephp-swagger-bake-demo) and 
+[MixerApi Demo](https://github.com/mixerapi/demo).
+
 
 ## Table of Contents
 
