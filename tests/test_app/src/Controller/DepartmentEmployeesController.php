@@ -12,6 +12,8 @@ namespace SwaggerBakeTest\App\Controller;
  */
 class DepartmentEmployeesController extends AppController
 {
+    public $defaultTable = 'DepartmentEmployees';
+
     /**
      * Index method
      * @return \Cake\Http\Response|null|void Renders view

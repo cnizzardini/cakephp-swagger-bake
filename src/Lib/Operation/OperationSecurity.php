@@ -3,14 +3,11 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
-use Cake\Controller\Controller;
 use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\PathSecurity;
-use SwaggerBake\Lib\Route\RouteDecorator;
-use SwaggerBake\Lib\Swagger;
 
 /**
  * Class OperationSecurity
@@ -22,16 +19,10 @@ class OperationSecurity
     /**
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
      * @param \ReflectionMethod|null $refMethod ReflectionMethod or null
-     * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
-     * @param \Cake\Controller\Controller $controller Controller
-     * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      */
     public function __construct(
         private Operation $operation,
-        private ?ReflectionMethod $refMethod,
-        private RouteDecorator $route,
-        private Controller $controller,
-        private Swagger $swagger
+        private ?ReflectionMethod $refMethod
     ) {
     }
 
@@ -39,11 +30,11 @@ class OperationSecurity
      * Gets an Operation instance after applying security
      *
      * @return \SwaggerBake\Lib\OpenApi\Operation
+     * @throws \ReflectionException
      */
     public function getOperationWithSecurity(): Operation
     {
         $this->assignOpenApiSecurity();
-        $this->assignAuthenticationComponent();
 
         return $this->operation;
     }
@@ -52,6 +43,7 @@ class OperationSecurity
      * Assigns OpenApiSecurity attribute
      *
      * @return void
+     * @throws \ReflectionException
      */
     private function assignOpenApiSecurity(): void
     {
@@ -71,35 +63,5 @@ class OperationSecurity
                     ->setScopes($sec->scopes)
             );
         }
-    }
-
-    /**
-     * Assign by AuthenticationComponent
-     *
-     * @return void
-     */
-    private function assignAuthenticationComponent(): void
-    {
-        if (!isset($this->controller->Authentication)) {
-            return;
-        }
-
-        if (in_array($this->route->getAction(), $this->controller->Authentication->getUnauthenticatedActions())) {
-            return;
-        }
-
-        $array = $this->swagger->getArray();
-        if (!isset($array['components']['securitySchemes']) || count($array['components']['securitySchemes']) !== 1) {
-            return;
-        }
-
-        $scheme = array_keys($array['components']['securitySchemes'])[0];
-
-        $securities = $this->operation->getSecurity();
-        if (array_key_exists($scheme, $securities) || !is_string($scheme)) {
-            return;
-        }
-
-        $this->operation->pushSecurity(new PathSecurity($scheme));
     }
 }

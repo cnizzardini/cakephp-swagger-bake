@@ -62,8 +62,8 @@ class ArrayUtility
     /**
      * Removes matching values from the array by key
      *
-     * @param array $array The array to scan on
-     * @param array $keys The array to match against
+     * @param array $array The array to be searched on and eventually returned
+     * @param array $keys The keys to be removed from the $array
      * @return array
      */
     public static function removeKeysMatching(array $array, array $keys): array

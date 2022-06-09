@@ -9,6 +9,8 @@ use SwaggerBake\Lib\Attribute\OpenApiPath;
 #[OpenApiPath(isVisible: false)]
 class EmployeeTitlesController extends AppController
 {
+    public $defaultTable = 'EmployeeTitles';
+
     /**
      * Index method
      * @SwagPaginator

@@ -138,12 +138,26 @@ class SchemaFactory
 
         $return = array_merge($return, $this->getPropertyAnnotations($model));
 
+        /*
+         * Return all properties excluding hidden properties that are not available for writing
+         */
         if ($propertyType === self::ALL_PROPERTIES) {
-            return $return;
+            return array_filter($return, function (SchemaProperty $property) {
+                if (!$property->isWriteOnly() && $property->isHidden()) {
+                    return false;
+                }
+
+                return true;
+            });
         }
 
+        /*
+         * Return properties depending on requested property type:
+         * - readable: when property is not write only and not hidden
+         * - writeable: when property is not read only
+         */
         return array_filter($return, function (SchemaProperty $property) use ($propertyType) {
-            if ($propertyType == self::READABLE_PROPERTIES && !$property->isWriteOnly()) {
+            if ($propertyType == self::READABLE_PROPERTIES && !$property->isWriteOnly() && !$property->isHidden()) {
                 return true;
             }
             if ($propertyType == self::WRITEABLE_PROPERTIES && !$property->isReadOnly()) {

@@ -12,6 +12,7 @@ use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\Utility\FileUtility;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -30,13 +31,22 @@ class Swagger
 
     private Configuration $config;
 
+    private FileUtility $fileUtility;
+
     /**
      * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
+     * @param \SwaggerBake\Lib\Configuration $configuration Configuration instance
+     * @param \SwaggerBake\Lib\Utility\FileUtility|null $fileUtility FileUtility will be created automatically if
+     *  argument is null.
      * @throws \ReflectionException
      */
-    public function __construct(ModelScanner $modelScanner)
-    {
-        $this->config = $modelScanner->getConfig();
+    public function __construct(
+        ModelScanner $modelScanner,
+        Configuration $configuration,
+        ?FileUtility $fileUtility = null
+    ) {
+        $this->config = $configuration;
+        $this->fileUtility = $fileUtility ?? new FileUtility();
 
         $this->array = (new OpenApiFromYaml())->build(Yaml::parseFile($this->config->getYml()));
 
@@ -121,7 +131,7 @@ class Swagger
             new Event('SwaggerBake.beforeRender', $this)
         );
 
-        $json = json_encode($this->getArray(), $this->config->get('jsonOptions'));
+        $json = json_encode($this->getArray(), $this->config->getJsonOptions());
         if (!$json) {
             throw new SwaggerBakeRunTimeException('Error converting OpenAPI to JSON.');
         }
@@ -137,14 +147,12 @@ class Swagger
      */
     public function writeFile(string $output): void
     {
-        if (!is_writable($output)) {
-            throw new SwaggerBakeRunTimeException("Output file is not writable, given $output");
+        if (!$this->fileUtility->isWritable($output)) {
+            throw new SwaggerBakeRunTimeException("Output file is not writable, given `$output`");
         }
 
-        file_put_contents($output, $this->toString());
-
-        if (!file_exists($output)) {
-            throw new SwaggerBakeRunTimeException("Error encountered while writing swagger file to $output");
+        if ($this->fileUtility->putContents($output, $this->toString()) === false) {
+            throw new SwaggerBakeRunTimeException("Error encountered while writing swagger file to `$output`");
         }
     }
 

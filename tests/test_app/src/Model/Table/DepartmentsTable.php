@@ -46,6 +46,8 @@ class DepartmentsTable extends Table
         $this->hasMany('DepartmentEmployees', [
             'foreignKey' => 'department_id',
         ]);
+
+        $this->addBehavior('Search.Search');
     }
 
     /**

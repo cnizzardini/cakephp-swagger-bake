@@ -697,9 +697,8 @@ OpenAPI:
 ```
 
 ### OpenApiSecurity
-Method level attribute for documenting security requirements on an Operation. This attribute takes precedence over
-settings inferred from AuthenticationComponent. See the main documentation for more information. You may define
-multiple.
+Method level attribute for documenting security requirements on an Operation. See the main documentation for more 
+information. You may define multiple.
 
 | Property   | Type / Default | OA Spec | Description                           | 
 |------------|----------------|---------|---------------------------------------|

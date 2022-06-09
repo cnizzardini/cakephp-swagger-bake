@@ -2,25 +2,29 @@
 
 Swagger Bake uses the [CakePHP Event System](https://book.cakephp.org/4/en/core-libraries/events.html)
 
-| Event | Description | 
-| ------------- | ------------- |
-| [SwaggerBake.Operation.created](#operation-created) | Dispatched each time an OpenAPI Path > Operation is created |
-| [SwaggerBake.Path.created](#path-created) | Dispatched each time an OpenAPI Path is created |
-| [SwaggerBake.Schema.created](#schema-created) | Dispatched each time an OpenAPI Schema is created |
-| [SwaggerBake.initialize](#initialize) | Dispatched during initialization phase on SwaggerBake |
-| [SwaggerBake.beforeRender](#before-render) | Dispatched before SwaggerBake outputs OpenAPI JSON |
+| Description                                                 | Event                                               | 
+|-------------------------------------------------------------|-----------------------------------------------------|
+| Dispatched each time an OpenAPI Path > Operation is created | [SwaggerBake.Operation.created](#operation-created) |
+| Dispatched each time an OpenAPI Path is created             | [SwaggerBake.Path.created](#path-created)           |
+| Dispatched each time an OpenAPI Schema is created           | [SwaggerBake.Schema.created](#schema-created)       |
+| Dispatched during initialization phase on SwaggerBake       | [SwaggerBake.initialize](#initialize)               |
+| Dispatched before SwaggerBake outputs OpenAPI JSON          | [SwaggerBake.beforeRender](#before-render)          |
 
 ### Operation Created
 
 The `SwaggerBake.Operation.created` is dispatched each time a new `SwaggerBake\Lib\OpenApi\Operation` is created. 
-Here is an example of modifying a summary:
+Here is an example of modifying a summary and adding OpenAPI security:
 
 ```php
 EventManager::instance()
     ->on('SwaggerBake.Operation.created', function (Event $event) {
         /** @var \SwaggerBake\Lib\OpenApi\Operation $operation */
         $operation = $event->getSubject();
-        $operation->setSummary('My new summary.')
+        $operation
+            ->setSummary('My new summary.')
+            ->setSecurity([
+                (new \SwaggerBake\Lib\OpenApi\PathSecurity('BearerAuth'))
+            ]);
     });
 ```
 
@@ -30,10 +34,10 @@ The `SwaggerBake.Path.created` is dispatched each time a new`SwaggerBake\Lib\Ope
 example of modifying a summary:
 ```php
 EventManager::instance()
-    ->on('SwaggerBake.Operation.created', function (Event $event) {
+    ->on('SwaggerBake.Path.created', function (Event $event) {
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */
         $path = $event->getSubject();
-        $path->setSummary('My new summary')
+        $path->setSummary('My new summary');
     });
 ```
 

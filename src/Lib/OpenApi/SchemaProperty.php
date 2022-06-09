@@ -33,6 +33,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     private bool $isReadOnly = false;
     private bool $isWriteOnly = false;
     private bool $isRequired = false;
+    private bool $isHidden = false;
     private bool $requirePresenceOnCreate = false;
     private bool $requirePresenceOnUpdate = false;
     private array $items = [];
@@ -69,7 +70,9 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     {
         $vars = get_object_vars($this);
 
-        // rename class properties to match openapi schema
+        /*
+         * rename class properties to match openapi schema
+         */
         foreach (self::PROPERTIES_TO_OPENAPI_SPEC as $classProperty => $openApiProperty) {
             if (isset($vars[$classProperty])) {
                 $vars[$openApiProperty] = $vars[$classProperty];
@@ -77,17 +80,21 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             }
         }
 
-        // remove internal properties
+        /*
+         * remove internal properties
+         */
         $vars = ArrayUtility::removeKeysMatching(
             $vars,
-            ['name','isRequired','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity']
+            ['name','isRequired','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity', 'isHidden']
         );
 
         if (!empty($this->refEntity)) {
             $vars['$ref'] = $this->refEntity;
         }
 
-        // Removing empty and null items from OpenAPI
+        /*
+         * remove empty and null items from OpenAPI
+         */
         $vars = ArrayUtility::removeEmptyVars(
             $vars,
             [
@@ -97,10 +104,14 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             ]
         );
 
-        // Remove null values
+        /*
+         * remove null values
+         */
         $vars = ArrayUtility::removeNullValues($vars, ['example']);
 
-        // Remove items matching their defaults from OpenAPI
+        /*
+         * remove items matching their defaults from OpenAPI
+         */
         $vars = ArrayUtility::removeValuesMatching(
             $vars,
             ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false, 'nullable' => false]
@@ -267,12 +278,31 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param string $refEntity Reference YAML schema such as #/components/schema/MyEntity
+     * @param null|string $refEntity Reference YAML schema such as #/components/schema/MyEntity
      * @return $this
      */
-    public function setRefEntity(string $refEntity)
+    public function setRefEntity(?string $refEntity)
     {
         $this->refEntity = $refEntity;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHidden(): bool
+    {
+        return $this->isHidden;
+    }
+
+    /**
+     * @param bool $isHidden Is this property in Entity::_hidden?
+     * @return $this
+     */
+    public function setIsHidden(bool $isHidden)
+    {
+        $this->isHidden = $isHidden;
 
         return $this;
     }

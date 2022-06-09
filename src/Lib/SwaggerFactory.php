@@ -7,7 +7,6 @@ use Cake\Routing\Router;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
-use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**
  * Class SwaggerFactory
@@ -27,7 +26,6 @@ class SwaggerFactory
         private ?RouteScanner $routeScanner = null
     ) {
         $this->config = $config ?? new Configuration();
-        ValidateConfiguration::validate($this->config);
 
         $this->routeScanner = $routeScanner ?? new RouteScanner(new Router(), $this->config);
     }
@@ -36,6 +34,7 @@ class SwaggerFactory
      * Creates an instance of Swagger
      *
      * @return \SwaggerBake\Lib\Swagger
+     * @throws \ReflectionException
      */
     public function create(): Swagger
     {
@@ -48,6 +47,6 @@ class SwaggerFactory
             );
         }
 
-        return new Swagger(new ModelScanner($this->routeScanner, $this->config));
+        return new Swagger(new ModelScanner($this->routeScanner, $this->config), $this->config);
     }
 }

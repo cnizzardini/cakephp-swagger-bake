@@ -168,7 +168,23 @@ class OperationResponseAssociationTest extends TestCase
 
         /** @var SchemaProperty $schemaProperty */
         $schemaProperty = $schema->getProperties()['employee'];
-
         $this->assertEquals('employee', $schemaProperty->getName());
+    }
+
+    public function test_associate_throws_exception_when_association_not_found(): void
+    {
+        $this->expectException(SwaggerBakeRunTimeException::class);
+        (new OperationResponseAssociation(
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $this->routes['employees:view'],
+            null
+        ))->build(new OpenApiResponse(
+            schemaType: 'object',
+            associations: ['table' => 'EmployeeSalaries', 'whiteList' => ['Nope']]
+        ));
+        $this->assertStringContainsString(
+            'OpenApiResponse association not found',
+            $this->getExpectedExceptionMessage()
+        );
     }
 }

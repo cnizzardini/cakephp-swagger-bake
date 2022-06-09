@@ -68,10 +68,10 @@ trait SchemaTrait
     }
 
     /**
-     * @param string $format Format
+     * @param null|string $format Format
      * @return $this
      */
-    public function setFormat(string $format)
+    public function setFormat(?string $format)
     {
         $this->format = $format;
 

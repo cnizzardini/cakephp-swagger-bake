@@ -85,7 +85,7 @@ class OpenApiOperationTest extends TestCase
 
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $configuration);
-        $this->swagger = new Swagger(new ModelScanner($cakeRoute, $configuration));
+        $this->swagger = new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration);
     }
 
     public function test_descriptions(): void

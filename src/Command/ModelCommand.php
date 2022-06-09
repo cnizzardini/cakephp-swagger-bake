@@ -14,7 +14,6 @@ use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
-use SwaggerBake\Lib\Utility\ValidateConfiguration;
 
 /**
  * Class ModelCommand
@@ -60,10 +59,10 @@ class ModelCommand extends Command
         $io->hr();
 
         $config = new Configuration();
-        ValidateConfiguration::validate($config);
 
-        if (!empty($args->getOption('prefix'))) {
-            $config->set('prefix', $args->getOption('prefix'));
+        $prefix = $args->getOption('prefix');
+        if (!empty($prefix) && is_string($prefix)) {
+            $config->setPrefix($prefix);
         }
 
         $routeScanner = new RouteScanner(new Router(), $config);
@@ -82,7 +81,15 @@ class ModelCommand extends Command
             return strcasecmp($a->getModel()->getSchema()->name(), $b->getModel()->getSchema()->name());
         });
 
-        $header = ['Attribute','Data Type', 'Swagger Type','Default','Primary Key'];
+        $header = [
+            'Attribute',
+            'Data Type',
+            'Swagger Type',
+            'Default',
+            'Primary Key',
+            'Mass Assignment',
+            'Hidden',
+        ];
 
         foreach ($models as $model) {
             $io->out('- ' . (new ReflectionClass($model->getModel()->getEntity()))->getShortName());
@@ -94,6 +101,8 @@ class ModelCommand extends Command
                     DataTypeConversion::toType($property->getType()),
                     $property->getDefault(),
                     $property->isPrimaryKey() ? 'Y' : '',
+                    $property->isAccessible() ? 'Y' : '',
+                    $property->isHidden() ? 'Y' : '',
                 ];
             }
             $io->helper('table')->output($output);

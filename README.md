@@ -17,7 +17,6 @@ and controllers.
 - Integrates with: 
 [Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html), 
 [friendsofcake/search](https://github.com/FriendsOfCake/search), 
-[Authentication](https://book.cakephp.org/authentication/2/en/index.html), 
 [Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html), and 
 [Bake](#bake-theme).
 - Provides additional functionality through Attributes and Doc Blocks.
@@ -170,8 +169,8 @@ may be used. These can be imported individually from the `SwaggerBake\Lib\Attrib
 [version 1](https://github.com/cnizzardini/cakephp-swagger-bake/tree/1.next) you will need to use annotations.
 
 
-| Attribute                                           | Usage              | Description                                                                                                        | 
-|-----------------------------------------------------|--------------------|--------------------------------------------------------------------------------------------------------------------|
+| Attribute                                                             | Usage              | Description                                                                                                        | 
+|-----------------------------------------------------------------------|--------------------|--------------------------------------------------------------------------------------------------------------------|
 | [OpenApiDto](docs/attributes.md#OpenApiDto)                           | Controller Action  | Builds OpenAPI query params and request bodies from Data Transfer Objects                                          |
 | [OpenApiForm](docs/attributes.md#OpenApiForm)                         | Controller Action  | Builds OpenAPI for application/x-www-form-urlencoded request bodies                                                |
 | [OpenApiHeader](docs/attributes.md#OpenApiHeader)                     | Controller Action  | Create OpenAPI header parameters                                                                                   |
@@ -274,6 +273,8 @@ $builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 
 
 To get started, copy [SwaggerController](src/Controller/SwaggerController.php) into your project.
 
+Note: SwaggerUiComponent has been deprecated in version 2.3.0 and will be removed in version 3.
+
 #### Using Your Own Layout and Templates
 
 You will need to use your own controller (see above). From there you can copy the [layouts](templates/layout) and 
@@ -294,6 +295,11 @@ configurations should point to your plugins paths and namespaces. Next, create a
     {
         parent::initialize();
         Configure::load('OtherApi.swagger_bake', 'default', false); // note: `false` for the third argument is important
+         
+        /*
+         * Only load the component if you are using a version older than v2.3.0. This component will be deprecated 
+         * in v3.0.0
+         */ 
         $this->loadComponent('SwaggerBake.SwaggerUi');
     }
 ```

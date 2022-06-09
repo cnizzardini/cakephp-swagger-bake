@@ -41,7 +41,19 @@ class SchemaPropertyFactory
             ->setName($property->getName())
             ->setType(DataTypeConversion::toType($property->getType()))
             ->setFormat(DataTypeConversion::toFormat($property->getType()))
-            ->setReadOnly($this->isReadOnly($property));
+            ->setIsHidden($property->isHidden());
+
+        /*
+         * Per OpenAPI spec, only one of `writeOnly` and `readOnly` may be set to true.
+         *
+         * @link https://swagger.io/specification/
+         */
+        if ($property->isAccessible() && $property->isHidden()) {
+            $schemaProperty->setWriteOnly(true);
+        }
+        if (!$property->isAccessible() && !$property->isHidden()) {
+            $schemaProperty->setReadOnly(true);
+        }
 
         $schemaProperty = (new SchemaPropertyValidation($this->validator, $schemaProperty, $property))
             ->withValidations();
@@ -56,26 +68,6 @@ class SchemaPropertyFactory
         }
 
         return $schemaProperty;
-    }
-
-    /**
-     * @param \MixerApi\Core\Model\ModelProperty $property ModelProperty
-     * @return bool
-     */
-    private function isReadOnly(ModelProperty $property): bool
-    {
-        if ($property->isPrimaryKey()) {
-            return true;
-        }
-
-        $isTimeBehaviorField = in_array($property->getName(), ['created','modified']);
-        $isDateTimeField = in_array($property->getType(), ['date','datetime','timestamp']);
-
-        if ($isTimeBehaviorField && $isDateTimeField) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
