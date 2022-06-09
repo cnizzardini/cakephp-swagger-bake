@@ -5,8 +5,6 @@ namespace SwaggerBake\Lib\Operation;
 
 use ReflectionClass;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
-use SwaggerBake\Lib\Attribute\OpenApiDtoQuery;
-use SwaggerBake\Lib\Attribute\OpenApiDtoRequestBody;
 use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
 use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 
