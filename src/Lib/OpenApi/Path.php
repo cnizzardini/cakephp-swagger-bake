@@ -14,14 +14,6 @@ use SwaggerBake\Lib\Utility\ArrayUtility;
  */
 class Path implements JsonSerializable
 {
-    private const SORT_ORDER = [
-        'post' => 0,
-        'get' => 1,
-        'patch' => 2,
-        'put' => 3,
-        'delete' => 4,
-    ];
-
     /**
      * @param string $resource The resource (base URL), for example: /pets
      * @param \SwaggerBake\Lib\OpenApi\Operation[] $operations An array of OpenApi Operations

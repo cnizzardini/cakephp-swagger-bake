@@ -35,12 +35,11 @@ class OpenApiSchema
      * @param int $visibility See class constants for options.
      * @param string|null $title The title of the schema
      * @param string|null $description The description of the schema
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        public int $visibility = 1,
-        public ?string $title = null,
-        public ?string $description = null
+        public readonly int $visibility = 1,
+        public readonly ?string $title = null,
+        public readonly ?string $description = null
     ) {
         if ($this->visibility < 1 || $this->visibility > 4) {
             throw new InvalidArgumentException(

@@ -15,7 +15,6 @@ final class AttributeFactory
     /**
      * @param \ReflectionClass|\ReflectionClassConstant|\ReflectionFunction|\ReflectionMethod|\ReflectionParameter|\ReflectionProperty $reflection The reflection
      * @param string $attributeClass Your Attribute class
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
         private ReflectionClass|ReflectionClassConstant|ReflectionFunction|ReflectionMethod|ReflectionParameter|

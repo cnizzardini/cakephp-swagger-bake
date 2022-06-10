@@ -19,14 +19,13 @@ class OpenApiPath
      *  precedence.
      * @see https://spec.openapis.org/oas/latest.html#path-item-object
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        public bool $isVisible = true,
-        public ?string $ref = null,
-        public ?string $summary = null,
-        public ?string $description = null,
-        public array $tags = []
+        public readonly bool $isVisible = true,
+        public readonly ?string $ref = null,
+        public readonly ?string $summary = null,
+        public readonly ?string $description = null,
+        public readonly array $tags = []
     ) {
     }
 }

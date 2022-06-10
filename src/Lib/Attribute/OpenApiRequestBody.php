@@ -18,14 +18,13 @@ class OpenApiRequestBody
      * @param array $mimeTypes A list of mime types (i.e. application/json, application/xml)
      * @param bool $required Is the request body required?
      * @param bool $ignoreCakeSchema Ignore assigning schema automatically?
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        public string $ref = '',
-        public string $description = '',
-        public array $mimeTypes = [],
-        public bool $required = true,
-        public bool $ignoreCakeSchema = false
+        public readonly string $ref = '',
+        public readonly string $description = '',
+        public readonly array $mimeTypes = [],
+        public readonly bool $required = true,
+        public readonly bool $ignoreCakeSchema = false
     ) {
     }
 

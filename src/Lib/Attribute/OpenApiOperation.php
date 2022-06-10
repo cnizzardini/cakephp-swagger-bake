@@ -23,16 +23,15 @@ class OpenApiOperation
      * @see https://mixerapi.com/plugins/cakephp-swagger-bake/docs/attributes/#OpenApiOperation
      * @see https://spec.openapis.org/oas/latest.html#operation-object
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        public ?string $summary = '',
-        public ?string $description = '',
-        public bool $isVisible = true,
-        public array $tagNames = [],
-        public bool $isDeprecated = false,
-        public ?array $externalDocs = null,
-        public ?int $sortOrder = null,
+        public readonly ?string $summary = '',
+        public readonly ?string $description = '',
+        public readonly bool $isVisible = true,
+        public readonly array $tagNames = [],
+        public readonly bool $isDeprecated = false,
+        public readonly ?array $externalDocs = null,
+        public readonly ?int $sortOrder = null,
     ) {
     }
 }

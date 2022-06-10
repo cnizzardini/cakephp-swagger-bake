@@ -10,7 +10,6 @@ use ReflectionClass;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApiExceptionSchemaInterface;
-use SwaggerBake\Lib\Swagger;
 use Throwable;
 
 /**
@@ -25,10 +24,9 @@ class ExceptionResponse
     private Schema|string|null $schema = null;
 
     /**
-     * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
-    public function __construct(private Swagger $swagger, private Configuration $config)
+    public function __construct(private Configuration $config)
     {
     }
 

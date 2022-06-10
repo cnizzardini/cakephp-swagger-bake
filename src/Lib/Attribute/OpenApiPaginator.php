@@ -13,11 +13,10 @@ class OpenApiPaginator
      * from the Paginator component.
      * @param bool $useSortTextInput Use a text input for sort instead of a dropdown in Swagger UI, default: false.
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        public array $sortEnum = [],
-        public bool $useSortTextInput = false
+        public readonly array $sortEnum = [],
+        public readonly bool $useSortTextInput = false
     ) {
     }
 }

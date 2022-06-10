@@ -93,7 +93,7 @@ class OperationFromRouteFactory
 
         $operation = $this->createOperation($operation, $route, $openApiOperation);
 
-        $operation = (new OperationDocBlock($this->swagger, $config, $operation, $docBlock))->getOperation();
+        $operation = (new OperationDocBlock($config, $operation, $docBlock))->getOperation();
 
         $operation = (new OperationPathParameter($operation, $route, $refMethod, $schema))
             ->getOperationWithPathParameters();

@@ -8,11 +8,8 @@ use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use phpDocumentor\Reflection\DocBlockFactory;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationDocBlock;
-use SwaggerBake\Lib\Route\RouteScanner;
-use SwaggerBake\Lib\Swagger;
 
 class OperationDocBlockTest extends TestCase
 {
@@ -22,8 +19,6 @@ class OperationDocBlockTest extends TestCase
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
-
-    private Router $router;
 
     private array $config;
 
@@ -71,9 +66,6 @@ class OperationDocBlockTest extends TestCase
     {
 
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
-        $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
 
         foreach (['see','link'] as $tag) {
             $block = <<<EOT
@@ -82,7 +74,7 @@ class OperationDocBlockTest extends TestCase
  */
 EOT;
             $docBlock = DocBlockFactory::createInstance()->create($block);
-            $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
+            $operation = (new OperationDocBlock($config, $this->operation, $docBlock))->getOperation();
             $doc = $operation->getExternalDocs();
 
             $this->assertEquals('CakePHP', $doc->getDescription());
@@ -97,9 +89,6 @@ EOT;
     public function test_external_documentation_tags_without_description(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
-        $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
 
         foreach (['see','link'] as $tag) {
             $block = <<<EOT
@@ -108,7 +97,7 @@ EOT;
  */
 EOT;
             $docBlock = DocBlockFactory::createInstance()->create($block);
-            $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
+            $operation = (new OperationDocBlock($config, $this->operation, $docBlock))->getOperation();
             $doc = $operation->getExternalDocs();
 
             $this->assertEquals('', $doc->getDescription());
@@ -122,9 +111,6 @@ EOT;
     public function test_external_documentation_not_set_when_url_invalid(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
-        $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
 
         foreach (['see','link'] as $tag) {
             $block = <<<EOT
@@ -133,7 +119,7 @@ EOT;
  */
 EOT;
             $docBlock = DocBlockFactory::createInstance()->create($block);
-            $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
+            $operation = (new OperationDocBlock($config, $this->operation, $docBlock))->getOperation();
             $this->assertNull($operation->getExternalDocs());
         }
     }
@@ -144,9 +130,6 @@ EOT;
     public function test_link_tag_takes_precedence_over_see_tag(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
-        $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
 
         $block = <<<EOT
 /** 
@@ -155,7 +138,7 @@ EOT;
  */
 EOT;
         $docBlock = DocBlockFactory::createInstance()->create($block);
-        $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
+        $operation = (new OperationDocBlock($config, $this->operation, $docBlock))->getOperation();
         $doc = $operation->getExternalDocs();
         $this->assertEquals('yep', $doc->getDescription());
         $this->assertEquals('https://duckduckgo.com', $doc->getUrl());
@@ -168,9 +151,6 @@ EOT;
     {
 
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
-        $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
 
         $block = <<<EOT
 /** 
@@ -178,7 +158,7 @@ EOT;
  */
 EOT;
             $docBlock = DocBlockFactory::createInstance()->create($block);
-            $operation = (new OperationDocBlock($swagger, $config, $this->operation, $docBlock))->getOperation();
+            $operation = (new OperationDocBlock($config, $this->operation, $docBlock))->getOperation();
             $this->assertTrue($operation->isDeprecated());
 
     }

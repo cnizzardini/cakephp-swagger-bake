@@ -11,11 +11,10 @@ class OpenApiSearch
     /**
      * @param string $tableClass The FQN of the table class
      * @param string $collection The CakePHP search collection
-     * @todo convert to readonly properties in php 8.1
      */
     public function __construct(
-        public string $tableClass,
-        public string $collection = 'default'
+        public readonly string $tableClass,
+        public readonly string $collection = 'default'
     ) {
     }
 }
