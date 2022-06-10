@@ -5,20 +5,21 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\SwaggerFactory;
-use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Response;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Operation\OperationResponse;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBake\Test\TestCase\Helper\ReflectionAttributeTrait;
 
 class OperationResponseTest extends TestCase
 {
+    use ReflectionAttributeTrait;
+
     /**
      * @var string[]
      */
@@ -93,19 +94,9 @@ class OperationResponseTest extends TestCase
     {
         $route = $this->routes['employees:index'];
 
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiResponse::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiResponse::class, [
-                        'statusCode' => '200',
-                    ]),
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiResponse::class, [
+            'statusCode' => '200',
+        ]);
 
         $operationResponse = new OperationResponse(
             (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
@@ -155,19 +146,9 @@ class OperationResponseTest extends TestCase
     {
         $route = $this->routes['employees:add'];
 
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiResponse::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiResponse::class, [
-                        'statusCode' => '201',
-                    ]),
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiResponse::class, [
+            'statusCode' => '201',
+        ]);
 
         $schema = (new Schema())->setName('Employee')->setType('object');
 
@@ -286,20 +267,10 @@ class OperationResponseTest extends TestCase
     {
         $route = $this->routes['employees:index'];
 
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiResponse::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiResponse::class, [
-                        'schemaType' => 'array',
-                        'ref' => '#/components/schema/Employee',
-                    ]),
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiResponse::class, [
+            'schemaType' => 'array',
+            'ref' => '#/components/schema/Employee',
+        ]);
 
         $operationResponse = new OperationResponse(
             $this->mockSwagger('getSchemaByName', 'Employee'),
@@ -325,20 +296,10 @@ class OperationResponseTest extends TestCase
     {
         $route = $this->routes['employees:textplain'];
 
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiResponse::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiResponse::class, [
-                        'mimeTypes' => ['text/plain'],
-                        'schemaFormat' => 'date-time',
-                    ]),
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiResponse::class, [
+            'mimeTypes' => ['text/plain'],
+            'schemaFormat' => 'date-time',
+        ]);
 
         $operationResponse = new OperationResponse(
             $this->mockSwagger('getSchemaByName', null, null),
@@ -366,19 +327,9 @@ class OperationResponseTest extends TestCase
     {
         $route = $this->routes['employees:index'];
 
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiResponse::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiResponse::class, [
-                        'associations' => ['whiteList' => ['DepartmentEmployees']]
-                    ]),
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiResponse::class, [
+            'associations' => ['whiteList' => ['DepartmentEmployees']]
+        ]);
 
         $swagger = (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create();
 
@@ -404,19 +355,9 @@ class OperationResponseTest extends TestCase
     {
         $route = $this->routes['employees:index'];
 
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiResponse::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiResponse::class, [
-                        'mimeTypes' => ['text/plain']
-                    ]),
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiResponse::class, [
+            'mimeTypes' => ['text/plain']
+        ]);
 
         $operationResponse = new OperationResponse(
             $this->mockSwagger('getSchemaByName', 'Employee'),

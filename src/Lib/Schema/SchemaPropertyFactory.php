@@ -83,7 +83,8 @@ class SchemaPropertyFactory
         /** @var \phpDocumentor\Reflection\DocBlock\Tags\Property[] $results */
         $results = array_filter(
             $this->docBlock->getTagsByName('property'),
-            function (PropertyTag $tag) use ($property) {
+            function ($tag) use ($property) {
+                /** @var \phpDocumentor\Reflection\DocBlock\Tags\Property $tag */
                 return $tag->getVariableName() === $property->getName();
             }
         );

@@ -5,7 +5,6 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Configuration;
@@ -14,12 +13,15 @@ use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Operation\OperationResponse;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBake\Test\TestCase\Helper\ReflectionAttributeTrait;
 use SwaggerBakeTest\App\Dto\CustomResponseSchema;
 use SwaggerBakeTest\App\Dto\CustomResponseSchemaAttributesOnly;
 use SwaggerBakeTest\App\Dto\CustomResponseSchemaPublic;
 
 class OperationResponseSchemaTest extends TestCase
 {
+    use ReflectionAttributeTrait;
+
     /**
      * @var string[]
      */
@@ -236,20 +238,10 @@ class OperationResponseSchemaTest extends TestCase
     {
         $route = $this->routes['employees:index'];
 
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiResponse::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiResponse::class, [
-                        'schema' => $class,
-                        'schemaType' => $schemaType,
-                    ]),
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiResponse::class, [
+            'schema' => $class,
+            'schemaType' => $schemaType,
+        ]);
 
         $operationResponse = new OperationResponse(
             $this->mockSwagger('getSchemaByName', 'Employee'),

@@ -5,11 +5,9 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Attribute\OpenApiDto;
 use SwaggerBake\Lib\Attribute\OpenApiForm;
 use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
-use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteScanner;
@@ -17,12 +15,15 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationRequestBody;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBake\Test\TestCase\Helper\ReflectionAttributeTrait;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotion;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
 
 class OperationRequestBodyTest extends TestCase
 {
+    use ReflectionAttributeTrait;
+
     /**
      * @var string[]
      */
@@ -61,7 +62,7 @@ class OperationRequestBodyTest extends TestCase
 
                     ]),
                     $this->returnValue([
-                        new ReflectionAttribute(OpenApiForm::class, [
+                        $this->mockReflectionAttribute(OpenApiForm::class, [
                             'name' => 'test',
                             'type' => 'string',
                             'isRequired' => false,
@@ -127,7 +128,7 @@ class OperationRequestBodyTest extends TestCase
 
                         ]),
                         $this->returnValue([
-                            new ReflectionAttribute(OpenApiDto::class, [
+                            $this->mockReflectionAttribute(OpenApiDto::class, [
                                 'class' => $class,
                             ])
                         ]),
@@ -187,7 +188,7 @@ class OperationRequestBodyTest extends TestCase
 
                     ]),
                     $this->returnValue([
-                        new ReflectionAttribute(OpenApiRequestBody::class, [
+                        $this->mockReflectionAttribute(OpenApiRequestBody::class, [
                             'ignoreCakeSchema' => true,
                         ])
                     ]),
@@ -249,7 +250,7 @@ class OperationRequestBodyTest extends TestCase
             ->will(
                 $this->onConsecutiveCalls(
                     $this->returnValue([
-                        new ReflectionAttribute(OpenApiRequestBody::class, [
+                        $this->mockReflectionAttribute(OpenApiRequestBody::class, [
                             'ref' => '#/components/schema/Pet',
                         ])
                     ]),
@@ -326,7 +327,7 @@ class OperationRequestBodyTest extends TestCase
                     $this->returnValue([]),
                     $this->returnValue([]),
                     $this->returnValue([
-                        new ReflectionAttribute(OpenApiRequestBody::class, [
+                        $this->mockReflectionAttribute(OpenApiRequestBody::class, [
                             'description' => $desc = 'test',
                         ])
                     ]),

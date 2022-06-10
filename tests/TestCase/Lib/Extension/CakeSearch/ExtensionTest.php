@@ -6,7 +6,6 @@ use Cake\Event\Event;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Extension\CakeSearch\Extension;
@@ -16,10 +15,13 @@ use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBake\Test\TestCase\Helper\ReflectionAttributeTrait;
 use SwaggerBakeTest\App\Model\Table\DepartmentsTable;
 
 class ExtensionTest extends TestCase
 {
+    use ReflectionAttributeTrait;
+
     /** @var string[] */
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
@@ -126,19 +128,9 @@ class ExtensionTest extends TestCase
 
     public function test_getOperation_throws_exception_when_table_class_does_not_exist(): void
     {
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiSearch::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiSearch::class, [
-                        'tableClass' => 'nope',
-                    ]),
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiSearch::class, [
+            'tableClass' => 'nope',
+        ]);
 
         $event = new Event('test', (new Operation('id', 'GET')), [
             'reflectionMethod' => $mockReflectionMethod
@@ -150,19 +142,9 @@ class ExtensionTest extends TestCase
 
     public function test_getOperation_when_no_filters_exist(): void
     {
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiSearch::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiSearch::class, [
-                        'tableClass' => DepartmentsTable::class,
-                    ]),
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiSearch::class, [
+            'tableClass' => DepartmentsTable::class,
+        ]);
 
         $event = new Event('test', (new Operation('id', 'GET')), [
             'reflectionMethod' => $mockReflectionMethod

@@ -3,30 +3,21 @@
 namespace SwaggerBake\Test\TestCase\Lib\Operation;
 
 use Cake\TestSuite\TestCase;
-use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
-use SwaggerBake\Lib\Annotation\SwagSecurity;
 use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationSecurity;
+use SwaggerBake\Test\TestCase\Helper\ReflectionAttributeTrait;
 
 class OperationSecurityTest extends TestCase
 {
+    use ReflectionAttributeTrait;
+
     public function test_from_security_attribute(): void
     {
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiSecurity::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiSecurity::class, [
-                        'name' => 'BearerAuth',
-                        'scopes' => ['A', 'B'],
-                    ]),
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiSecurity::class, [
+            'name' => 'BearerAuth',
+            'scopes' => ['A', 'B'],
+        ]);
 
         $operationSecurity = new OperationSecurity(
             new Operation('hello', 'get'),

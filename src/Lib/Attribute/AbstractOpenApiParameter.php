@@ -34,22 +34,22 @@ abstract class AbstractOpenApiParameter
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        public string $name = '',
-        public string $ref = '',
-        public string $type = 'string',
-        public string $format = '',
-        public string $description = '',
-        public string|bool|int|float $example = '',
-        public bool $isRequired = false,
-        public array $enum = [],
-        public bool $isDeprecated = false,
-        public bool $allowEmptyValue = false,
-        public bool $explode = false,
-        public string $style = '',
-        public bool $allowReserved = false,
+        public readonly string $name = '',
+        public readonly string $ref = '',
+        public readonly string $type = 'string',
+        public readonly string $format = '',
+        public readonly string $description = '',
+        public readonly string|bool|int|float $example = '',
+        public readonly bool $isRequired = false,
+        public readonly array $enum = [],
+        public readonly bool $isDeprecated = false,
+        public readonly bool $allowEmptyValue = false,
+        public readonly bool $explode = false,
+        public readonly string $style = '',
+        public readonly bool $allowReserved = false,
     ) {
         if (empty($name) && empty($ref)) {
-            throw new InvalidArgumentException('One name or ref is required for ' . self::class);
+            throw new InvalidArgumentException('One of `name` or `ref` is required for ' . self::class);
         }
     }
 
