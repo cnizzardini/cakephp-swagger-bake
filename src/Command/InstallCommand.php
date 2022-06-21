@@ -70,9 +70,9 @@ class InstallCommand extends Command
             }
         } while ($installComplete != true);
 
-        $io->out("Just a few more steps:");
-        $io->out("1. Load the swagger_bake.php config in your config/bootstrap.");
-        $io->out("2. Add a route in your config/routes.php to the SwaggerBake controller.");
+        $io->out('Just a few more steps:');
+        $io->out('1. Load the swagger_bake.php config in your config/bootstrap.');
+        $io->out('2. Add a route in your config/routes.php to the SwaggerBake controller.');
 
         $io->success('Installation Complete!');
     }
