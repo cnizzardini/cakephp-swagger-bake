@@ -5,7 +5,6 @@ namespace SwaggerBake;
 
 use Cake\Console\CommandCollection;
 use Cake\Core\BasePlugin;
-use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use SwaggerBake\Command as Commands;
@@ -43,7 +42,6 @@ class Plugin extends BasePlugin
      */
     public function bootstrap(PluginApplicationInterface $app): void
     {
-        Configure::load('swagger_bake', 'default');
         ExtensionLoader::load();
     }
 
