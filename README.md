@@ -97,7 +97,7 @@ and [Extending Views and Controllers](#extending-views-and-controllers)
 In your `config/bootstrap.php` file:
 
 ```php
-Configure::load('app', 'default', false);
+Configure::load('swagger_bake', 'default', false);
 ```
 
 ### Add Route
