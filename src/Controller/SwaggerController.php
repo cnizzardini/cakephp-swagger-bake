@@ -7,6 +7,7 @@ class SwaggerController extends AppController
 {
     /**
      * @var \SwaggerBake\Controller\Component\SwaggerUiComponent
+     * @SuppressWarnings(PHPMD.CamelCasePropertyName)
      */
     public $SwaggerUi;
 
