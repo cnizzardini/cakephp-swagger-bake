@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Controller;
 
 /**
- * @SuppressWarnings(PHPMD)
+ * @SuppressWarnings(PHPMD.CamelCasePropertyName)
  */
 class SwaggerController extends AppController
 {
