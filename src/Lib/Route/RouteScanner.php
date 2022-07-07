@@ -92,7 +92,7 @@ class RouteScanner
             $routeDecorator = new RouteDecorator($route);
             $path = 'Controller\\';
             $path .= $routeDecorator->getPrefix() ? $routeDecorator->getPrefix() . '\\' : '';
-            $path .= $routeDecorator->getController() . 'Controller';
+            $path .= ucfirst($routeDecorator->getController()) . 'Controller';
 
             $results = array_filter($classes, function ($fqn) use ($path) {
                 return strstr($fqn, $path);
