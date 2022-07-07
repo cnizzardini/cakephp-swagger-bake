@@ -70,5 +70,10 @@
             "homepage": "http://github.com/cnizzardini",
             "role": "Developer"
         }
-    ]
+    ],
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
 }
