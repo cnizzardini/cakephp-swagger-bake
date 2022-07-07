@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Controller;
 
+/**
+ * @SuppressWarnings(PHPMD)
+ */
 class SwaggerController extends AppController
 {
     /**
      * @var \SwaggerBake\Controller\Component\SwaggerUiComponent
-     * @SuppressWarnings(PHPMD)
      */
     public $SwaggerUi;
 
