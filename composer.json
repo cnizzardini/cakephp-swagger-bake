@@ -59,6 +59,11 @@
         "wiki": "https://github.com/cnizzardini/cakephp-swagger-bake/wiki",
         "source": "https://github.com/cnizzardini/cakephp-swagger-bake"
     },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
     "authors": [
         {
             "name": "Chris Nizzardini",

@@ -78,4 +78,24 @@ class PrefixRouteTest extends TestCase
         $this->assertTrue($paths->contains('/admin/departments'));
         $this->assertTrue($paths->contains('/departments'));
     }
+
+    public function test_controller_name_lowercase(): void
+    {
+        $this->router::scope('/', function (RouteBuilder $builder) {
+            $builder->get('/non-standard', ['controller' => 'operations', 'action' => 'index']);
+            $builder->get('/non-standard', ['controller' => 'operation_path', 'action' => 'index']);
+        });
+        $scanner = new RouteScanner($this->router, new Configuration($this->config, SWAGGER_BAKE_TEST_APP));
+        $routes = $scanner->getRoutes();
+        $this->assertArrayHasKey('operations:index', $routes);
+        $this->assertArrayHasKey('operation_path:index', $routes);
+        $this->assertNotEmpty(
+            $routes['operations:index']->getControllerFqn(),
+            'Controller fqn has not been set for lowercase controller name'
+        );
+        $this->assertNotEmpty(
+            $routes['operation_path:index']->getControllerFqn(),
+            'Controller fqn has not been set for snake case controller name'
+        );
+    }
 }
