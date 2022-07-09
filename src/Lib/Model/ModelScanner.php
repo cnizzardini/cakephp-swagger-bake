@@ -17,6 +17,7 @@ use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
+use UnexpectedValueException;
 
 /**
  * Finds all Entities associated with RESTful routes based on userland configurations
@@ -147,6 +148,14 @@ class ModelScanner
             if ($controller !== null && method_exists($controller, 'fetchTable')) {
                 return $controller->fetchTable()->getAlias() == $model->getTable()->getAlias();
             }
+        /*
+         * As of CakePHP >= 4.4.2 an UnexpectedValueException is expected if the controller has no table association
+         */
+        } catch (UnexpectedValueException $e) {
+        /*
+         * For CakePHP <= 4.4.1 a CakeException can be expected if the controller has no table association
+         * @todo this catch can likely be removed in cakephp 5 / swagger bake version 3
+         */
         } catch (CakeException $e) {
         }
 
