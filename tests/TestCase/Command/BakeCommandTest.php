@@ -6,12 +6,10 @@ use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Service\OpenApiBakerService;
-use SwaggerBake\Test\Traits\WindowsPathCompatibility;
 
 class BakeCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
-    use WindowsPathCompatibility;
 
     public $fixtures = [
         'plugin.SwaggerBake.Departments'
@@ -26,11 +24,19 @@ class BakeCommandTest extends TestCase
 
     public function test_execute(): void
     {
-        $path = WWW_ROOT . DS . 'swagger.json';
+        $path = WWW_ROOT . '/' . 'swagger.json';
         unlink($path);
         $this->exec('swagger bake');
         $this->assertOutputContains('Running...');
-        $this->assertOutputContainsWindowsCompatible("Swagger File Created: $path");
+        if ($this->isOnWindows()) {
+            // WWW_ROOT and presented path will not be consistent as `/webroot/swagger.json` comes from config
+            $basePath = str_replace('\webroot', '/webroot', WWW_ROOT);
+            $this->assertOutputContains('Swagger File Created: ');
+            $this->assertOutputContains($basePath);
+            $this->assertOutputContains('swagger.json');
+            return;
+        }
+        $this->assertOutputContains("Swagger File Created: $path");
     }
 
     public function test_exception_outputs_error(): void
@@ -73,5 +79,10 @@ class BakeCommandTest extends TestCase
     {
         $this->expectException(SwaggerBakeRunTimeException::class);
         $this->exec('swagger bake --config nope');
+    }
+
+    private function isOnWindows(): bool
+    {
+        return str_starts_with(strtolower(PHP_OS), 'win');
     }
 }
