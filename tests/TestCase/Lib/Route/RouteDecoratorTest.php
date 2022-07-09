@@ -42,4 +42,17 @@ class RouteDecoratorTest extends TestCase
             $routeDecorator->getControllerFqn()
         );
     }
+
+    public function test_snake_case_controller_names(): void
+    {
+        $routeDecorator = (new RouteDecorator(new Route('/department_employees', [
+            '_method' => ['GET', 'POST',],
+            'controller' => 'department_employees',
+        ])));
+        $this->assertIsString($routeDecorator->getControllerFqn());
+        $this->assertEquals(
+            'SwaggerBakeTest\\App\\Controller\\DepartmentEmployeesController',
+            $routeDecorator->getControllerFqn()
+        );
+    }
 }
