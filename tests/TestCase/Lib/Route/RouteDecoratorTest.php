@@ -51,7 +51,7 @@ class RouteDecoratorTest extends TestCase
         ])));
         $this->assertIsString($routeDecorator->getControllerFqn());
         $this->assertEquals(
-            'App\\Controller\\DepartmentEmployeesController',
+            'SwaggerBakeTest\\App\\Controller\\DepartmentEmployeesController',
             $routeDecorator->getControllerFqn()
         );
     }
