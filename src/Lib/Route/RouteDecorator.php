@@ -6,6 +6,7 @@ namespace SwaggerBake\Lib\Route;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Routing\Route\Route;
+use Cake\Utility\Inflector;
 use MixerApi\Core\Model\Model;
 
 /**
@@ -295,7 +296,7 @@ class RouteDecorator
     }
 
     /**
-     * Returns the FQN of the controller or null.
+     * Returns the FQN of the controller or null if the controller cannot be found.
      *
      * @return string|null
      */
@@ -309,12 +310,13 @@ class RouteDecorator
         $fqn = $this->plugin ? $this->plugin . '\\' : $app . '\\';
         $fqn .= 'Controller\\';
         $fqn .= $this->prefix ? $this->prefix . '\\' : '';
-        $fqn .= $this->controller . 'Controller';
 
-        if (!class_exists($fqn)) {
-            return null;
+        if (class_exists($fqn . $this->controller . 'Controller')) {
+            return $fqn . $this->controller . 'Controller';
+        } else if (class_exists($fqn . Inflector::camelize($this->controller) . 'Controller')) {
+            return $fqn . Inflector::camelize($this->controller) . 'Controller';
         }
 
-        return $fqn;
+        return null;
     }
 }
