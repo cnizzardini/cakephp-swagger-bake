@@ -101,7 +101,7 @@ class ConfigurationTest extends TestCase
      */
     public function dataProviderInvalidConfig(): array
     {
-        $invalidPath = DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS;
+        $invalidPath = '/' . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS;
 
         return [
             ['prefix', 'nope', \InvalidArgumentException::class, 'Invalid prefix'],
