@@ -85,7 +85,7 @@ class ConfigurationTest extends TestCase
         return [
             ['prefix', 'nope', \InvalidArgumentException::class, 'Invalid prefix'],
             ['yml', 'nope', \InvalidArgumentException::class, 'Value should start with'],
-            ['yml', $invalidPath . '/nope', \InvalidArgumentException::class, 'yml must exist on the file'],
+            ['yml', $invalidPath . 'nope', \InvalidArgumentException::class, 'yml must exist on the file'],
             ['json', 'nope', \InvalidArgumentException::class, 'Value should start with'],
             ['json', $invalidPath . 'nope', \InvalidArgumentException::class, 'json must exist on the file'],
             ['webPath', 'nope', \InvalidArgumentException::class, 'Invalid webPath'],
