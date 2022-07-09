@@ -76,11 +76,13 @@ skip to the manual setup.
 
 ### Automated Setup
 
-Use the `swagger install` command and then [add a route](#add-route).
+Run the installer: 
 
 ```console
 bin/cake swagger install
 ```
+
+Then [load the config](#load-the-config) and [add a route](#add-route).
 
 ### Manual Setup
 
@@ -92,6 +94,14 @@ file [here](assets/swagger_bake.php) for further explanation. Then just [add a r
 
 For more read sections on [Multiple Instances of SwaggerBake](#multiple-instances-of-swagger-bake) 
 and [Extending Views and Controllers](#extending-views-and-controllers)
+
+### Load the config
+
+In your `config/bootstrap.php` file:
+
+```php
+Configure::load('swagger_bake', 'default', false);
+```
 
 ### Add Route
 
