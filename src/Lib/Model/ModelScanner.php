@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Model;
 
 use Cake\Collection\Collection;
+use Cake\Core\Exception\CakeException;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
@@ -147,7 +148,14 @@ class ModelScanner
             if ($controller !== null && method_exists($controller, 'fetchTable')) {
                 return $controller->fetchTable()->getAlias() == $model->getTable()->getAlias();
             }
+        /*
+         * As of CakePHP >= 4.4.2 an UnexpectedValueException is expected if the controller has no table association
+         */
         } catch (UnexpectedValueException $e) {
+        /*
+         * For CakePHP <= 4.4.1 a CakeException can be expected if the controller has no table association
+         */
+        } catch (CakeException $e) {
         }
 
         return $this->controllerHasModelFallback($routeDecorator, $model);
