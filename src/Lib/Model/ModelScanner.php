@@ -148,14 +148,14 @@ class ModelScanner
             if ($controller !== null && method_exists($controller, 'fetchTable')) {
                 return $controller->fetchTable()->getAlias() == $model->getTable()->getAlias();
             }
-            /*
-             * As of CakePHP >= 4.4.2 an UnexpectedValueException is expected if the controller has no table association
-             */
+        /*
+         * As of CakePHP >= 4.4.2 an UnexpectedValueException is expected if the controller has no table association
+         */
         } catch (UnexpectedValueException $e) {
-            /*
-             * For CakePHP <= 4.4.1 a CakeException can be expected if the controller has no table association
-             * @todo this catch can likely be removed in cakephp 5 / swagger bake version 3
-             */
+        /*
+         * For CakePHP <= 4.4.1 a CakeException can be expected if the controller has no table association
+         * @todo this catch can likely be removed in cakephp 5 / swagger bake version 3
+         */
         } catch (CakeException $e) {
         }
 
