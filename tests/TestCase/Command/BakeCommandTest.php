@@ -6,10 +6,12 @@ use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Service\OpenApiBakerService;
+use SwaggerBake\Test\Traits\WindowsPathCompatibility;
 
 class BakeCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
+    use WindowsPathCompatibility;
 
     public $fixtures = [
         'plugin.SwaggerBake.Departments'
@@ -28,7 +30,7 @@ class BakeCommandTest extends TestCase
         unlink($path);
         $this->exec('swagger bake');
         $this->assertOutputContains('Running...');
-        $this->assertOutputContains("Swagger File Created: $path");
+        $this->assertOutputContainsWindowsCompatible("Swagger File Created: $path");
     }
 
     public function test_exception_outputs_error(): void
