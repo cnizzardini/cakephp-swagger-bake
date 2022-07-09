@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\Model;
 
 use Cake\Collection\Collection;
-use Cake\Core\Exception\CakeException;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
@@ -17,6 +16,7 @@ use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
+use UnexpectedValueException;
 
 /**
  * Finds all Entities associated with RESTful routes based on userland configurations
@@ -147,7 +147,7 @@ class ModelScanner
             if ($controller !== null && method_exists($controller, 'fetchTable')) {
                 return $controller->fetchTable()->getAlias() == $model->getTable()->getAlias();
             }
-        } catch (CakeException $e) {
+        } catch (UnexpectedValueException $e) {
         }
 
         return $this->controllerHasModelFallback($routeDecorator, $model);

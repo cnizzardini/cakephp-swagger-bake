@@ -313,7 +313,7 @@ class RouteDecorator
 
         if (class_exists($fqn . $this->controller . 'Controller')) {
             return $fqn . $this->controller . 'Controller';
-        } else if (class_exists($fqn . Inflector::camelize($this->controller) . 'Controller')) {
+        } elseif (class_exists($fqn . Inflector::camelize($this->controller) . 'Controller')) {
             return $fqn . Inflector::camelize($this->controller) . 'Controller';
         }
 
