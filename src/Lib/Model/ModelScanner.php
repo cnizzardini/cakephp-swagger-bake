@@ -154,6 +154,7 @@ class ModelScanner
         } catch (UnexpectedValueException $e) {
         /*
          * For CakePHP <= 4.4.1 a CakeException can be expected if the controller has no table association
+         * @todo this catch can likely be removed in cakephp 5 / swagger bake version 3
          */
         } catch (CakeException $e) {
         }
