@@ -15,22 +15,22 @@ instead.
 
 | Attribute                                           | Usage                                               | Description                                                                                                                 | 
 |-----------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| [OpenApiDto](#OpenApiDto)                           | Controller Action                                   | Builds OpenAPI query params and request bodies from Data Transfer Objects                                                   |
-| [OpenApiForm](#OpenApiForm)                         | Controller Action                                   | Builds OpenAPI for application/x-www-form-urlencoded request bodies                                                         |
-| [OpenApiHeader](#OpenApiHeader)                     | Controller Action                                   | Create OpenAPI header parameters                                                                                            |
-| [OpenApiOperation](#OpenApiOperation)               | Controller Action                                   | Modifies OpenAPI operation                                                                                                  |
-| [OpenApiPaginator](#OpenApiPaginator)               | Controller Action                                   | Create OpenAPI query params from CakePHP Paginator Component                                                                |
-| [OpenApiPath](#OpenApiPath)                         | Controller                                          | Modifies OpenAPI paths                                                                                                      |
-| [OpenApiPathParam](#OpenApiPathParam)               | Controller Action                                   | Modify an existing OpenAPI path parameter                                                                                   |
-| [OpenApiQueryParam](#OpenApiQueryParam)             | Controller Action                                   | Builds OpenAPI query param                                                                                                  |
-| [OpenApiRequestBody](#OpenApiRequestBody)           | Controller Action                                   | Modify OpenAPI request body                                                                                                 |
-| [OpenApiResponse](#OpenApiResponse)                 | Controller Action                                   | Modify OpenAPI response                                                                                                     |
-| [OpenApiSchema](#OpenApiSchema)                     | Entity, OpenApiDto class, or OpenApiResponse schema | Modifies OpenAPI schema                                                                                                     |
-| [OpenApiSchemaProperty](#OpenApiSchemaProperty)     | Entity, OpenApiDto class, or OpenApiResponse schema | Modifies an OpenAPI schema property or defines OpenApiResponse schema                                                       |
-| [OpenApiSearch](#OpenApiSearch)                     | Controller Action                                   | Create OpenAPI query params from CakePHP Search plugin                                                                      |
-| [OpenApiSecurity](#OpenApiSecurity)                 | Controller Action                                   | Create/modify OpenAPI security                                                                                              |
-| [~~OpenApiDtoQuery~~](#OpenApiDtoQuery)             | DTO class property                                  | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.5+)                        |
-| [~~OpenApiDtoRequestBody~~](#OpenApiDtoRequestBody) | DTO class property                                  | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.5+)          |
+| [OpenApiDto](#openapidto)                           | Controller Action                                   | Builds OpenAPI query params and request bodies from Data Transfer Objects                                                   |
+| [OpenApiForm](#openapiform)                         | Controller Action                                   | Builds OpenAPI for application/x-www-form-urlencoded request bodies                                                         |
+| [OpenApiHeader](#openapiheader)                     | Controller Action                                   | Create OpenAPI header parameters                                                                                            |
+| [OpenApiOperation](#openapioperation)               | Controller Action                                   | Modifies OpenAPI operation                                                                                                  |
+| [OpenApiPaginator](#openapipaginator)               | Controller Action                                   | Create OpenAPI query params from CakePHP Paginator Component                                                                |
+| [OpenApiPath](#openapipath)                         | Controller                                          | Modifies OpenAPI paths                                                                                                      |
+| [OpenApiPathParam](#openapipathparam)               | Controller Action                                   | Modify an existing OpenAPI path parameter                                                                                   |
+| [OpenApiQueryParam](#openapiqueryparam)             | Controller Action                                   | Builds OpenAPI query param                                                                                                  |
+| [OpenApiRequestBody](#openapirequestbody)           | Controller Action                                   | Modify OpenAPI request body                                                                                                 |
+| [OpenApiResponse](#openapiresponse)                 | Controller Action                                   | Modify OpenAPI response                                                                                                     |
+| [OpenApiSchema](#openapischema)                     | Entity, OpenApiDto class, or OpenApiResponse schema | Modifies OpenAPI schema                                                                                                     |
+| [OpenApiSchemaProperty](#openapischemaproperty)     | Entity, OpenApiDto class, or OpenApiResponse schema | Modifies an OpenAPI schema property or defines OpenApiResponse schema                                                       |
+| [OpenApiSearch](#openapisearch)                     | Controller Action                                   | Create OpenAPI query params from CakePHP Search plugin                                                                      |
+| [OpenApiSecurity](#openapisecurity)                 | Controller Action                                   | Create/modify OpenAPI security                                                                                              |
+| [~~OpenApiDtoQuery~~](#openapidtoquery)             | DTO class property                                  | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.5+)                        |
+| [~~OpenApiDtoRequestBody~~](#openapidtorequestbody) | DTO class property                                  | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.5+)          |
 
 ### OpenApiDto
 
@@ -38,13 +38,13 @@ Method level attribute for building query parameters or request bodies from a Da
 
 For versions v2.2.5 or higher use:
 
-Your DTO will need to use the [OpenApiQueryParam](#OpenApiQueryParam) or [OpenApiSchemaProperty](#OpenApiSchemaProperty) 
+Your DTO will need to use the [OpenApiQueryParam](#openapiqueryparam) or [OpenApiSchemaProperty](#openapischemaproperty) 
 on its properties depending on the request type. The OpenApiDtoQuery and OpenApiDtoRequestBody attributes are marked 
 deprecated and will be removed in v3.0.0 which will be released for CakePHP 5.
 
 For versions v2.2.4 or lower:
 
-Your DTO will need to use the [OpenApiDtoQuery](#OpenApiDtoQuery) or [OpenApiDtoRequestBody](#OpenApiDtoRequestBody) on 
+Your DTO will need to use the [OpenApiDtoQuery](#openapidtoquery) or [OpenApiDtoRequestBody](#openapidtorequestbody) on 
 its properties depending on the request type.
 
 | Property   | Type / Default | OA Spec | Description                     | 
@@ -409,16 +409,16 @@ order of operations is used to build the response:
 3. `associations`
 4. The schema inferred from CakePHP conventions.
 
-| Property                      | Type / Default    | OA Spec | Description                                                                                                                                                           |
-|-------------------------------|-------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| schemaType                    | string `"object"` | Y       | The schema response type, generally `"object"` or `"array"`                                                                                                           |
-| statusCode                    | string `"200"`    | Y       | The HTTP response code                                                                                                                                                |
-| ref                           | ?string `null`    | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                                                                                           |
-| [schema](#Schema)             | ?string `null`    | Y       | An FQN describing a custom response schema. The class must have either one or more `#[OpenApiSchemaProperty]` attribute, implement `CustomSchemaInterface` or both.   |
-| description                   | ?string `null`    | Y       | Description of the response                                                                                                                                           |
-| mimeTypes                     | ?array `null`     | Y       | An array of mime types the response can, if null settings from swagger_bake config are used.                                                                          |
-| [associations](#Associations) | ?array `null`     | N       | Adds associated tables to the response sample schema, see examples below.                                                                                             |
-| schemaFormat                  | ?string `null`    | Y       | The schema format, generally only used for schemaType of string.                                                                                                      |
+| Property                      | Type / Default    | OA Spec | Description                                                                                                                                                         |
+|-------------------------------|-------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| schemaType                    | string `"object"` | Y       | The schema response type, generally `"object"`, `"array"`, or `""`                                                                                                  |
+| statusCode                    | string `"200"`    | Y       | The HTTP response code                                                                                                                                              |
+| ref                           | ?string `null`    | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                                                                                         |
+| [schema](#Schema)             | ?string `null`    | Y       | An FQN describing a custom response schema. The class must have either one or more `#[OpenApiSchemaProperty]` attribute, implement `CustomSchemaInterface` or both. |
+| description                   | ?string `null`    | Y       | Description of the response                                                                                                                                         |
+| mimeTypes                     | ?array `null`     | Y       | An array of mime types the response can, if null settings from swagger_bake config are used.                                                                        |
+| [associations](#Associations) | ?array `null`     | N       | Adds associated tables to the response sample schema, see examples below.                                                                                           |
+| schemaFormat                  | ?string `null`    | Y       | The schema format, generally only used for schemaType of string.                                                                                                    |
 
 Defining a multiple mimeTypes and 400-409 status code range and an expected 200 response:
 
