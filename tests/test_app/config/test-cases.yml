@@ -19,6 +19,7 @@ components:
       properties:
         id:
           type: integer
+          readOnly: true
         type:
           type: string
           example: 'countries'
@@ -43,6 +44,7 @@ components:
       properties:
         id:
           type: integer
+          readOnly: true
         description:
           type: string
           example: 'a description'
