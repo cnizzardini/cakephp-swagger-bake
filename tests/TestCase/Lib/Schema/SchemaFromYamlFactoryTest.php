@@ -11,7 +11,7 @@ class SchemaFromYamlFactoryTest extends TestCase
 {
     public function test_nested_objects(): void
     {
-        $yaml = Yaml::parseFile(CONFIG . 'openapi-with-nested-objects.yml');
+        $yaml = Yaml::parseFile(CONFIG . 'test-cases.yml');
         $schema = (new SchemaFromYamlFactory())->create(
             'Place',
             $yaml['components']['schemas']['Place']
@@ -24,5 +24,17 @@ class SchemaFromYamlFactoryTest extends TestCase
         /** @var Schema $relationships */
         $relationships = $schema->getProperties()['relationships'];
         $this->assertTrue(isset($relationships->getProperties()['description']));
+    }
+
+    public function test_array_list(): void
+    {
+        $yaml = Yaml::parseFile(CONFIG . 'test-cases.yml');
+        $schema = (new SchemaFromYamlFactory())->create(
+            'Year',
+            $yaml['components']['schemas']['Year']
+        );
+
+        $this->assertEquals(['type' => 'integer'], $schema->getItems());
+        $this->assertEquals([2022, 2021, 2020], $schema->getExample());
     }
 }

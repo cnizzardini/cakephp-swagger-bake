@@ -6,6 +6,13 @@ info:
     name: MIT
 components:
   schemas:
+    # Test simple array list
+    Year:
+      type: array
+      items:
+        type: integer
+      example: [ 2022, 2021, 2020 ]
+    # Test nested objects
     Place:
       description: 'Country object'
       type: object
