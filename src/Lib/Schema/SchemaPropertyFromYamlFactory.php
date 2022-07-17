@@ -24,7 +24,7 @@ class SchemaPropertyFromYamlFactory
         $schemaProperty = (new SchemaProperty())
             ->setName($name)
             ->setDescription($yaml['description'] ?? null)
-            ->setReadOnly($yaml['readonly'] ?? false)
+            ->setReadOnly($yaml['readOnly'] ?? false)
             ->setWriteOnly($yaml['writeOnly'] ?? false)
             ->setRequired($yaml['required'] ?? false)
             ->setEnum($yaml['enum'] ?? [])

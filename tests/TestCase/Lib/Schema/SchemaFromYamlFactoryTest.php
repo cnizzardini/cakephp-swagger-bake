@@ -17,12 +17,16 @@ class SchemaFromYamlFactoryTest extends TestCase
             $yaml['components']['schemas']['Place']
         );
 
+
+        $properties = $schema->getProperties();
+        $this->assertTrue($properties['id']->isReadOnly());
+
         /** @var Schema $attributes */
-        $attributes = $schema->getProperties()['attributes'];
+        $attributes = $properties['attributes'];
         $this->assertTrue(isset($attributes->getProperties()['yitzo_country_code']));
 
         /** @var Schema $relationships */
-        $relationships = $schema->getProperties()['relationships'];
+        $relationships = $properties['relationships'];
         $this->assertTrue(isset($relationships->getProperties()['description']));
     }
 
