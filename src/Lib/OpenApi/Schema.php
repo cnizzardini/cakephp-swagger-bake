@@ -452,7 +452,7 @@ class Schema implements JsonSerializable, SchemaInterface
     /**
      * @deprecated This will be removed from the OpenAPI spec and its use is currently discouraged
      * @todo implement examples
-     * @param mixed|null $example
+     * @param mixed|null $example An optional example of the schema
      * @return $this
      */
     public function setExample(mixed $example)
