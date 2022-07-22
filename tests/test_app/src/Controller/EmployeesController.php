@@ -213,4 +213,13 @@ class EmployeesController extends AppController
         $this->set(compact('response'));
         $this->viewBuilder()->setOption('serialize', ['response']);
     }
+
+    /**
+     * @Swag\SwagRequestBodyContent(refEntity="#/components/schemas/Place", mimeTypes={"application/json"})
+     * @return void
+     */
+    public function testNestedObjectYaml()
+    {
+
+    }
 }
