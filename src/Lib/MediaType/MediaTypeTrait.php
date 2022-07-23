@@ -31,7 +31,6 @@ trait MediaTypeTrait
      */
     private function buildDiscriminators(Schema $schema): array
     {
-        //return [];
         $items = [];
         if ($schema->getAllOf()) {
             $items['allOf'] = $schema->getAllOf();
