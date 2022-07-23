@@ -42,13 +42,13 @@ final class JsonLd implements MediaTypeInterface
     private function collection(Schema|string $schema): Schema
     {
         if ($schema instanceof Schema) {
-            $items = [
+            $items = array_merge_recursive([
                 'allOf' => [
                     ['$ref' => self::JSONLD_ITEM],
                 ],
                 'type' => 'object',
                 'properties' => $this->recursion($schema->getProperties()),
-            ];
+            ], $this->buildDiscriminators($schema));
         }
 
         return (new Schema())
