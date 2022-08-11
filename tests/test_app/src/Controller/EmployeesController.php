@@ -35,7 +35,7 @@ class EmployeesController extends AppController
         parent::initialize();
 
         $this->loadComponent('Search.Search', [
-            'actions' => ['search'],
+            'actions' => ['search', 'search2'],
         ]);
     }
 
@@ -223,8 +223,28 @@ class EmployeesController extends AppController
 
     }
 
+    /**
+     * @deprecated This can be updated to just use alias in v3.0.0
+     */
     #[OpenApiSearch(tableClass: EmployeesTable::class)]
     public function search(): void
+    {
+        $query = $this->Employees
+            ->find('search', [
+                'search' => $this->request->getQueryParams(),
+                'collection' => 'default'
+            ]);
+        $employees = $this->paginate($query);
+
+        $this->set(compact('employees'));
+        $this->viewBuilder()->setOption('serialize', ['employees']);
+    }
+
+    /**
+     * @deprecated This can be removed in v3.0.0
+     */
+    #[OpenApiSearch(alias: 'Employees')]
+    public function search2(): void
     {
         $query = $this->Employees
             ->find('search', [
