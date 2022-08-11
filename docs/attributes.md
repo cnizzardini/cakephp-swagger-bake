@@ -619,7 +619,7 @@ Method level attribute for documenting search parameters using the popular
 | options    | array `[]`       | Optional array to be passed into `TableLocator::get($alias, $options)`                                                                           |
 
 ```php
- #[OpenApiSearch(tableClass: '\App\Model\Table\FilmsTable', collection: 'default')]
+#[OpenApiSearch(alias: 'Films')]
 public function index()
 {
     $this->request->allowMethod('get');
