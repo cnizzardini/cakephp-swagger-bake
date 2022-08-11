@@ -17,6 +17,7 @@ class DataTypeConversionTest extends TestCase
     private const OA_FORMAT_INT64 = 'int64';
     private const OA_FORMAT_INT32 = 'int32';
     private const OA_FORMAT_FLOAT = 'float';
+    private const OA_FORMAT_DATETIME = 'date-time';
 
     public function testToType(): void
     {
@@ -68,9 +69,9 @@ class DataTypeConversionTest extends TestCase
             'char' => self::OA_TYPE_STRING,
             'date' => 'date',
             'time' => 'time',
-            'datetime' => 'date-time',
-            'timestamp' => 'date-time',
-            'timestampfractional' => 'date-time',
+            'datetime' => self::OA_FORMAT_DATETIME,
+            'timestamp' => self::OA_FORMAT_DATETIME,
+            'timestampfractional' => self::OA_FORMAT_DATETIME,
         ];
 
         foreach ($types as $dbType => $openApiFormat) {
