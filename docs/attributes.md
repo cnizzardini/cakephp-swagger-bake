@@ -622,10 +622,15 @@ OpenAPI:
 Method level attribute for documenting search parameters using the popular
 [friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
 
-| Attribute   | Type / Default   | Description                                             | 
-|-------------|------------------|---------------------------------------------------------|
-| tableClass  | string           | Required. FQN to the Table class                        |
-| collection  | string `default` | The Cake Search collection _(see vendor documentation)_ |
+| Attribute      | Type / Default   | Description                                                                                                               | 
+|----------------|------------------|---------------------------------------------------------------------------------------------------------------------------|
+| ~~tableClass~~ | ~~string~~       | Required (for versions < 2.4.3, deprecated in >= 2.4.3). FQN to the Table class                                           |
+| collection     | string `default` | The Cake Search collection _(see vendor documentation)_                                                                   |
+| alias          | ?string `null`   | The table alias to be used by [TableLocator](https://book.cakephp.org/4/en/orm/table-objects.html#using-the-tablelocator) |
+| options        | array `[]`       | Optional array to be passed into `TableLocator::get($alias, $options)`                                                    |
+
+Note, `tableClass` will be removed in v3.0.0. Use `alias` instead. In >= 2.4.3 you can give a `null` value for 
+`tableClass`.
 
 ```php
  #[OpenApiSearch(tableClass: '\App\Model\Table\FilmsTable', collection: 'default')]

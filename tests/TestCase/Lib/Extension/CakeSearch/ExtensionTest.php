@@ -37,12 +37,17 @@ class ExtensionTest extends TestCase
         $router::scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => ['search'],
+                'only' => ['search', 'search2'],
                 'map' => [
                     'search' => [
                         'action' => 'search',
                         'method' => 'GET',
                         'path' => 'search'
+                    ],
+                    'search2' => [
+                        'action' => 'search2',
+                        'method' => 'GET',
+                        'path' => 'search2'
                     ]
                 ]
             ]);
@@ -70,7 +75,11 @@ class ExtensionTest extends TestCase
         ExtensionLoader::load();
     }
 
-    public function test_search_parameters_exist_in_openapi_output(): void
+    /**
+     * @deprecated DataProvider can be removed in v3.0.0
+     * @dataProvider dataProviderForSearch
+     */
+    public function test_search_parameters_exist_in_openapi_output(string $endpoint): void
     {
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
 
@@ -79,8 +88,8 @@ class ExtensionTest extends TestCase
 
         $arr = json_decode($swagger->toString(), true);
 
-        $this->assertArrayHasKey('get', $arr['paths']['/employees/search']);
-        $search = $arr['paths']['/employees/search']['get'];
+        $this->assertArrayHasKey('get', $arr['paths'][$endpoint]);
+        $search = $arr['paths'][$endpoint]['get'];
 
         $this->assertEquals('first_name', $search['parameters'][0]['name']);
     }
@@ -168,5 +177,16 @@ class ExtensionTest extends TestCase
             'reflectionMethod' => $mockReflectionMethod
         ]);
         $this->assertEmpty((new Extension())->getOperation($event)->getParameters());
+    }
+
+    /**
+     * @deprecated This can be removed in v3.0.0
+     */
+    public function dataProviderForSearch(): array
+    {
+        return [
+            ['/employees/search'],
+            ['/employees/search2'],
+        ];
     }
 }
