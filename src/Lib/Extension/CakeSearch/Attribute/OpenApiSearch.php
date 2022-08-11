@@ -9,7 +9,8 @@ use Attribute;
 class OpenApiSearch
 {
     /**
-     * @param string|null $tableClass The FQN of the table class
+     * @param string|null $tableClass The FQN of the table class. Use alias instead. This property will be removed in
+     *  `v3.0.0`.
      * @param string $collection The CakePHP search collection
      * @param string|null $alias The table alias
      * @param array $options An array of options to pass into TableLocator::get()
