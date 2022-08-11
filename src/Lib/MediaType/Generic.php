@@ -44,10 +44,10 @@ final class Generic implements MediaTypeInterface
         $openapi = $this->swagger->getArray();
 
         if ($schema instanceof Schema) {
-            $items = [
+            $items = array_merge([
                 'type' => 'object',
                 'properties' => $schema->getProperties(),
-            ];
+            ], $this->buildDiscriminators($schema));
         }
 
         if (isset($openapi['x-swagger-bake']['components']['schemas']['Generic-Collection'])) {
