@@ -18,7 +18,7 @@ class DataTypeConversionTest extends TestCase
     private const OA_FORMAT_INT32 = 'int32';
     private const OA_FORMAT_FLOAT = 'float';
 
-    public function testToType()
+    public function testToType(): void
     {
         $types = [
             'int' => self::OA_TYPE_INTEGER,
@@ -36,6 +36,7 @@ class DataTypeConversionTest extends TestCase
             'date' => self::OA_TYPE_STRING,
             'time' => self::OA_TYPE_STRING,
             'datetime' => self::OA_TYPE_STRING,
+            'timestamp' => self::OA_TYPE_STRING,
             'boolean' => self::OA_TYPE_BOOLEAN,
             'bool' => self::OA_TYPE_BOOLEAN,
         ];
@@ -49,7 +50,7 @@ class DataTypeConversionTest extends TestCase
         }
     }
 
-    public function testToFormat()
+    public function testToFormat(): void
     {
         $types = [
             'int' => self::OA_FORMAT_INT64,
@@ -67,6 +68,7 @@ class DataTypeConversionTest extends TestCase
             'date' => 'date',
             'time' => 'time',
             'datetime' => 'date-time',
+            'timestamp' => 'date-time',
         ];
 
         foreach ($types as $dbType => $openApiFormat) {
