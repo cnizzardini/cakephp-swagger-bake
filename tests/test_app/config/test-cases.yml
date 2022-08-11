@@ -1,0 +1,52 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Bakery
+  license:
+    name: MIT
+components:
+  schemas:
+    # Test simple array list
+    Year:
+      type: array
+      items:
+        type: integer
+      example: [ 2022, 2021, 2020 ]
+    # Test nested objects
+    Place:
+      description: 'Country object'
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        type:
+          type: string
+          example: 'countries'
+        attributes:
+          type: object
+          properties:
+            yitzo_country_code:
+              type: string
+              example: 'ES'
+            is_active:
+              type: boolean
+              example: true
+        relationships:
+          type: object
+          properties:
+            description:
+              type: array
+              items:
+                $ref: '#/components/schemas/CountryDescription'
+    CountryDescription:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        description:
+          type: string
+          example: 'a description'
+security:
+  - BearerAuth: []

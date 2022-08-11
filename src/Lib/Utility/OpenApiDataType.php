@@ -16,6 +16,7 @@ class OpenApiDataType
     public const NUMBER = 'number';
     public const OBJECT = 'object';
     public const STRING = 'string';
+    public const EMPTY = '';
 
     /**
      * @var string[]
@@ -27,5 +28,6 @@ class OpenApiDataType
         self::NUMBER,
         self::OBJECT,
         self::STRING,
+        self::EMPTY,
     ];
 }

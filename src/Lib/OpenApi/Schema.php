@@ -36,6 +36,8 @@ class Schema implements JsonSerializable, SchemaInterface
      * @param int $visibility See OpenApiSchema class constants
      * @param string|null $refPath OpenAPI $ref such as #/components/schema/MyModel
      * @param bool $isCustomSchema Denotes if this schema was added via a DTO or Response attribute.
+     * @param mixed|null $example Sets an example, note this is marked as deprecated in the OpenAPI spec and its
+     *  use is discouraged. This will be replaced by examples spec in a future release.
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -52,6 +54,7 @@ class Schema implements JsonSerializable, SchemaInterface
         private int $visibility = OpenApiSchema::VISIBLE_DEFAULT,
         private ?string $refPath = null,
         private bool $isCustomSchema = false,
+        private mixed $example = null
     ) {
     }
 
@@ -82,7 +85,7 @@ class Schema implements JsonSerializable, SchemaInterface
         );
 
         // remove null properties only
-        $vars = ArrayUtility::removeNullValues($vars, ['description']);
+        $vars = ArrayUtility::removeNullValues($vars, ['description', 'example']);
 
         return $vars;
     }
@@ -394,6 +397,29 @@ class Schema implements JsonSerializable, SchemaInterface
     public function setIsCustomSchema(bool $isCustomSchema)
     {
         $this->isCustomSchema = $isCustomSchema;
+
+        return $this;
+    }
+
+    /**
+     * @deprecated This will be removed from the OpenAPI spec and its use is currently discouraged
+     * @todo implement examples
+     * @return mixed|null
+     */
+    public function getExample(): mixed
+    {
+        return $this->example;
+    }
+
+    /**
+     * @deprecated This will be removed from the OpenAPI spec and its use is currently discouraged
+     * @todo implement examples
+     * @param mixed|null $example An optional example of the schema
+     * @return $this
+     */
+    public function setExample(mixed $example)
+    {
+        $this->example = $example;
 
         return $this;
     }

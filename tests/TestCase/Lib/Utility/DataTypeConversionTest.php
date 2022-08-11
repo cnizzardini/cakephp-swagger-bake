@@ -18,7 +18,7 @@ class DataTypeConversionTest extends TestCase
     private const OA_FORMAT_INT32 = 'int32';
     private const OA_FORMAT_FLOAT = 'float';
 
-    public function testToType()
+    public function testToType(): void
     {
         $types = [
             'int' => self::OA_TYPE_INTEGER,
@@ -38,6 +38,7 @@ class DataTypeConversionTest extends TestCase
             'datetime' => self::OA_TYPE_STRING,
             'boolean' => self::OA_TYPE_BOOLEAN,
             'bool' => self::OA_TYPE_BOOLEAN,
+            'timestamp' => self::OA_TYPE_STRING,
             'timestampfractional' => self::OA_TYPE_STRING,
         ];
 
@@ -50,7 +51,7 @@ class DataTypeConversionTest extends TestCase
         }
     }
 
-    public function testToFormat()
+    public function testToFormat(): void
     {
         $types = [
             'int' => self::OA_FORMAT_INT64,
@@ -68,6 +69,7 @@ class DataTypeConversionTest extends TestCase
             'date' => 'date',
             'time' => 'time',
             'datetime' => 'date-time',
+            'timestamp' => 'date-time',
             'timestampfractional' => 'date-time',
         ];
 

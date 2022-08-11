@@ -24,10 +24,18 @@ class BakeCommandTest extends TestCase
 
     public function test_execute(): void
     {
-        $path = WWW_ROOT . DS . 'swagger.json';
+        $path = WWW_ROOT . '/' . 'swagger.json';
         unlink($path);
         $this->exec('swagger bake');
         $this->assertOutputContains('Running...');
+        if ($this->isOnWindows()) {
+            // WWW_ROOT and presented path will not be consistent as `/webroot/swagger.json` comes from config
+            $basePath = str_replace('\webroot', '/webroot', WWW_ROOT);
+            $this->assertOutputContains('Swagger File Created: ');
+            $this->assertOutputContains($basePath);
+            $this->assertOutputContains('swagger.json');
+            return;
+        }
         $this->assertOutputContains("Swagger File Created: $path");
     }
 
@@ -71,5 +79,10 @@ class BakeCommandTest extends TestCase
     {
         $this->expectException(SwaggerBakeRunTimeException::class);
         $this->exec('swagger bake --config nope');
+    }
+
+    private function isOnWindows(): bool
+    {
+        return str_starts_with(strtolower(PHP_OS), 'win');
     }
 }

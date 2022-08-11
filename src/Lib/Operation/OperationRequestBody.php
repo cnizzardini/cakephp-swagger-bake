@@ -16,6 +16,7 @@ use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\RequestBody;
 use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\OpenApi\Xml;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Swagger;
@@ -256,12 +257,14 @@ class OperationRequestBody
         $isUpdate = count(array_intersect($this->route->getMethods(), ['PATCH'])) >= 1;
         $isCreate = count(array_intersect($this->route->getMethods(), ['POST', 'PUT'])) >= 1;
 
-        /** @var \SwaggerBake\Lib\OpenApi\SchemaProperty $schemaProperty */
-        foreach ($newSchema->getProperties() as $schemaProperty) {
-            if ($isUpdate && $schemaProperty->isRequirePresenceOnUpdate()) {
-                $newSchema->pushRequired($schemaProperty->getName());
-            } elseif ($isCreate && $schemaProperty->isRequirePresenceOnCreate()) {
-                $newSchema->pushRequired($schemaProperty->getName());
+        /** @var \SwaggerBake\Lib\OpenApi\SchemaProperty|\SwaggerBake\Lib\OpenApi\Schema $property */
+        foreach ($newSchema->getProperties() as $property) {
+            if ($property instanceof SchemaProperty) {
+                if ($isUpdate && $property->isRequirePresenceOnUpdate()) {
+                    $newSchema->pushRequired($property->getName());
+                } elseif ($isCreate && $property->isRequirePresenceOnCreate()) {
+                    $newSchema->pushRequired($property->getName());
+                }
             }
         }
 
