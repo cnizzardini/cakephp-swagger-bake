@@ -306,24 +306,18 @@ class OperationRequestBody
     private function getSchemaWithWritablePropertiesOnly(Schema $schema): Schema
     {
         $newSchema = clone $schema;
-        $newSchema->setProperties([]);
+        $isUpdate = count(array_intersect($this->route->getMethods(), ['PATCH'])) >= 1;
+        $isCreate = count(array_intersect($this->route->getMethods(), ['POST', 'PUT'])) >= 1;
 
-        $schemaProperties = array_filter($schema->getProperties(), function ($property) {
-            return $property->isReadOnly() === false;
-        });
-
-        $httpMethods = $this->route->getMethods();
-
-        foreach ($schemaProperties as $schemaProperty) {
-            $requireOnUpdate = $schemaProperty->isRequirePresenceOnUpdate();
-            $requireOnCreate = $schemaProperty->isRequirePresenceOnCreate();
-
-            if (count(array_intersect($httpMethods, ['PUT','PATCH'])) > 1 && $requireOnUpdate) {
-                $schemaProperty->setRequired(true);
-            } elseif (count(array_intersect($httpMethods, ['POST'])) > 1 && $requireOnCreate) {
-                $schemaProperty->setRequired(true);
+        /** @var \SwaggerBake\Lib\OpenApi\SchemaProperty|\SwaggerBake\Lib\OpenApi\Schema $property */
+        foreach ($newSchema->getProperties() as $property) {
+            if ($property instanceof SchemaProperty && $property->isReadOnly() === false) {
+                if ($isUpdate && $property->isRequirePresenceOnUpdate()) {
+                    $newSchema->pushRequired($property->getName());
+                } elseif ($isCreate && $property->isRequirePresenceOnCreate()) {
+                    $newSchema->pushRequired($property->getName());
+                }
             }
-            $newSchema->pushProperty($schemaProperty);
         }
 
         return $newSchema;
