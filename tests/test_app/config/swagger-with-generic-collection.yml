@@ -12,6 +12,13 @@ components:
 x-swagger-bake:
   components:
     schemas:
+      City:
+        type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
       Generic-Collection:
         type: object
         x-data-element: data # property or node that contains the collections items (records)

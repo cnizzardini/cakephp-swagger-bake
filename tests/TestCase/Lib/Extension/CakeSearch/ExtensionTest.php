@@ -2,6 +2,7 @@
 
 namespace SwaggerBake\Test\TestCase\Lib\Extension\CakeSearch;
 
+use Cake\Database\Exception\DatabaseException;
 use Cake\Event\Event;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
@@ -16,7 +17,6 @@ use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
 use SwaggerBake\Test\TestCase\Helper\ReflectionAttributeTrait;
-use SwaggerBakeTest\App\Model\Table\DepartmentsTable;
 
 class ExtensionTest extends TestCase
 {
@@ -39,12 +39,17 @@ class ExtensionTest extends TestCase
         $router::scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => ['search'],
+                'only' => ['search', 'search2'],
                 'map' => [
                     'search' => [
                         'action' => 'search',
                         'method' => 'GET',
                         'path' => 'search'
+                    ],
+                    'search2' => [
+                        'action' => 'search2',
+                        'method' => 'GET',
+                        'path' => 'search2'
                     ]
                 ]
             ]);
@@ -129,13 +134,13 @@ class ExtensionTest extends TestCase
     public function test_getOperation_throws_exception_when_table_class_does_not_exist(): void
     {
         $mockReflectionMethod = $this->mockReflectionMethod(OpenApiSearch::class, [
-            'tableClass' => 'nope',
+            'alias' => 'nope',
         ]);
 
         $event = new Event('test', (new Operation('id', 'GET')), [
             'reflectionMethod' => $mockReflectionMethod
         ]);
-        $this->expectException(SwaggerBakeRunTimeException::class);
+        $this->expectException(DatabaseException::class);
         $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
         $this->assertStringContainsString('Unable to build OpenApiSearch', $this->getExpectedExceptionMessage());
     }
@@ -143,7 +148,7 @@ class ExtensionTest extends TestCase
     public function test_getOperation_when_no_filters_exist(): void
     {
         $mockReflectionMethod = $this->mockReflectionMethod(OpenApiSearch::class, [
-            'tableClass' => DepartmentsTable::class,
+            'alias' => 'Departments',
         ]);
 
         $event = new Event('test', (new Operation('id', 'GET')), [

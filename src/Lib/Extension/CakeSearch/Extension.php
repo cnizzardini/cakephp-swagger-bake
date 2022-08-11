@@ -103,22 +103,7 @@ class Extension implements ExtensionInterface
      */
     private function getOperationWithQueryParameters(Operation $operation, OpenApiSearch $openApiSearch): Operation
     {
-        $tableFqn = $openApiSearch->tableClass;
-        if (!class_exists($tableFqn)) {
-            throw new SwaggerBakeRunTimeException(
-                sprintf(
-                    'Unable to build OpenApiSearch because tableClass `%s` does not exist',
-                    $tableFqn
-                )
-            );
-        }
-
-        $class = (new \ReflectionClass($tableFqn))->getShortName();
-        if (str_ends_with($class, 'Table')) {
-            $class = substr($class, 0, strlen($class) - 5);
-        }
-        $table = $this->getTableLocator()->get($class);
-
+        $table = $this->getTableLocator()->get($openApiSearch->alias, $openApiSearch->options);
         $filters = $this->getFilterDecorators($table, $openApiSearch);
         foreach ($filters as $filter) {
             $operation->pushParameter($this->createParameter($filter));

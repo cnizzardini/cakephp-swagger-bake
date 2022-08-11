@@ -612,10 +612,11 @@ OpenAPI:
 Method level attribute for documenting search parameters using the popular
 [friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
 
-| Attribute   | Type / Default   | Description                                             | 
-|-------------|------------------|---------------------------------------------------------|
-| tableClass  | string           | Required. FQN to the Table class                        |
-| collection  | string `default` | The Cake Search collection _(see vendor documentation)_ |
+| Attribute  | Type / Default   | Description                                                                                                                                      | 
+|------------|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| alias      | string           | Required. The table alias to be used by [TableLocator::get($alias)](https://book.cakephp.org/4/en/orm/table-objects.html#using-the-tablelocator) |
+| collection | string `default` | The Cake Search collection (see [documentation](https://github.com/FriendsOfCake/search)])                                                       |
+| options    | array `[]`       | Optional array to be passed into `TableLocator::get($alias, $options)`                                                                           |
 
 ```php
  #[OpenApiSearch(tableClass: '\App\Model\Table\FilmsTable', collection: 'default')]

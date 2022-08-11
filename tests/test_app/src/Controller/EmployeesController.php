@@ -33,7 +33,7 @@ class EmployeesController extends AppController
         parent::initialize();
 
         $this->loadComponent('Search.Search', [
-            'actions' => ['search'],
+            'actions' => ['search', 'search2'],
         ]);
     }
 
@@ -195,7 +195,10 @@ class EmployeesController extends AppController
     }
 
 
-    #[OpenApiSearch(tableClass: EmployeesTable::class)]
+    /**
+     * @deprecated This can be updated to just use alias in v3.0.0
+     */
+    #[OpenApiSearch(alias: 'Employees')]
     public function search(): void
     {
         $query = $this->Employees
