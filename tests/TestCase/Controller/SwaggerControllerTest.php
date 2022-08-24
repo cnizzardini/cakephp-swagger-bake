@@ -2,6 +2,7 @@
 
 namespace SwaggerBake\Test\TestCase\Controller;
 
+use Cake\Core\Configure;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Configuration;
@@ -26,6 +27,7 @@ class SwaggerControllerTest extends TestCase
 
     public function test_swagger_index(): void
     {
+        Configure::load('swagger_bake', 'default');
         $this->get('/');
         $this->assertResponseOk();
         $this->assertResponseContains('/swagger_bake/swagger-ui-bundle.js');
@@ -33,6 +35,7 @@ class SwaggerControllerTest extends TestCase
 
     public function test_redoc_index(): void
     {
+        Configure::load('swagger_bake', 'default');
         $this->get('/?doctype=redoc');
         $this->assertResponseOk();
         $this->assertResponseContains('/swagger_bake/redoc.standalone.js');
@@ -40,6 +43,7 @@ class SwaggerControllerTest extends TestCase
 
     public function test_hot_reload(): void
     {
+        Configure::load('swagger_bake', 'default');
         $this->mockService(OpenApiControllerService::class, function () {
             return new OpenApiControllerService(
                 (new Configuration())->setHotReload(true)

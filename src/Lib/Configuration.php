@@ -95,7 +95,6 @@ class Configuration
     public function __construct(array $config = [], string $root = ROOT)
     {
         $this->root = $root;
-        Configure::load('swagger_bake', 'default');
         $config = !empty($config) ? $config : Configure::read('SwaggerBake');
 
         foreach (['yml', 'json', 'webPath', 'prefix'] as $property) {
