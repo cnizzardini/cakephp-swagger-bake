@@ -37,6 +37,7 @@ class PathSecurity implements JsonSerializable
     /**
      * @return array|array[]|mixed
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->toArray();
