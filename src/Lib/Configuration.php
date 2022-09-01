@@ -78,6 +78,11 @@ class Configuration
     private array $editActionMethods = ['PATCH'];
 
     /**
+     * @var string The connection name to use when loading tables for building schemas from models.
+     */
+    private string $connectionName = 'default';
+
+    /**
      * @var array Array of namespaces. Useful if your controllers or entities exist in non-standard namespace such
      *      as a plugin. This was mostly added to aid in unit testing, but there are cases where controllers may
      *      exist in a plugin namespace etc...
@@ -451,6 +456,38 @@ class Configuration
     public function setJsonOptions(int $jsonOptions)
     {
         $this->jsonOptions = $jsonOptions;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConnectionName(): string
+    {
+        return $this->connectionName;
+    }
+
+    /**
+     * @param string $connectionName Connection name to use when loading tables for building schemas from models.
+     * @return $this
+     */
+    public function setConnectionName(string $connectionName)
+    {
+        $datasources = Configure::read('Datasources', []);
+        $configuredConnections = array_keys($datasources);
+
+        if (!in_array($connectionName, $configuredConnections)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid connectionName supplied: %s. Must be one of %s',
+                    $connectionName,
+                    implode(', ', $configuredConnections)
+                )
+            );
+        }
+
+        $this->connectionName = $connectionName;
 
         return $this;
     }
