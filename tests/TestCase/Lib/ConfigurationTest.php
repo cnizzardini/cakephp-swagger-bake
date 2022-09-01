@@ -24,12 +24,6 @@ class ConfigurationTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        
-        Configure::write('Datasources', [
-            'default' => [
-                'foo' => 'bar',
-            ],
-        ]);
 
         $this->configuration = $this->createConfiguration();
     }
