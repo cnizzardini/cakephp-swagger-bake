@@ -130,6 +130,7 @@ if (!getenv('DB_DSN')) {
 }
 
 ConnectionManager::setConfig('test', ['url' => getenv('DB_DSN')]);
+ConnectionManager::setConfig('test_alt', ['url' => getenv('DB_DSN')]);
 ConnectionManager::setConfig('test_custom_i18n_datasource', ['url' => getenv('DB_DSN')]);
 
 Configure::write('Session', [

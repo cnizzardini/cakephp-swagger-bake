@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
+use LogicException;
 use Cake\Core\Configure;
 use InvalidArgumentException;
-use LogicException;
 use Symfony\Component\Yaml\Yaml;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * Stores values of swagger_bake.php configuration file.
@@ -474,8 +475,7 @@ class Configuration
      */
     public function setConnectionName(string $connectionName)
     {
-        $datasources = Configure::read('Datasources', []);
-        $configuredConnections = array_keys($datasources);
+        $configuredConnections = ConnectionManager::configured();
 
         if (!in_array($connectionName, $configuredConnections)) {
             throw new InvalidArgumentException(
