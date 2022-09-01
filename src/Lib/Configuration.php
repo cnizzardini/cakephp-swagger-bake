@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
-use LogicException;
 use Cake\Core\Configure;
-use InvalidArgumentException;
-use Symfony\Component\Yaml\Yaml;
 use Cake\Datasource\ConnectionManager;
+use InvalidArgumentException;
+use LogicException;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Stores values of swagger_bake.php configuration file.
