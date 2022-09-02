@@ -51,14 +51,7 @@ its properties depending on the request type.
 |------------|----------------|---------|---------------------------------|
 | class      | string         | No      | Required. FQN of the DTO class. |
 
-Example DTO declaration:
-
-```php
-#[OpenApiDto(class: ActorDto::class)]
-public function index() {}
-```
-
-Example DTO class:
+OpenApiSchemaProperty can be applied at the class or property level, example:
 
 ```php
 #[OpenApiSchemaProperty(name: "a_property")] // in >= v2.2.11 you can target at the class level.
@@ -72,6 +65,9 @@ class ActorDto
 }
 ```
 
+Because OpenApiDto and OpenApiSchemaProperty can be used on any class or property you can optionally pair them with
+[CakePHPs Modelless forms](https://book.cakephp.org/4/en/core-libraries/form.html) to create powerful validations
+for your DTOs.
 
 ### OpenApiForm
 
