@@ -19,7 +19,6 @@ class ModelScannerTest extends TestCase
     public $fixtures = [
         'plugin.SwaggerBake.Employees',
         'plugin.SwaggerBake.EmployeeTitles',
-        'plugin.SwaggerBake.ExternalEmployees',
     ];
 
     private Router $router;
@@ -64,19 +63,6 @@ class ModelScannerTest extends TestCase
         $modelDecorators = (new ModelScanner($routeScanner, $config))->getModelDecorators();
         $collection = (new Collection($modelDecorators))->filter(function (ModelDecorator $modelDecorator) {
             $modelDecorator->getModel()->getTable()->getAlias() == 'EmployeeTitles';
-        });
-        $this->assertCount(0, $collection);
-    }
-
-    public function test_alternate_connection_is_used_when_non_default_connection_name_configured(): void
-    {
-        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $config->setConnectionName('test_alt');
-        $routeScanner = new RouteScanner($this->router, $config);
-
-        $modelDecorators = (new ModelScanner($routeScanner, $config))->getModelDecorators();
-        $collection = (new Collection($modelDecorators))->filter(function (ModelDecorator $modelDecorator) {
-            $modelDecorator->getModel()->getTable()->getAlias() == 'ExternalEmployees';
         });
         $this->assertCount(0, $collection);
     }
