@@ -48,7 +48,7 @@ Example DTO declaration:
 public function index() {}
 ```
 
-Example DTO class:
+OpenApiSchemaProperty can be applied at the class or property level, example:
 
 ```php
 #[OpenApiSchemaProperty(name: "a_property")]
@@ -62,6 +62,9 @@ class ActorDto
 }
 ```
 
+Because OpenApiDto and OpenApiSchemaProperty can be used on any class or property you can optionally pair them with 
+[CakePHPs Modelless](https://book.cakephp.org/4/en/core-libraries/form.html) forms to create powerful validations 
+for your DTOs.
 
 ### OpenApiForm
 
