@@ -46,7 +46,7 @@ class ModelScanner
     {
         $return = [];
 
-        $connection = ConnectionManager::get('default');
+        $connection = ConnectionManager::get($this->config->getConnectionName());
         $namespaces = $this->config->getNamespaces();
 
         foreach ($namespaces['tables'] as $tableNs) {
