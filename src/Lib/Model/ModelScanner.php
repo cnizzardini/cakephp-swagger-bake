@@ -56,7 +56,11 @@ class ModelScanner
                     if (!class_exists($table)) {
                         continue;
                     }
-                    $class = (new \ReflectionClass($table))->getShortName();
+                    $reflection = new \ReflectionClass($table);
+                    if (!$reflection->isInstantiable()) {
+                        continue;
+                    }
+                    $class = $reflection->getShortName();
                     if (str_ends_with($class, 'Table')) {
                         $class = substr($class, 0, strlen($class) - 5);
                     }
