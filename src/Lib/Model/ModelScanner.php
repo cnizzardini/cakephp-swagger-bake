@@ -46,7 +46,7 @@ class ModelScanner
     {
         $return = [];
 
-        $connection = ConnectionManager::get('default');
+        $connection = ConnectionManager::get($this->config->getConnectionName());
         $namespaces = $this->config->getNamespaces();
 
         foreach ($namespaces['tables'] as $tableNs) {
@@ -56,7 +56,11 @@ class ModelScanner
                     if (!class_exists($table)) {
                         continue;
                     }
-                    $class = (new \ReflectionClass($table))->getShortName();
+                    $reflection = new \ReflectionClass($table);
+                    if (!$reflection->isInstantiable()) {
+                        continue;
+                    }
+                    $class = $reflection->getShortName();
                     if (str_ends_with($class, 'Table')) {
                         $class = substr($class, 0, strlen($class) - 5);
                     }

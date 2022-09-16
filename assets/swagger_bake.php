@@ -26,6 +26,9 @@ use Cake\Core\Configure;
  * ################################
  * # OPTIONAL SETTINGS:
  * ################################
+ * 
+ * @var string $connectionName The connection name to use when loading tables for building schemas from models.
+ *      Default: default
  *
  * @var array $editActionMethods The default HTTP methods to use for CakePHPs edit() action.
  *      Default: ['PATCH']

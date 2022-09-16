@@ -59,10 +59,6 @@ class OperationDocBlock
             $this->operation->setDeprecated(true);
         }
 
-        if (!$this->doc->hasTag('see')) {
-            return;
-        }
-
         $this->addExternalDocumentation();
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib;
 
 use Cake\Core\Configure;
+use Cake\Datasource\ConnectionManager;
 use InvalidArgumentException;
 use LogicException;
 use Symfony\Component\Yaml\Yaml;
@@ -76,6 +77,11 @@ class Configuration
      * @var string[] The HTTP methods implemented for edit() actions.
      */
     private array $editActionMethods = ['PATCH'];
+
+    /**
+     * @var string The connection name to use when loading tables for building schemas from models.
+     */
+    private string $connectionName = 'default';
 
     /**
      * @var array Array of namespaces. Useful if your controllers or entities exist in non-standard namespace such
@@ -451,6 +457,37 @@ class Configuration
     public function setJsonOptions(int $jsonOptions)
     {
         $this->jsonOptions = $jsonOptions;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConnectionName(): string
+    {
+        return $this->connectionName;
+    }
+
+    /**
+     * @param string $connectionName Connection name to use when loading tables for building schemas from models.
+     * @return $this
+     */
+    public function setConnectionName(string $connectionName)
+    {
+        $configuredConnections = ConnectionManager::configured();
+
+        if (!in_array($connectionName, $configuredConnections)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid connectionName supplied: %s. Must be one of %s',
+                    $connectionName,
+                    implode(', ', $configuredConnections)
+                )
+            );
+        }
+
+        $this->connectionName = $connectionName;
 
         return $this;
     }
