@@ -121,7 +121,7 @@ to SwaggerUI (or Redoc) in your web browser.
 - You can also generate OpenAPI programmatically: 
 
 ```php
-$swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create();
+$swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create()->build();
 $swagger->getArray(); # returns swagger array
 $swagger->toString(); # returns swagger json
 $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json

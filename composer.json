@@ -29,7 +29,7 @@
         "friendsofcake/search": "^6.0",
         "cakephp/authentication": "^2.0",
         "cakephp/cakephp-codesniffer": "^4.2",
-        "phpstan/phpstan": "^1.0",
+        "phpstan/phpstan": "^1.8.5",
         "phpmd/phpmd": "^2.10",
         "cakephp/bake": "^2.1"
     },

@@ -16,10 +16,11 @@ class OpenApiBakerService
      * @param string $filePath The file path to write the openapi json to
      * @return string
      * @throws \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException
+     * @throws \ReflectionException
      */
     public function bake(Swagger $swagger, string $filePath): string
     {
-        $swagger->writeFile($filePath);
+        $swagger->build()->writeFile($filePath);
         foreach ($swagger->getOperationsWithNoHttp20x() as $operation) {
             $this->warnings[] = 'Operation ' . $operation->getOperationId() . ' does not have a HTTP 20x response';
         }

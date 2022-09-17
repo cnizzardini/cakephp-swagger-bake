@@ -85,37 +85,37 @@ class OpenApiOperationTest extends TestCase
 
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $configuration);
-        $this->swagger = new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration);
+        $this->swagger = (new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration))->build();
     }
 
     public function test_descriptions(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
         $this->assertEquals('summary...', $arr['paths']['/operations/descriptions']['get']['summary']);
         $this->assertEquals('desc...', $arr['paths']['/operations/descriptions']['get']['description']);
     }
 
     public function test_is_visible(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
         $this->assertArrayNotHasKey('/operations/is-visible', $arr['paths']);
     }
 
     public function test_operation_tags_names_should_take_precedence(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
         $this->assertCount(4, $arr['paths']['/operations/tag-names']['get']['tags']);
     }
 
     public function test_is_deprecated(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
         $this->assertTrue($arr['paths']['/operations/deprecated']['get']['deprecated']);
     }
 
     public function test_external_docs(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
         $externalDocs = $arr['paths']['/operations/external-docs']['get']['externalDocs'];
         $this->assertEquals('http://localhost', $externalDocs['url']);
         $this->assertEquals('desc...', $externalDocs['description']);
@@ -123,7 +123,7 @@ class OpenApiOperationTest extends TestCase
 
     public function test_path_tags_should_take_precedence(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
         $this->assertCount(2, $arr['paths']['/operations/deprecated']['get']['tags']);
         $this->assertCount(2, $arr['paths']['/operations/external-docs']['get']['tags']);
     }

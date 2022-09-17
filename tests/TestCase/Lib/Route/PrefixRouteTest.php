@@ -67,7 +67,7 @@ class PrefixRouteTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
-        $openApi = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->getArray();
+        $openApi = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->build()->getArray();
         $paths = new Collection(array_keys($openApi['paths']));
         $this->assertTrue($paths->contains('/admin/departments'));
         $this->assertTrue($paths->contains('/departments'));

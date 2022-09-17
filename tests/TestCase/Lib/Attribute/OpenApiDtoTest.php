@@ -87,7 +87,7 @@ class OpenApiDtoTest extends TestCase
     public function test_openapi_dto_query(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
 
 
@@ -101,7 +101,7 @@ class OpenApiDtoTest extends TestCase
     public function test_openapi_dto_post(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
 
 

@@ -57,7 +57,7 @@ class OpenApiPathTest extends TestCase
 
         $cakeRoute = new RouteScanner($this->router, $config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->build();
 
         $arr = json_decode($swagger->toString(), true);
         $employees = $arr['paths']['/employees'];
@@ -72,7 +72,7 @@ class OpenApiPathTest extends TestCase
 
         $cakeRoute = new RouteScanner($this->router, $config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->build();
 
         $arr = json_decode($swagger->toString(), true);
 

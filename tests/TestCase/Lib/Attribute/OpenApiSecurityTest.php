@@ -62,7 +62,7 @@ class OpenApiSecurityTest extends TestCase
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
 
         $this->assertArrayHasKey('/employees/custom-get', $arr['paths']);

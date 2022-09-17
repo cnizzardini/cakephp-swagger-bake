@@ -58,7 +58,7 @@ class JsonLdIntegrationTest extends TestCase
     public function test_collection(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
 
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */
         $path = $swagger->getArray()['paths']['/employees'];
@@ -79,7 +79,7 @@ class JsonLdIntegrationTest extends TestCase
     public function test_item(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
 
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */
         $path = $swagger->getArray()['paths']['/employees/{id}'];
