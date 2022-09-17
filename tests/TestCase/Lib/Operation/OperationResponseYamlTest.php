@@ -71,7 +71,9 @@ class OperationResponseYamlTest extends TestCase
     public function test_yaml_schema_overwriting_cakephp_model_schema(): void
     {
         $route = $this->routes['employees:view'];
-        $swagger = (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create();
+        $swagger = (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))
+            ->create()
+            ->build();
 
         $operationResponse = new OperationResponse(
             $swagger,

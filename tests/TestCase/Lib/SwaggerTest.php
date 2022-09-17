@@ -79,7 +79,7 @@ class SwaggerTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $config);
-        $openApi = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->getArray();
+        $openApi = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->build()->getArray();
 
         $this->assertArrayHasKey('/departments', $openApi['paths']);
         $this->assertArrayHasKey('/pets', $openApi['paths']);
@@ -94,7 +94,7 @@ class SwaggerTest extends TestCase
 
         $cakeRoute = new RouteScanner($this->router, $config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->build();
         $arr = json_decode($swagger->toString(), true);
 
         $this->assertArrayHasKey('/departments', $arr['paths']);
@@ -109,7 +109,7 @@ class SwaggerTest extends TestCase
 
         $cakeRoute = new RouteScanner($this->router, $config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->build();
         $jsonString = $swagger->toString();
 
         $this->assertStringNotContainsString('"\/departments"', $jsonString);
@@ -130,7 +130,7 @@ class SwaggerTest extends TestCase
 
         $cakeRoute = new RouteScanner($this->router, $config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->build();
         $openApi = $swagger->getArray();
         /** @var Path $path */
         $path = $openApi['paths']['/employees/{id}'];
@@ -178,7 +178,7 @@ class SwaggerTest extends TestCase
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $routeScanner = new RouteScanner($this->router, $config);
-        $swagger = new Swagger(new ModelScanner($routeScanner, $config), $config);
+        $swagger = (new Swagger(new ModelScanner($routeScanner, $config), $config))->build();
         $array = $swagger->getArray();
         $array['components'] = [];
         $swagger->setArray($array);

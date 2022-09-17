@@ -82,7 +82,7 @@ class ExtensionTest extends TestCase
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new RouteScanner($this->router, $configuration);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration))->build();
 
         $arr = json_decode($swagger->toString(), true);
 

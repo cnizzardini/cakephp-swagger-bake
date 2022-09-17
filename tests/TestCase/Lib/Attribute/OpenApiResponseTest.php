@@ -78,12 +78,12 @@ class OpenApiResponseTest extends TestCase
         ], SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new RouteScanner($router, $config);
-        $this->swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
+        $this->swagger = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->build();
     }
 
     public function test_openapi_response_ref(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
 
         $operation = $arr['paths']['/employees/custom-response-ref']['get'];
 
@@ -99,7 +99,7 @@ class OpenApiResponseTest extends TestCase
 
     public function test_openapi_response_schema(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
         $operation = $arr['paths']['/employees/custom-response-schema']['get'];
         $schema = $operation['responses'][200]['content']['application/json']['schema'];
         $this->assertEquals('Custom Title', $schema['title']);
@@ -109,7 +109,7 @@ class OpenApiResponseTest extends TestCase
 
     public function test_openapi_response_schema_public(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
         $this->assertArrayHasKey('CustomResponseSchemaPublic', $arr['components']['schemas']);
         $properties = $arr['components']['schemas']['CustomResponseSchemaPublic']['properties'];
         $this->assertArrayHasKey('name', $properties);
@@ -122,7 +122,7 @@ class OpenApiResponseTest extends TestCase
 
     public function test_openapi_response_schema_public_array(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
         $operation = $arr['paths']['/employees/custom-response-schema-public-array']['get'];
         $ref = $operation['responses'][200]['content']['application/json']['schema']['items']['$ref'];
         $this->assertEquals('#/components/schemas/CustomResponseSchemaPublic', $ref);

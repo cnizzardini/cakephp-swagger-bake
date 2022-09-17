@@ -50,7 +50,7 @@ class OpenApiPathParamTest extends TestCase
 
         $cakeRoute = new RouteScanner($router, $config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $config), $config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->build();
         $arr = json_decode($swagger->toString(), true);
 
         $params = $arr['paths']['/operation-path/path-parameter/{id}']['get']['parameters'];

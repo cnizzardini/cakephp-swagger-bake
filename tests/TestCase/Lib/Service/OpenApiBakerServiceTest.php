@@ -11,10 +11,16 @@ class OpenApiBakerServiceTest extends TestCase
 {
     public function test_warnings(): void
     {
-        $mock = $this->createPartialMock(Swagger::class, ['writeFile', 'getOperationsWithNoHttp20x']);
-        $mock
-            ->expects($this->once())
-            ->method('writeFile');
+        $mock = $this->createPartialMock(Swagger::class, [
+            'build',
+            'writeFile',
+            'getOperationsWithNoHttp20x'
+        ]);
+
+
+        $mock->expects($this->once())->method('build')->willReturn($mock);
+        $mock->expects($this->once())->method('writeFile');
+
         $mock
             ->expects($this->once())
             ->method('getOperationsWithNoHttp20x')

@@ -122,6 +122,7 @@ to SwaggerUI (or Redoc) in your web browser.
 
 ```php
 $swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create();
+$swagger->build(); # builds openapi, this returns self so `$swagger->build()->getArray()` is possible.
 $swagger->getArray(); # returns swagger array
 $swagger->toString(); # returns swagger json
 $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json

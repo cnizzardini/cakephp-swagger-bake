@@ -83,7 +83,7 @@ class OpenApiRequestBodyTest extends TestCase
     {
         $routeScanner = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new ModelScanner($routeScanner, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($routeScanner, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
 
         $operation = $arr['paths']['/employees/custom-post']['post'];
@@ -98,7 +98,7 @@ class OpenApiRequestBodyTest extends TestCase
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
 
         $operation = $arr['paths']['/request-body/text-plain']['post'];
@@ -110,7 +110,7 @@ class OpenApiRequestBodyTest extends TestCase
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
 
         $operation = $arr['paths']['/request-body/multiple-mime-types']['post'];
@@ -122,7 +122,7 @@ class OpenApiRequestBodyTest extends TestCase
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
 
         $operation = $arr['paths']['/request-body/use-config-defaults']['post'];

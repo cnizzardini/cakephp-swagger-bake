@@ -29,30 +29,30 @@ class Swagger
 
     private array $array = [];
 
-    private Configuration $config;
-
-    private FileUtility $fileUtility;
-
     /**
      * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
-     * @param \SwaggerBake\Lib\Configuration $configuration Configuration instance
+     * @param \SwaggerBake\Lib\Configuration $config Configuration instance
      * @param \SwaggerBake\Lib\Utility\FileUtility|null $fileUtility FileUtility will be created automatically if
      *  argument is null.
      * @throws \ReflectionException
      */
     public function __construct(
-        ModelScanner $modelScanner,
-        Configuration $configuration,
-        ?FileUtility $fileUtility = null
+        private ModelScanner $modelScanner,
+        private Configuration $config,
+        private ?FileUtility $fileUtility = null
     ) {
-        $this->config = $configuration;
         $this->fileUtility = $fileUtility ?? new FileUtility();
+    }
 
+    /**
+     * Builds an OpenAPI array that can be converted to JSON.
+     *
+     * @return \SwaggerBake\Lib\Swagger
+     * @throws \ReflectionException
+     */
+    public function build()
+    {
         $this->array = (new OpenApiFromYaml())->build(Yaml::parseFile($this->config->getYml()));
-
-        EventManager::instance()->dispatch(
-            new Event('SwaggerBake.initialize', $this)
-        );
 
         $xSwaggerBake = Yaml::parseFile(self::ASSETS . 'x-swagger-bake.yaml');
 
@@ -61,9 +61,15 @@ class Swagger
             $this->array['x-swagger-bake'] ?? []
         );
 
-        $this->array = (new OpenApiSchemaGenerator($modelScanner))->generate($this->array);
-        $this->array = (new OpenApiPathGenerator($this, $modelScanner->getRouteScanner(), $this->config))
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.initialize', $this)
+        );
+
+        $this->array = (new OpenApiSchemaGenerator($this->modelScanner))->generate($this->array);
+        $this->array = (new OpenApiPathGenerator($this, $this->modelScanner->getRouteScanner(), $this->config))
             ->generate($this->array);
+
+        return $this;
     }
 
     /**
@@ -87,7 +93,10 @@ class Swagger
             }
         }
 
-        ksort($this->array['paths'], SORT_STRING);
+        if (is_array($this->array['paths'])) {
+            ksort($this->array['paths'], SORT_STRING);
+        }
+
         if (is_array($this->array['components']['schemas'])) {
             uksort($this->array['components']['schemas'], function ($a, $b) {
                 return strcasecmp(

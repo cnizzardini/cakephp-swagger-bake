@@ -9,6 +9,7 @@ use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
 
@@ -57,11 +58,12 @@ class HalJsonIntegrationTest extends TestCase
     public function test_collection(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
 
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */
         $path = $swagger->getArray()['paths']['/employees'];
         $content = $path->getOperations()['get']->getResponses()['200']->getContent()['application/hal+json'];
+        /** @var Schema $schema */
         $schema = $content->getSchema();
 
         $this->assertEquals(HalJson::HAL_COLLECTION, $schema->getAllOf()[0]['$ref']);
@@ -78,11 +80,12 @@ class HalJsonIntegrationTest extends TestCase
     public function test_item(): void
     {
         $cakeRoute = new RouteScanner($this->router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
 
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */
         $path = $swagger->getArray()['paths']['/employees/{id}'];
         $content = $path->getOperations()['get']->getResponses()['200']->getContent()['application/hal+json'];
+        /** @var Schema $schema */
         $schema = $content->getSchema();
 
         $this->assertEquals(

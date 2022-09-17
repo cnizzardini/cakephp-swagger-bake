@@ -30,12 +30,13 @@ class OpenApiControllerService
      * Rebuilds OpenAPI if hot reload is enabled and logs warnings if debug is enabled
      *
      * @return void
+     * @throws \ReflectionException
      */
     public function build(): void
     {
         if ($this->config->isHotReload()) {
             $output = $this->config->getJson();
-            $this->swagger->writeFile($output);
+            $this->swagger->build()->writeFile($output);
         }
     }
 

@@ -73,12 +73,12 @@ class SwaggerOperationTest extends TestCase
 
         $configuration = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $cakeRoute = new RouteScanner($this->router, $configuration);
-        $this->swagger = new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration);
+        $this->swagger = (new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration))->build();
     }
 
     public function test_crud_operations_exist(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
 
         $this->assertArrayHasKey('get', $arr['paths']['/employees']);
         $this->assertArrayHasKey('post', $arr['paths']['/employees']);
@@ -90,7 +90,7 @@ class SwaggerOperationTest extends TestCase
 
     public function test_default_response_schema_on_index_method(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
 
         $employee = $arr['paths']['/employees']['get'];
 
@@ -102,7 +102,7 @@ class SwaggerOperationTest extends TestCase
 
     public function test_default_request_schema_on_add_method(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
 
         $employee = $arr['paths']['/employees']['post'];
         $schema =  $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
@@ -114,7 +114,7 @@ class SwaggerOperationTest extends TestCase
 
     public function test_default_response_schema_on_add_method(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
 
         $employee = $arr['paths']['/employees']['post'];
         $schema = $employee['responses'][200]['content']['application/json']['schema'];
@@ -124,7 +124,7 @@ class SwaggerOperationTest extends TestCase
 
     public function test_default_request_body_schema_on_edit_method(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
 
         $employee = $arr['paths']['/employees/{id}']['patch'];
         $schema = $employee['requestBody']['content']['application/x-www-form-urlencoded']['schema'];
@@ -136,7 +136,7 @@ class SwaggerOperationTest extends TestCase
 
     public function test_default_response_schema_on_edit_method(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
 
         $employee = $arr['paths']['/employees/{id}']['patch'];
 
@@ -147,7 +147,7 @@ class SwaggerOperationTest extends TestCase
 
     public function test_exception_response_schema(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
 
         $responses = $arr['paths']['/employees/custom-get']['get']['responses'];
 
@@ -164,7 +164,7 @@ class SwaggerOperationTest extends TestCase
         $configuration = new Configuration($config, SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new RouteScanner($this->router, $configuration);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration))->build();
 
         $arr = json_decode($swagger->toString(), true);
 
@@ -181,7 +181,7 @@ class SwaggerOperationTest extends TestCase
         $configuration = new Configuration($config, SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new RouteScanner($this->router, $configuration);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $configuration), $configuration))->build();
 
         $arr = json_decode($swagger->toString(), true);
         $securities = $arr['paths']['/departments/{id}']['get']['security'];
@@ -193,7 +193,7 @@ class SwaggerOperationTest extends TestCase
 
     public function test_path_parameter_is_defined(): void
     {
-        $arr = json_decode($this->swagger->toString(), true);
+        $arr = json_decode($this->swagger->build()->toString(), true);
         $operation = $arr['paths']['/employees/{id}']['get'];
 
         $this->assertEquals('path', $operation['parameters'][0]['in']);

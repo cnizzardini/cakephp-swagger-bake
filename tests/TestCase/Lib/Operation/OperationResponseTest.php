@@ -129,7 +129,7 @@ class OperationResponseTest extends TestCase
             );
 
         $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create()->build(),
             $this->config,
             new Operation('employees:add', 'post'),
             $route,
@@ -153,7 +153,7 @@ class OperationResponseTest extends TestCase
         $schema = (new Schema())->setName('Employee')->setType('object');
 
         $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create()->build(),
             $this->config,
             new Operation('employees:add', 'post'),
             $route,
@@ -186,7 +186,7 @@ class OperationResponseTest extends TestCase
             );
 
         $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create()->build(),
             $this->config,
             new Operation('employees:add', 'post'),
             $route,
@@ -219,7 +219,7 @@ class OperationResponseTest extends TestCase
             );
 
         $operationResponse = new OperationResponse(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create()->build(),
             $this->config,
             new Operation('employees:delete', 'delete'),
             $route,
@@ -331,7 +331,9 @@ class OperationResponseTest extends TestCase
             'associations' => ['whiteList' => ['DepartmentEmployees']]
         ]);
 
-        $swagger = (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create();
+        $swagger = (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))
+            ->create()
+            ->build();
 
         $operationResponse = new OperationResponse(
             $swagger,
