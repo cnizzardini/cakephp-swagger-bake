@@ -21,10 +21,7 @@ trait CommandTrait
      */
     public function loadConfig(Arguments $args): void
     {
-        $config = $args->getOption('config');
-        if (!is_string($config) || empty($config)) {
-            $config = 'swagger_bake';
-        }
+        $config = (string)$args->getOption('config');
         if ($config !== 'swagger_bake') {
             Configure::delete('SwaggerBake');
         }

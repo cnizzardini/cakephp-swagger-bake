@@ -10,7 +10,8 @@ class ModelCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     public $fixtures = [
-        'plugin.SwaggerBake.Departments'
+        'plugin.SwaggerBake.Departments',
+        'plugin.SwaggerBake.Employees',
     ];
 
     public function setUp() : void
