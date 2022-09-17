@@ -42,7 +42,7 @@ class GenericTest extends TestCase
 
     public function test_collection(): void
     {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
         $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $schema = (new Generic($swagger))->buildSchema('#/components/schemas/thing', 'array');
         $this->assertEquals(
@@ -54,7 +54,7 @@ class GenericTest extends TestCase
 
     public function test_collection_with_associations(): void
     {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
         $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
 
         $schema = (new Schema())

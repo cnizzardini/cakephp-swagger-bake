@@ -24,19 +24,15 @@ class JsonLdIntegrationTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
-    private Router $router;
-
     private Configuration $config;
 
     public function setUp(): void
     {
         parent::setUp();
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees');
         });
-        $this->router = $router;
 
         $this->config = new Configuration([
             'prefix' => '/',
@@ -57,7 +53,7 @@ class JsonLdIntegrationTest extends TestCase
 
     public function test_collection(): void
     {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
         $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
 
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */
@@ -78,7 +74,7 @@ class JsonLdIntegrationTest extends TestCase
 
     public function test_item(): void
     {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
         $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
 
         /** @var \SwaggerBake\Lib\OpenApi\Path $path */

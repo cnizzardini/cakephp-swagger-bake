@@ -24,8 +24,6 @@ class OpenApiQueryParamTest extends TestCase
         'plugin.SwaggerBake.Departments',
     ];
 
-    private Router $router;
-
     private Configuration $config;
 
     public function setUp(): void
@@ -36,7 +34,7 @@ class OpenApiQueryParamTest extends TestCase
     public function test_openapi_query(): void
     {
         $this->__setUp();
-        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
 
         $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
@@ -64,12 +62,10 @@ class OpenApiQueryParamTest extends TestCase
 
     private function __setUp(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Departments');
         });
-        $this->router = $router;
 
         $this->config = new Configuration([
             'prefix' => '/',

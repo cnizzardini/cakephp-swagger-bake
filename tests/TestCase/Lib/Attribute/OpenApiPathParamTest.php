@@ -17,8 +17,7 @@ class OpenApiPathParamTest extends TestCase
 {
     public function test(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('OperationPath', [
                 'only' => ['pathParameter'],
@@ -48,7 +47,7 @@ class OpenApiPathParamTest extends TestCase
             ]
         ], SWAGGER_BAKE_TEST_APP);
 
-        $cakeRoute = new RouteScanner($router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
 
         $swagger = (new Swagger(new ModelScanner($cakeRoute, $config), $config))->build();
         $arr = json_decode($swagger->toString(), true);
