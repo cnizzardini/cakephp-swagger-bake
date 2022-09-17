@@ -79,7 +79,7 @@ class Swagger
      */
     public function getArray(): array
     {
-        foreach ($this->array['paths'] as $method => $paths) {
+        foreach ($this->array['paths'] ?? [] as $method => $paths) {
             foreach ($paths as $pathId => $path) {
                 if ($path instanceof Path) {
                     $this->array['paths'][$method][$pathId] = $path->toArray();
@@ -87,17 +87,19 @@ class Swagger
             }
         }
 
-        foreach ($this->array['components']['schemas'] as $schema) {
-            if (!is_array($schema)) {
-                $schema->toArray();
+        if (isset($this->array['components']['schemas'])) {
+            foreach ($this->array['components']['schemas'] as $schema) {
+                if (!is_array($schema)) {
+                    $schema->toArray();
+                }
             }
         }
 
-        if (is_array($this->array['paths'])) {
+        if (isset($this->array['paths']) && is_array($this->array['paths'])) {
             ksort($this->array['paths'], SORT_STRING);
         }
 
-        if (is_array($this->array['components']['schemas'])) {
+        if (isset($this->array['components']['schemas']) && is_array($this->array['components']['schemas'])) {
             uksort($this->array['components']['schemas'], function ($a, $b) {
                 return strcasecmp(
                     preg_replace('/\s+/', '', $a),
@@ -230,7 +232,7 @@ class Swagger
      */
     private function addAdditionalSchema(): void
     {
-        $paths = $this->array['paths'];
+        $paths = $this->array['paths'] ?? [];
         if (empty($paths)) {
             return;
         }

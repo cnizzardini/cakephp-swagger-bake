@@ -72,7 +72,7 @@ define('CONFIG', SWAGGER_BAKE_TEST_APP . DS . 'config' . DS);
 @mkdir(CACHE . 'models');
 // phpcs:enable
 
-ini_set('error_reporting', 'E_ALL ^ E_DEPRECATED');
+ini_set('error_reporting', E_ALL);
 
 $webRoot = SWAGGER_BAKE_TEST_APP . DS . 'webroot';
 if (!is_dir($webRoot)) {

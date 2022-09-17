@@ -2,8 +2,7 @@
 
 namespace SwaggerBake\Test\TestCase\Command;
 
-use Cake\Core\Configure;
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
 class RouteCommandTest extends TestCase
@@ -21,14 +20,14 @@ class RouteCommandTest extends TestCase
         $this->useCommandRunner();
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $this->exec('swagger routes');
         $this->assertOutputContains('SwaggerBake is checking your routes...');
         $this->assertOutputContains('departments:index');
     }
 
-    public function testExecuteNoRoutesFoundErrorMessage()
+    public function testExecuteNoRoutesFoundErrorMessage(): void
     {
         $this->exec('swagger routes --prefix /nope');
         $this->assertExitError();

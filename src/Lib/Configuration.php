@@ -180,7 +180,7 @@ class Configuration
         }
 
         $path = $this->root . $yml;
-        if (!file_exists($path) && !touch($path)) {
+        if ((!file_exists($path) && !is_writable($path)) || !touch($path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     "Invalid yml: `%s`. yml must exist on the file system. An attempt was made to create %s, but 
@@ -224,12 +224,12 @@ class Configuration
         }
 
         $path = $this->root . $json;
-        if (!file_exists($path) && !touch($path)) {
+        if ((!file_exists($path) && !is_writable($path)) || !touch($path)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    "Invalid json: `%s`. json must exist on the file system. An attempt was made to create %s, but 
-                    permission was denied or the file path is bad. Either fix the file system permissions, create the 
-                    file and/or both. $message",
+                    "Invalid json: `%s`. Config value for `json` must exist on the file system. An attempt was 
+                    made to create %s, but permission was denied or the file path is bad. Either fix the file system 
+                    permissions, create the file and/or both. $message",
                     $json,
                     $path
                 )

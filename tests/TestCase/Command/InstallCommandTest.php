@@ -2,12 +2,10 @@
 
 namespace SwaggerBake\Test\TestCase\Command;
 
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Exception\InstallException;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Service\InstallerService;
-use SwaggerBake\Lib\Service\OpenApiBakerService;
 
 class InstallCommandTest extends TestCase
 {
