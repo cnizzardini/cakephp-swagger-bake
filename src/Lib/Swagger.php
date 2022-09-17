@@ -27,7 +27,12 @@ class Swagger
      */
     private const ASSETS = __DIR__ . DS . '..' . DS . '..' . DS . 'assets' . DS;
 
-    private array $array = [];
+    private array $array = [
+        'paths' => [],
+        'components' => [
+            'schemas' => [],
+        ],
+    ];
 
     /**
      * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
@@ -79,7 +84,7 @@ class Swagger
      */
     public function getArray(): array
     {
-        foreach ($this->array['paths'] ?? [] as $method => $paths) {
+        foreach ($this->array['paths'] as $method => $paths) {
             foreach ($paths as $pathId => $path) {
                 if ($path instanceof Path) {
                     $this->array['paths'][$method][$pathId] = $path->toArray();
@@ -87,17 +92,13 @@ class Swagger
             }
         }
 
-        if (isset($this->array['components']['schemas'])) {
-            foreach ($this->array['components']['schemas'] as $schema) {
-                if (!is_array($schema)) {
-                    $schema->toArray();
-                }
+        foreach ($this->array['components']['schemas'] ?? [] as $schema) {
+            if (!is_array($schema)) {
+                $schema->toArray();
             }
         }
 
-        if (isset($this->array['paths']) && is_array($this->array['paths'])) {
-            ksort($this->array['paths'], SORT_STRING);
-        }
+        ksort($this->array['paths'], SORT_STRING);
 
         if (isset($this->array['components']['schemas']) && is_array($this->array['components']['schemas'])) {
             uksort($this->array['components']['schemas'], function ($a, $b) {
