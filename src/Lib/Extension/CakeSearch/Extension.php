@@ -9,7 +9,6 @@ use Cake\Event\EventManager;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
 use ReflectionMethod;
-use Search\Model\Filter\Boolean;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
