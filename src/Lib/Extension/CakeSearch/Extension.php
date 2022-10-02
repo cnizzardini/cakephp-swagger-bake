@@ -138,7 +138,9 @@ class Extension implements ExtensionInterface
     {
         $parameter = new Parameter(in: 'query', name: $filter->getName());
         $parameter->setSchema(
-            (new Schema())->setDescription($filter->getComparison())
+            (new Schema())
+                ->setDescription($filter->getComparison())
+                ->setType('string')
         );
 
         return $parameter;
