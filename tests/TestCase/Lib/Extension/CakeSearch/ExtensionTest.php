@@ -90,6 +90,7 @@ class ExtensionTest extends TestCase
         $search = $arr['paths']['/employees/search']['get'];
 
         $this->assertEquals('first_name', $search['parameters'][0]['name']);
+        $this->assertEquals('string', $search['parameters'][0]['schema']['type']);
     }
 
     public function test_getOperation_throws_exception_when_event_subject_is_invalid(): void
