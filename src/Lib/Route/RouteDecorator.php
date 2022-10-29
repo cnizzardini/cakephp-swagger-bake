@@ -10,30 +10,71 @@ use Cake\Utility\Inflector;
 use MixerApi\Core\Model\Model;
 
 /**
- * Class RouteDecorator
- *
- * @package SwaggerBake\Lib\Decorator
- *
- * Decorates a Cake\Routing\Route\Route
+ * Decorates \Cake\Routing\Route\Route
  */
 class RouteDecorator
 {
+    /**
+     * Route::name
+     *
+     * @var string|null
+     */
     private ?string $name;
 
+    /**
+     * Route::defaults['plugin']
+     *
+     * @var string|null
+     */
     private ?string $plugin;
 
-    private ?string $prefix;
+    /**
+     * Route::defaults['prefix']
+     *
+     * @var mixed
+     */
+    private mixed $prefix;
 
+    /**
+     * Route::defaults['controller']
+     *
+     * @var string|null
+     */
     private ?string $controller;
 
+    /**
+     * Route::defaults['action']
+     *
+     * @var string|null
+     */
     private ?string $action;
 
+    /**
+     * Route::defaults['_method']
+     *
+     * @var array
+     */
     private array $methods = [];
 
+    /**
+     * Route::template
+     *
+     * @var string|null
+     */
     private ?string $template;
 
+    /**
+     * The fully qualified namespace of the controller
+     *
+     * @var string|null
+     */
     private ?string $controllerFqn = null;
 
+    /**
+     * The model this route is associated with.
+     *
+     * @var \MixerApi\Core\Model\Model|null
+     */
     private ?Model $model = null;
 
     /**
@@ -106,18 +147,18 @@ class RouteDecorator
     }
 
     /**
-     * @return string|null
+     * @return mixed
      */
-    public function getPrefix(): ?string
+    public function getPrefix(): mixed
     {
         return $this->prefix;
     }
 
     /**
-     * @param string|null $prefix The routing prefix, for example "Admin" when controller is in App\Controller\Admin
+     * @param mixed $prefix The routing prefix, for example "Admin" when controller is in App\Controller\Admin
      * @return $this
      */
-    public function setPrefix(?string $prefix)
+    public function setPrefix(mixed $prefix)
     {
         $this->prefix = $prefix;
 
