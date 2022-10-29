@@ -21,8 +21,6 @@ class ModelScannerTest extends TestCase
         'plugin.SwaggerBake.EmployeeTitles',
     ];
 
-    private Router $router;
-
     private array $config;
 
     public function setUp(): void
@@ -30,7 +28,7 @@ class ModelScannerTest extends TestCase
         parent::setUp();
 
         $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees');
         });
@@ -58,7 +56,7 @@ class ModelScannerTest extends TestCase
     public function test_model_should_not_be_decorated_when_no_route_exists(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $routeScanner = new RouteScanner($this->router, $config);
+        $routeScanner = new RouteScanner(new Router(), $config);
 
         $modelDecorators = (new ModelScanner($routeScanner, $config))->getModelDecorators();
         $collection = (new Collection($modelDecorators))->filter(function (ModelDecorator $modelDecorator) {
@@ -70,7 +68,7 @@ class ModelScannerTest extends TestCase
     /*    public function test_should_use_naming_conventions_when_multiple_models_found(): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $routeScanner = new RouteScanner($this->router, $config);
+        $routeScanner = new RouteScanner(new Router(), $config);
 
         print_r($routeScanner->getRoutes());
 

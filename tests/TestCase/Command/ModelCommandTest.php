@@ -2,7 +2,7 @@
 
 namespace SwaggerBake\Test\TestCase\Command;
 
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
 class ModelCommandTest extends TestCase
@@ -10,7 +10,8 @@ class ModelCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     public $fixtures = [
-        'plugin.SwaggerBake.Departments'
+        'plugin.SwaggerBake.Departments',
+        'plugin.SwaggerBake.Employees',
     ];
 
     public function setUp() : void

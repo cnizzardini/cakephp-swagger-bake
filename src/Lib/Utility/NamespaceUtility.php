@@ -27,7 +27,7 @@ class NamespaceUtility
     {
         $namespaces = $config->getNamespaces();
 
-        foreach ($namespaces['entities'] as $namespace) {
+        foreach ($namespaces['entities'] ?? [] as $namespace) {
             $entity = $namespace . 'Model\Entity\\' . $className;
             if (class_exists($entity, true)) {
                 return $entity;

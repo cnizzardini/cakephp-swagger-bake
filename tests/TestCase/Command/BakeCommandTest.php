@@ -2,7 +2,7 @@
 
 namespace SwaggerBake\Test\TestCase\Command;
 
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Service\OpenApiBakerService;
@@ -25,7 +25,6 @@ class BakeCommandTest extends TestCase
     public function test_execute(): void
     {
         $path = WWW_ROOT . '/' . 'swagger.json';
-        unlink($path);
         $this->exec('swagger bake');
         $this->assertOutputContains('Running...');
         if ($this->isOnWindows()) {

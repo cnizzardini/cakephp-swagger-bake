@@ -27,19 +27,15 @@ class HalJsonTest extends TestCase
         'plugin.SwaggerBake.DepartmentEmployees',
     ];
 
-    private Router $router;
-
     private Configuration $config;
 
     public function setUp(): void
     {
         parent::setUp();
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees');
         });
-        $this->router = $router;
 
         $this->config = new Configuration([
             'prefix' => '/',
@@ -64,11 +60,11 @@ class HalJsonTest extends TestCase
      */
     public function test_item_with_association(): void
     {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
         $routes = $cakeRoute->getRoutes();
 
         $schema = (new OperationResponseAssociation(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create(),
             $routes['employees:view'],
             null
         ))->build(new OpenApiResponse(
@@ -97,11 +93,11 @@ class HalJsonTest extends TestCase
      */
     public function test_item_collection_association(): void
     {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
         $routes = $cakeRoute->getRoutes();
 
         $schema = (new OperationResponseAssociation(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create(),
             $routes['employees:view'],
             null
         ))->build(new OpenApiResponse(

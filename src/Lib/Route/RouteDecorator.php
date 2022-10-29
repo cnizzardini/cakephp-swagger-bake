@@ -85,9 +85,10 @@ class RouteDecorator
     {
         $defaults = (array)$route->defaults;
 
-        $methods = $defaults['_method'];
         if (isset($defaults['_method']) && !is_array($defaults['_method'])) {
             $methods = explode(', ', $defaults['_method']);
+        } else {
+            $methods = $defaults['_method'] ?? [];
         }
 
         $this->cakeConfigure = $cakeConfigure ?? new Configure();
@@ -96,11 +97,11 @@ class RouteDecorator
             ->setRoute($route)
             ->setTemplate($route->template)
             ->setName($route->getName())
-            ->setPlugin($defaults['plugin'])
+            ->setPlugin($defaults['plugin'] ?? null)
             ->setPrefix($defaults['prefix'] ?? null)
             ->setController($defaults['controller'] ?? null)
-            ->setAction($defaults['action'])
-            ->setMethods($methods ?? []);
+            ->setAction($defaults['action'] ?? null)
+            ->setMethods($methods);
 
         $fqn = $this->findControllerFqn();
         if ($fqn) {

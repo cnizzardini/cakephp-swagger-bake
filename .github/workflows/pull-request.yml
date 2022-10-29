@@ -32,7 +32,7 @@ jobs:
           composer validate
           composer install --prefer-dist --no-progress
 
-      - name: Test Suite (8.0 only)
+      - name: Test Suite (8.1 only)
         if: ${{ matrix.php-versions == '8.1' }}
         run: |
           composer test

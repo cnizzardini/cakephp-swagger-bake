@@ -31,8 +31,6 @@ class OperationRequestBodyTest extends TestCase
         'plugin.SwaggerBake.Employees',
     ];
 
-    private Router $router;
-
     private array $config;
 
     public function setUp(): void
@@ -44,7 +42,7 @@ class OperationRequestBodyTest extends TestCase
     {
         $this->__setUp();
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
         $swagger = (new Swagger($cakeModels, $config))->build();
 
@@ -100,7 +98,7 @@ class OperationRequestBodyTest extends TestCase
     {
         $this->__setUp();
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
         $swagger = (new Swagger($cakeModels, $config))->build();
 
@@ -164,7 +162,7 @@ class OperationRequestBodyTest extends TestCase
     {
         $this->__setUp();
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
         $swagger = (new Swagger($cakeModels, $config))->build();
 
@@ -209,14 +207,12 @@ class OperationRequestBodyTest extends TestCase
 
     public function test_ref(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['create']
             ]);
         });
-        $this->router = $router;
 
         $this->config = [
             'prefix' => '/',
@@ -235,7 +231,7 @@ class OperationRequestBodyTest extends TestCase
         ];
 
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
         $swagger = (new Swagger($cakeModels, $config))->build();
 
@@ -283,14 +279,12 @@ class OperationRequestBodyTest extends TestCase
 
     public function test_crud_and_annotation(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['create']
             ]);
         });
-        $this->router = $router;
 
         $this->config = [
             'prefix' => '/',
@@ -309,7 +303,7 @@ class OperationRequestBodyTest extends TestCase
         ];
 
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
         $swagger = (new Swagger($cakeModels, $config))->build();
 
@@ -351,14 +345,12 @@ class OperationRequestBodyTest extends TestCase
 
     private function __setUp(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['create']
             ]);
         });
-        $this->router = $router;
 
         $this->config = [
             'prefix' => '/',

@@ -27,7 +27,12 @@ class Swagger
      */
     private const ASSETS = __DIR__ . DS . '..' . DS . '..' . DS . 'assets' . DS;
 
-    private array $array = [];
+    private array $array = [
+        'paths' => [],
+        'components' => [
+            'schemas' => [],
+        ],
+    ];
 
     /**
      * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
@@ -87,17 +92,15 @@ class Swagger
             }
         }
 
-        foreach ($this->array['components']['schemas'] as $schema) {
+        foreach ($this->array['components']['schemas'] ?? [] as $schema) {
             if (!is_array($schema)) {
                 $schema->toArray();
             }
         }
 
-        if (is_array($this->array['paths'])) {
-            ksort($this->array['paths'], SORT_STRING);
-        }
+        ksort($this->array['paths'], SORT_STRING);
 
-        if (is_array($this->array['components']['schemas'])) {
+        if (isset($this->array['components']['schemas']) && is_array($this->array['components']['schemas'])) {
             uksort($this->array['components']['schemas'], function ($a, $b) {
                 return strcasecmp(
                     preg_replace('/\s+/', '', $a),
@@ -230,7 +233,7 @@ class Swagger
      */
     private function addAdditionalSchema(): void
     {
-        $paths = $this->array['paths'];
+        $paths = $this->array['paths'] ?? [];
         if (empty($paths)) {
             return;
         }

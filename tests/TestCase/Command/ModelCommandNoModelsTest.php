@@ -2,7 +2,7 @@
 
 namespace SwaggerBake\Test\TestCase\Command;
 
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
 class ModelCommandNoModelsTest extends TestCase
