@@ -57,7 +57,7 @@ class RouteDecorator
     private $controllerFqn;
 
     /**
-     * @var string|null
+     * @var mixed
      */
     private $prefix;
 
@@ -236,18 +236,18 @@ class RouteDecorator
     }
 
     /**
-     * @return string|null
+     * @return mixed
      */
-    public function getPrefix(): ?string
+    public function getPrefix()
     {
         return $this->prefix;
     }
 
     /**
-     * @param string|null $prefix The routing prefix, for example "Admin" when controller is in App\Controller\Admin
+     * @param mixed $prefix The routing prefix, for example "Admin" when controller is in App\Controller\Admin
      * @return $this
      */
-    public function setPrefix(?string $prefix)
+    public function setPrefix($prefix)
     {
         $this->prefix = $prefix;
 
