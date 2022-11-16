@@ -129,7 +129,7 @@ class RouteDecorator
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getName(): ?string
     {
@@ -167,7 +167,7 @@ class RouteDecorator
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPlugin(): ?string
     {
@@ -186,7 +186,7 @@ class RouteDecorator
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getController(): ?string
     {
@@ -205,7 +205,7 @@ class RouteDecorator
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getAction(): ?string
     {
@@ -243,7 +243,7 @@ class RouteDecorator
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTemplate(): ?string
     {
@@ -351,7 +351,7 @@ class RouteDecorator
         $app = $this->cakeConfigure::read('App.namespace');
         $fqn = $this->plugin ? $this->plugin . '\\' : $app . '\\';
         $fqn .= 'Controller\\';
-        $fqn .= $this->prefix ? $this->prefix . '\\' : '';
+        $fqn .= $this->prefix ? str_replace('/', '\\', $this->prefix) . '\\' : '';
 
         if (class_exists($fqn . $this->controller . 'Controller')) {
             return $fqn . $this->controller . 'Controller';
