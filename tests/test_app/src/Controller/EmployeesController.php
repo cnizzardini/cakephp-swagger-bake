@@ -20,6 +20,7 @@ use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestLegacy;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchemaLegacy;
+use SwaggerBakeTest\App\Form\TestForm;
 use SwaggerBakeTest\App\Model\Table\EmployeesTable;
 
 #[OpenApiPath(
@@ -178,25 +179,24 @@ class EmployeesController extends AppController
 
     }
 
-    #[OpenApiDto(class: EmployeeDataRequest::class)]
-    public function dtoQuery(): void
-    {
-
-    }
-
-    #[OpenApiDto(class: EmployeeDataRequest::class)]
-    public function dtoPost(): void
-    {
-
-    }
-
     #[OpenApiDto(class: EmployeeDataRequestPublicSchema::class)]
     public function dtoPublic(): void
     {
 
     }
 
+
     /**
+     * @see OpenApiDtoTest::test_openapi_dto_query()
+     */
+    #[OpenApiDto(class: EmployeeDataRequest::class)]
+    public function dtoQuery(): void
+    {
+
+    }
+
+    /**
+     * @see OpenApiDtoTest::test_openapi_dto_query()
      * @deprecated remove in v3.0.0
      */
     #[OpenApiDto(class: EmployeeDataRequestLegacy::class)]
@@ -206,6 +206,16 @@ class EmployeesController extends AppController
     }
 
     /**
+     * @see OpenApiDtoTest::test_openapi_dto_post()
+     */
+    #[OpenApiDto(class: EmployeeDataRequest::class)]
+    public function dtoPost(): void
+    {
+
+    }
+
+    /**
+     * @see OpenApiDtoTest::test_openapi_dto_post()
      * @deprecated remove in v3.0.0
      */
     #[OpenApiDto(class: EmployeeDataRequestLegacy::class)]
@@ -262,5 +272,23 @@ class EmployeesController extends AppController
         $response = 'nokay';
         $this->set(compact('response'));
         $this->viewBuilder()->setOption('serialize', ['response']);
+    }
+
+    /**
+     * @see OpenApiDtoTest::test_openapi_dto_modelless_post_form()
+     */
+    #[OpenApiDto(class: TestForm::class)]
+    public function modellessFormPost()
+    {
+
+    }
+
+    /**
+     * @see OpenApiDtoTest::test_openapi_dto_modelless_get_form()
+     */
+    #[OpenApiDto(class: TestForm::class)]
+    public function modellessFormGet()
+    {
+
     }
 }
