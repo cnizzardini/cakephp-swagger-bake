@@ -65,9 +65,10 @@ class ActorDto
 }
 ```
 
-Because OpenApiDto and OpenApiSchemaProperty can be used on any class or property you can optionally pair them with
-[CakePHPs Modelless forms](https://book.cakephp.org/4/en/core-libraries/form.html) to create powerful validations
-for your DTOs.
+Note: New in v2.5.0, if your OpenApiDto is an instance of a 
+[CakePHPs Modelless forms](https://book.cakephp.org/4/en/core-libraries/form.html), the schema properties and 
+validations will be converted into OpenAPI automatically. You can override the defaults or add additional properties 
+with the OpenApiSchemaProperty or OpenApiQueryParam attributes.
 
 ### OpenApiForm
 
