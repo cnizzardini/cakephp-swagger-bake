@@ -3,10 +3,16 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Operation;
 
+use Cake\Form\Form;
 use ReflectionClass;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
 use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
+use SwaggerBake\Lib\OpenApi\Parameter;
+use SwaggerBake\Lib\OpenApi\Schema;
+use SwaggerBake\Lib\OpenApi\SchemaProperty;
+use SwaggerBake\Lib\Schema\SchemaPropertyValidation;
+use SwaggerBake\Lib\Utility\DataTypeConversion;
 
 /**
  * Parses the ReflectionClass (or FQN into ReflectionClass) and builds a Schema instance with instances of
@@ -37,6 +43,7 @@ class DtoParser
      */
     public function getParameters(): array
     {
+        $parameters = $this->getModellessFormQueryParams();
         foreach ($this->reflection->getProperties() as $reflectionProperty) {
             $queryParam = (new AttributeFactory(
                 $reflectionProperty,
@@ -48,7 +55,7 @@ class DtoParser
             }
         }
 
-        return $parameters ?? [];
+        return $parameters;
     }
 
     /**
@@ -59,6 +66,7 @@ class DtoParser
      */
     public function getSchemaProperties(): array
     {
+        $schemaProperties = $this->getModellessFormSchemaProperties();
         foreach ($this->reflection->getProperties() as $reflectionProperty) {
             $schemaProperty = (new AttributeFactory(
                 $reflectionProperty,
@@ -70,6 +78,64 @@ class DtoParser
             }
         }
 
-        return $schemaProperties ?? [];
+        return array_values($schemaProperties);
+    }
+
+    /**
+     * @link https://book.cakephp.org/4/en/core-libraries/form.html
+     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * @throws \ReflectionException
+     */
+    private function getModellessFormSchemaProperties(): array
+    {
+        $schemaProperties = [];
+        if (!$this->reflection->isSubclassOf(Form::class)) {
+            return $schemaProperties;
+        }
+
+        /** @var \Cake\Form\Form $form */
+        $form = $this->reflection->newInstanceWithoutConstructor();
+        $schema = $form->getSchema();
+        $validator = $form->getValidator();
+
+        foreach ($schema->fields() as $name) {
+            $attr = $schema->field($name);
+            $schemaProperty = new SchemaProperty(
+                name: $name,
+                type: DataTypeConversion::toType($attr['type'])
+            );
+            $schemaProperty = (new SchemaPropertyValidation($validator, $schemaProperty, $name))->withValidations();
+            $schemaProperties[$name] = $schemaProperty;
+        }
+
+        return $schemaProperties;
+    }
+
+    /**
+     * @link https://book.cakephp.org/4/en/core-libraries/form.html
+     * @return \SwaggerBake\Lib\OpenApi\Parameter[]
+     * @throws \ReflectionException
+     */
+    private function getModellessFormQueryParams(): array
+    {
+        $parameters = [];
+        if (!$this->reflection->isSubclassOf(Form::class)) {
+            return $parameters;
+        }
+
+        /** @var \Cake\Form\Form $form */
+        $form = $this->reflection->newInstanceWithoutConstructor();
+        $schema = $form->getSchema();
+
+        foreach ($schema->fields() as $name) {
+            $attr = $schema->field($name);
+            $parameters[$name] = new Parameter(
+                in: 'query',
+                name: $name,
+                schema: (new Schema())->setType(DataTypeConversion::toType($attr['type'])),
+            );
+        }
+
+        return $parameters;
     }
 }

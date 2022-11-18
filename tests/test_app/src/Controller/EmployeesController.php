@@ -16,9 +16,8 @@ use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
 use SwaggerBakeTest\App\Dto\CustomResponseSchema;
 use SwaggerBakeTest\App\Dto\CustomResponseSchemaPublic;
-use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
-use SwaggerBakeTest\App\Model\Table\EmployeesTable;
+use SwaggerBakeTest\App\Form\TestForm;
 
 #[OpenApiPath(
     description: 'description here',
@@ -176,18 +175,6 @@ class EmployeesController extends AppController
 
     }
 
-    #[OpenApiDto(class: EmployeeDataRequest::class)]
-    public function dtoQuery(): void
-    {
-
-    }
-
-    #[OpenApiDto(class: EmployeeDataRequest::class)]
-    public function dtoPost(): void
-    {
-
-    }
-
     #[OpenApiDto(class: EmployeeDataRequestPublicSchema::class)]
     public function dtoPublic(): void
     {
@@ -217,5 +204,23 @@ class EmployeesController extends AppController
         $response = 'nokay';
         $this->set(compact('response'));
         $this->viewBuilder()->setOption('serialize', ['response']);
+    }
+
+    /**
+     * @see OpenApiDtoTest::test_openapi_dto_modelless_post_form()
+     */
+    #[OpenApiDto(class: TestForm::class)]
+    public function modellessFormPost()
+    {
+
+    }
+
+    /**
+     * @see OpenApiDtoTest::test_openapi_dto_modelless_get_form()
+     */
+    #[OpenApiDto(class: TestForm::class)]
+    public function modellessFormGet()
+    {
+
     }
 }

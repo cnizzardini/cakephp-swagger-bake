@@ -21,14 +21,14 @@ class SchemaPropertyValidation
     /**
      * @param \Cake\Validation\Validator $validator Validator
      * @param \SwaggerBake\Lib\OpenApi\SchemaProperty $schemaProperty SchemaProperty
-     * @param \MixerApi\Core\Model\ModelProperty $property Property
+     * @param \MixerApi\Core\Model\ModelProperty|string $property Property
      */
     public function __construct(
         private Validator $validator,
         private SchemaProperty $schemaProperty,
-        ModelProperty $property
+        ModelProperty|string $property
     ) {
-        $this->propertyName = $property->getName();
+        $this->propertyName = is_string($property) ? $property : $property->getName();
     }
 
     /**
