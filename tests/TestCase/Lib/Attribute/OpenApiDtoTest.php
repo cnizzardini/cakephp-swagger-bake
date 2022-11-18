@@ -127,7 +127,7 @@ class OpenApiDtoTest extends TestCase
         });
 
         $cakeRoute = new RouteScanner(new Router(), $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
         $operation = $arr['paths']['/employees/modelless-form-post']['post'];
         $properties = $operation['requestBody']['content']['application/json']['schema']['properties'];
@@ -169,8 +169,8 @@ class OpenApiDtoTest extends TestCase
             ]);
         });
 
-        $cakeRoute = new RouteScanner($router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
         $operation = $arr['paths']['/employees/modelless-form-get']['get'];
         $this->assertCount(3, $operation['parameters']);
