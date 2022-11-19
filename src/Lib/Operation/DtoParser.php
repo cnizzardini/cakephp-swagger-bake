@@ -51,11 +51,11 @@ class DtoParser
             ))->createOneOrNull();
 
             if ($queryParam instanceof OpenApiQueryParam) {
-                $parameters[] = $queryParam->createParameter();
+                $parameters[$queryParam->name] = $queryParam->createParameter();
             }
         }
 
-        return $parameters;
+        return array_values($parameters);
     }
 
     /**
@@ -74,7 +74,7 @@ class DtoParser
             ))->createOneOrNull();
 
             if ($schemaProperty instanceof OpenApiSchemaProperty) {
-                $schemaProperties[] = $schemaProperty->create();
+                $schemaProperties[$schemaProperty->name] = $schemaProperty->create();
             }
         }
 

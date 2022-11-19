@@ -41,7 +41,6 @@ class OpenApiDtoTest extends TestCase
         ], SWAGGER_BAKE_TEST_APP);
     }
 
-
     /**
      * When an OpenApiDto is used on a http get controller action, the properties are displayed as OpenAPI query
      * parameters.
@@ -65,7 +64,6 @@ class OpenApiDtoTest extends TestCase
         $cakeRoute = new RouteScanner(new Router(), $this->config);
         $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
-
 
         $properties = ['lazy', 'first_name', 'last_name', 'title', 'age', 'date',];
         $operation = $arr['paths']['/employees/dto-query']['get'];
