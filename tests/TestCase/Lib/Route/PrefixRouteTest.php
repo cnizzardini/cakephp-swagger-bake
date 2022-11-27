@@ -3,11 +3,13 @@
 namespace SwaggerBake\Test\TestCase\Lib\Route;
 
 use Cake\Collection\Collection;
+use Cake\Routing\Route\Route;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Model\ModelScanner;
+use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Swagger;
 
@@ -38,11 +40,19 @@ class PrefixRouteTest extends TestCase
         $router = new Router();
         $router::scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Departments');
+            $builder->resources('Departments', [
+                'only' => 'index'
+            ]);
             $builder->resources('Departments', [
                 'prefix' => 'Admin',
                 'path' => 'admin/departments',
                 'only' => ['index']
+            ]);
+            $builder->resources('Departments', [
+                'prefix' => 'Api/V1',
+                'controller' => 'Departments',
+                'action' => 'index',
+                'only' => ['index'],
             ]);
         });
         $this->router = $router;
@@ -96,6 +106,19 @@ class PrefixRouteTest extends TestCase
         $this->assertNotEmpty(
             $routes['operation_path:index']->getControllerFqn(),
             'Controller fqn has not been set for snake case controller name'
+        );
+    }
+
+    public function test_prefixes_with_forward_slash(): void
+    {
+        $scanner = new RouteScanner($this->router, new Configuration($this->config, SWAGGER_BAKE_TEST_APP));
+        $routes = $scanner->getRoutes();
+        $this->assertArrayHasKey('api/v1:departments:index', $routes);
+        $routeDecorator = $routes['api/v1:departments:index'];
+
+        $this->assertEquals(
+            '\SwaggerBakeTest\App\Controller\Api\V1\DepartmentsController',
+            $routeDecorator->getControllerFqn()
         );
     }
 }

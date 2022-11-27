@@ -91,8 +91,9 @@ class RouteScanner
             }
 
             $routeDecorator = new RouteDecorator($route);
+            $prefix = $routeDecorator->getPrefix();
             $path = 'Controller\\';
-            $path .= $routeDecorator->getPrefix() ? $routeDecorator->getPrefix() . '\\' : '';
+            $path .= $prefix ? str_replace('/', '\\', $prefix) . '\\' : '';
             $path .= Inflector::camelize($routeDecorator->getController()) . 'Controller';
 
             $results = array_filter($classes, function ($fqn) use ($path) {
