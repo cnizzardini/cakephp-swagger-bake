@@ -51,6 +51,7 @@ class ModelScanner
     /**
      * Gets an array of ModelDecorator instances
      *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @return \SwaggerBake\Lib\Model\ModelDecorator[]
      */
     public function getModelDecorators(): array
