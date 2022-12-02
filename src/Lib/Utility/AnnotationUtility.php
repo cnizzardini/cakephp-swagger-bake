@@ -25,8 +25,7 @@ class AnnotationUtility
     public static function getClassAnnotationsFromFqns(string $namespace): array
     {
         try {
-            $instance = new $namespace();
-            $reflectionClass = new ReflectionClass(get_class($instance));
+            $reflectionClass = new ReflectionClass($namespace);
         } catch (Exception $e) {
             return [];
         }
@@ -83,8 +82,7 @@ class AnnotationUtility
         $return = [];
 
         try {
-            $instance = new $namespace();
-            $reflectionClass = new ReflectionClass(get_class($instance));
+            $reflectionClass = new ReflectionClass($namespace);
             $reflectedMethods = $reflectionClass->getMethods();
         } catch (Exception $e) {
             return $return;
