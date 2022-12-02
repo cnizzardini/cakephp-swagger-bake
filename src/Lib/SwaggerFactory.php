@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib;
 
 use Cake\Routing\Router;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 
