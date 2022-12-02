@@ -6,6 +6,7 @@ namespace SwaggerBake\Lib\Model;
 use Cake\Collection\Collection;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\Table;
 use MixerApi\Core\Model\Model;
 use MixerApi\Core\Model\ModelFactory;
 use MixerApi\Core\Utility\NamespaceUtility;
@@ -69,6 +70,10 @@ class ModelScanner
 
             foreach ($tables as $table) {
                 try {
+                    $reflectionClass = new \ReflectionClass($table);
+                    if (!$reflectionClass->isSubclassOf(Table::class)) {
+                        continue;
+                    }
                     $model = (new ModelFactory($connection, new $table()))->create();
                 } catch (\Exception $e) {
                     continue;
