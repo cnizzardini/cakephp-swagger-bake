@@ -70,8 +70,12 @@ class ModelScanner
 
             foreach ($tables as $table) {
                 try {
+                    if (!class_exists($table)) {
+                        continue;
+                    }
+
                     $reflectionClass = new \ReflectionClass($table);
-                    if (!$reflectionClass->isSubclassOf(Table::class)) {
+                    if (!$reflectionClass->isInstantiable() || !$reflectionClass->isSubclassOf(Table::class)) {
                         continue;
                     }
                     $model = (new ModelFactory($connection, new $table()))->create();
