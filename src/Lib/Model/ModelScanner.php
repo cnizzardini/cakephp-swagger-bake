@@ -6,6 +6,7 @@ namespace SwaggerBake\Lib\Model;
 use Cake\Collection\Collection;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\Table;
 use MixerApi\Core\Model\Model;
 use MixerApi\Core\Model\ModelFactory;
 use MixerApi\Core\Utility\NamespaceUtility;
@@ -50,6 +51,7 @@ class ModelScanner
     /**
      * Gets an array of ModelDecorator instances
      *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @return \SwaggerBake\Lib\Model\ModelDecorator[]
      */
     public function getModelDecorators(): array
@@ -69,6 +71,14 @@ class ModelScanner
 
             foreach ($tables as $table) {
                 try {
+                    if (!class_exists($table)) {
+                        continue;
+                    }
+
+                    $reflectionClass = new \ReflectionClass($table);
+                    if (!$reflectionClass->isInstantiable() || !$reflectionClass->isSubclassOf(Table::class)) {
+                        continue;
+                    }
                     $model = (new ModelFactory($connection, new $table()))->create();
                 } catch (\Exception $e) {
                     continue;
