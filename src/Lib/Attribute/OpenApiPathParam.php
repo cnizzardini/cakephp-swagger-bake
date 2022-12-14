@@ -42,6 +42,7 @@ class OpenApiPathParam extends AbstractOpenApiParameter
             format: $format,
             description: $description,
             example: $example,
+            isRequired: $isRequired,
             allowReserved: $allowReserved
         );
     }
