@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-20.04 ]
-        php-versions: ['8.1']
+        php-versions: ['8.2']
 
     name: Upload coverage report
     steps:
