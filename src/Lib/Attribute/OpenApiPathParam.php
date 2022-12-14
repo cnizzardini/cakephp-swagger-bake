@@ -16,13 +16,14 @@ use SwaggerBake\Lib\OpenApi\Schema;
 class OpenApiPathParam extends AbstractOpenApiParameter
 {
     /**
-     * @param string $name Name of the property, required if $ref is empty
-     * @param string $ref OpenAPI $ref, required if $name is empty
-     * @param string $type The scalar data type (e.g. string, integer)
-     * @param string $format The data format (e.g. date-time, uuid)
-     * @param string $description A description.
-     * @param string $example An example.
-     * @param bool $allowReserved Allow reserved keywords?
+     * @param string $name Name of the property, required if $ref is empty [default: ""]
+     * @param string $ref OpenAPI $ref, required if $name is empty [default: ""]
+     * @param string $type The scalar data type (e.g. string, integer) [default: "string"]
+     * @param string $format The data format (e.g. date-time, uuid) [default: ""]
+     * @param string $description A description. [default: ""]
+     * @param string $example An example. [default: ""]
+     * @param bool $allowReserved Allow reserved keywords? [default: false]
+     * @param bool $isRequired Is the path parameter required? [default: false]
      */
     public function __construct(
         string $name = '',
@@ -32,6 +33,7 @@ class OpenApiPathParam extends AbstractOpenApiParameter
         string $description = '',
         string $example = '',
         bool $allowReserved = false,
+        bool $isRequired = false,
     ) {
         parent::__construct(
             name: $name,
@@ -55,6 +57,7 @@ class OpenApiPathParam extends AbstractOpenApiParameter
             ->setExample($this->example)
             ->setDescription($this->description)
             ->setAllowReserved($this->allowReserved)
+            ->setRequired($this->isRequired)
             ->setSchema(
                 (new Schema())
                     ->setType($this->type)

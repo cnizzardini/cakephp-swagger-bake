@@ -295,20 +295,21 @@ class UsersController extends AppController
 Method level attribute for modifying path parameters. This is for modifying existing path parameters only. Path
 parameters must first be defined in your routes file.
 
-| Attribute     | Type / Default  | OA Spec | Description                    | 
-|---------------|-----------------|---------|--------------------------------|
-| name          | string `""`     | Yes     | Name of the query parameter    |
-| ref           | string `""`     | Yes     | Name of the query parameter    |
-| type          | string `string` | Yes     | Data type                      |
-| format        | string `""`     | Yes     | Data format                    |
-| description   | string `""`     | Yes     | Description of the parameter   |
-| example       | mixed `""`      | Yes     | An example value               |
-| allowReserved | bool `false`    | Yes     | Allow reserved URI characters? |
+| Attribute     | Type / Default  | OA Spec | Description                                | 
+|---------------|-----------------|---------|--------------------------------------------|
+| name          | string `""`     | Yes     | Name of the query parameter                |
+| ref           | string `""`     | Yes     | Name of the query parameter                |
+| type          | string `string` | Yes     | Data type                                  |
+| format        | string `""`     | Yes     | Data format                                |
+| description   | string `""`     | Yes     | Description of the parameter               |
+| example       | mixed `""`      | Yes     | An example value                           |
+| allowReserved | bool `false`    | Yes     | Allow reserved URI characters?             |
+| isRequired    | bool `false`    | Yes     | Is the parameter required? (new in v2.5.1) |
 
 Example:
 
 ```php
-#[OpenApiPathParam(name: 'id', type: 'integer', format: 'int64', description: 'ID')]
+#[OpenApiPathParam(name: 'id', type: 'integer', format: 'int64', description: 'ID', isRequired: true)]
 public function view($id) {}
 ```
 

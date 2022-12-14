@@ -56,6 +56,7 @@ class OpenApiPathParamTest extends TestCase
         $params = $arr['paths']['/operation-path/path-parameter/{id}']['get']['parameters'];
         $param = reset($params);
 
+        $this->assertFalse($param['required']);
         $this->assertEquals('integer', $param['schema']['type']);
         $this->assertEquals('ID', $param['description']);
         $this->assertEquals('int64', $param['schema']['format']);
