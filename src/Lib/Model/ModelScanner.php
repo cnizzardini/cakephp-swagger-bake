@@ -57,7 +57,7 @@ class ModelScanner
                         continue;
                     }
                     $reflection = new \ReflectionClass($table);
-                    if (!$reflection->isInstantiable()) {
+                    if (!$reflection->isInstantiable() || !$reflection->isSubclassOf(Table::class)) {
                         continue;
                     }
                     $class = $reflection->getShortName();

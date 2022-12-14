@@ -30,6 +30,8 @@ Just a reminder that many usage examples exist in the
 | [OpenApiSchemaProperty](#openapischemaproperty)     | Entity, OpenApiDto class, or OpenApiResponse schema | Modifies an OpenAPI schema property or defines OpenApiResponse schema                                                       |
 | [OpenApiSearch](#openapisearch)                     | Controller Action                                   | Create OpenAPI query params from CakePHP Search plugin                                                                      |
 | [OpenApiSecurity](#openapisecurity)                 | Controller Action                                   | Create/modify OpenAPI security                                                                                              |
+| [~~OpenApiDtoQuery~~](#openapidtoquery)             | DTO class property                                  | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.5+)                        |
+| [~~OpenApiDtoRequestBody~~](#openapidtorequestbody) | DTO class property                                  | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.5+)          |
 
 ### OpenApiDto
 
@@ -290,20 +292,21 @@ class UsersController extends AppController
 Method level attribute for modifying path parameters. This is for modifying existing path parameters only. Path
 parameters must first be defined in your routes file.
 
-| Attribute     | Type / Default  | OA Spec | Description                    | 
-|---------------|-----------------|---------|--------------------------------|
-| name          | string `""`     | Yes     | Name of the query parameter    |
-| ref           | string `""`     | Yes     | Name of the query parameter    |
-| type          | string `string` | Yes     | Data type                      |
-| format        | string `""`     | Yes     | Data format                    |
-| description   | string `""`     | Yes     | Description of the parameter   |
-| example       | mixed `""`      | Yes     | An example value               |
+| Attribute     | Type / Default  | OA Spec | Description                 | 
+|---------------|-----------------|---------|-----------------------------|
+| name          | string `""`     | Yes     | Name of the query parameter |
+| ref           | string `""`     | Yes     | Name of the query parameter |
+| type          | string `string` | Yes     | Data type                   |
+| format        | string `""`     | Yes     | Data format                 |
+| description   | string `""`     | Yes     | Description of the parameter |
+| example       | mixed `""`      | Yes     | An example value            |
 | allowReserved | bool `false`    | Yes     | Allow reserved URI characters? |
+| isRequired    | bool `false`    | Yes     | Is the parameter required?  |
 
 Example:
 
 ```php
-#[OpenApiPathParam(name: 'id', type: 'integer', format: 'int64', description: 'ID')]
+#[OpenApiPathParam(name: 'id', type: 'integer', format: 'int64', description: 'ID', isRequired: true)]
 public function view($id) {}
 ```
 

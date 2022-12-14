@@ -13,10 +13,12 @@ class ParameterTest extends TestCase
         $parameter = new Parameter(
             in: $in = 'query',
             name: 'test',
+            required: true,
             style: $style = 'test'
         );
         $this->assertEquals($in, $parameter->getIn());
         $this->assertEquals($style, $parameter->getStyle());
+        $this->assertTrue($parameter->isRequired());
     }
 
     public function test_jsonSerialize_returns_ref(): void

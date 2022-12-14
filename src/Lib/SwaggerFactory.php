@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib;
 
 use Cake\Routing\Router;
-use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
 
@@ -38,15 +37,6 @@ class SwaggerFactory
      */
     public function create(): Swagger
     {
-        $routes = $this->routeScanner->getRoutes();
-
-        if (empty($routes)) {
-            throw new SwaggerBakeRunTimeException(
-                'No restful routes were found for your prefix `' . $this->config->getPrefix() . '`. ' .
-                'Try adding restful routes to your `config/routes.php`.'
-            );
-        }
-
         return new Swagger(new ModelScanner($this->routeScanner, $this->config), $this->config);
     }
 }
