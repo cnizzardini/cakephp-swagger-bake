@@ -6,6 +6,7 @@ use Cake\Chronos\Chronos;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Log\Log;
+use Cake\TestSuite\Fixture\SchemaLoader;
 use Cake\Utility\Security;
 
 /**
@@ -124,10 +125,11 @@ Cache::setConfig([
     ],
 ]);
 
-// Ensure default test connection is defined
-if (!getenv('DB_DSN')) {
-    putenv('DB_DSN=sqlite:///:memory:');
-}
+/*
+ * Run migrations
+ * @link https://book.cakephp.org/4/en/development/testing.html#creating-test-database-schema
+ */
+putenv('DB_DSN=sqlite:///:memory:');
 
 ConnectionManager::setConfig('test', ['url' => getenv('DB_DSN')]);
 ConnectionManager::setConfig('test_custom_i18n_datasource', ['url' => getenv('DB_DSN')]);
@@ -162,6 +164,9 @@ ini_set('session.gc_divisor', '1');
 // does not allow the sessionid to be set after stdout
 // has been written to.
 session_id('cli');
+
+$loader = new SchemaLoader();
+$loader->loadInternalFile(__DIR__ . DS . 'schema.php');
 
 /**
  * Define fallback values for required constants and configuration.

@@ -31,7 +31,8 @@
         "cakephp/cakephp-codesniffer": "^4.2",
         "phpstan/phpstan": "^1.8.5",
         "phpmd/phpmd": "^2.10",
-        "cakephp/bake": "^2.1"
+        "cakephp/bake": "^2.1",
+        "cakephp/migrations": "^3.7"
     },
     "autoload": {
         "psr-4": {
