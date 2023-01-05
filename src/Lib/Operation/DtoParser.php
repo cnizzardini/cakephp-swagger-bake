@@ -150,6 +150,10 @@ class DtoParser
                 return $annotation;
             }
         } catch (\Exception $e) {
+            /*
+             * Need to try/catch here because doctrine annotation reader will attempt reading all `@annotations` so
+             * silently fail on annotations that are not part of this library.
+             */
             return null;
         }
 

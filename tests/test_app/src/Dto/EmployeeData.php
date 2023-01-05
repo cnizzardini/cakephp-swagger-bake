@@ -17,22 +17,24 @@ class EmployeeData
     private $lastName;
 
     /**
-     * @Swag\SwagRequestBody(name="title", type="string", description="testing")
-     * @var string
+     * @Swag\SwagDtoRequestBody(name="title", type="string", description="testing")
      */
     private $title;
 
     /**
-     * @Swag\SwagRequestBody(name="age", type="integer", format="int32" description="testing")
-     * @var integer
+     * @Swag\SwagDtoRequestBody(name="age", type="integer", format="int32", description="testing")
      */
     private $age;
 
     /**
-     * @Swag\SwagRequestBody(name="date", type="string", format="date", description="testing")
-     * @var string
+     * @Swag\SwagDtoRequestBody(name="date", type="string", format="date", description="testing")
      */
     private $date;
+
+    /**
+     * @Swag\SwagDtoRequestBody(name="value", type="number", format="double", description="Required.")
+     */
+    private $value;
 
     /**
      * @return string
@@ -121,6 +123,24 @@ class EmployeeData
     public function setDate($date)
     {
         $this->date = $date;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param mixed $value
+     * @return EmployeeData
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
         return $this;
     }
 }
