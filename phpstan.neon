@@ -14,4 +14,4 @@ parameters:
         Cake\Console\Shell:
             - abort
     ignoreErrors:
-        - 'Attribute class AllowDynamicProperties does not exist.'
+        - '#Attribute class AllowDynamicProperties does not exist.#'
