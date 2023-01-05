@@ -119,6 +119,10 @@ class OperationRequestBodyTest extends TestCase
         $properties = $schema->getProperties();
         $this->assertArrayHasKey('lastName', $properties);
         $this->assertArrayHasKey('firstName', $properties);
+        $this->assertArrayHasKey('title', $properties);
+        $this->assertArrayHasKey('age', $properties);
+        $this->assertArrayHasKey('date', $properties);
+        $this->assertArrayHasKey('value', $properties);
     }
 
     public function testIgnoreSchema()

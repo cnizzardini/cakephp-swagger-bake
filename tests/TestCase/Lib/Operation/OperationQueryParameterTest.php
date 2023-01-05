@@ -71,7 +71,7 @@ class OperationQueryParameterTest extends TestCase
 
         $parameters = $operation->getParameters();
 
-        $this->assertCount(10, $parameters);
+        $this->assertCount(11, $parameters);
     }
 
     public function testSwagPaginatorSortEnum()
