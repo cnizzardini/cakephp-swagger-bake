@@ -13,3 +13,5 @@ parameters:
     earlyTerminatingMethodCalls:
         Cake\Console\Shell:
             - abort
+    ignoreErrors:
+        - 'Attribute class AllowDynamicProperties does not exist.'

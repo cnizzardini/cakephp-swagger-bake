@@ -14,7 +14,6 @@ use SwaggerBake\Lib\Utility\ArrayUtility;
  * @see https://swagger.io/docs/specification/data-models/
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-/** @phpstan-ignore-next-line */
 #[\AllowDynamicProperties]
 class Schema implements JsonSerializable, SchemaInterface
 {
