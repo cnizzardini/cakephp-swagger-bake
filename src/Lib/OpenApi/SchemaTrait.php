@@ -28,6 +28,9 @@ trait SchemaTrait
      */
     public function setType(string $type)
     {
+		//Support for MySQL json field type
+		if($type == 'json')
+			$type = OpenApiDataType::OBJECT;
         if (!in_array($type, OpenApiDataType::TYPES)) {
             throw new InvalidArgumentException(
                 "Schema type of `$type` is invalid. Must be one of: " .
