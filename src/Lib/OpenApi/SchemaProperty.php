@@ -101,7 +101,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             [
                 'format','title','description','multipleOf','minimum','maximum','minLength','maxLength','pattern',
                 'minItems','maxItems','minProperties','maxProperties','items','enum','default','exclusiveMinimum',
-                'exclusiveMaximum','uniqueItems','nullable','type','oneOf'
+                'exclusiveMaximum','uniqueItems','nullable','type','oneOf',
             ]
         );
 
@@ -317,10 +317,13 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param array $oneOf
+     * @param array $oneOf OpenAPI oneOf syntax
+     * @return $this
      */
-    public function setOneOf(array $oneOf): void
+    public function setOneOf(array $oneOf)
     {
         $this->oneOf = $oneOf;
+
+        return $this;
     }
 }

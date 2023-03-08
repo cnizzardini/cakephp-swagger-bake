@@ -24,7 +24,7 @@ class DataTypeConversion
             'number' => ['decimal','float'],
             'string' => ['uuid','text','varchar','char','date','time','datetime','timestampfractional','timestamp'],
             'boolean' => ['bool','boolean'],
-            'json' => ['json']
+            'json' => ['json'],
         ];
 
         foreach ($openApiTypeMap as $openApiType => $cakeTypes) {
