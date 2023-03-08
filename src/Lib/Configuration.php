@@ -101,7 +101,15 @@ class Configuration
     public function __construct(array $config = [], string $root = ROOT)
     {
         $this->root = $root;
-        $config = !empty($config) ? $config : Configure::read('SwaggerBake');
+        try {
+            $config = !empty($config) ? $config : Configure::readOrFail('SwaggerBake');
+        } catch (\RuntimeException $e) {
+            throw new \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException(
+                'SwaggerBake config missing. Have you added it to your `config/bootstrap.php`? ' . $e->getMessage(),
+                500,
+                $e
+            );
+        }
 
         foreach (['yml', 'json', 'webPath', 'prefix'] as $property) {
             if (!array_key_exists(key: $property, array: $config)) {

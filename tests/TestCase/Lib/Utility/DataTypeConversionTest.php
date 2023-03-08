@@ -4,15 +4,10 @@ namespace SwaggerBake\Test\TestCase\Lib\Utility;
 
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Utility\DataTypeConversion;
+use SwaggerBake\Lib\Utility\OpenApiDataType;
 
 class DataTypeConversionTest extends TestCase
 {
-    // OpenAPI Types:
-    private const OA_TYPE_INTEGER = 'integer';
-    private const OA_TYPE_NUMBER = 'number';
-    private const OA_TYPE_STRING = 'string';
-    private const OA_TYPE_BOOLEAN = 'boolean';
-
     // OpenAPI Formats:
     private const OA_FORMAT_INT64 = 'int64';
     private const OA_FORMAT_INT32 = 'int32';
@@ -22,25 +17,26 @@ class DataTypeConversionTest extends TestCase
     public function testToType(): void
     {
         $types = [
-            'int' => self::OA_TYPE_INTEGER,
-            'integer' => self::OA_TYPE_INTEGER,
-            'tinyinteger' => self::OA_TYPE_INTEGER,
-            'smallinteger' => self::OA_TYPE_INTEGER,
-            'biginteger' => self::OA_TYPE_INTEGER,
-            'mediuminteger' => self::OA_TYPE_INTEGER,
-            'decimal' => self::OA_TYPE_NUMBER,
-            'float' => self::OA_TYPE_NUMBER,
-            'uuid' => self::OA_TYPE_STRING,
-            'text' => self::OA_TYPE_STRING,
-            'varchar' => self::OA_TYPE_STRING,
-            'char' => self::OA_TYPE_STRING,
-            'date' => self::OA_TYPE_STRING,
-            'time' => self::OA_TYPE_STRING,
-            'datetime' => self::OA_TYPE_STRING,
-            'boolean' => self::OA_TYPE_BOOLEAN,
-            'bool' => self::OA_TYPE_BOOLEAN,
-            'timestamp' => self::OA_TYPE_STRING,
-            'timestampfractional' => self::OA_TYPE_STRING,
+            'int' => OpenApiDataType::INTEGER,
+            'integer' => OpenApiDataType::INTEGER,
+            'tinyinteger' => OpenApiDataType::INTEGER,
+            'smallinteger' => OpenApiDataType::INTEGER,
+            'biginteger' => OpenApiDataType::INTEGER,
+            'mediuminteger' => OpenApiDataType::INTEGER,
+            'decimal' => OpenApiDataType::NUMBER,
+            'float' => OpenApiDataType::NUMBER,
+            'uuid' => OpenApiDataType::STRING,
+            'text' => OpenApiDataType::STRING,
+            'varchar' => OpenApiDataType::STRING,
+            'char' => OpenApiDataType::STRING,
+            'date' => OpenApiDataType::STRING,
+            'time' => OpenApiDataType::STRING,
+            'datetime' => OpenApiDataType::STRING,
+            'boolean' => OpenApiDataType::BOOLEAN,
+            'bool' => OpenApiDataType::BOOLEAN,
+            'timestamp' => OpenApiDataType::STRING,
+            'timestampfractional' => OpenApiDataType::STRING,
+            'json' => OpenApiDataType::JSON
         ];
 
         foreach ($types as $dbType => $openApiType) {
@@ -64,9 +60,9 @@ class DataTypeConversionTest extends TestCase
             'decimal' => self::OA_FORMAT_FLOAT,
             'float' => self::OA_FORMAT_FLOAT,
             'uuid' => 'uuid',
-            'text' => self::OA_TYPE_STRING,
-            'varchar' => self::OA_TYPE_STRING,
-            'char' => self::OA_TYPE_STRING,
+            'text' => OpenApiDataType::STRING,
+            'varchar' => OpenApiDataType::STRING,
+            'char' => OpenApiDataType::STRING,
             'date' => 'date',
             'time' => 'time',
             'datetime' => self::OA_FORMAT_DATETIME,

@@ -23,12 +23,12 @@ trait SchemaTrait
     }
 
     /**
-     * @param string $type Type
+     * @param string|null $type Type
      * @return $this
      */
-    public function setType(string $type)
+    public function setType(?string $type)
     {
-        if (!in_array($type, OpenApiDataType::TYPES)) {
+        if ($type !== null && !in_array($type, OpenApiDataType::TYPES)) {
             throw new InvalidArgumentException(
                 "Schema type of `$type` is invalid. Must be one of: " .
                 implode(',', OpenApiDataType::TYPES)

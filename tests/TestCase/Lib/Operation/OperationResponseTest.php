@@ -285,7 +285,7 @@ class OperationResponseTest extends TestCase
             ->getSchema();
 
         $this->assertEquals('array', $schema->getType());
-        $this->assertEquals('#/components/schema/Employee', $schema->getAllOf()[0]['$ref']);
+        $this->assertEquals('#/components/schema/Employee', $schema->getItems()['$ref']);
     }
 
     public function test_get_operation_with_openapi_response_text_plain(): void
