@@ -119,8 +119,7 @@ class OperationResponse
                 $schema = (new Schema())
                     ->setItems(['$ref' => $openApiResponse->ref])
                     ->setType($openApiResponse->schemaType);
-            }
-            else {
+            } else {
                 $schema = (new Schema())
                     ->setAllOf([['$ref' => $openApiResponse->ref]])
                     ->setType($openApiResponse->schemaType);
