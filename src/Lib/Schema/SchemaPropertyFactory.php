@@ -44,6 +44,14 @@ class SchemaPropertyFactory
             ->setIsHidden($property->isHidden());
 
         /*
+         * Convert `json` types to oneOf: object or array
+         */
+        if ($schemaProperty->getType() === 'json') {
+            $schemaProperty->setType(null);
+            $schemaProperty->setOneOf([['type' => 'object'], ['type' => 'array', 'items' => []]]);
+        }
+
+        /*
          * Per OpenAPI spec, only one of `writeOnly` and `readOnly` may be set to true.
          *
          * @link https://swagger.io/specification/

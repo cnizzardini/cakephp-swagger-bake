@@ -18,17 +18,18 @@ class DataTypeConversion
      */
     public static function toType(string $cakeType): string
     {
-        $typeMap = [
+        $openApiTypeMap = [
             // openapi type => ['cake','types']
             'integer' => ['int','integer','tinyinteger','smallinteger','biginteger','mediuminteger'],
             'number' => ['decimal','float'],
             'string' => ['uuid','text','varchar','char','date','time','datetime','timestampfractional','timestamp'],
             'boolean' => ['bool','boolean'],
+            'json' => ['json'],
         ];
 
-        foreach ($typeMap as $type => $types) {
-            if (in_array($cakeType, $types)) {
-                return $type;
+        foreach ($openApiTypeMap as $openApiType => $cakeTypes) {
+            if (in_array($cakeType, $cakeTypes)) {
+                return $openApiType;
             }
         }
 

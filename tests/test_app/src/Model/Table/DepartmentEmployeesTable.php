@@ -11,22 +11,22 @@ use Cake\Validation\Validator;
 /**
  * DepartmentEmployees Model
  *
- * @property \SwaggerBake\Test\Model\Table\EmployeesTable&\Cake\ORM\Association\BelongsTo $Employees
- * @property \SwaggerBake\Test\Model\Table\DepartmentsTable&\Cake\ORM\Association\BelongsTo $Departments
+ * @property \SwaggerBakeTest\SwaggerBakeTest\App\Model\Table\EmployeesTable&\Cake\ORM\Association\BelongsTo $Employees
+ * @property \SwaggerBakeTest\SwaggerBakeTest\App\Model\Table\DepartmentsTable&\Cake\ORM\Association\BelongsTo $Departments
  *
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee newEmptyEntity()
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee newEntity(array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee[] newEntities(array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee get($primaryKey, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee findOrCreate($search, ?callable $callback = null, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee[] patchEntities(iterable $entities, array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\DepartmentEmployee[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee newEmptyEntity()
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee newEntity(array $data, array $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee[] newEntities(array $data, array $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee get($primaryKey, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee findOrCreate($search, ?callable $callback = null, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\DepartmentEmployee[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
  */
 class DepartmentEmployeesTable extends Table
 {
