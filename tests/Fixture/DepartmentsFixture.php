@@ -17,8 +17,9 @@ class DepartmentsFixture extends TestFixture
      */
     // phpcs:disable
     public $fields = [
-        'id' => ['type' => 'smallinteger', 'length' => 6, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'name' => ['type' => 'string', 'length' => 64, 'null' => false, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null],
+        'id' => ['type' => 'smallinteger', 'length' => 6, 'unsigned' => false, 'null' => false, 'default' => null,],
+        'name' => ['type' => 'string', 'length' => 64, 'null' => false, 'default' => null,],
+        'json_field' => ['type' => 'json', 'null' => true, 'default' => null,],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
             'dept_name' => ['type' => 'unique', 'columns' => ['name'], 'length' => []],
@@ -40,6 +41,7 @@ class DepartmentsFixture extends TestFixture
             [
                 'id' => 1,
                 'name' => 'Lorem ipsum dolor sit amet',
+                'json' => '{"id": 123, "hello": "world"}'
             ],
         ];
         parent::init();

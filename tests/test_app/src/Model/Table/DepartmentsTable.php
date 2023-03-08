@@ -11,21 +11,21 @@ use Cake\Validation\Validator;
 /**
  * Departments Model
  *
- * @property \SwaggerBake\Test\Model\Table\DepartmentEmployeesTable&\Cake\ORM\Association\HasMany $DepartmentEmployees
+ * @property \SwaggerBakeTest\SwaggerBakeTest\App\Model\Table\DepartmentEmployeesTable&\Cake\ORM\Association\HasMany $DepartmentEmployees
  *
- * @method \SwaggerBake\Test\Model\Entity\Department newEmptyEntity()
- * @method \SwaggerBake\Test\Model\Entity\Department newEntity(array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department[] newEntities(array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department get($primaryKey, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department findOrCreate($search, ?callable $callback = null, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department[] patchEntities(iterable $entities, array $data, array $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
- * @method \SwaggerBake\Test\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department newEmptyEntity()
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department newEntity(array $data, array $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department[] newEntities(array $data, array $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department get($primaryKey, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department findOrCreate($search, ?callable $callback = null, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\SwaggerBakeTest\App\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
  */
 class DepartmentsTable extends Table
 {

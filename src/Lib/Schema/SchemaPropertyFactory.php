@@ -43,6 +43,11 @@ class SchemaPropertyFactory
             ->setFormat(DataTypeConversion::toFormat($property->getType()))
             ->setIsHidden($property->isHidden());
 
+        if ($schemaProperty->getType() === 'json') {
+            $schemaProperty->setType('object');
+            $schemaProperty->setOneOf([['type' => 'object'], ['type' => 'array', 'items' => []]]);
+        }
+
         /*
          * Per OpenAPI spec, only one of `writeOnly` and `readOnly` may be set to true.
          *

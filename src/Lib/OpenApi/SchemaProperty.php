@@ -38,6 +38,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     private bool $requirePresenceOnUpdate = false;
     private array $items = [];
     private ?string $refEntity = null;
+    private array $oneOf = [];
 
     /**
      * @param string|null $name Name of the property, this is used for internal storage and must be unique. If not set
@@ -100,7 +101,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             [
                 'format','title','description','multipleOf','minimum','maximum','minLength','maxLength','pattern',
                 'minItems','maxItems','minProperties','maxProperties','items','enum','default','exclusiveMinimum',
-                'exclusiveMaximum','uniqueItems','nullable','type',
+                'exclusiveMaximum','uniqueItems','nullable','type','oneOf'
             ]
         );
 
@@ -305,5 +306,21 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
         $this->isHidden = $isHidden;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOneOf(): array
+    {
+        return $this->oneOf;
+    }
+
+    /**
+     * @param array $oneOf
+     */
+    public function setOneOf(array $oneOf): void
+    {
+        $this->oneOf = $oneOf;
     }
 }

@@ -11,21 +11,21 @@ use Cake\Validation\Validator;
 /**
  * EmployeeTitles Model
  *
- * @property \App\Model\Table\EmployeesTable&\Cake\ORM\Association\BelongsTo $Employees
+ * @property \SwaggerBakeTest\App\Model\Table\EmployeesTable&\Cake\ORM\Association\BelongsTo $Employees
  *
- * @method \App\Model\Entity\EmployeeTitle newEmptyEntity()
- * @method \App\Model\Entity\EmployeeTitle newEntity(array $data, array $options = [])
- * @method \App\Model\Entity\EmployeeTitle[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\EmployeeTitle get($primaryKey, $options = [])
- * @method \App\Model\Entity\EmployeeTitle findOrCreate($search, ?callable $callback = null, $options = [])
- * @method \App\Model\Entity\EmployeeTitle patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\EmployeeTitle[] patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\EmployeeTitle|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\EmployeeTitle saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\EmployeeTitle[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
- * @method \App\Model\Entity\EmployeeTitle[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
- * @method \App\Model\Entity\EmployeeTitle[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
- * @method \App\Model\Entity\EmployeeTitle[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle newEmptyEntity()
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle newEntity(array $data, array $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle[] newEntities(array $data, array $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle get($primaryKey, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle findOrCreate($search, ?callable $callback = null, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeTitle[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
  */
 class EmployeeTitlesTable extends Table
 {

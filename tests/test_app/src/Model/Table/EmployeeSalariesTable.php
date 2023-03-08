@@ -11,21 +11,21 @@ use Cake\Validation\Validator;
 /**
  * EmployeeSalaries Model
  *
- * @property \App\Model\Table\EmployeesTable&\Cake\ORM\Association\BelongsTo $Employees
+ * @property \SwaggerBakeTest\App\Model\Table\EmployeesTable&\Cake\ORM\Association\BelongsTo $Employees
  *
- * @method \App\Model\Entity\EmployeeSalary newEmptyEntity()
- * @method \App\Model\Entity\EmployeeSalary newEntity(array $data, array $options = [])
- * @method \App\Model\Entity\EmployeeSalary[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\EmployeeSalary get($primaryKey, $options = [])
- * @method \App\Model\Entity\EmployeeSalary findOrCreate($search, ?callable $callback = null, $options = [])
- * @method \App\Model\Entity\EmployeeSalary patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\EmployeeSalary[] patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\EmployeeSalary|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\EmployeeSalary saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\EmployeeSalary[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
- * @method \App\Model\Entity\EmployeeSalary[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
- * @method \App\Model\Entity\EmployeeSalary[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
- * @method \App\Model\Entity\EmployeeSalary[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary newEmptyEntity()
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary newEntity(array $data, array $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary[] newEntities(array $data, array $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary get($primaryKey, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary findOrCreate($search, ?callable $callback = null, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
+ * @method \SwaggerBakeTest\App\Model\Entity\EmployeeSalary[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
  */
 class EmployeeSalariesTable extends Table
 {
