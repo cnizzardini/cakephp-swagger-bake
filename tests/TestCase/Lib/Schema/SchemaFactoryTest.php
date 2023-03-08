@@ -14,6 +14,11 @@ use SwaggerBakeTest\App\Model\Table\DepartmentsTable;
 
 class SchemaFactoryTest extends TestCase
 {
+    /** @inheritdoc  */
+    public $fixtures = [
+        'plugin.SwaggerBake.Departments',
+    ];
+
     public function test_create_schema(): void
     {
         $connection = ConnectionManager::get('default');
@@ -25,6 +30,7 @@ class SchemaFactoryTest extends TestCase
 
         /** @var SchemaProperty[] $properties */
         $properties = $schema->getProperties();
+
         $this->assertEquals('this_is_a_unit_test_for_description', $properties['name']->getDescription());
     }
 
