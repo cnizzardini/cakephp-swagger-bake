@@ -43,8 +43,11 @@ class SchemaPropertyFactory
             ->setFormat(DataTypeConversion::toFormat($property->getType()))
             ->setIsHidden($property->isHidden());
 
+        /*
+         * Convert `json` types to oneOf: object or array
+         */
         if ($schemaProperty->getType() === 'json') {
-            $schemaProperty->setType('object');
+            $schemaProperty->setType(null);
             $schemaProperty->setOneOf([['type' => 'object'], ['type' => 'array', 'items' => []]]);
         }
 
