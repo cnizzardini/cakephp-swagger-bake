@@ -20,75 +20,75 @@ class Configuration
     /**
      * @var string APP root, this is just for testing
      */
-    private string $root;
+    protected string $root;
 
     /**
      * @var string The base prefix for your API, e.g. `/` or `/api/`
      */
-    private string $prefix;
+    protected string $prefix;
 
     /**
      * @var string A base Swagger YML file, see example in assets (e.g. `/config/swagger.yml`).
      */
-    private string $yml;
+    protected string $yml;
 
     /**
      * @var string Web accessible file path the JSON file is written to (e.g. `/webroot/swagger.json`).
      */
-    private string $json;
+    protected string $json;
 
     /**
      * @var string The URL browsers will use to access the JSON file (e.g. `/swagger.json`).
      */
-    private string $webPath;
+    protected string $webPath;
 
     /**
      * @var string The default document type, either swagger or redoc.
      */
-    private string $docType = 'swagger';
+    protected string $docType = 'swagger';
 
     /**
      * @var bool Should OpenAPI be reloaded when the SwaggerBake::index route is called.
      */
-    private bool $hotReload = false;
+    protected bool $hotReload = false;
 
     /**
      * @var string Default exception schema in your OpenAPI YAML file.
      */
-    private string $exceptionSchema = 'Exception';
+    protected string $exceptionSchema = 'Exception';
 
     /**
      * @var string[] The requested mimetypes accepted by your API.
      */
-    private array $requestAccepts = ['application/json'];
+    protected array $requestAccepts = ['application/json'];
 
     /**
      * @var string[] The mimetypes your API responds with.
      */
-    private array $responseContentTypes = ['application/json'];
+    protected array $responseContentTypes = ['application/json'];
 
     /**
      * @var int json_encode flags to be used when generation OpenAPI JSON file.
      * @link https://www.php.net/manual/en/function.json-encode.php
      */
-    private int $jsonOptions = JSON_PRETTY_PRINT;
+    protected int $jsonOptions = JSON_PRETTY_PRINT;
 
     /**
      * @var string[] The HTTP methods implemented for edit() actions.
      */
-    private array $editActionMethods = ['PATCH'];
+    protected array $editActionMethods = ['PATCH'];
 
     /**
      * @var string The connection name to use when loading tables for building schemas from models.
      */
-    private string $connectionName = 'default';
+    protected string $connectionName = 'default';
 
     /**
      * @var array Array of namespaces. Useful if your controllers or entities exist in non-standard namespace such
      *      as a plugin. This was mostly added to aid in unit testing, but there are cases where controllers may
      *      exist in a plugin namespace etc...
      */
-    private array $namespaces = [
+    protected array $namespaces = [
         'controllers' => ['\App\\'],
         'entities' => ['\App\\'],
         'tables' => ['\App\\'],
