@@ -41,6 +41,8 @@ abstract class AbstractSchemaProperty
      * @param int|null $minProperties See OpenAPI documentation
      * @param int|null $maxProperties See OpenAPI documentation
      * @param array $enum An enumerated list of values that can be accepted
+     * @param array $items For use with array type only, will be ignored otherwise. See OpenAPI documentation for
+     *  setting items on array properties.
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -70,6 +72,7 @@ abstract class AbstractSchemaProperty
         public ?int $minProperties = null,
         public ?int $maxProperties = null,
         public array $enum = [],
+        public array $items = []
     ) {
     }
 
@@ -89,6 +92,10 @@ abstract class AbstractSchemaProperty
             ->setWriteOnly($this->isWriteOnly)
             ->setRequired($this->isRequired)
             ->setEnum($this->enum ?? []);
+
+        if ($schemaProperty->getType() === 'array') {
+            $schemaProperty->setItems($this->items ?? []);
+        }
 
         $properties = [
             'maxLength',
