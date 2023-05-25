@@ -23,7 +23,7 @@ class OpenApiControllerService
         ?Swagger $swagger = null,
     ) {
         $this->config = $config ?? new Configuration();
-        $this->swagger = $swagger ?? (new SwaggerFactory())->create();
+        $this->swagger = $swagger ?? (new SwaggerFactory($this->config))->create();
     }
 
     /**
