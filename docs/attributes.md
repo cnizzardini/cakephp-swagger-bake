@@ -586,6 +586,7 @@ your entity. You can add adhoc attributes as needed and optionally combine with
 | minProperties      | ?int `null`       | Y          | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
 | maxProperties      | ?int `null`       | Y          | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
 | enum               | array `[]`        | Y          | An enumerated list of of options for the value                                                         |
+| items              | array `[]`        | Y          | For use with array schema properties.                                                                  |
 
 ```php
 #[OpenApiSchemaProperty(name: 'example_one', minLength: 5, maxLength: 10)]
