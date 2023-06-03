@@ -16,6 +16,6 @@
     </testsuite>
   </testsuites>
   <extensions>
-    <extension class="\Cake\TestSuite\Fixture\PHPUnitExtension" />
+    <bootstrap class="Cake\TestSuite\Fixture\Extension\PHPUnitExtension"/>
   </extensions>
 </phpunit>

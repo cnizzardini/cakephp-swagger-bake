@@ -1,8 +1,6 @@
 <?php
 
-
 namespace SwaggerBake\Test\TestCase\Lib;
-
 
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;

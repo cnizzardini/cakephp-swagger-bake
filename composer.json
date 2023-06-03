@@ -82,5 +82,6 @@
             "url": "git@github.com:cnizzardini/core.git"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
