@@ -11,7 +11,7 @@ class BakeCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Departments'
     ];
 

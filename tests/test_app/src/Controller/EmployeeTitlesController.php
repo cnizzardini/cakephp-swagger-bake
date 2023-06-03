@@ -9,7 +9,7 @@ use SwaggerBake\Lib\Attribute\OpenApiPath;
 #[OpenApiPath(isVisible: false)]
 class EmployeeTitlesController extends AppController
 {
-    public $defaultTable = 'EmployeeTitles';
+    public ?string $defaultTable = 'EmployeeTitles';
 
     /**
      * Index method

@@ -20,22 +20,11 @@ use SwaggerBake\Lib\Service\OpenApiControllerService;
  */
 class Plugin extends BasePlugin
 {
-    /**
-     * Plugin name.
-     *
-     * @var string
-     */
-    protected $name = 'SwaggerBake';
+    protected ?string $name = 'SwaggerBake';
 
-    /**
-     * @var bool
-     */
-    protected $routes = false;
+    protected bool $routes = false;
 
-    /**
-     * @var bool
-     */
-    protected $middleware = false;
+    protected bool $middleware = false;
 
     /**
      * @inheritDoc

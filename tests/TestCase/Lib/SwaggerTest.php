@@ -22,7 +22,7 @@ class SwaggerTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.DepartmentEmployees',
         'plugin.SwaggerBake.Departments',
         'plugin.SwaggerBake.Employees',

@@ -14,7 +14,7 @@ use SwaggerBakeTest\App\Controller\EmployeesController;
 
 class OperationResponseYamlTest extends TestCase
 {
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 

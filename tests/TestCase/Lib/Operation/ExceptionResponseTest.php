@@ -14,7 +14,7 @@ class ExceptionResponseTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 

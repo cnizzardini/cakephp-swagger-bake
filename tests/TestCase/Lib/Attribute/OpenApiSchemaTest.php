@@ -16,7 +16,7 @@ class OpenApiSchemaTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
         'plugin.SwaggerBake.EmployeeSalaries',
         'plugin.SwaggerBake.DepartmentEmployees',

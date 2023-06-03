@@ -72,8 +72,6 @@ class NamespaceUtility
     {
         $classes = [];
 
-        $classNameMapper = ClassNameMapper::createFromComposerFile(null, null, true);
-
         foreach ($namespaces as $namespace) {
             if (str_starts_with($namespace, '\\')) {
                 $namespace = substr($namespace, 1);
@@ -86,11 +84,9 @@ class NamespaceUtility
             $namespace = str_replace('\\\\', '\\', $namespace);
             $namespace .= $ns;
 
-            $explorer = new GlobClassExplorer($namespace, new NullEngine(), 0, $classNameMapper);
-
             $classes = array_merge(
                 $classes,
-                array_keys($explorer->getClassMap())
+                \MixerApi\Core\Utility\NamespaceUtility::findClasses($namespace)
             );
         }
 

@@ -12,7 +12,7 @@ namespace SwaggerBakeTest\App\Controller;
  */
 class DepartmentEmployeesController extends AppController
 {
-    public $defaultTable = 'DepartmentEmployees';
+    public ?string $defaultTable = 'DepartmentEmployees';
 
     /**
      * Index method

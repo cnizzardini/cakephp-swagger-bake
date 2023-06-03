@@ -15,7 +15,7 @@ use SwaggerBakeTest\App\Model\Table\DepartmentsTable;
 class SchemaFactoryTest extends TestCase
 {
     /** @inheritdoc  */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Departments',
     ];
 

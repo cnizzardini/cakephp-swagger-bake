@@ -2,15 +2,14 @@
 
 namespace SwaggerBake\Test\TestCase;
 
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
-use Cake\Command\Command;
 
 class BakeTemplateTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Bakers',
     ];
 
@@ -20,10 +19,11 @@ class BakeTemplateTest extends TestCase
     public function setUp() : void
     {
         parent::setUp();
+
         $this->setAppNamespace('SwaggerBakeTest\App');
         $this->useCommandRunner();
 
-        $this->controller = APP . DS . 'Controller' . DS . 'BakersController.php';
+        $this->controller = APP . DS . 'Controller' . DS . 'BakersController.txt';
 
         if (is_file($this->controller)) {
             unlink($this->controller);
@@ -34,7 +34,7 @@ class BakeTemplateTest extends TestCase
     {
         $this->exec('bake controller Bakers --no-test --force --theme SwaggerBake');
 
-        $controllerFile = 'BakersController.php';
+        $controllerFile = 'BakersController.txt';
         $assets = TEST . DS . 'assets' . DS;
 
         $this->assertOutputContains('Baking controller class for Bakers...');
