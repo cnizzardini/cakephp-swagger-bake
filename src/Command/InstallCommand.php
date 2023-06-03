@@ -15,9 +15,8 @@ class InstallCommand extends Command
     /**
      * @param \SwaggerBake\Lib\Service\InstallerService $service InstallerService
      */
-    public function __construct(private InstallerService $service)
+    public function __construct(private readonly InstallerService $service)
     {
-        parent::__construct();
     }
 
     /**

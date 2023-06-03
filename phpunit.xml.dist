@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" processIsolation="false" stopOnFailure="false" bootstrap="tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage>
-    <include>
-      <directory suffix=".php">src/</directory>
-    </include>
-  </coverage>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" processIsolation="false" stopOnFailure="false" bootstrap="tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.2/phpunit.xsd">
+  <coverage/>
   <php>
     <ini name="memory_limit" value="-1"/>
     <ini name="apc.enable_cli" value="1"/>
@@ -18,4 +14,9 @@
   <extensions>
     <bootstrap class="Cake\TestSuite\Fixture\Extension\PHPUnitExtension"/>
   </extensions>
+  <source>
+    <include>
+      <directory suffix=".php">src/</directory>
+    </include>
+  </source>
 </phpunit>

@@ -27,7 +27,7 @@ class SwaggerControllerTest extends TestCase
 
     public function test_swagger_index(): void
     {
-        Configure::load('swagger_bake', 'default');
+        Configure::load('swagger_bake');
         $this->get('/');
         $this->assertResponseOk();
         $this->assertResponseContains('/swagger_bake/swagger-ui-bundle.js');
@@ -35,7 +35,7 @@ class SwaggerControllerTest extends TestCase
 
     public function test_redoc_index(): void
     {
-        Configure::load('swagger_bake', 'default');
+        Configure::load('swagger_bake');
         $this->get('/?doctype=redoc');
         $this->assertResponseOk();
         $this->assertResponseContains('/swagger_bake/redoc.standalone.js');

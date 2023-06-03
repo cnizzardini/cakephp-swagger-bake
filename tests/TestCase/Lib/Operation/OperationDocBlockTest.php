@@ -163,7 +163,7 @@ EOT;
 
     }
 
-    public function dataProviderForExternalDocs(): array
+    public static function dataProviderForExternalDocs(): array
     {
         return [
             ['see'],

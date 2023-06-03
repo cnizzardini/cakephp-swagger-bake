@@ -149,9 +149,9 @@ class JsonLdTest extends TestCase
         $schema = (new JsonLd())->buildSchema($schema, 'object');
         $object = json_decode(json_encode($schema->jsonSerialize()));
 
-        $this->assertObjectHasAttribute('test_string', $object->items->properties);
-        $this->assertObjectHasAttribute('test_ref_entity', $object->items->properties);
+        $this->assertObjectHasProperty('test_string', $object->items->properties);
+        $this->assertObjectHasProperty('test_ref_entity', $object->items->properties);
         $this->assertCount(2, $object->items->properties->test_ref_entity->allOf);
-        $this->assertObjectHasAttribute('test_object', $object->items->properties);
+        $this->assertObjectHasProperty('test_object', $object->items->properties);
     }
 }

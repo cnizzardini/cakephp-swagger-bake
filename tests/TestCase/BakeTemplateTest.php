@@ -21,9 +21,8 @@ class BakeTemplateTest extends TestCase
         parent::setUp();
 
         $this->setAppNamespace('SwaggerBakeTest\App');
-        $this->useCommandRunner();
 
-        $this->controller = APP . DS . 'Controller' . DS . 'BakersController.txt';
+        $this->controller = APP . DS . 'Controller' . DS . 'BakersController.php';
 
         if (is_file($this->controller)) {
             unlink($this->controller);
@@ -34,17 +33,17 @@ class BakeTemplateTest extends TestCase
     {
         $this->exec('bake controller Bakers --no-test --force --theme SwaggerBake');
 
-        $controllerFile = 'BakersController.txt';
+        $controllerFile = 'BakersController';
         $assets = TEST . DS . 'assets' . DS;
 
         $this->assertOutputContains('Baking controller class for Bakers...');
         $this->assertOutputContains('<success>Wrote</success>');
         $this->assertOutputContains(
-            'tests' . DS . 'test_app' . DS . 'src' . DS . 'Controller' . DS . $controllerFile
+            'tests' . DS . 'test_app' . DS . 'src' . DS . 'Controller' . DS . $controllerFile . '.php'
         );
         $this->assertFileExists($this->controller);
         $this->assertEquals(
-            str_replace("\r\n", "\n", file_get_contents($assets . $controllerFile)),
+            str_replace("\r\n", "\n", file_get_contents($assets . $controllerFile . '.txt')),
             file_get_contents($this->controller)
         );
     }

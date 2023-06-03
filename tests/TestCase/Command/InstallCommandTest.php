@@ -20,7 +20,6 @@ class InstallCommandTest extends TestCase
     {
         parent::setUp();
         $this->setAppNamespace('SwaggerBakeTest\App');
-        $this->useCommandRunner();
 
         $this->configDir = CONFIG . 'testing' . DS;
         $files = scandir($this->configDir);
@@ -62,7 +61,7 @@ class InstallCommandTest extends TestCase
                 ->method('install')
                 ->withAnyParameters()
                 ->willReturnCallback(function () use ($matcher) {
-                    if ($matcher->getInvocationCount() === 1) {
+                    if ($matcher->numberOfInvocations() === 1) {
                         throw (new InstallException())->setQuestion("skip me");
                     }
 

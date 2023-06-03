@@ -29,7 +29,7 @@ class NamespaceUtility
 
         foreach ($namespaces['entities'] ?? [] as $namespace) {
             $entity = $namespace . 'Model\Entity\\' . $className;
-            if (class_exists($entity, true)) {
+            if (class_exists($entity)) {
                 return $entity;
             }
         }

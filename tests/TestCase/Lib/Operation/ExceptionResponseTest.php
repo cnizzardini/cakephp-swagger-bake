@@ -81,7 +81,6 @@ class ExceptionResponseTest extends TestCase
 
     public function test_schema(): void
     {
-        $this->markAsRisky();
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
 
         $factory = DocBlockFactory::createInstance();

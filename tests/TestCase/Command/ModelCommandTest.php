@@ -18,7 +18,6 @@ class ModelCommandTest extends TestCase
     {
         parent::setUp();
         $this->setAppNamespace('SwaggerBakeTest\App');
-        $this->useCommandRunner();
     }
 
     public function test_execute(): void

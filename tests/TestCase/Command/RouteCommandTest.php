@@ -17,7 +17,6 @@ class RouteCommandTest extends TestCase
     {
         parent::setUp();
         $this->setAppNamespace('SwaggerBakeTest\App');
-        $this->useCommandRunner();
     }
 
     public function testExecute(): void

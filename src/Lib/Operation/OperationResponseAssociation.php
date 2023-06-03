@@ -6,6 +6,7 @@ namespace SwaggerBake\Lib\Operation;
 use Cake\Controller\Controller;
 use Cake\Database\Exception\DatabaseException;
 use Cake\Datasource\ConnectionManager;
+use Cake\Http\ServerRequestFactory;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Locator\LocatorInterface;
@@ -37,11 +38,11 @@ class OperationResponseAssociation
      * @param \Cake\Utility\Inflector|null $inflector if null, an Inflector will be created
      */
     public function __construct(
-        private Swagger $swagger,
-        private RouteDecorator $route,
-        private ?Schema $schema = null,
-        private ?LocatorInterface $locator = null,
-        private ?Inflector $inflector = null
+        private readonly Swagger        $swagger,
+        private readonly RouteDecorator $route,
+        private readonly ?Schema        $schema = null,
+        private ?LocatorInterface       $locator = null,
+        private ?Inflector              $inflector = null
     ) {
         $this->locator = $locator ?? TableRegistry::getTableLocator();
         $this->inflector = $inflector ?? new Inflector();
@@ -159,7 +160,7 @@ class OperationResponseAssociation
                 throw new SwaggerBakeRunTimeException('Error building association: ' . $e->getMessage());
             }
 
-            $decorator = new ModelDecorator($model, new Controller());
+            $decorator = new ModelDecorator($model, new Controller(ServerRequestFactory::fromGlobals()));
             $schema = (new SchemaFactory())->createAlways($decorator, SchemaFactory::READABLE_PROPERTIES);
         }
 
