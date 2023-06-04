@@ -7,7 +7,7 @@ use Cake\TestSuite\Fixture\SchemaLoader;
 
 define('SWAGGER_BAKE_TEST_ROOT', dirname(__DIR__));
 define('TEST', SWAGGER_BAKE_TEST_ROOT . DS . 'tests');
-define('SWAGGER_BAKE_TEST_APP', TEST . DS . 'test_app');
+define('SWAGGER_BAKE_TEST_APP', TEST . DS . 'test_app' . DS);
 define('ROOT', SWAGGER_BAKE_TEST_APP);
 define('APP_DIR', 'test_app');
 define('TMP', sys_get_temp_dir() . DS);

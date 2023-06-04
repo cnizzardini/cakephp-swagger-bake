@@ -61,7 +61,7 @@ class OpenApiControllerService
             return $this->config->getDocType();
         }
 
-        $docType = h(strtolower($request->getQuery('doctype')));
+        $docType = strtolower($request->getQuery('doctype'));
 
         return in_array($docType, ['swagger','redoc']) ? $docType : 'swagger';
     }
