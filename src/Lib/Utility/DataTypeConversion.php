@@ -22,7 +22,18 @@ class DataTypeConversion
             // openapi type => ['cake','types']
             'integer' => ['int','integer','tinyinteger','smallinteger','biginteger','mediuminteger'],
             'number' => ['decimal','float'],
-            'string' => ['uuid','text','varchar','char','date','time','datetime','timestampfractional','timestamp','timestamptimezone'],
+            'string' => [
+                'uuid',
+                'text',
+                'varchar',
+                'char',
+                'date',
+                'time',
+                'datetime',
+                'timestampfractional',
+                'timestamp',
+                'timestamptimezone'
+            ],
             'boolean' => ['bool','boolean'],
             'json' => ['json'],
         ];
