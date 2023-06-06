@@ -34,6 +34,7 @@ class DataTypeConversionTest extends TestCase
             'boolean' => OpenApiDataType::BOOLEAN,
             'bool' => OpenApiDataType::BOOLEAN,
             'timestamp' => OpenApiDataType::STRING,
+            'timestamptimezone' => OpenApiDataType::STRING,
             'timestampfractional' => OpenApiDataType::STRING,
             'json' => OpenApiDataType::JSON
         ];
@@ -66,6 +67,7 @@ class DataTypeConversionTest extends TestCase
             'time' => 'time',
             'datetime' => 'date-time',
             'timestamp' => 'date-time',
+            'timestamptimezone' => 'date-time',
             'timestampfractional' => 'date-time',
         ];
 
