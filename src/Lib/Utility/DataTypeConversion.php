@@ -32,7 +32,7 @@ class DataTypeConversion
                 'datetime',
                 'timestampfractional',
                 'timestamp',
-                'timestamptimezone'
+                'timestamptimezone',
             ],
             'boolean' => ['bool','boolean'],
             'json' => ['json'],
