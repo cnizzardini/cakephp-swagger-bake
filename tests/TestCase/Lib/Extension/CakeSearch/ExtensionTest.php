@@ -92,9 +92,9 @@ class ExtensionTest extends TestCase
     public function test_getOperation_throws_exception_when_event_subject_is_invalid(): void
     {
         $this->expectException(SwaggerBakeRunTimeException::class);
-        $event = new Event('test', 'no');
+        $event = new Event('test', new \stdClass());
         $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
-        $this->assertStringContainsString('subject must be an instance of', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/subject must be an instance of/');
     }
 
     public function test_getOperation_returns_early(): void
@@ -128,7 +128,7 @@ class ExtensionTest extends TestCase
         $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
     }
 
-    public function test_getOperation_throws_exception_when_table_class_does_not_exist(): void
+    public function test_getOperation_throws_exception_when_behavior_is_not_loaded(): void
     {
         $mockReflectionMethod = $this->mockReflectionMethod(OpenApiSearch::class, [
             'alias' => 'nope',
@@ -137,9 +137,9 @@ class ExtensionTest extends TestCase
         $event = new Event('test', (new Operation('id', 'GET')), [
             'reflectionMethod' => $mockReflectionMethod
         ]);
-        $this->expectException(DatabaseException::class);
+        $this->expectException(SwaggerBakeRunTimeException::class);
         $this->assertInstanceOf(Operation::class, (new Extension())->getOperation($event));
-        $this->assertStringContainsString('Unable to build OpenApiSearch', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Search behavior must be loaded on/');
     }
 
     public function test_getOperation_when_no_filters_exist(): void

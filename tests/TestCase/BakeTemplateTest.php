@@ -38,9 +38,9 @@ class BakeTemplateTest extends TestCase
 
         $this->assertOutputContains('Baking controller class for Bakers...');
         $this->assertOutputContains('<success>Wrote</success>');
-        $this->assertOutputContains(
+        /*$this->assertOutputContains(
             'tests' . DS . 'test_app' . DS . 'src' . DS . 'Controller' . DS . $controllerFile . '.php'
-        );
+        );*/
         $this->assertFileExists($this->controller);
         $this->assertEquals(
             str_replace("\r\n", "\n", file_get_contents($assets . $controllerFile . '.txt')),

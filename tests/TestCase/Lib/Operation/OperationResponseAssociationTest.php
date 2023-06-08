@@ -178,9 +178,6 @@ class OperationResponseAssociationTest extends TestCase
             schemaType: 'object',
             associations: ['table' => 'EmployeeSalaries', 'whiteList' => ['Nope']]
         ));
-        $this->assertStringContainsString(
-            'OpenApiResponse association not found',
-            $this->getExpectedExceptionMessage()
-        );
+        $this->expectExceptionMessageMatches('/OpenApiResponse association not found/');
     }
 }

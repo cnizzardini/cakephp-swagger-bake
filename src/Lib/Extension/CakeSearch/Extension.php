@@ -155,10 +155,12 @@ class Extension implements ExtensionInterface
      */
     private function getSearchManager(Table $table, OpenApiSearch $openApiSearch): \Search\Manager
     {
-        $table->find('search', [
-            'search' => [],
-            'collection' => $openApiSearch->collection,
-        ]);
+        if (!$table->hasBehavior('Search')) {
+            throw new SwaggerBakeRunTimeException(sprintf(
+                'Search behavior must be loaded on %s',
+                $table::class
+            ));
+        }
 
         /** @var \Search\Model\Behavior\SearchBehavior $search */
         $search = $table->getBehavior('Search');
