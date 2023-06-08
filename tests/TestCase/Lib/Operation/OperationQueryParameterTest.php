@@ -12,6 +12,7 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\Operation\OperationQueryParameter;
+use SwaggerBake\Test\PaginationTestController;
 use SwaggerBake\Test\TestCase\Helper\ReflectionAttributeTrait;
 
 class OperationQueryParameterTest extends TestCase
@@ -188,8 +189,8 @@ class OperationQueryParameterTest extends TestCase
                 )
             );
 
-        $controller = new Controller(ServerRequestFactory::fromGlobals());
-        $controller->paginate['sortableFields'] = ['test'];
+        $controller = new PaginationTestController(ServerRequestFactory::fromGlobals());
+        $controller->setPaginate(['sortableFields' => ['test']]);
 
         $operationQueryParam = new OperationQueryParameter(
             operation: new Operation('hello', 'get'),

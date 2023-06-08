@@ -23,14 +23,14 @@ class OperationQueryParameter
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation instance of the Operation
      * @param \Cake\Controller\Controller $controller instance of the Controller
      * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema instance of Schema or null
-     * @param \ReflectionMethod|null $refMethod ReflectionMethod or null
+     * @param \ReflectionMethod|null $refMethod ReflectionMethod of the Controller->action or null
      * @return \SwaggerBake\Lib\OpenApi\Operation
      */
     public function __construct(
-        private Operation $operation,
-        private Controller $controller,
-        private ?Schema $schema = null,
-        private ?ReflectionMethod $refMethod = null,
+        private readonly Operation         $operation,
+        private readonly Controller        $controller,
+        private readonly ?Schema           $schema = null,
+        private readonly ?ReflectionMethod $refMethod = null,
     ) {
     }
 
@@ -103,11 +103,18 @@ class OperationQueryParameter
             return;
         }
 
-        if (isset($this->controller->paginate['sortableFields'])) {
-            $schema = $parameter->getSchema()->setEnum($this->controller->paginate['sortableFields']);
-            $this->operation->pushParameter($parameter->setSchema($schema));
+        try {
+            $refClass = new ReflectionClass($this->controller);
+            $paginateProperty = $refClass->getProperty('paginate');
+            $paginate = $paginateProperty->getValue($this->controller);
+            if (isset($paginate['sortableFields']) && is_array($paginate['sortableFields'])) {
+                $schema = $parameter->getSchema()->setEnum($paginate['sortableFields']);
+                $this->operation->pushParameter($parameter->setSchema($schema));
 
-            return;
+                return;
+            }
+        } catch (\ReflectionException) {
+
         }
 
         if ($this->schema != null && is_array($this->schema->getProperties())) {
