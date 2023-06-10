@@ -35,6 +35,7 @@ class DataTypeConversionTest extends TestCase
             'boolean' => OpenApiDataType::BOOLEAN,
             'bool' => OpenApiDataType::BOOLEAN,
             'timestamp' => OpenApiDataType::STRING,
+            'timestamptimezone' => OpenApiDataType::STRING,
             'timestampfractional' => OpenApiDataType::STRING,
             'json' => OpenApiDataType::JSON
         ];
@@ -65,9 +66,10 @@ class DataTypeConversionTest extends TestCase
             'char' => OpenApiDataType::STRING,
             'date' => 'date',
             'time' => 'time',
-            'datetime' => self::OA_FORMAT_DATETIME,
-            'timestamp' => self::OA_FORMAT_DATETIME,
-            'timestampfractional' => self::OA_FORMAT_DATETIME,
+            'datetime' => 'date-time',
+            'timestamp' => 'date-time',
+            'timestamptimezone' => 'date-time',
+            'timestampfractional' => 'date-time',
         ];
 
         foreach ($types as $dbType => $openApiFormat) {
