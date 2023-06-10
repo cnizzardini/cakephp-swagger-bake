@@ -23,9 +23,7 @@ class InstallCommandTest extends TestCase
 
         $this->configDir = CONFIG . 'testing' . DS;
         if (!is_dir($this->configDir)) {
-            throw new \RuntimeException(
-                'Tests cannot be run because the directory does not exist: ' . $this->configDir
-            );
+            mkdir($this->configDir);
         }
         $files = scandir($this->configDir);
         if (is_array($files)) {
