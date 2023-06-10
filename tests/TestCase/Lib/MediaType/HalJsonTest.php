@@ -34,7 +34,9 @@ class HalJsonTest extends TestCase
         parent::setUp();
         Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Employees');
+            $builder->resources('Employees', [
+                'only' => ['view']
+            ]);
         });
 
         $this->config = new Configuration([
@@ -63,7 +65,7 @@ class HalJsonTest extends TestCase
         $routeScanner = new RouteScanner(new Router(), $this->config);
         $swagger = (new SwaggerFactory($this->config, $routeScanner))->create();
         echo '<pre>' . __FILE__ . ':' . __LINE__;
-        print_r($swagger->getArray()['paths']);
+        print_r($swagger->getArray());
         echo '</pre>';
         die();
 
