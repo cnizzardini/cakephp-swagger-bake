@@ -22,6 +22,11 @@ class InstallCommandTest extends TestCase
         $this->setAppNamespace('SwaggerBakeTest\App');
 
         $this->configDir = CONFIG . 'testing' . DS;
+        if (is_dir($this->configDir)) {
+            throw new \RuntimeException(
+                'Tests cannot be run because the directory does not exist: ' . $this->configDir
+            );
+        }
         $files = scandir($this->configDir);
         if (!is_array($files)) {
             throw new \RuntimeException("Tests cannot be run because no files were found.");
