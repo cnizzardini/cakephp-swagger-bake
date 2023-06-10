@@ -22,13 +22,10 @@ class InstallCommandTest extends TestCase
         $this->setAppNamespace('SwaggerBakeTest\App');
 
         $this->configDir = CONFIG . 'testing' . DS;
-        if (!is_dir($this->configDir)) {
-            mkdir($this->configDir);
-        }
         $files = scandir($this->configDir);
         if (is_array($files)) {
             foreach ($files as $file) {
-                if (is_file($this->configDir . $file)) {
+                if (is_file($this->configDir . $file) && $file !== '.gitkeep') {
                     unlink($this->configDir . $file);
                 }
             }
