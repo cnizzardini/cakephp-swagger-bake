@@ -150,6 +150,10 @@ class OperationResponseAssociation
     private function getOrCreateAssociatedSchema(string $schemaName, string $tableName): Schema
     {
         $schema = $this->swagger->getSchemaByName($schemaName);
+echo '<pre>' . __FILE__ . ':' . __LINE__;
+print_r($schema);
+echo '</pre>';
+die();
 
         if (!$schema) {
             $assocTable = $this->locator->get($tableName);

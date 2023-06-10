@@ -63,20 +63,8 @@ class HalJsonTest extends TestCase
      */
     public function test_item_with_association(): void
     {
-        $router = new Router();
-        echo '<pre>' . __FILE__ . ':' . __LINE__;
-        print_r($router::routes());
-        echo '</pre>';
-        die();
-
-
         $routeScanner = new RouteScanner(new Router(), $this->config);
         $swagger = (new SwaggerFactory($this->config, $routeScanner))->create();
-        echo '<pre>' . __FILE__ . ':' . __LINE__;
-        print_r($swagger->getArray());
-        echo '</pre>';
-        die();
-
         $schema = (new OperationResponseAssociation(
             $swagger,
             $routeScanner->getRoutes()['employees:view'],
