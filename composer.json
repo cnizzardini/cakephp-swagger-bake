@@ -54,7 +54,7 @@
         "phpcs": "phpcs --colors -p --standard=phpcs.xml src/",
         "phpcbf": "phpcbf --colors --standard=phpcs.xml src/",
         "phpstan": "phpstan analyse src/",
-        "test": "phpunit --colors=always --display-errors --display-notices --display-warnings",
+        "test": "phpunit --colors=always",
         "phpmd": "phpmd src/ ansi phpmd.xml",
         "coverage": "phpunit --coverage-html coverage-reports/",
         "grumphp-init": "grumphp git:init",
