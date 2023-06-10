@@ -60,16 +60,26 @@ class HalJsonTest extends TestCase
      */
     public function test_item_with_association(): void
     {
-        $cakeRoute = new RouteScanner(new Router(), $this->config);
-        $routes = $cakeRoute->getRoutes();
+        $routeScanner = new RouteScanner(new Router(), $this->config);
+        $swagger = (new SwaggerFactory($this->config, $routeScanner))->create();
+        echo '<pre>' . __FILE__ . ':' . __LINE__;
+        print_r($swagger->getArray()['paths']);
+        echo '</pre>';
+        die();
 
         $schema = (new OperationResponseAssociation(
-            (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create(),
-            $routes['employees:view'],
+            $swagger,
+            $routeScanner->getRoutes()['employees:view'],
             null
         ))->build(new OpenApiResponse(
             associations: ['whiteList' => ['DepartmentEmployees']]
         ));
+
+        echo '<pre>' . __FILE__ . ':' . __LINE__;
+        print_r($schema);
+        echo '</pre>';
+        die();
+
 
         $schema = (new HalJson())->buildSchema($schema, 'object');
         $data = $schema->getItems()['properties']['_embedded']['items']['allOf'];
