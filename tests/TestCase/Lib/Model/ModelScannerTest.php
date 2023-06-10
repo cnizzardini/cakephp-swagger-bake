@@ -26,14 +26,10 @@ class ModelScannerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $router = new Router();
         Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees');
         });
-
-        $this->router = $router;
 
         $this->config = [
             'prefix' => '/',
@@ -51,6 +47,18 @@ class ModelScannerTest extends TestCase
             ],
             'connectionName' => 'test',
         ];
+    }
+
+    public function test_model_is_decorated(): void
+    {
+        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
+        $routeScanner = new RouteScanner(new Router(), $config);
+
+        $modelDecorators = (new ModelScanner($routeScanner, $config))->getModelDecorators();
+        $collection = (new Collection($modelDecorators))->filter(function (ModelDecorator $modelDecorator) {
+            $modelDecorator->getModel()->getTable()->getAlias() == 'Employee';
+        });
+        $this->assertCount(0, $collection);
     }
 
     public function test_model_should_not_be_decorated_when_no_route_exists(): void
