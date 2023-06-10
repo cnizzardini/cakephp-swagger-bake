@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
-use Cake\Cache\Engine\NullEngine;
-use Mouf\Composer\ClassNameMapper;
 use SwaggerBake\Lib\Configuration;
-use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
 
 /**
  * Class NamespaceUtility

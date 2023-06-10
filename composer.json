@@ -27,6 +27,8 @@
         "phpunit/phpunit": "^10.0",
         "friendsofcake/search": "dev-cake-5",
         "cakephp/authentication": "^3.x-dev",
+        "cakephp/cakephp-codesniffer": "^4.2",
+        "phpstan/phpstan": "^1.8.5",
         "phpmd/phpmd": "^2.10",
         "cakephp/bake": "3.x-dev",
         "cakephp/migrations": "4.x-dev"

@@ -27,9 +27,9 @@ class OperationQueryParameter
      * @return \SwaggerBake\Lib\OpenApi\Operation
      */
     public function __construct(
-        private readonly Operation         $operation,
-        private readonly Controller        $controller,
-        private readonly ?Schema           $schema = null,
+        private readonly Operation $operation,
+        private readonly Controller $controller,
+        private readonly ?Schema $schema = null,
         private readonly ?ReflectionMethod $refMethod = null,
     ) {
     }
@@ -114,7 +114,6 @@ class OperationQueryParameter
                 return;
             }
         } catch (\ReflectionException) {
-
         }
 
         if ($this->schema != null && is_array($this->schema->getProperties())) {

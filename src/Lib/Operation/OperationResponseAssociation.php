@@ -38,11 +38,11 @@ class OperationResponseAssociation
      * @param \Cake\Utility\Inflector|null $inflector if null, an Inflector will be created
      */
     public function __construct(
-        private readonly Swagger        $swagger,
+        private readonly Swagger $swagger,
         private readonly RouteDecorator $route,
-        private readonly ?Schema        $schema = null,
-        private ?LocatorInterface       $locator = null,
-        private ?Inflector              $inflector = null
+        private readonly ?Schema $schema = null,
+        private ?LocatorInterface $locator = null,
+        private ?Inflector $inflector = null
     ) {
         $this->locator = $locator ?? TableRegistry::getTableLocator();
         $this->inflector = $inflector ?? new Inflector();
