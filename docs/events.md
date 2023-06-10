@@ -1,6 +1,6 @@
 # Supported Events
 
-Swagger Bake uses the [CakePHP Event System](https://book.cakephp.org/4/en/core-libraries/events.html)
+Swagger Bake uses the [CakePHP Event System](https://book.cakephp.org/5/en/core-libraries/events.html)
 
 | Description                                                 | Event                                               | 
 |-------------------------------------------------------------|-----------------------------------------------------|

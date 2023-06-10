@@ -64,7 +64,7 @@ class ActorDto
 }
 ```
 
-When your DTO is a [CakePHPs Modelless Form](https://book.cakephp.org/4/en/core-libraries/form.html) the schema and 
+When your DTO is a [CakePHPs Modelless Form](https://book.cakephp.org/5/en/core-libraries/form.html) the schema and 
 validations are built automatically.
 
 ### OpenApiForm
@@ -217,7 +217,7 @@ public function index()
 
 ### OpenApiPaginator
 
-Method level attribute for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html)
+Method level attribute for adding [CakePHP Paginator](https://book.cakephp.org/5/en/controllers/components/pagination.html)
 query parameters: page, limit, sort, and direction.  OpenApiPaginator only works on `index()` actions.
 
 | Property         | Type / Default  | OA Spec | Description                                                                                  | 
@@ -556,7 +556,7 @@ class Actor extends Entity{}
 
 Class or property level attribute for customizing Schema properties. Note that the attribute does not have to exist in 
 your entity. You can add adhoc attributes as needed and optionally combine with
-[Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
+[Virtual Fields](https://book.cakephp.org/5/en/orm/entities.html#creating-virtual-fields).
 
 | Attribute          | Type / Default    | OA Spec?   | Description                                                                                            | 
 |--------------------|-------------------|------------|--------------------------------------------------------------------------------------------------------|
@@ -620,7 +620,7 @@ Method level attribute for documenting search parameters using the popular
 
 | Attribute  | Type / Default   | Description                                                                                                                                      | 
 |------------|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| alias      | string           | Required. The table alias to be used by [TableLocator::get($alias)](https://book.cakephp.org/4/en/orm/table-objects.html#using-the-tablelocator) |
+| alias      | string           | Required. The table alias to be used by [TableLocator::get($alias)](https://book.cakephp.org/5/en/orm/table-objects.html#using-the-tablelocator) |
 | collection | string `default` | The Cake Search collection (see [documentation](https://github.com/FriendsOfCake/search)])                                                       |
 | options    | array `[]`       | Optional array to be passed into `TableLocator::get($alias, $options)`                                                                           |
 
