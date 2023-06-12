@@ -73,6 +73,7 @@ class ExceptionResponse
             $instance = $reflection->newInstanceWithoutConstructor();
             if ($reflection->hasProperty('_defaultCode')) {
                 $reflectedProperty = $reflection->getProperty('_defaultCode');
+                $reflectedProperty->setAccessible(true);
                 $httpCode = (string)$reflectedProperty->getValue($instance);
             } elseif ($instance instanceof CakeException && $instance->getCode() > 0) {
                 $httpCode = (string)$instance->getCode();
