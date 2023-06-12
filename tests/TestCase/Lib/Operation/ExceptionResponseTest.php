@@ -49,27 +49,19 @@ class ExceptionResponseTest extends TestCase
         ];
     }
 
-    public function test_error_codes(): void
+    /**
+     * @dataProvider dataProviderForTestErrorCodes
+     */
+    public function test_error_codes(string $code, string $fqn): void
     {
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
 
-        $exceptions = [
-            '400' => '\Cake\Http\Exception\BadRequestException',
-            '401' => '\Cake\Http\Exception\UnauthorizedException',
-            '403' => '\Cake\Http\Exception\ForbiddenException',
-            '404' => '\Cake\Datasource\Exception\RecordNotFoundException',
-            '405' => '\Cake\Http\Exception\MethodNotAllowedException',
-            '500' => '\Exception'
-        ];
-
         $factory = DocBlockFactory::createInstance();
-        foreach ($exceptions as $code => $exception) {
-            /** @var \phpDocumentor\Reflection\DocBlock\Tags\Throws $throws */
-            $throws = $factory->create("/** @throws $exception */ */")->getTagsByName('throws')[0];
-            $exception = (new ExceptionResponse($swagger, $config))->build($throws);
-            $this->assertEquals($code, $exception->getCode());
-        }
+        /** @var \phpDocumentor\Reflection\DocBlock\Tags\Throws $throws */
+        $throws = $factory->create("/** @throws $fqn */ */")->getTagsByName('throws')[0];
+        $exception = (new ExceptionResponse($swagger, $config))->build($throws);
+        $this->assertEquals($code, $exception->getCode());
     }
 
     public function test_description(): void
@@ -133,5 +125,18 @@ class ExceptionResponseTest extends TestCase
 
         $this->assertEquals('MyException', $schema->getTitle());
         $this->assertCount(2, $schema->getProperties());
+    }
+
+    public function dataProviderForTestErrorCodes(): array
+    {
+        return [
+            ['400', '\Cake\Http\Exception\BadRequestException'],
+            ['401', '\Cake\Http\Exception\UnauthorizedException'],
+            ['403', '\Cake\Http\Exception\ForbiddenException'],
+            ['404', '\Cake\Datasource\Exception\RecordNotFoundException'],
+            ['405', '\Cake\Http\Exception\MethodNotAllowedException'],
+            ['500', '\Exception'],
+            ['500', '\Cake\View\Exception\MissingTemplateException'],
+        ];
     }
 }
