@@ -129,14 +129,19 @@ class ExceptionResponseTest extends TestCase
 
     public function dataProviderForTestErrorCodes(): array
     {
-        return [
+        $data = [
             ['400', '\Cake\Http\Exception\BadRequestException'],
             ['401', '\Cake\Http\Exception\UnauthorizedException'],
             ['403', '\Cake\Http\Exception\ForbiddenException'],
             ['404', '\Cake\Datasource\Exception\RecordNotFoundException'],
             ['405', '\Cake\Http\Exception\MethodNotAllowedException'],
             ['500', '\Exception'],
-            ['500', '\Cake\View\Exception\MissingTemplateException'],
         ];
+
+        if (class_exists('\Cake\View\Exception\MissingTemplateException', false)) {
+            $data[] = ['500', '\Cake\View\Exception\MissingTemplateException'];
+        }
+
+        return $data;
     }
 }
