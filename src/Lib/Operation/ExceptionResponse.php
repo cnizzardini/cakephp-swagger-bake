@@ -69,12 +69,16 @@ class ExceptionResponse
         $httpCode = null;
         $description = $throw->getDescription()->getBodyTemplate();
 
-        if (class_exists($exceptionFqn)) {
-            $instance = new $exceptionFqn();
-            if ($instance instanceof CakeException && $instance->getCode() > 0) {
+        if ($reflection) {
+            $instance = $reflection->newInstanceWithoutConstructor();
+            if ($reflection->hasProperty('_defaultCode')) {
+                $reflectedProperty = $reflection->getProperty('_defaultCode');
+                $reflectedProperty->setAccessible(true);
+                $httpCode = (string)$reflectedProperty->getValue($instance);
+            } elseif ($instance instanceof CakeException && $instance->getCode() > 0) {
                 $httpCode = (string)$instance->getCode();
             }
-            if (empty($description) && $reflection) {
+            if (empty($description)) {
                 $description = $reflection->getShortName();
             }
         }
@@ -83,7 +87,7 @@ class ExceptionResponse
             $httpCode = '404';
         }
 
-        $this->code = $httpCode ?? '500';
+        $this->code = empty($httpCode) ? '500' : $httpCode;
         $this->description = $description;
         $this->schema = $this->fallback($exceptionFqn);
 
