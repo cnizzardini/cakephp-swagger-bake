@@ -138,7 +138,7 @@ class ExceptionResponseTest extends TestCase
             ['500', '\Exception'],
         ];
 
-        if (class_exists('\Cake\View\Exception\MissingTemplateException')) {
+        if (class_exists('\Cake\View\Exception\MissingTemplateException', false)) {
             $data[] = ['500', '\Cake\View\Exception\MissingTemplateException'];
         }
 
