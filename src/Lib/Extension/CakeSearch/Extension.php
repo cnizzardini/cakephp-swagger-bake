@@ -138,7 +138,7 @@ class Extension implements ExtensionInterface
     {
         $decoratedFilters = [];
 
-        $manager = $this->getSearchManager($table, $openApiSearch);
+        $manager = $this->getSearchManager($table);
 
         $filters = $manager->getFilters($openApiSearch->collection);
         foreach ($filters as $filter) {
@@ -150,15 +150,16 @@ class Extension implements ExtensionInterface
 
     /**
      * @param \Cake\ORM\Table $table Table
-     * @param \SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch $openApiSearch OpenApiSearch
      * @return \Search\Manager
      */
-    private function getSearchManager(Table $table, OpenApiSearch $openApiSearch): \Search\Manager
+    private function getSearchManager(Table $table): \Search\Manager
     {
-        $table->find('search', [
-            'search' => [],
-            'collection' => $openApiSearch->collection,
-        ]);
+        if (!$table->hasBehavior('Search')) {
+            throw new SwaggerBakeRunTimeException(sprintf(
+                'Search behavior must be loaded on %s',
+                $table::class
+            ));
+        }
 
         /** @var \Search\Model\Behavior\SearchBehavior $search */
         $search = $table->getBehavior('Search');
