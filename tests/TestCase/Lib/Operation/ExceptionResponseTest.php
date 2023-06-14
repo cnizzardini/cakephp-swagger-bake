@@ -100,7 +100,7 @@ class ExceptionResponseTest extends TestCase
         $this->assertCount(2, $schema->getProperties());
     }
 
-    public function dataProviderForTestErrorCodes(): array
+    public static function dataProviderForTestErrorCodes(): array
     {
         $data = [
             ['400', '\Cake\Http\Exception\BadRequestException'],
