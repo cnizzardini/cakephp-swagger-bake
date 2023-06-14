@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        operating-system: [ ubuntu-20.04 ]
+        operating-system: [ ubuntu-22.04 ]
         php-versions: ['8.1', '8.2']
 
-    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
+    name: PHP ${{ matrix.php-versions }} Test
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -52,7 +52,7 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           composer global require php-coveralls/php-coveralls
-          export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
+          export CODECOVERAGE=1 && vendor/bin/phpunit --coverage-clover=clover.xml
           php-coveralls --coverage_clover=clover.xml -v
   #
   # CakePHP version compatability
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['^4.4']
+        version: ['5.x-dev']
     steps:
       - name: Checkout
         uses: actions/checkout@v2

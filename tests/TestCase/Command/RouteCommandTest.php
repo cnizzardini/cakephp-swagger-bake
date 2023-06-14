@@ -9,7 +9,7 @@ class RouteCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Departments'
     ];
 
@@ -17,7 +17,6 @@ class RouteCommandTest extends TestCase
     {
         parent::setUp();
         $this->setAppNamespace('SwaggerBakeTest\App');
-        $this->useCommandRunner();
     }
 
     public function testExecute(): void

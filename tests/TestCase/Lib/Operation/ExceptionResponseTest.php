@@ -14,7 +14,7 @@ class ExceptionResponseTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 
@@ -73,7 +73,6 @@ class ExceptionResponseTest extends TestCase
 
     public function test_schema(): void
     {
-        $this->markAsRisky();
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
 
         $factory = DocBlockFactory::createInstance();
@@ -101,7 +100,7 @@ class ExceptionResponseTest extends TestCase
         $this->assertCount(2, $schema->getProperties());
     }
 
-    public function dataProviderForTestErrorCodes(): array
+    public static function dataProviderForTestErrorCodes(): array
     {
         $data = [
             ['400', '\Cake\Http\Exception\BadRequestException'],

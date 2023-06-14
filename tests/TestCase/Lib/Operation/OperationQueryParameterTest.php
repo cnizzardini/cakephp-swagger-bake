@@ -3,6 +3,7 @@
 namespace SwaggerBake\Test\TestCase\Lib\Operation;
 
 use Cake\Controller\Controller;
+use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Attribute\OpenApiDto;
 use SwaggerBake\Lib\Attribute\OpenApiPaginator;
@@ -11,6 +12,7 @@ use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Parameter;
 use SwaggerBake\Lib\Operation\OperationQueryParameter;
+use SwaggerBake\Test\PaginationTestController;
 use SwaggerBake\Test\TestCase\Helper\ReflectionAttributeTrait;
 
 class OperationQueryParameterTest extends TestCase
@@ -46,7 +48,7 @@ class OperationQueryParameterTest extends TestCase
 
         $operationQueryParam = new OperationQueryParameter(
             operation: (new Operation('hello', 'get'))->setHttpMethod('GET'),
-            controller: new Controller(),
+            controller: new Controller(ServerRequestFactory::fromGlobals()),
             refMethod: $mockReflectionMethod
         );
 
@@ -100,7 +102,7 @@ class OperationQueryParameterTest extends TestCase
 
         $operationQueryParam = new OperationQueryParameter(
             operation: (new Operation('hello', 'get'))->setHttpMethod('GET'),
-            controller: new Controller(),
+            controller: new Controller(ServerRequestFactory::fromGlobals()),
             refMethod: $mockReflectionMethod
         );
 
@@ -132,7 +134,7 @@ class OperationQueryParameterTest extends TestCase
 
         $operationQueryParam = new OperationQueryParameter(
             operation: new Operation('hello', 'get'),
-            controller: new Controller(),
+            controller: new Controller(ServerRequestFactory::fromGlobals()),
             refMethod: $mockReflectionMethod
         );
 
@@ -162,7 +164,7 @@ class OperationQueryParameterTest extends TestCase
 
         $operationQueryParam = new OperationQueryParameter(
             operation: new Operation('hello', 'get'),
-            controller: new Controller(),
+            controller: new Controller(ServerRequestFactory::fromGlobals()),
             refMethod: $mockReflectionMethod
         );
 
@@ -187,8 +189,8 @@ class OperationQueryParameterTest extends TestCase
                 )
             );
 
-        $controller = new Controller();
-        $controller->paginate['sortableFields'] = ['test'];
+        $controller = new PaginationTestController(ServerRequestFactory::fromGlobals());
+        $controller->setPaginate(['sortableFields' => ['test']]);
 
         $operationQueryParam = new OperationQueryParameter(
             operation: new Operation('hello', 'get'),
@@ -225,7 +227,7 @@ class OperationQueryParameterTest extends TestCase
 
         $operationQueryParam = new OperationQueryParameter(
             new Operation('hello', 'get'),
-            new Controller(),
+            new Controller(ServerRequestFactory::fromGlobals()),
             null,
             $mockReflectionMethod
         );
@@ -261,7 +263,7 @@ class OperationQueryParameterTest extends TestCase
 
         (new OperationQueryParameter(
             operation: (new Operation('hello', 'get'))->setHttpMethod('GET'),
-            controller: new Controller(),
+            controller: new Controller(ServerRequestFactory::fromGlobals()),
             refMethod: $mockReflectionMethod
         ))->getOperationWithQueryParameters();
     }

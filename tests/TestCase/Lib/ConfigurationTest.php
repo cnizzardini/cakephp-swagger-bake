@@ -46,7 +46,7 @@ class ConfigurationTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         new Configuration(['test']);
-        $this->assertStringContainsString('must be defined in your', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/must be defined in your/');
     }
 
     /**
@@ -80,7 +80,7 @@ class ConfigurationTest extends TestCase
      *
      * @return array
      */
-    public function dataProviderInvalidConfig(): array
+    public static function dataProviderInvalidConfig(): array
     {
         $invalidPath = '/' . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS;
 

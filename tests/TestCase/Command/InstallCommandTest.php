@@ -20,16 +20,14 @@ class InstallCommandTest extends TestCase
     {
         parent::setUp();
         $this->setAppNamespace('SwaggerBakeTest\App');
-        $this->useCommandRunner();
 
         $this->configDir = CONFIG . 'testing' . DS;
         $files = scandir($this->configDir);
-        if (!is_array($files)) {
-            throw new \RuntimeException("Tests cannot be run because no files were found.");
-        }
-        foreach ($files as $file) {
-            if (is_file($this->configDir . $file)) {
-                unlink($this->configDir . $file);
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                if (is_file($this->configDir . $file) && $file !== '.gitkeep') {
+                    unlink($this->configDir . $file);
+                }
             }
         }
     }
@@ -62,7 +60,7 @@ class InstallCommandTest extends TestCase
                 ->method('install')
                 ->withAnyParameters()
                 ->willReturnCallback(function () use ($matcher) {
-                    if ($matcher->getInvocationCount() === 1) {
+                    if ($matcher->numberOfInvocations() === 1) {
                         throw (new InstallException())->setQuestion("skip me");
                     }
 

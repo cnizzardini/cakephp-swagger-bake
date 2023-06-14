@@ -9,7 +9,7 @@ class ModelCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Departments',
         'plugin.SwaggerBake.Employees',
     ];
@@ -18,7 +18,6 @@ class ModelCommandTest extends TestCase
     {
         parent::setUp();
         $this->setAppNamespace('SwaggerBakeTest\App');
-        $this->useCommandRunner();
     }
 
     public function test_execute(): void

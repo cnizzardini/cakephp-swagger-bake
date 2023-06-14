@@ -25,7 +25,7 @@ class OperationResponseSchemaTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
         'plugin.SwaggerBake.DepartmentEmployees',
     ];
@@ -262,10 +262,8 @@ class OperationResponseSchemaTest extends TestCase
 
     /**
      * Data provider for OpenApiResponse(schemaType: '?')
-     *
-     * @return array
      */
-    public function dataProviderSchemaInterface(): array
+    public static function dataProviderSchemaInterface(): array
     {
         return [
             ['object'],

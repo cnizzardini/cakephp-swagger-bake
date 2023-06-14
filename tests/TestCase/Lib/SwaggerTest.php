@@ -1,8 +1,6 @@
 <?php
 
-
 namespace SwaggerBake\Test\TestCase\Lib;
-
 
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;
@@ -22,7 +20,7 @@ class SwaggerTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.DepartmentEmployees',
         'plugin.SwaggerBake.Departments',
         'plugin.SwaggerBake.Employees',
@@ -147,7 +145,7 @@ class SwaggerTest extends TestCase
         $this->expectException(SwaggerBakeRunTimeException::class);
         $swagger = new Swagger(new ModelScanner($routeScanner, $config), $config, $mockFileUtility);
         $swagger->writeFile('/anything.json');
-        $this->assertStringContainsString('Output file is not writable', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Output file is not writable/');
     }
 
     public function test_write_file_throws_exception_if_file_write_fails(): void
@@ -164,10 +162,7 @@ class SwaggerTest extends TestCase
         $this->expectException(SwaggerBakeRunTimeException::class);
         $swagger = new Swagger(new ModelScanner($routeScanner, $config), $config, $mockFileUtility);
         $swagger->writeFile('/anything.json');
-        $this->assertStringContainsString(
-            'Error encountered while writing swagger file',
-            $this->getExpectedExceptionMessage()
-        );
+        $this->expectExceptionMessageMatches('/Error encountered while writing swagger file/');
     }
 
     public function test_components_is_removed_if_empty(): void

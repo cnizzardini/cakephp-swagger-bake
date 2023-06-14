@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
-use Cake\Cache\Engine\NullEngine;
-use Mouf\Composer\ClassNameMapper;
 use SwaggerBake\Lib\Configuration;
-use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
 
 /**
  * Class NamespaceUtility
@@ -29,7 +26,7 @@ class NamespaceUtility
 
         foreach ($namespaces['entities'] ?? [] as $namespace) {
             $entity = $namespace . 'Model\Entity\\' . $className;
-            if (class_exists($entity, true)) {
+            if (class_exists($entity)) {
                 return $entity;
             }
         }
@@ -72,8 +69,6 @@ class NamespaceUtility
     {
         $classes = [];
 
-        $classNameMapper = ClassNameMapper::createFromComposerFile(null, null, true);
-
         foreach ($namespaces as $namespace) {
             if (str_starts_with($namespace, '\\')) {
                 $namespace = substr($namespace, 1);
@@ -86,11 +81,9 @@ class NamespaceUtility
             $namespace = str_replace('\\\\', '\\', $namespace);
             $namespace .= $ns;
 
-            $explorer = new GlobClassExplorer($namespace, new NullEngine(), 0, $classNameMapper);
-
             $classes = array_merge(
                 $classes,
-                array_keys($explorer->getClassMap())
+                \MixerApi\Core\Utility\NamespaceUtility::findClasses($namespace)
             );
         }
 

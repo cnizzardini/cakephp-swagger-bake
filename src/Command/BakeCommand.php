@@ -23,9 +23,8 @@ class BakeCommand extends Command
     /**
      * @param \SwaggerBake\Lib\Service\OpenApiBakerService $service OpenApiBakerService
      */
-    public function __construct(private OpenApiBakerService $service)
+    public function __construct(private readonly OpenApiBakerService $service)
     {
-        parent::__construct();
     }
 
     /**

@@ -23,7 +23,7 @@ class JsonLdTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.DepartmentEmployees',
         'plugin.SwaggerBake.Employees',
     ];
@@ -61,32 +61,27 @@ class JsonLdTest extends TestCase
      */
     public function test_item_with_association(): void
     {
-        $cakeRoute = new RouteScanner(new Router(), $this->config);
-        $routes = $cakeRoute->getRoutes();
+        $routeScanner = new RouteScanner(new Router(), $this->config);
+        $swagger = (new SwaggerFactory($this->config))->create();
 
         $schema = (new OperationResponseAssociation(
-            (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create(),
-            $routes['employees:view'],
+            $swagger->build(),
+            $routeScanner->getRoutes()['employees:view'],
             null
         ))->build(new OpenApiResponse(
             associations: ['whiteList' => ['DepartmentEmployees']]
         ));
 
         $schema = (new JsonLd())->buildSchema($schema, 'object');
-        $object = json_decode(json_encode($schema->jsonSerialize()));
+        $allOf = $schema->getItems()['properties']['department_employees']['items']['allOf'];
+        $this->assertNotEmpty($allOf);
 
-        $this->assertTrue(isset($object->items->properties->department_employees->items->allOf));
-        $allOf = $object->items->properties->department_employees->items->allOf;
-        $this->assertNotEmpty(
-            (new Collection($allOf))->filter(function($item) {
-                return isset($item['$ref']) && $item['$ref'] == JsonLd::JSONLD_ITEM;
-            })
-        );
-        $this->assertNotEmpty(
-            (new Collection($allOf))->filter(function($item) {
-                return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
-            })
-        );
+        $this->assertNotEmpty(array_filter($allOf, function($item) {
+            return isset($item['$ref']) && $item['$ref'] == JsonLd::JSONLD_ITEM;
+        }));
+        $this->assertNotEmpty(array_filter($allOf, function($item) {
+            return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
+        }));
     }
 
     /**
@@ -95,12 +90,12 @@ class JsonLdTest extends TestCase
      */
     public function test_item_collection_association(): void
     {
-        $cakeRoute = new RouteScanner(new Router(), $this->config);
-        $routes = $cakeRoute->getRoutes();
+        $routeScanner = new RouteScanner(new Router(), $this->config);
+        $swagger = (new SwaggerFactory($this->config))->create();
 
         $schema = (new OperationResponseAssociation(
-            (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create(),
-            $routes['employees:view'],
+            $swagger->build(),
+            $routeScanner->getRoutes()['employees:view'],
             null
         ))->build(new OpenApiResponse(
             schemaType: 'array',
@@ -110,20 +105,18 @@ class JsonLdTest extends TestCase
         $schema = (new JsonLd())->buildSchema($schema, 'array');
         $object = json_decode(json_encode($schema->jsonSerialize()));
 
-        $this->assertEquals(JsonLd::JSONLD_COLLECTION, $object->allOf[0]->{'$ref'});
-        $this->assertTrue(isset($object->properties->member->items->properties->department_employees->items->allOf));
+        $this->assertEquals(JsonLd::JSONLD_COLLECTION, $schema->getAllOf()[0]['$ref']);
+        /** @var SchemaProperty $schemaProperty */
+        $schemaProperty = $schema->getProperties()['member'];
+        $allOf = $schemaProperty->getItems()['properties']['department_employees']['items']['allOf'];
+        $this->assertNotEmpty($allOf);
 
-        $allOf = $object->properties->member->items->properties->department_employees->items->allOf;
-        $this->assertNotEmpty(
-            (new Collection($allOf))->filter(function($item) {
-                return isset($item['$ref']) && $item['$ref'] == JsonLd::JSONLD_ITEM;
-            })
-        );
-        $this->assertNotEmpty(
-            (new Collection($allOf))->filter(function($item) {
-                return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
-            })
-        );
+        $this->assertNotEmpty(array_filter($allOf, function($item) {
+            return isset($item['$ref']) && $item['$ref'] == JsonLd::JSONLD_ITEM;
+        }));
+        $this->assertNotEmpty(array_filter($allOf, function($item) {
+            return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
+        }));
     }
 
     public function test_nested_associations(): void
@@ -149,9 +142,9 @@ class JsonLdTest extends TestCase
         $schema = (new JsonLd())->buildSchema($schema, 'object');
         $object = json_decode(json_encode($schema->jsonSerialize()));
 
-        $this->assertObjectHasAttribute('test_string', $object->items->properties);
-        $this->assertObjectHasAttribute('test_ref_entity', $object->items->properties);
+        $this->assertObjectHasProperty('test_string', $object->items->properties);
+        $this->assertObjectHasProperty('test_ref_entity', $object->items->properties);
         $this->assertCount(2, $object->items->properties->test_ref_entity->allOf);
-        $this->assertObjectHasAttribute('test_object', $object->items->properties);
+        $this->assertObjectHasProperty('test_object', $object->items->properties);
     }
 }

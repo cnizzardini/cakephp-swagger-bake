@@ -13,11 +13,11 @@ class InstallerServiceTest extends TestCase
     {
         $this->expectException(InstallException::class);
         (new InstallerService())->install('nope');
-        $this->assertStringContainsString('Invalid prefix', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Invalid prefix/');
 
         $this->expectException(InstallException::class);
         (new InstallerService())->install('/almost-valid!@#$%^&*()+{};:"');
-        $this->assertStringContainsString('Invalid prefix', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Invalid prefix/');
     }
 
     public function test_install_should_throw_exception_when_assets_not_found(): void
@@ -27,7 +27,7 @@ class InstallerServiceTest extends TestCase
 
         $this->expectException(InstallException::class);
         (new InstallerService(CONFIG, $mock))->install('/');
-        $this->assertStringContainsString('Assets directory', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Assets directory/');
     }
 
     public function test_install_should_throw_exceptions_on_existing_config_files(): void
@@ -38,7 +38,7 @@ class InstallerServiceTest extends TestCase
 
         $this->expectException(InstallException::class);
         (new InstallerService(CONFIG, $mock))->install('/');
-        $this->assertStringContainsString('The installer found an existing', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/The installer found an existing/');
     }
 
     public function test_install_should_throw_exceptions_on_copy_yaml(): void
@@ -50,7 +50,7 @@ class InstallerServiceTest extends TestCase
 
         $this->expectException(InstallException::class);
         (new InstallerService(CONFIG, $mock))->install('/');
-        $this->assertStringContainsString('Error copying base OpenAPI YAML', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Error copying base OpenAPI YAML/');
     }
 
     public function test_install_should_throw_exceptions_on_copy_config(): void
@@ -62,7 +62,7 @@ class InstallerServiceTest extends TestCase
 
         $this->expectException(InstallException::class);
         (new InstallerService(CONFIG, $mock))->install('/');
-        $this->assertStringContainsString('Error copying swagger_bake config', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Error copying swagger_bake config/');
     }
 
     public function test_install_should_throw_exceptions_on_getting_yaml_content(): void
@@ -75,7 +75,7 @@ class InstallerServiceTest extends TestCase
 
         $this->expectException(InstallException::class);
         (new InstallerService(CONFIG, $mock))->install('/');
-        $this->assertStringContainsString('Error reading YAML', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Error reading YAML/');
     }
 
     public function test_install_should_throw_exceptions_on_putting_yaml_content(): void
@@ -89,7 +89,7 @@ class InstallerServiceTest extends TestCase
 
         $this->expectException(InstallException::class);
         (new InstallerService(CONFIG, $mock))->install('/');
-        $this->assertStringContainsString('Error writing OpenAPI YAML', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Error writing OpenAPI YAML/');
     }
 
     public function test_install_should_throw_exceptions_on_getting_config_content(): void
@@ -105,7 +105,7 @@ class InstallerServiceTest extends TestCase
 
         $this->expectException(InstallException::class);
         (new InstallerService(CONFIG, $mock))->install('/');
-        $this->assertStringContainsString('Error reading config', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Error reading config/');
     }
 
     public function test_install_should_throw_exceptions_on_putting_config_content(): void
@@ -122,6 +122,6 @@ class InstallerServiceTest extends TestCase
 
         $this->expectException(InstallException::class);
         (new InstallerService(CONFIG, $mock))->install('/');
-        $this->assertStringContainsString('Error writing config', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/Error writing config/');
     }
 }

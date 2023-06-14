@@ -31,8 +31,8 @@ class ModelScanner
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
     public function __construct(
-        private RouteScanner $routeScanner,
-        private Configuration $config
+        private readonly RouteScanner $routeScanner,
+        private readonly Configuration $config
     ) {
     }
 

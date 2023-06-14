@@ -20,7 +20,7 @@ class OperationResponseAssociationTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.DepartmentEmployees',
         'plugin.SwaggerBake.Employees',
         'plugin.SwaggerBake.EmployeeSalaries',
@@ -178,9 +178,6 @@ class OperationResponseAssociationTest extends TestCase
             schemaType: 'object',
             associations: ['table' => 'EmployeeSalaries', 'whiteList' => ['Nope']]
         ));
-        $this->assertStringContainsString(
-            'OpenApiResponse association not found',
-            $this->getExpectedExceptionMessage()
-        );
+        $this->expectExceptionMessageMatches('/OpenApiResponse association not found/');
     }
 }

@@ -22,7 +22,7 @@ class HalJsonTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
         'plugin.SwaggerBake.DepartmentEmployees',
     ];
@@ -32,12 +32,9 @@ class HalJsonTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $routeBuilder = Router::createRouteBuilder('/');
-        $routeBuilder->scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
-            $builder->resources('Employees', [
-                'only' => ['view']
-            ]);
+            $builder->resources('Employees');
         });
 
         $this->config = new Configuration([
@@ -77,10 +74,10 @@ class HalJsonTest extends TestCase
         $schema = (new HalJson())->buildSchema($schema, 'object');
         $data = $schema->getItems()['properties']['_embedded']['items']['allOf'];
 
-        $this->assertNotEmpty(array_filter($data, function ($item) {
+        $this->assertNotEmpty(array_filter($data, function($item) {
             return isset($item['$ref']) && $item['$ref'] == HalJson::HAL_ITEM;
         }));
-        $this->assertNotEmpty(array_filter($data, function ($item) {
+        $this->assertNotEmpty(array_filter($data, function($item) {
             return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
         }));
     }
@@ -106,15 +103,14 @@ class HalJsonTest extends TestCase
         $schema = (new HalJson())->buildSchema($schema, 'array');
 
         $this->assertEquals(HalJson::HAL_COLLECTION, $schema->getAllOf()[0]['$ref']);
-
         /** @var SchemaProperty $schemaProperty */
         $schemaProperty = $schema->getProperties()['_embedded'];
         $allOf = $schemaProperty->getItems()['properties']['_embedded']['items']['allOf'];
 
-        $this->assertNotEmpty(array_filter($allOf, function ($item) {
+        $this->assertNotEmpty(array_filter($allOf, function($item) {
             return isset($item['$ref']) && $item['$ref'] == HalJson::HAL_ITEM;
         }));
-        $this->assertNotEmpty(array_filter($allOf, function ($item) {
+        $this->assertNotEmpty(array_filter($allOf, function($item) {
             return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
         }));
     }
@@ -140,13 +136,11 @@ class HalJsonTest extends TestCase
         ]);
 
         $schema = (new HalJson())->buildSchema($schema, 'object');
-        //$object = json_decode(json_encode($schema->jsonSerialize()));
         $properties = $schema->getItems()['properties'];
 
-
-        //$this->assertObjectHasAttribute('test_string', $object->items->properties);
-        //$this->assertObjectHasAttribute('test_ref_entity', $object->items->properties->_embedded->properties);
+        $this->assertArrayHasKey('test_string', $properties);
+        $this->assertArrayHasKey('test_ref_entity', $properties['_embedded']['properties']);
         $this->assertCount(2, $properties['_embedded']['properties']['test_ref_entity']['allOf']);
-        //$this->assertObjectHasAttribute('test_object', $object->items->properties->_embedded->properties);
+        $this->assertArrayHasKey('test_object', $properties['_embedded']['properties']);
     }
 }

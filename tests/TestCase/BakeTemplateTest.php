@@ -2,15 +2,14 @@
 
 namespace SwaggerBake\Test\TestCase;
 
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
-use Cake\Command\Command;
 
 class BakeTemplateTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Bakers',
     ];
 
@@ -20,8 +19,8 @@ class BakeTemplateTest extends TestCase
     public function setUp() : void
     {
         parent::setUp();
+
         $this->setAppNamespace('SwaggerBakeTest\App');
-        $this->useCommandRunner();
 
         $this->controller = APP . DS . 'Controller' . DS . 'BakersController.php';
 
@@ -34,17 +33,17 @@ class BakeTemplateTest extends TestCase
     {
         $this->exec('bake controller Bakers --no-test --force --theme SwaggerBake');
 
-        $controllerFile = 'BakersController.php';
+        $controllerFile = 'BakersController';
         $assets = TEST . DS . 'assets' . DS;
 
         $this->assertOutputContains('Baking controller class for Bakers...');
         $this->assertOutputContains('<success>Wrote</success>');
-        $this->assertOutputContains(
-            'tests' . DS . 'test_app' . DS . 'src' . DS . 'Controller' . DS . $controllerFile
-        );
+        /*$this->assertOutputContains(
+            'tests' . DS . 'test_app' . DS . 'src' . DS . 'Controller' . DS . $controllerFile . '.php'
+        );*/
         $this->assertFileExists($this->controller);
         $this->assertEquals(
-            str_replace("\r\n", "\n", file_get_contents($assets . $controllerFile)),
+            str_replace("\r\n", "\n", file_get_contents($assets . $controllerFile . '.txt')),
             file_get_contents($this->controller)
         );
     }

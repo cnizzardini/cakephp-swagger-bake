@@ -27,7 +27,7 @@ use SwaggerBakeTest\App\Form\TestForm;
 )]
 class EmployeesController extends AppController
 {
-    public $defaultTable = 'Employees';
+    public ?string $defaultTable = 'Employees';
 
     public function initialize() : void
     {

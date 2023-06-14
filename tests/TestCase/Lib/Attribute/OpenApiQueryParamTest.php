@@ -20,7 +20,7 @@ class OpenApiQueryParamTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Departments',
     ];
 
