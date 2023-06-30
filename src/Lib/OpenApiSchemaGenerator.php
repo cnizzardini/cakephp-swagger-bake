@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
+use Cake\Core\Plugin;
+use DebugKit\DebugTimer;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -27,6 +29,9 @@ class OpenApiSchemaGenerator
      */
     public function generate(array $openapi = []): array
     {
+        if (Plugin::isLoaded('DebugKit')) {
+            DebugTimer::start('SwaggerBake - Schema');
+        }
         $schemaFactory = new SchemaFactory();
         $models = $this->modelScanner->getModelDecorators();
 
@@ -47,6 +52,10 @@ class OpenApiSchemaGenerator
             } elseif ($schema->getVisibility() == OpenApiSchema::VISIBLE_HIDDEN) {
                 $openapi = $this->addVendorSchema($openapi, $schema);
             }
+        }
+
+        if (Plugin::isLoaded('DebugKit')) {
+            DebugTimer::stop('SwaggerBake - Schema');
         }
 
         return $openapi;
