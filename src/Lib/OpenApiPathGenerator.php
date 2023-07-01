@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
+use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Utility\Inflector;
+use DebugKit\DebugTimer;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -35,6 +37,9 @@ class OpenApiPathGenerator
      */
     public function generate(array $openapi = []): array
     {
+        if (Plugin::isLoaded('DebugKit')) {
+            DebugTimer::start('SwaggerBake - Routes');
+        }
         $routes = $this->routeScanner->getRoutes();
 
         $ignorePaths = array_keys($openapi['paths']);
@@ -75,6 +80,10 @@ class OpenApiPathGenerator
             if (!empty($path->getOperations())) {
                 $openapi['paths'][$route->templateToOpenApiPath()] = $path;
             }
+        }
+
+        if (Plugin::isLoaded('DebugKit')) {
+            DebugTimer::stop('SwaggerBake - Routes');
         }
 
         return $openapi;
