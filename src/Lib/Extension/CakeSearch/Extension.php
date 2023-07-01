@@ -36,7 +36,7 @@ class Extension implements ExtensionInterface
 
     /**
      * @return void
-     * @SuppressWarning(PHPMD)
+     * @SuppressWarning(\SwaggerBake\Lib\Extension\CakeSearch\PHPMD)
      */
     public function registerListeners(): void
     {
