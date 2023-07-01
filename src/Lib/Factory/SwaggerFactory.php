@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * @SuppressWarnings(PHPMD)
+ * @SuppressWarnings(\PHPMD)
  * @deprecated this class will be removed soon, use SwaggerBake\Lib\SwaggerFactory instead
  */
 trigger_deprecation(

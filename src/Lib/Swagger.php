@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
+use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use DebugKit\DebugMemory;
+use DebugKit\DebugTimer;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
@@ -45,6 +48,10 @@ class Swagger
         Configuration $configuration,
         ?FileUtility $fileUtility = null
     ) {
+        if (Plugin::isLoaded('DebugKit')) {
+            DebugTimer::start('SwaggerBake');
+        }
+
         $this->config = $configuration;
         $this->fileUtility = $fileUtility ?? new FileUtility();
 
@@ -64,6 +71,11 @@ class Swagger
         $this->array = (new OpenApiSchemaGenerator($modelScanner))->generate($this->array);
         $this->array = (new OpenApiPathGenerator($this, $modelScanner->getRouteScanner(), $this->config))
             ->generate($this->array);
+
+        if (Plugin::isLoaded('DebugKit')) {
+            DebugTimer::stop('SwaggerBake');
+            DebugMemory::record('SwaggerBake');
+        }
     }
 
     /**
