@@ -5,13 +5,12 @@ on:
 
 jobs:
   build:
+    name: PHP ${{ matrix.php-versions }} Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
         operating-system: [ ubuntu-22.04 ]
         php-versions: ['8.1', '8.2']
-
-    name: PHP ${{ matrix.php-versions }} Test
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -38,6 +37,7 @@ jobs:
           echo ${{ matrix.php-versions }}
 
   coverage:
+    name: Code Coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -68,10 +68,11 @@ jobs:
   # CakePHP version compatability
   #
   compatibility:
+    name: CakePHP ${{ matrix.cakephp-versions }} Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['5.0']
+        cakephp-versions: ['5.0']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
