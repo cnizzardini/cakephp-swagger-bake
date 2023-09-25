@@ -31,6 +31,7 @@
         "phpstan/phpstan": "^1.8.5",
         "phpmd/phpmd": "^2.10",
         "cakephp/bake": "^3.0",
+        "cakephp/debug_kit": "^5.0",
         "cakephp/migrations": "^4.0"
     },
     "autoload": {
