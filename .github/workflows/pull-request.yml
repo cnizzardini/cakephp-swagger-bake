@@ -67,12 +67,12 @@ jobs:
   #
   # CakePHP version compatability
   #
-  compatibility:
+  cakephp_version_compatibility:
     name: CakePHP ${{ matrix.cakephp-versions }} Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        cakephp-versions: ['~5.0']
+        version: ['~5.0']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -93,3 +93,4 @@ jobs:
           composer require cakephp/cakephp:${{matrix.version}} --no-update
           composer install --prefer-dist --no-progress
           composer test
+
