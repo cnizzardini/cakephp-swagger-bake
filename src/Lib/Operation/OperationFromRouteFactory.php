@@ -118,7 +118,7 @@ class OperationFromRouteFactory
         ))->getOperationWithResponses();
 
         $operation = (new OperationDocBlock($config, $operation, $docBlock))->getOperation();
-        
+
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Operation.created', $operation, [
                 'config' => $config,
