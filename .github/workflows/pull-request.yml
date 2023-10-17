@@ -5,13 +5,12 @@ on:
 
 jobs:
   build:
+    name: PHP ${{ matrix.php-versions }} Test 
     runs-on: ubuntu-latest
     strategy:
       matrix:
         operating-system: [ ubuntu-20.04 ]
         php-versions: ['8.0', '8.1', '8.2']
-
-    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -58,10 +57,11 @@ jobs:
   # CakePHP version compatability
   #
   compatibility:
+    name: CakePHP ${{ matrix.version }} Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['~4.2.0', '~4.3.0', '^4.4']
+        version: ['~4.2.0', '~4.3.0', '~4.4', '~4.5']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
