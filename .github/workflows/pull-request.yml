@@ -68,7 +68,7 @@ jobs:
   # CakePHP version compatability
   #
   cakephp_version_compatibility:
-    name: CakePHP ${{ matrix.cakephp-versions }} Test
+    name: CakePHP ${{ matrix.version }} Test
     runs-on: ubuntu-latest
     strategy:
       matrix:

@@ -2,12 +2,12 @@
 
 namespace SwaggerBake\Test\TestCase\Lib\Attribute;
 
-use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
+use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
-use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
 class OpenApiOperationTest extends TestCase
@@ -33,27 +33,32 @@ class OpenApiOperationTest extends TestCase
                     'isVisible' => [
                         'action' => 'isVisible',
                         'method' => 'GET',
-                        'path' => 'is-visible'
+                        'path' => 'is-visible',
                     ],
                     'tagNames' => [
                         'action' => 'tagNames',
                         'method' => 'GET',
-                        'path' => 'tag-names'
+                        'path' => 'tag-names',
                     ],
                     'deprecated' => [
                         'action' => 'deprecated',
                         'method' => 'GET',
-                        'path' => 'deprecated'
+                        'path' => 'deprecated',
                     ],
                     'externalDocs' => [
                         'action' => 'externalDocs',
                         'method' => 'GET',
-                        'path' => 'external-docs'
+                        'path' => 'external-docs',
                     ],
                     'descriptions' => [
                         'action' => 'descriptions',
                         'method' => 'GET',
-                        'path' => 'descriptions'
+                        'path' => 'descriptions',
+                    ],
+                    'throwPrecedence' => [
+                        'action' => 'throwPrecedence',
+                        'method' => 'GET',
+                        'path' => 'throw-precedence',
                     ],
                 ]
             ]);
@@ -122,5 +127,12 @@ class OpenApiOperationTest extends TestCase
         $arr = json_decode($this->swagger->build()->toString(), true);
         $this->assertCount(2, $arr['paths']['/operations/deprecated']['get']['tags']);
         $this->assertCount(2, $arr['paths']['/operations/external-docs']['get']['tags']);
+    }
+
+    public function test_response_attribute_takes_precedence_over_docblock_tag(): void
+    {
+        $arr = json_decode($this->swagger->toString(), true);
+        $response = $arr['paths']['/operations/throw-precedence']['get']['responses'][400];
+        $this->assertEquals('This should take precedence over throw tag', $response['description']);
     }
 }
