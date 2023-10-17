@@ -93,8 +93,6 @@ class OperationFromRouteFactory
 
         $operation = $this->createOperation($operation, $route, $openApiOperation);
 
-        $operation = (new OperationDocBlock($config, $operation, $docBlock))->getOperation();
-
         $operation = (new OperationPathParameter($operation, $route, $refMethod, $schema))
             ->getOperationWithPathParameters();
 
@@ -118,6 +116,8 @@ class OperationFromRouteFactory
             $schema,
             $refMethod,
         ))->getOperationWithResponses();
+
+        $operation = (new OperationDocBlock($this->swagger, $config, $operation, $docBlock))->getOperation();
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Operation.created', $operation, [

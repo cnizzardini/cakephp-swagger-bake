@@ -5,6 +5,7 @@ namespace SwaggerBakeTest\App\Controller;
 
 use SwaggerBake\Lib\Attribute\OpenApiOperation;
 use SwaggerBake\Lib\Attribute\OpenApiPath;
+use SwaggerBake\Lib\Attribute\OpenApiResponse;
 
 #[OpenApiPath(tags: ['Test', 'Another Test'])]
 class OperationsController extends AppController
@@ -35,6 +36,16 @@ class OperationsController extends AppController
 
     #[OpenApiOperation(summary: 'summary...', description: 'desc...')]
     public function descriptions(): void
+    {
+
+    }
+
+    /**
+     * @link https://github.com/cnizzardini/cakephp-swagger-bake/issues/525
+     * @throws \Cake\Http\Exception\BadRequestException
+     */
+    #[OpenApiResponse(schemaType: 'string', statusCode: '400', description: 'This should take precedence over throw tag')]
+    public function throwPrecedence()
     {
 
     }
