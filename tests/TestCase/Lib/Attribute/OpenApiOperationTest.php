@@ -2,12 +2,12 @@
 
 namespace SwaggerBake\Test\TestCase\Lib\Attribute;
 
-use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
+use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\Route\RouteScanner;
-use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Swagger;
 
 class OpenApiOperationTest extends TestCase
