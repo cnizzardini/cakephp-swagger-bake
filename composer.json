@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": "^8.1",
-        "cakephp/cakephp": "5.x-dev",
+        "cakephp/cakephp": "^5.0",
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
         "mixerapi/core": "dev-cakephp-5"
@@ -25,13 +25,14 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0",
-        "friendsofcake/search": "dev-cake-5",
-        "cakephp/authentication": "^3.x-dev",
+        "friendsofcake/search": "^7.0",
+        "cakephp/authentication": "^3.0",
         "cakephp/cakephp-codesniffer": "^4.2",
         "phpstan/phpstan": "^1.8.5",
         "phpmd/phpmd": "^2.10",
-        "cakephp/bake": "3.x-dev",
-        "cakephp/migrations": "4.x-dev"
+        "cakephp/bake": "^3.0",
+        "cakephp/debug_kit": "^5.0",
+        "cakephp/migrations": "^4.0"
     },
     "autoload": {
         "psr-4": {
