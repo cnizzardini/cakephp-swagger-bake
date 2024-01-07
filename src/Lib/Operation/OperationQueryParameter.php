@@ -5,6 +5,7 @@ namespace SwaggerBake\Lib\Operation;
 
 use Cake\Controller\Controller;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Attribute\OpenApiDto;
@@ -113,7 +114,7 @@ class OperationQueryParameter
 
                 return;
             }
-        } catch (\ReflectionException) {
+        } catch (ReflectionException) {
         }
 
         if ($this->schema != null && is_array($this->schema->getProperties())) {
@@ -138,7 +139,7 @@ class OperationQueryParameter
      */
     private function defineQueryParams(): void
     {
-        /** @var \SwaggerBake\Lib\Attribute\OpenApiQueryParam[] $params */
+        /** @var array<\SwaggerBake\Lib\Attribute\OpenApiQueryParam> $params */
         $params = (new AttributeFactory($this->refMethod, OpenApiQueryParam::class))->createMany();
         if (!count($params)) {
             return;
@@ -173,7 +174,7 @@ class OperationQueryParameter
             new ReflectionClass($dto->class),
             OpenApiQueryParam::class
         ))->createMany();
-        /** @var \SwaggerBake\Lib\Attribute\OpenApiQueryParam[] $queryParams */
+        /** @var array<\SwaggerBake\Lib\Attribute\OpenApiQueryParam> $queryParams */
         $parameters = array_map(function ($param) {
             return $param->createParameter();
         }, $queryParams);

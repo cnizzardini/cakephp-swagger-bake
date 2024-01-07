@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Lib\OpenApi;
 
 use JsonSerializable;
+use ReturnTypeWillChange;
 
 /**
  * Class PathSecurity
@@ -35,10 +36,10 @@ class PathSecurity implements JsonSerializable
     }
 
     /**
-     * @return array|array[]|mixed
+     * @return mixed|array|array<array>
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    #[ReturnTypeWillChange]
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

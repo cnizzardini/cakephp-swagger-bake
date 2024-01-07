@@ -16,11 +16,11 @@ class Path implements JsonSerializable
 {
     /**
      * @param string $resource The resource (base URL), for example: /pets
-     * @param \SwaggerBake\Lib\OpenApi\Operation[] $operations An array of OpenApi Operations
+     * @param array<\SwaggerBake\Lib\OpenApi\Operation> $operations An array of OpenApi Operations
      * @param string|null $ref An optional OpenAPI path $ref
      * @param string|null $summary An optional short summary
      * @param string|null $description An optional description
-     * @param string[] $tags Sets the tag for all operations in the path. Tags set on individual operations will take
+     * @param array<string> $tags Sets the tag for all operations in the path. Tags set on individual operations will take
      *  precedence.
      */
     public function __construct(
@@ -91,7 +91,7 @@ class Path implements JsonSerializable
     }
 
     /**
-     * @return \SwaggerBake\Lib\OpenApi\Operation[]
+     * @return array<\SwaggerBake\Lib\OpenApi\Operation>
      */
     public function getOperations(): array
     {
@@ -99,7 +99,7 @@ class Path implements JsonSerializable
     }
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\Operation[] $operations Array of Operation
+     * @param array<\SwaggerBake\Lib\OpenApi\Operation> $operations Array of Operation
      * @return $this
      */
     public function setOperations(array $operations)
@@ -190,7 +190,7 @@ class Path implements JsonSerializable
     }
 
     /**
-     * @param string[] $tags A list of OpenApi tags
+     * @param array<string> $tags A list of OpenApi tags
      * @return $this
      */
     public function setTags(array $tags)

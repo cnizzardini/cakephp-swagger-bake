@@ -68,7 +68,7 @@ trait SchemaTrait
     }
 
     /**
-     * @param null|string $format Format
+     * @param string|null $format Format
      * @return $this
      */
     public function setFormat(?string $format)

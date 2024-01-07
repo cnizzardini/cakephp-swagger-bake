@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
+use MixerApi\Core\Utility\NamespaceUtility as MixerApiNsUtil;
 use SwaggerBake\Lib\Configuration;
 
 /**
@@ -59,10 +60,10 @@ class NamespaceUtility
     /**
      * Performs a recursive check for the given namespaces and returns an array of classes
      *
-     * @param string[] $namespaces array of namespaces strings (e.g. ['\App\\'])
+     * @param array<string> $namespaces array of namespaces strings (e.g. ['\App\\'])
      * @param string $ns an additional name to append to each namespace as part of the search (e.g. Controller)
      * @example getClasses(['\App\\'], 'Controller') to search for \App\Controller classes
-     * @return string[]
+     * @return array<string>
      * @throws \Exception
      */
     public static function getClasses(array $namespaces, string $ns = ''): array
@@ -83,7 +84,7 @@ class NamespaceUtility
 
             $classes = array_merge(
                 $classes,
-                \MixerApi\Core\Utility\NamespaceUtility::findClasses($namespace)
+                MixerApiNsUtil::findClasses($namespace)
             );
         }
 

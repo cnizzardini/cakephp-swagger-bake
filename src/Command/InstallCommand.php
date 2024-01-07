@@ -31,13 +31,9 @@ class InstallCommand extends Command
     }
 
     /**
-     * Writes a swagger.json file
-     *
-     * @param \Cake\Console\Arguments $args Arguments
-     * @param \Cake\Console\ConsoleIo $io ConsoleIo
-     * @return int|void|null
+     * @inheritDoc
      */
-    public function execute(Arguments $args, ConsoleIo $io)
+    public function execute(Arguments $args, ConsoleIo $io): void
     {
         $io->hr();
         $io->out('| SwaggerBake Install');

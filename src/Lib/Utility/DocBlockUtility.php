@@ -5,6 +5,7 @@ namespace SwaggerBake\Lib\Utility;
 
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
+use ReflectionException;
 use ReflectionMethod;
 
 /**
@@ -25,7 +26,7 @@ class DocBlockUtility
     {
         try {
             $reflectionMethod = new ReflectionMethod(get_class($instance), $methodName);
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException $e) {
             return null;
         }
 

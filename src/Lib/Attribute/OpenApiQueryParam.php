@@ -27,7 +27,7 @@ class OpenApiQueryParam
      * value.
      * @param string $style Example of the parameter’s potential value. The example SHOULD match the specified schema
      * and encoding properties if present.
-     * @param string|bool|int $example The expected format of the type, for instance date-time.
+     * @param string|int|bool $example The expected format of the type, for instance date-time.
      * @param bool $allowEmptyValue Are empty values allowed?
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */

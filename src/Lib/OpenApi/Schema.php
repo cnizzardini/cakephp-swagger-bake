@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
+use AllowDynamicProperties;
 use JsonSerializable;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Utility\ArrayUtility;
@@ -14,14 +15,14 @@ use SwaggerBake\Lib\Utility\ArrayUtility;
  * @see https://swagger.io/docs/specification/data-models/
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class Schema implements JsonSerializable, SchemaInterface
 {
     use SchemaTrait;
 
     /**
      * @param string|null $title Title of the schema
-     * @param string[] $required A list of required properties
+     * @param array<string> $required A list of required properties
      * @param array $properties A mixed array of Schema and SchemaProperty
      * @param string|null $refEntity todo: needs documentation
      * @param array $items A list of items this Schema contains when this schema is an array.
@@ -150,7 +151,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param string[] $required Required
+     * @param array<string> $required Required
      * @return $this
      */
     public function setRequired(array $required)
@@ -182,7 +183,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\Schema[]|\SwaggerBake\Lib\OpenApi\SchemaProperty[] $properties A mixed array of Schema and SchemaProperty
+     * @param array<\SwaggerBake\Lib\OpenApi\Schema>|array<\SwaggerBake\Lib\OpenApi\SchemaProperty> $properties A mixed array of Schema and SchemaProperty
      * @return $this
      */
     public function setProperties(array $properties)

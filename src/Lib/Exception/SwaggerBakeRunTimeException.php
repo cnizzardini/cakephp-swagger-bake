@@ -24,7 +24,7 @@ class SwaggerBakeRunTimeException extends CakeException
      * @param int|null $code The error code
      * @param \Throwable|null $previous the previous exception.
      */
-    public function __construct($message = '', ?int $code = null, ?Throwable $previous = null)
+    public function __construct(array|string $message = '', ?int $code = null, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

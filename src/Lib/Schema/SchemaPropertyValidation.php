@@ -5,6 +5,7 @@ namespace SwaggerBake\Lib\Schema;
 
 use Cake\Validation\ValidationRule;
 use Cake\Validation\Validator;
+use Exception;
 use MixerApi\Core\Model\ModelProperty;
 use ReflectionFunction;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
@@ -60,10 +61,10 @@ class SchemaPropertyValidation
      * only rules a rule value of the validation is applied to both creates and update.
      *
      * @param string $rule Rule name
-     * @return array|mixed|null
+     * @return mixed|array|null
      * @codeCoverageIgnore
      */
-    private function getValidationRuleValue(string $rule)
+    private function getValidationRuleValue(string $rule): mixed
     {
         $validationRule = $this->validator->field($this->propertyName)->rule($rule);
         if (!$validationRule instanceof ValidationRule) {
@@ -91,7 +92,7 @@ class SchemaPropertyValidation
      * @return mixed
      * @codeCoverageIgnore
      */
-    private function getValidationRuleValueFromClosure(string $rule)
+    private function getValidationRuleValueFromClosure(string $rule): mixed
     {
         $validationRule = $this->validator->field($this->propertyName)->rule($rule);
         if (!$validationRule instanceof ValidationRule) {
@@ -101,7 +102,7 @@ class SchemaPropertyValidation
         $result = $validationRule->get('rule');
         try {
             $vars = (new ReflectionFunction($result))->getStaticVariables();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
 

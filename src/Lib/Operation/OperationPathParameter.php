@@ -92,7 +92,7 @@ class OperationPathParameter
             return;
         }
 
-        /** @var \SwaggerBake\Lib\Attribute\OpenApiPathParam[] $openApiPathParams */
+        /** @var array<\SwaggerBake\Lib\Attribute\OpenApiPathParam> $openApiPathParams */
         $openApiPathParams = (new AttributeFactory(
             $this->reflectionMethod,
             OpenApiPathParam::class

@@ -23,7 +23,7 @@ abstract class AbstractOpenApiParameter
      * @param string $type The data scalar type (e.g. string, integer)
      * @param string $format The data format (e.g. data-time, uuid)
      * @param string $description A description of the parameter
-     * @param string|bool|int|float $example An example scalar value of the parameter
+     * @param string|float|int|bool $example An example scalar value of the parameter
      * @param bool $isRequired Is the parameter required?
      * @param array $enum An enumerated list of values.
      * @param bool $isDeprecated Is the parameter deprecated?

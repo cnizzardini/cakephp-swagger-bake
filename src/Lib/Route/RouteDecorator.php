@@ -8,6 +8,7 @@ use Cake\Core\Configure;
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
 use MixerApi\Core\Model\Model;
+use ReflectionClass;
 
 /**
  * Decorates \Cake\Routing\Route\Route
@@ -216,7 +217,7 @@ class RouteDecorator
      * @param string|null $action The controller method
      * @return $this
      */
-    public function setAction($action)
+    public function setAction(?string $action)
     {
         $this->action = $action;
 
@@ -329,7 +330,7 @@ class RouteDecorator
     public function getControllerInstance(): ?Controller
     {
         if ($this->controllerFqn && class_exists($this->controllerFqn)) {
-            $controller = (new \ReflectionClass($this->controllerFqn))->newInstanceWithoutConstructor();
+            $controller = (new ReflectionClass($this->controllerFqn))->newInstanceWithoutConstructor();
 
             return $controller instanceof Controller ? $controller : null;
         }

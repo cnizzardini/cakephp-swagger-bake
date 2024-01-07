@@ -17,7 +17,7 @@ class Response implements JsonSerializable
     /**
      * @param string $code HTTP status code
      * @param string|null $description An optional description
-     * @param \SwaggerBake\Lib\OpenApi\Content[] $content Array of OpenApi Content
+     * @param array<\SwaggerBake\Lib\OpenApi\Content> $content Array of OpenApi Content
      */
     public function __construct(
         private string $code,
@@ -85,7 +85,7 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @return \SwaggerBake\Lib\OpenApi\Content[]
+     * @return array<\SwaggerBake\Lib\OpenApi\Content>
      */
     public function getContent(): array
     {
@@ -104,7 +104,7 @@ class Response implements JsonSerializable
     /**
      * Sets the array of Content[]
      *
-     * @param \SwaggerBake\Lib\OpenApi\Content[] $contents Content
+     * @param array<\SwaggerBake\Lib\OpenApi\Content> $contents Content
      * @return $this
      */
     public function setContent(array $contents)
