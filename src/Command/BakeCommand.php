@@ -47,14 +47,9 @@ class BakeCommand extends Command
     }
 
     /**
-     * Writes a swagger.json file
-     *
-     * @param \Cake\Console\Arguments $args Arguments
-     * @param \Cake\Console\ConsoleIo $io ConsoleIo
-     * @return int|void|null
-     * @throws \ReflectionException
+     * @inheritDoc
      */
-    public function execute(Arguments $args, ConsoleIo $io)
+    public function execute(Arguments $args, ConsoleIo $io): void
     {
         $this->loadConfig($args);
         $io->out('Running...');

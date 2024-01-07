@@ -44,13 +44,9 @@ class ModelCommand extends Command
     }
 
     /**
-     * List Cake Entities that can be added to Swagger. Prints to console.
-     *
-     * @param \Cake\Console\Arguments $args Arguments
-     * @param \Cake\Console\ConsoleIo $io ConsoleIo
-     * @return int|void|null
+     * @inheritDoc
      */
-    public function execute(Arguments $args, ConsoleIo $io)
+    public function execute(Arguments $args, ConsoleIo $io): void
     {
         $this->loadConfig($args);
 

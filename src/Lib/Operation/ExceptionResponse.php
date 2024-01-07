@@ -97,7 +97,7 @@ class ExceptionResponse
      * @param string $exceptionFqn The FQN of the exception class.
      * @return string|null
      */
-    private function fallback(string $exceptionFqn): string|null
+    private function fallback(string $exceptionFqn): ?string
     {
         if (empty($this->config->getExceptionSchema())) {
             return null;

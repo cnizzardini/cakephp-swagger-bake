@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SwaggerBake\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Http\Response;
 use SwaggerBake\Lib\Service\OpenApiControllerService;
 
 class SwaggerController extends Controller
@@ -14,7 +15,7 @@ class SwaggerController extends Controller
      * @param \SwaggerBake\Lib\Service\OpenApiControllerService $service Builds OpenAPI JSON and hot reloads if enabled
      * @return \Cake\Http\Response Renders view
      */
-    public function index(OpenApiControllerService $service)
+    public function index(OpenApiControllerService $service): Response
     {
         /*
          * Rebuild OpenAPI if hotReload is enabled

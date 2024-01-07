@@ -7,6 +7,8 @@ use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use InvalidArgumentException;
 use LogicException;
+use RuntimeException;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -58,12 +60,12 @@ class Configuration
     protected string $exceptionSchema = 'Exception';
 
     /**
-     * @var string[] The requested mimetypes accepted by your API.
+     * @var array<string>  The requested mimetypes accepted by your API.
      */
     protected array $requestAccepts = ['application/json'];
 
     /**
-     * @var string[] The mimetypes your API responds with.
+     * @var array<string>  The mimetypes your API responds with.
      */
     protected array $responseContentTypes = ['application/json'];
 
@@ -74,7 +76,7 @@ class Configuration
     protected int $jsonOptions = JSON_PRETTY_PRINT;
 
     /**
-     * @var string[] The HTTP methods implemented for edit() actions.
+     * @var array<string>  The HTTP methods implemented for edit() actions.
      */
     protected array $editActionMethods = ['PATCH'];
 
@@ -103,8 +105,8 @@ class Configuration
         $this->root = $root;
         try {
             $config = !empty($config) ? $config : Configure::readOrFail('SwaggerBake');
-        } catch (\RuntimeException $e) {
-            throw new \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException(
+        } catch (RuntimeException $e) {
+            throw new SwaggerBakeRunTimeException(
                 'SwaggerBake config missing. Have you added it to your `config/bootstrap.php`? ' . $e->getMessage(),
                 500,
                 $e
@@ -125,7 +127,7 @@ class Configuration
             }
             $setter = 'set' . ucfirst($property);
             if (!method_exists($this, $setter)) {
-                throw new \LogicException(
+                throw new LogicException(
                     sprintf(
                         'Method %s does not exist in class %s but is trying to be called.',
                         $setter,
@@ -376,7 +378,7 @@ class Configuration
     /**
      * @return mixed|string
      */
-    public function getTitleFromYml()
+    public function getTitleFromYml(): mixed
     {
         $yml = $this->getParsedYml();
 
@@ -420,7 +422,7 @@ class Configuration
     }
 
     /**
-     * @param string[] $requestAccepts The requested mimetypes accepted by your API.
+     * @param array<string> $requestAccepts The requested mimetypes accepted by your API.
      * @return $this
      */
     public function setRequestAccepts(array $requestAccepts)
@@ -439,7 +441,7 @@ class Configuration
     }
 
     /**
-     * @param string[] $responseContentTypes The mimetypes your API responds with.
+     * @param array<string> $responseContentTypes The mimetypes your API responds with.
      * @return $this
      */
     public function setResponseContentTypes(array $responseContentTypes)
@@ -501,7 +503,7 @@ class Configuration
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getEditActionMethods(): array
     {
@@ -509,7 +511,7 @@ class Configuration
     }
 
     /**
-     * @param string[] $editActionMethods Valid types are POST, PUT, and PATCH.
+     * @param array<string> $editActionMethods Valid types are POST, PUT, and PATCH.
      * @return $this
      */
     public function setEditActionMethods(array $editActionMethods)

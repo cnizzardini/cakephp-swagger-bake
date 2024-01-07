@@ -16,7 +16,7 @@
         "cakephp/cakephp": "^5.0",
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
-        "mixerapi/core": "dev-cakephp-5"
+        "mixerapi/core": "^2.0"
     },
     "suggest": {
         "cakephp/bake": "Used by SwaggerBake bake templates",
@@ -27,7 +27,7 @@
         "phpunit/phpunit": "^10.0",
         "friendsofcake/search": "^7.0",
         "cakephp/authentication": "^3.0",
-        "cakephp/cakephp-codesniffer": "^4.2",
+        "cakephp/cakephp-codesniffer": "^5.0",
         "phpstan/phpstan": "^1.8.5",
         "phpmd/phpmd": "^2.10",
         "cakephp/bake": "^3.0",
@@ -78,13 +78,5 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:cnizzardini/core.git"
-        }
-    ],
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

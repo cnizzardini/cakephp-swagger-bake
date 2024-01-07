@@ -26,8 +26,8 @@ class Operation implements JsonSerializable
      * @param \SwaggerBake\Lib\OpenApi\OperationExternalDoc|null $externalDocs Optional External Documentation
      * @param \SwaggerBake\Lib\OpenApi\RequestBody|null $requestBody Optional request body
      * @param array $parameters A mixed array of OpenApi Parameter and/or OpenApi $ref
-     * @param \SwaggerBake\Lib\OpenApi\Response[] $responses Array of OpenApi Response
-     * @param \SwaggerBake\Lib\OpenApi\PathSecurity[] $security Array of OpenApi PathSecurity
+     * @param array<\SwaggerBake\Lib\OpenApi\Response> $responses Array of OpenApi Response
+     * @param array<\SwaggerBake\Lib\OpenApi\PathSecurity> $security Array of OpenApi PathSecurity
      * @param bool $isDeprecated Is this operation deprecated?
      * @param int $sortOrder The sort order, by default uses the order of methods in the controller.
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -150,7 +150,7 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param string[] $tags An array of operation tags
+     * @param array<string> $tags An array of operation tags
      * @return $this
      */
     public function setTags(array $tags)
@@ -180,7 +180,7 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @return \SwaggerBake\Lib\OpenApi\Parameter[]
+     * @return array<\SwaggerBake\Lib\OpenApi\Parameter>
      */
     public function getParameters(): array
     {
@@ -209,7 +209,7 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\Parameter[] $parameters Array of Parameter objects
+     * @param array<\SwaggerBake\Lib\OpenApi\Parameter> $parameters Array of Parameter objects
      * @return $this
      */
     public function setParameters(array $parameters)
@@ -270,7 +270,7 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @return \SwaggerBake\Lib\OpenApi\Response[]
+     * @return array<\SwaggerBake\Lib\OpenApi\Response>
      */
     public function getResponses(): array
     {
@@ -287,7 +287,7 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\Response[] $array Array of Response objects
+     * @param array<\SwaggerBake\Lib\OpenApi\Response> $array Array of Response objects
      * @return $this
      */
     public function setResponses(array $array)
@@ -328,7 +328,7 @@ class Operation implements JsonSerializable
     }
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\PathSecurity[] $pathSecurities Array of PathSecurity
+     * @param array<\SwaggerBake\Lib\OpenApi\PathSecurity> $pathSecurities Array of PathSecurity
      * @return $this
      */
     public function setSecurity(array $pathSecurities)

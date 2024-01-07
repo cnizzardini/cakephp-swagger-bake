@@ -5,12 +5,8 @@ on:
 
 jobs:
   build:
-    name: PHP ${{ matrix.php-versions }} Test
+    name: PHP 8.3 Test / Analysis
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        operating-system: [ ubuntu-22.04 ]
-        php-versions: ['8.1', '8.2']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -18,7 +14,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: 8.3
           extensions: mbstring, intl, xdebug
 
       - name: PHP Version
@@ -37,7 +33,7 @@ jobs:
           echo ${{ matrix.php-versions }}
 
   coverage:
-    name: Code Coverage
+    name: PHP 8.1 Coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

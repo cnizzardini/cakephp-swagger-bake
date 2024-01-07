@@ -38,7 +38,7 @@ class DtoParser
     /**
      * Returns an array of Parameter instances for use in Query Parameters
      *
-     * @return \SwaggerBake\Lib\OpenApi\Parameter[]
+     * @return array<\SwaggerBake\Lib\OpenApi\Parameter>
      * @throws \ReflectionException
      */
     public function getParameters(): array
@@ -61,7 +61,7 @@ class DtoParser
     /**
      * Returns an array of SchemaProperty instances for use in Body Requests or Responses.
      *
-     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * @return array<\SwaggerBake\Lib\OpenApi\SchemaProperty>
      * @throws \ReflectionException
      */
     public function getSchemaProperties(): array
@@ -83,7 +83,7 @@ class DtoParser
 
     /**
      * @link https://book.cakephp.org/4/en/core-libraries/form.html
-     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * @return array<\SwaggerBake\Lib\OpenApi\SchemaProperty>
      * @throws \ReflectionException
      */
     private function getModellessFormSchemaProperties(): array
@@ -113,7 +113,7 @@ class DtoParser
 
     /**
      * @link https://book.cakephp.org/4/en/core-libraries/form.html
-     * @return \SwaggerBake\Lib\OpenApi\Parameter[]
+     * @return array<\SwaggerBake\Lib\OpenApi\Parameter>
      * @throws \ReflectionException
      */
     private function getModellessFormQueryParams(): array

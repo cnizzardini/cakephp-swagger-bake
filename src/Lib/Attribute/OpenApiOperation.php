@@ -15,7 +15,7 @@ class OpenApiOperation
      * @param string|null $summary A summary (i.e. title), setting to null prevents summary being set from doc blocks
      * @param string|null $description A description, setting to null prevents description being set from doc blocks
      * @param bool $isVisible Is this operation visible
-     * @param string[] $tagNames An array of OpenAPI tags
+     * @param array<string> $tagNames An array of OpenAPI tags
      * @param bool $isDeprecated Is the operation deprecated?
      * @param array|null $externalDocs An optional external docs array
      * @param int|null $sortOrder The order the operation appears at in OpenAPI output. Defaults to the order the action

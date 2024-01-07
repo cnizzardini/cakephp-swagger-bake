@@ -71,7 +71,7 @@ class OperationResponse
             return;
         }
 
-        /** @var \SwaggerBake\Lib\Attribute\OpenApiResponse[] $openApiResponses */
+        /** @var array<\SwaggerBake\Lib\Attribute\OpenApiResponse> $openApiResponses */
         $openApiResponses = (new AttributeFactory($this->refMethod, OpenApiResponse::class))->createMany();
 
         foreach ($openApiResponses as $openApiResponse) {

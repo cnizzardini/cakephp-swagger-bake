@@ -15,7 +15,7 @@ class RequestBody implements JsonSerializable
 {
     /**
      * @param string|null $description An optional description
-     * @param \SwaggerBake\Lib\OpenApi\Content[] $content Array of OpenApi Content
+     * @param array<\SwaggerBake\Lib\OpenApi\Content> $content Array of OpenApi Content
      * @param bool $required Is this required?
      * @param bool $ignoreCakeSchema Should cakephp schema be ignored?
      */
@@ -72,7 +72,7 @@ class RequestBody implements JsonSerializable
     }
 
     /**
-     * @return array|\SwaggerBake\Lib\OpenApi\Content[]
+     * @return array|array<\SwaggerBake\Lib\OpenApi\Content>
      */
     public function getContent(): array
     {

@@ -13,7 +13,7 @@ use SwaggerBake\Lib\Configuration;
  */
 class RouteScanner
 {
-    /** @var string[]  */
+    /** @var array<string> */
     private const EXCLUDED_PLUGINS = [
         'DebugKit',
     ];
@@ -23,7 +23,7 @@ class RouteScanner
     /**
      * Array of RouteDecorator instances
      *
-     * @var \SwaggerBake\Lib\Route\RouteDecorator[]
+     * @var array<\SwaggerBake\Lib\Route\RouteDecorator>
      */
     private array $routes;
 
@@ -38,7 +38,7 @@ class RouteScanner
     }
 
     /**
-     * @return \SwaggerBake\Lib\Route\RouteDecorator[]
+     * @return array<\SwaggerBake\Lib\Route\RouteDecorator>
      */
     public function getRoutes(): array
     {

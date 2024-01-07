@@ -9,6 +9,7 @@ use Cake\Event\EventManager;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
 use ReflectionMethod;
+use Search\Manager;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
@@ -41,8 +42,8 @@ class Extension implements ExtensionInterface
     public function registerListeners(): void
     {
         EventManager::instance()
-            ->on('SwaggerBake.Operation.created', function (Event $event) {
-                $operation = $this->getOperation($event);
+            ->on('SwaggerBake.Operation.created', function (Event $event): void {
+                $operation = $this->getOperation($event); // phpcs:ignore
             });
     }
 
@@ -131,7 +132,7 @@ class Extension implements ExtensionInterface
     /**
      * @param \Cake\ORM\Table $table Table
      * @param \SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch $openApiSearch OpenApiSearch
-     * @return \SwaggerBake\Lib\Extension\CakeSearch\FilterDecorator[]
+     * @return array<\SwaggerBake\Lib\Extension\CakeSearch\FilterDecorator>
      * @throws \ReflectionException
      */
     private function getFilterDecorators(Table $table, OpenApiSearch $openApiSearch): array
@@ -152,7 +153,7 @@ class Extension implements ExtensionInterface
      * @param \Cake\ORM\Table $table Table
      * @return \Search\Manager
      */
-    private function getSearchManager(Table $table): \Search\Manager
+    private function getSearchManager(Table $table): Manager
     {
         if (!$table->hasBehavior('Search')) {
             throw new SwaggerBakeRunTimeException(sprintf(

@@ -52,10 +52,10 @@ class Swagger
     /**
      * Builds an OpenAPI array that can be converted to JSON.
      *
-     * @return \SwaggerBake\Lib\Swagger
+     * @return self
      * @throws \ReflectionException
      */
-    public function build()
+    public function build(): Swagger
     {
         $this->array = (new OpenApiFromYaml())->build(Yaml::parseFile($this->config->getYml()));
 
@@ -196,7 +196,7 @@ class Swagger
     /**
      * Returns an array of Operation objects that do not have a 200-299 HTTP status code
      *
-     * @return \SwaggerBake\Lib\OpenApi\Operation[]
+     * @return array<\SwaggerBake\Lib\OpenApi\Operation>
      */
     public function getOperationsWithNoHttp20x(): array
     {

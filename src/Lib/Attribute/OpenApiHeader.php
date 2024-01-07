@@ -26,7 +26,7 @@ class OpenApiHeader
      * for each value of the array or key-value pair of the map.
      * @param string $style Describes how the parameter value will be serialized depending on the type of the parameter
      * value.
-     * @param string|bool|int $example Example of the parameter’s potential value. The example SHOULD match the specified schema
+     * @param string|int|bool $example Example of the parameter’s potential value. The example SHOULD match the specified schema
      * and encoding properties if present.
      * @param bool $allowEmptyValue Are empty values allowed?
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)

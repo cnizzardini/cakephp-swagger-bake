@@ -29,7 +29,7 @@ class OpenApiBakerService
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getWarnings(): array
     {

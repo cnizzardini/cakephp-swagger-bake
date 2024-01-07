@@ -18,7 +18,7 @@ class Parameter implements JsonSerializable
     /**
      * The location of the parameter.
      *
-     * @var string[]
+     * @var array<string>
      */
     public const IN = ['query','cookie','header','path'];
 
@@ -230,7 +230,7 @@ class Parameter implements JsonSerializable
     /**
      * @return mixed
      */
-    public function getSchema()
+    public function getSchema(): mixed
     {
         return $this->schema;
     }
@@ -306,7 +306,7 @@ class Parameter implements JsonSerializable
     /**
      * @return mixed
      */
-    public function getExample()
+    public function getExample(): mixed
     {
         return $this->example;
     }
@@ -315,7 +315,7 @@ class Parameter implements JsonSerializable
      * @param mixed $example Example
      * @return $this
      */
-    public function setExample($example)
+    public function setExample(mixed $example)
     {
         $this->example = $example;
 
