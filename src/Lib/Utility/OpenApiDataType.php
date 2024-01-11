@@ -20,7 +20,7 @@ class OpenApiDataType
     public const EMPTY = '';
 
     /**
-     * @var string[]
+     * @var array<string>
      */
     public const TYPES = [
         self::ARRAY,

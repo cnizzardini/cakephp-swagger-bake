@@ -2,7 +2,7 @@
 
 namespace SwaggerBake\Test\TestCase\Command;
 
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Service\OpenApiBakerService;
@@ -11,7 +11,7 @@ class BakeCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Departments'
     ];
 
@@ -19,13 +19,11 @@ class BakeCommandTest extends TestCase
     {
         parent::setUp();
         $this->setAppNamespace('SwaggerBakeTest\App');
-        $this->useCommandRunner();
     }
 
     public function test_execute(): void
     {
         $path = WWW_ROOT . '/' . 'swagger.json';
-        unlink($path);
         $this->exec('swagger bake');
         $this->assertOutputContains('Running...');
         if ($this->isOnWindows()) {

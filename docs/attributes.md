@@ -7,9 +7,10 @@ when reading this documentation. Annotations exist in the following namespaces:
 - `SwaggerBake\Lib\Attribute`
 - `SwaggerBake\Lib\Extension`
 
-Just a reminder that many usage examples exist in the [SwaggerBake Demo](https://github.com/cnizzardini/cakephp-swagger-bake-demo). If 
-you are using version 1 then you'll need to use [annotations](https://github.com/cnizzardini/cakephp-swagger-bake/blob/1.next/docs/annotations.md) 
-instead.
+Just a reminder that many usage examples exist in the 
+[SwaggerBake Demo](https://github.com/cnizzardini/cakephp-swagger-bake-demo) and 
+[MixerApi Demo](https://github.com/mixerapi/demo).
+
 
 ## Table of Contents
 
@@ -34,27 +35,25 @@ instead.
 
 ### OpenApiDto
 
-Method level attribute for building query parameters or request bodies from a DataTransferObject. 
-
-For versions v2.2.5 or higher use:
-
-Your DTO will need to use the [OpenApiQueryParam](#openapiqueryparam) or [OpenApiSchemaProperty](#openapischemaproperty) 
-on its properties depending on the request type. The OpenApiDtoQuery and OpenApiDtoRequestBody attributes are marked 
-deprecated and will be removed in v3.0.0 which will be released for CakePHP 5.
-
-For versions v2.2.4 or lower:
-
-Your DTO will need to use the [OpenApiDtoQuery](#openapidtoquery) or [OpenApiDtoRequestBody](#openapidtorequestbody) on 
-its properties depending on the request type.
+Method level attribute for building query parameters or request bodies from a DataTransferObject. Your DTO will need to 
+use the [OpenApiQueryParam](#OpenApiQueryParam) or [OpenApiSchemaProperty](#OpenApiSchemaProperty) on its properties 
+depending on the request type. 
 
 | Property   | Type / Default | OA Spec | Description                     | 
 |------------|----------------|---------|---------------------------------|
 | class      | string         | No      | Required. FQN of the DTO class. |
 
+Example DTO declaration:
+
+```php
+#[OpenApiDto(class: ActorDto::class)]
+public function index() {}
+```
+
 OpenApiSchemaProperty can be applied at the class or property level, example:
 
 ```php
-#[OpenApiSchemaProperty(name: "a_property")] // in >= v2.2.11 you can target at the class level.
+#[OpenApiSchemaProperty(name: "a_property")]
 class ActorDto
 {
     public function __construct(
@@ -65,10 +64,8 @@ class ActorDto
 }
 ```
 
-Note: New in v2.5.0, if your OpenApiDto is an instance of a 
-[CakePHPs Modelless forms](https://book.cakephp.org/4/en/core-libraries/form.html), the schema properties and 
-validations will be converted into OpenAPI automatically. You can override the defaults or add additional properties 
-with the OpenApiSchemaProperty or OpenApiQueryParam attributes.
+When your DTO is a [CakePHPs Modelless Form](https://book.cakephp.org/5/en/core-libraries/form.html) the schema and 
+validations are built automatically.
 
 ### OpenApiForm
 
@@ -220,7 +217,7 @@ public function index()
 
 ### OpenApiPaginator
 
-Method level attribute for adding [CakePHP Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html)
+Method level attribute for adding [CakePHP Paginator](https://book.cakephp.org/5/en/controllers/components/pagination.html)
 query parameters: page, limit, sort, and direction.  OpenApiPaginator only works on `index()` actions.
 
 | Property         | Type / Default  | OA Spec | Description                                                                                  | 
@@ -295,16 +292,16 @@ class UsersController extends AppController
 Method level attribute for modifying path parameters. This is for modifying existing path parameters only. Path
 parameters must first be defined in your routes file.
 
-| Attribute     | Type / Default  | OA Spec | Description                                | 
-|---------------|-----------------|---------|--------------------------------------------|
-| name          | string `""`     | Yes     | Name of the query parameter                |
-| ref           | string `""`     | Yes     | Name of the query parameter                |
-| type          | string `string` | Yes     | Data type                                  |
-| format        | string `""`     | Yes     | Data format                                |
-| description   | string `""`     | Yes     | Description of the parameter               |
-| example       | mixed `""`      | Yes     | An example value                           |
-| allowReserved | bool `false`    | Yes     | Allow reserved URI characters?             |
-| isRequired    | bool `false`    | Yes     | Is the parameter required? (new in v2.5.1) |
+| Attribute     | Type / Default  | OA Spec | Description                 | 
+|---------------|-----------------|---------|-----------------------------|
+| name          | string `""`     | Yes     | Name of the query parameter |
+| ref           | string `""`     | Yes     | Name of the query parameter |
+| type          | string `string` | Yes     | Data type                   |
+| format        | string `""`     | Yes     | Data format                 |
+| description   | string `""`     | Yes     | Description of the parameter |
+| example       | mixed `""`      | Yes     | An example value            |
+| allowReserved | bool `false`    | Yes     | Allow reserved URI characters? |
+| isRequired    | bool `false`    | Yes     | Is the parameter required?  |
 
 Example:
 
@@ -407,16 +404,16 @@ order of operations is used to build the response:
 3. `associations`
 4. The schema inferred from CakePHP conventions.
 
-| Property                      | Type / Default    | OA Spec | Description                                                                                                                                                         |
-|-------------------------------|-------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| schemaType                    | string `"object"` | Y       | The schema response type, generally `"object"`, `"array"`, or `""`                                                                                                  |
-| statusCode                    | string `"200"`    | Y       | The HTTP response code                                                                                                                                              |
-| ref                           | ?string `null`    | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                                                                                         |
-| [schema](#Schema)             | ?string `null`    | Y       | An FQN describing a custom response schema. The class must have either one or more `#[OpenApiSchemaProperty]` attribute, implement `CustomSchemaInterface` or both. |
-| description                   | ?string `null`    | Y       | Description of the response                                                                                                                                         |
-| mimeTypes                     | ?array `null`     | Y       | An array of mime types the response can, if null settings from swagger_bake config are used.                                                                        |
-| [associations](#Associations) | ?array `null`     | N       | Adds associated tables to the response sample schema, see examples below.                                                                                           |
-| schemaFormat                  | ?string `null`    | Y       | The schema format, generally only used for schemaType of string.                                                                                                    |
+| Property                      | Type / Default    | OA Spec | Description                                                                                                                                                           |
+|-------------------------------|-------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| schemaType                    | string `"object"` | Y       | The schema response type, generally `"object"` or `"array"`                                                                                                           |
+| statusCode                    | string `"200"`    | Y       | The HTTP response code                                                                                                                                                |
+| ref                           | ?string `null`    | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                                                                                           |
+| [schema](#Schema)             | ?string `null`    | Y       | An FQN describing a custom response schema. The class must have either one or more `#[OpenApiSchemaProperty]` attribute, implement `CustomSchemaInterface` or both.   |
+| description                   | ?string `null`    | Y       | Description of the response                                                                                                                                           |
+| mimeTypes                     | ?array `null`     | Y       | An array of mime types the response can, if null settings from swagger_bake config are used.                                                                          |
+| [associations](#Associations) | ?array `null`     | N       | Adds associated tables to the response sample schema, see examples below.                                                                                             |
+| schemaFormat                  | ?string `null`    | Y       | The schema format, generally only used for schemaType of string.                                                                                                      |
 
 Defining a multiple mimeTypes and 400-409 status code range and an expected 200 response:
 
@@ -559,7 +556,7 @@ class Actor extends Entity{}
 
 Class or property level attribute for customizing Schema properties. Note that the attribute does not have to exist in 
 your entity. You can add adhoc attributes as needed and optionally combine with
-[Virtual Fields](https://book.cakephp.org/4/en/orm/entities.html#creating-virtual-fields).
+[Virtual Fields](https://book.cakephp.org/5/en/orm/entities.html#creating-virtual-fields).
 
 | Attribute          | Type / Default    | OA Spec?   | Description                                                                                            | 
 |--------------------|-------------------|------------|--------------------------------------------------------------------------------------------------------|
@@ -621,18 +618,14 @@ OpenAPI:
 Method level attribute for documenting search parameters using the popular
 [friendsofcake/search](https://github.com/FriendsOfCake/search) plugin.
 
-| Attribute      | Type / Default   | Description                                                                                                               | 
-|----------------|------------------|---------------------------------------------------------------------------------------------------------------------------|
-| ~~tableClass~~ | ~~string~~       | Required (for versions < 2.4.3, deprecated in >= 2.4.3). FQN to the Table class                                           |
-| collection     | string `default` | The Cake Search collection _(see vendor documentation)_                                                                   |
-| alias          | ?string `null`   | The table alias to be used by [TableLocator](https://book.cakephp.org/4/en/orm/table-objects.html#using-the-tablelocator) |
-| options        | array `[]`       | Optional array to be passed into `TableLocator::get($alias, $options)`                                                    |
-
-Note, `tableClass` will be removed in v3.0.0. Use `alias` instead. In >= 2.4.3 you can give a `null` value for 
-`tableClass`.
+| Attribute  | Type / Default   | Description                                                                                                                                      | 
+|------------|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| alias      | string           | Required. The table alias to be used by [TableLocator::get($alias)](https://book.cakephp.org/5/en/orm/table-objects.html#using-the-tablelocator) |
+| collection | string `default` | The Cake Search collection (see [documentation](https://github.com/FriendsOfCake/search)])                                                       |
+| options    | array `[]`       | Optional array to be passed into `TableLocator::get($alias, $options)`                                                                           |
 
 ```php
- #[OpenApiSearch(tableClass: '\App\Model\Table\FilmsTable', collection: 'default')]
+#[OpenApiSearch(alias: 'Films')]
 public function index()
 {
     $this->request->allowMethod('get');
@@ -716,143 +709,4 @@ should match what is defined in your YAML [Security Scheme Object](https://spec.
 #[OpenApiSecurity(name: 'BearerAuth', scopes: ['read'])]
 #[OpenApiSecurity(name: 'ApiKey')]
 public function index(){}
-```
-
-### OpenApiDtoQuery
-
-Note: This has been marked for deprecation, use OpenApiQueryParam instead in your DTOs in v2.4.4 or greater.
-
-Property or parameter level attribute for use in your DTO classes.
-
-| Property        | Type / Default  | OA Spec | Description                                                                      |
-|-----------------|-----------------|---------|----------------------------------------------------------------------------------|
-| name            | string `""`     | Y       | Name of the query parameter, required if ref is not set                          |
-| ref             | string `""`     | Y       | An OpenApi `$ref`, required if name is not set                                   |
-| type            | string `string` | Y       | The scalar data type                                                             |
-| format          | string `""`     | Y       | A data format describing the scalar type such as `date-time`, `uuid`, or `int64` |
-| description     | string `""`     | Y       | Description of the parameter                                                     |
-| example         | mixed `""`      | Y       | An example value                                                                 |
-| allowReserved   | bool `false`    | Y       | Allow reserved URI characters?                                                   |
-| explode         | bool `false`    | Y       | See http://spec.openapis.org/oas/v3.0.3#fixed-fields-9                           |
-| isRequired      | bool `false`    | Y       | Is this parameter required?                                                      |
-| isDeprecated    | bool `false`    | Y       | Is this parameter deprecated?                                                    |
-| allowEmptyValue | bool `false`    | Y       | Allow empty values?                                                              |
-| enum            | array `[]`      | Y       | An enumerated list of accepted values                                            |
-| style           | string `""`     | Y       | See https://spec.openapis.org/oas/v3.0.3#parameterStyle                          |
-
-Example:
-
-```php
-class ActorDto {
-    #[OpenApiDtoQuery(name: 'genre', isRequired: true, enum: ['action','horror'])]
-    private string $genre;
-```
-
-Example with constructor property promotion:
-
-```php
-class ActorDto {
-    public function __construct(
-        #[OpenApiDtoQuery(name: 'genre', isRequired: true, enum: ['action','horror'])]
-        private string $genre
-    ) {
-    }
-```
-
-OpenAPI:
-
-```yaml
-    get:
-      parameters:
-        - in: query
-          name: genre
-          required: true
-          schema:
-            type: string
-            enum:
-              - action
-              - horror
-```
-
-### OpenApiDtoRequestBody
-
-Note: This has been marked for deprecation, use OpenApiSchemaProperty instead in your DTOs in v2.4.4 or greater.
-
-Property or parameter level attribute for use in your DTO classes. See the OpenAPI documentation on
-[schema types](https://spec.openapis.org/oas/v3.0.3#schema-object) for greater detail. By default, OpenApiDtoRequestBody
-will not be added to `#/components/schemas` and so will not appear in SwaggerUI's schema list. You can add the
-`#[OpenApiSchema]` attribute to your DTO class to change the default behavior.
-
-| Attribute          | Type / Default    | OA Spec? | Description                                                                                            |
-|--------------------|-------------------|----------|--------------------------------------------------------------------------------------------------------|
-| name               | string            | N        | Required. Name of the schema property                                                                  |
-| type               | string `"string"` | Y        | Date type such as integer, string, array etc...                                                        |
-| format             | ?string `null`    | Y        | Date format such as int32, date-time, etc...                                                           |
-| title              | ?string `null`    | Y        | Title of the property                                                                                  |
-| description        | ?string `null`    | Y        | Description of the property                                                                            |
-| example            | mixed `null`      | Y        | An example value                                                                                       |
-| isReadOnly         | bool `false`      | Y        | Is the property read only?                                                                             |
-| isWriteOnly        | bool `false`      | Y        | Is the property write only?                                                                            |
-| isRequired         | bool `false`      | Y        | Is the property required?                                                                              |
-| default            | mixed `null`      | Y        | A default value                                                                                        |
-| isNullable         | bool `false`      | Y        | Can the value be null?                                                                                 |
-| isDeprecated       | bool `false`      | Y        | Is the property deprecated?                                                                            |
-| multipleOf         | ?float `null`     | Y        | The value must be a multiple of this number. For example, if 5 then accepted values are 5, 10, 15 etc. |
-| minimum            | ?float `null`     | Y        | The minimum allowed numeric value                                                                      |
-| isExclusiveMinimum | bool `false`      | Y        | Is the `minimum` value excluded from the range.                                                        |
-| maximum            | ?float `null`     | Y        | The maximum allowed numeric value                                                                      |
-| isExclusiveMaximum | bool `false`      | Y        | Is the `maximum` value excluded from the range.                                                        |
-| minLength          | ?integer  `null`  | Y        | The minimum length of a string                                                                         |
-| maxLength          | ?integer `null`   | Y        | The maximum length of a string                                                                         |
-| pattern            | ?string `null`    | Y        | A regex pattern the value must follow                                                                  |
-| minItems           | ?integer `null`   | Y        | The minimum items allowed in a list                                                                    |
-| maxItems           | ?integer `null`   | Y        | The maximum items allowed in a list                                                                    |
-| hasUniqueItems     | bool `false`      | Y        | The list must contain unique items                                                                     |
-| minProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
-| maxProperties      | ?integer `null`   | Y        | http://spec.openapis.org/oas/v3.0.3#properties                                                         |
-| enum               | array `[]`        | Y        | An enumerated list of of options for the value                                                         |
-
-Example:
-
-```php
-class ActorDto {
-    #[OpenApiDtoRequestBody(name: 'name', isRequired: true)]
-    private string $name;
-    #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum: 1, maximum: 100)]
-    private int $age;
-```
-
-Example with constructor property promotion:
-
-```php
-class ActorDto {
-    public function __construct(
-        #[OpenApiDtoRequestBody(name: 'name', isRequired: true)]
-        public string $name,
-        #[OpenApiDtoRequestBody(name: 'age', type: 'integer', format: 'int32', isRequired: true, minimum: 1, maximum: 100)]
-        private int $age
-    ) {
-    }
-```
-
-OpenAPI:
-
-```yaml
-    post:
-      operationId: examples:dtorequestbodyexample:post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              required:
-                - name
-                - age
-              properties:
-                name:
-                  type: string
-                age:
-                  type: integer
-                  format: int32
-                  minimum: 1
-                  maximum: 100
 ```

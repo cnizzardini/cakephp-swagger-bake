@@ -5,6 +5,7 @@ namespace SwaggerBake\Lib;
 
 use Cake\Core\Plugin;
 use DebugKit\DebugTimer;
+use ReflectionClass;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -36,7 +37,7 @@ class OpenApiSchemaGenerator
         $models = $this->modelScanner->getModelDecorators();
 
         foreach ($models as $model) {
-            $entityName = (new \ReflectionClass($model->getModel()->getEntity()))->getShortName();
+            $entityName = (new ReflectionClass($model->getModel()->getEntity()))->getShortName();
 
             if ($this->getSchemaByName($openapi, $entityName)) {
                 continue;

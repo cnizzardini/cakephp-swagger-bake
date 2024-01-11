@@ -9,6 +9,7 @@ use Cake\Event\EventManager;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
 use ReflectionMethod;
+use Search\Manager;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
@@ -41,8 +42,8 @@ class Extension implements ExtensionInterface
     public function registerListeners(): void
     {
         EventManager::instance()
-            ->on('SwaggerBake.Operation.created', function (Event $event) {
-                $operation = $this->getOperation($event);
+            ->on('SwaggerBake.Operation.created', function (Event $event): void {
+                $operation = $this->getOperation($event); // phpcs:ignore
             });
     }
 
@@ -103,25 +104,7 @@ class Extension implements ExtensionInterface
      */
     private function getOperationWithQueryParameters(Operation $operation, OpenApiSearch $openApiSearch): Operation
     {
-        if ($openApiSearch->alias) {
-            $table = $this->getTableLocator()->get($openApiSearch->alias, $openApiSearch->options);
-        } else {
-            $tableFqn = $openApiSearch->tableClass;
-            if (!class_exists($tableFqn)) {
-                throw new SwaggerBakeRunTimeException(
-                    sprintf(
-                        'Unable to build OpenApiSearch because tableClass `%s` does not exist',
-                        $tableFqn
-                    )
-                );
-            }
-            $class = (new \ReflectionClass($tableFqn))->getShortName();
-            if (str_ends_with($class, 'Table')) {
-                $class = substr($class, 0, strlen($class) - 5);
-            }
-            $table = $this->getTableLocator()->get($class);
-        }
-
+        $table = $this->getTableLocator()->get($openApiSearch->alias, $openApiSearch->options);
         $filters = $this->getFilterDecorators($table, $openApiSearch);
         foreach ($filters as $filter) {
             $operation->pushParameter($this->createParameter($filter));
@@ -149,7 +132,7 @@ class Extension implements ExtensionInterface
     /**
      * @param \Cake\ORM\Table $table Table
      * @param \SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch $openApiSearch OpenApiSearch
-     * @return \SwaggerBake\Lib\Extension\CakeSearch\FilterDecorator[]
+     * @return array<\SwaggerBake\Lib\Extension\CakeSearch\FilterDecorator>
      * @throws \ReflectionException
      */
     private function getFilterDecorators(Table $table, OpenApiSearch $openApiSearch): array
@@ -170,7 +153,7 @@ class Extension implements ExtensionInterface
      * @param \Cake\ORM\Table $table Table
      * @return \Search\Manager
      */
-    private function getSearchManager(Table $table): \Search\Manager
+    private function getSearchManager(Table $table): Manager
     {
         if (!$table->hasBehavior('Search')) {
             throw new SwaggerBakeRunTimeException(sprintf(

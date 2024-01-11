@@ -44,7 +44,7 @@ class OperationFromRouteFactory
      *
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @param string $httpMethod Http method such i.e. PUT, POST, PATCH, GET, and DELETE
-     * @param null|\SwaggerBake\Lib\OpenApi\Schema $schema Schema
+     * @param \SwaggerBake\Lib\OpenApi\Schema|null $schema Schema
      * @return \SwaggerBake\Lib\OpenApi\Operation|null
      * @throws \ReflectionException
      */
@@ -70,7 +70,6 @@ class OperationFromRouteFactory
             })->toArray();
             $openApiOperation = (new AttributeFactory($refMethod, OpenApiOperation::class))->createOneOrNull();
         } catch (Exception) {
-            $refClass = null;
             $refMethod = null;
             $openApiOperation = null;
         }
@@ -117,7 +116,7 @@ class OperationFromRouteFactory
             $refMethod,
         ))->getOperationWithResponses();
 
-        $operation = (new OperationDocBlock($this->swagger, $config, $operation, $docBlock))->getOperation();
+        $operation = (new OperationDocBlock($config, $operation, $docBlock))->getOperation();
 
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Operation.created', $operation, [
@@ -137,6 +136,7 @@ class OperationFromRouteFactory
      *
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
      * @return \phpDocumentor\Reflection\DocBlock
+     * @throws \ReflectionException
      */
     private function getDocBlock(RouteDecorator $route): DocBlock
     {
@@ -160,7 +160,7 @@ class OperationFromRouteFactory
      *
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation Operation
      * @param \SwaggerBake\Lib\Route\RouteDecorator $route RouteDecorator
-     * @param null $openApiOperation A reflection of the Controller method (i.e. action)
+     * @param \SwaggerBake\Lib\Attribute\OpenApiOperation|null $openApiOperation A reflection of the Controller method (i.e. action)
      * @return \SwaggerBake\Lib\OpenApi\Operation
      */
     private function createOperation(

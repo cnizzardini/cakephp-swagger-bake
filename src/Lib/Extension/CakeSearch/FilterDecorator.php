@@ -13,19 +13,15 @@ use Search\Model\Filter\Base;
  */
 class FilterDecorator
 {
-    private Base $filter;
-
     private string $name;
 
     private string $comparison;
 
     /**
      * @param \Search\Model\Filter\Base $filter Filter\Base
-     * @throws \ReflectionException
      */
     public function __construct(Base $filter)
     {
-        $this->filter = $filter;
         $this->name = $filter->name();
         $this->comparison = (new ReflectionClass($filter))->getShortName();
     }

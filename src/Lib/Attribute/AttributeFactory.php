@@ -3,23 +3,17 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Attribute;
 
-use ReflectionClass;
-use ReflectionClassConstant;
-use ReflectionFunction;
-use ReflectionMethod;
-use ReflectionParameter;
-use ReflectionProperty;
+use Reflector;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 
 final class AttributeFactory
 {
     /**
-     * @param \ReflectionClass|\ReflectionClassConstant|\ReflectionFunction|\ReflectionMethod|\ReflectionParameter|\ReflectionProperty $reflection The reflection
+     * @param \Reflector $reflection The reflection
      * @param string $attributeClass Your Attribute class
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        private ReflectionClass|ReflectionClassConstant|ReflectionFunction|ReflectionMethod|ReflectionParameter|
-        ReflectionProperty $reflection,
+        private Reflector $reflection,
         private string $attributeClass
     ) {
     }
@@ -32,6 +26,10 @@ final class AttributeFactory
      */
     public function createOneOrNull(): ?object
     {
+        if (!method_exists($this->reflection, 'getAttributes')) {
+            throw new SwaggerBakeRunTimeException('Reflected instance does not have getAttributes method');
+        }
+
         $attributes = $this->reflection->getAttributes($this->attributeClass);
         if (empty($attributes)) {
             return null;
@@ -53,6 +51,10 @@ final class AttributeFactory
      */
     public function createMany(): array
     {
+        if (!method_exists($this->reflection, 'getAttributes')) {
+            throw new SwaggerBakeRunTimeException('Reflected instance does not have getAttributes method');
+        }
+
         $attributes = $this->reflection->getAttributes($this->attributeClass);
 
         foreach ($attributes as $attr) {

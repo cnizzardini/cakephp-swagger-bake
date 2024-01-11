@@ -3,17 +3,19 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
+use SwaggerBake\Lib\Extension\CakeSearch\Extension;
+
 class ExtensionLoader
 {
     /**
      * Returns a list of Extensions
      *
-     * @return object[]
+     * @return array<object>
      */
     private static function extensions(): array
     {
         return [
-            \SwaggerBake\Lib\Extension\CakeSearch\Extension::create(),
+            Extension::create(),
         ];
     }
 

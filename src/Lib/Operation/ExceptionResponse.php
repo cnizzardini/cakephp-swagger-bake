@@ -10,7 +10,6 @@ use ReflectionClass;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\OpenApiExceptionSchemaInterface;
-use SwaggerBake\Lib\Swagger;
 use Throwable;
 
 /**
@@ -25,10 +24,9 @@ class ExceptionResponse
     private Schema|string|null $schema = null;
 
     /**
-     * @param \SwaggerBake\Lib\Swagger $swagger Swagger
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
-    public function __construct(private Swagger $swagger, private Configuration $config)
+    public function __construct(private Configuration $config)
     {
     }
 
@@ -95,27 +93,12 @@ class ExceptionResponse
     }
 
     /**
-     * @deprecated this method will be removed in version 3.
+     * @deprecated this method may be removed in version 3.
      * @param string $exceptionFqn The FQN of the exception class.
      * @return string|null
      */
-    private function fallback(string $exceptionFqn): string|null
+    private function fallback(string $exceptionFqn): ?string
     {
-        $array = $this->swagger->getArray();
-        if (isset($array['x-swagger-bake']['components']['schemas']['app-exceptions'])) {
-            foreach ($array['x-swagger-bake']['components']['schemas']['app-exceptions'] as $name => $exception) {
-                if (isset($exception['x-exception-fqn']) && $exception['x-exception-fqn'] === $exceptionFqn) {
-                    trigger_deprecation(
-                        'cnizzardini/cakephp-swagger-bake',
-                        '2.1.0',
-                        'Support for x-exception-fqn will be removed soon. Use OpenApiExceptionSchemaInterface.'
-                    );
-
-                    return '#/x-swagger-bake/components/schemas/app-exceptions/' . $name;
-                }
-            }
-        }
-
         if (empty($this->config->getExceptionSchema())) {
             return null;
         }

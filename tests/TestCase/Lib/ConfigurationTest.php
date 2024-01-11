@@ -28,27 +28,6 @@ class ConfigurationTest extends TestCase
         $this->configuration = $this->createConfiguration();
     }
 
-    public function test_legacy_get_set(): void
-    {
-        $this->assertEquals(self::DEFAULT_CONFIGS['prefix'], $this->configuration->get('prefix'));
-        $this->configuration->set('prefix', $prefix = '/new-prefix');
-        $this->assertEquals($prefix, $this->configuration->get('prefix'));
-    }
-
-    public function test_legacy_get_should_throw_logic_exception(): void
-    {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessageMatches("/Method getNope/");
-        $this->configuration->get('nope');
-    }
-
-    public function test_legacy_set_should_throw_logic_exception(): void
-    {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessageMatches("/Method setNope/");
-        $this->configuration->set('nope', 'value');
-    }
-
     public function test_get_set_docType(): void
     {
         $this->configuration->setDocType('redoc');
@@ -67,7 +46,7 @@ class ConfigurationTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         new Configuration(['test']);
-        $this->assertStringContainsString('must be defined in your', $this->getExpectedExceptionMessage());
+        $this->expectExceptionMessageMatches('/must be defined in your/');
     }
 
     /**
@@ -101,7 +80,7 @@ class ConfigurationTest extends TestCase
      *
      * @return array
      */
-    public function dataProviderInvalidConfig(): array
+    public static function dataProviderInvalidConfig(): array
     {
         $invalidPath = '/' . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS;
 
@@ -110,7 +89,7 @@ class ConfigurationTest extends TestCase
             ['yml', 'nope', \InvalidArgumentException::class, 'Value should start with'],
             ['yml', $invalidPath . 'nope', \InvalidArgumentException::class, 'yml must exist on the file'],
             ['json', 'nope', \InvalidArgumentException::class, 'Value should start with'],
-            ['json', $invalidPath . 'nope', \InvalidArgumentException::class, 'json must exist on the file'],
+            ['json', $invalidPath . 'nope', \InvalidArgumentException::class, 'Config value for `json` must exist'],
             ['webPath', 'nope', \InvalidArgumentException::class, 'Invalid webPath'],
             ['docType', 'nope', \InvalidArgumentException::class, 'Invalid docType'],
             ['editActionMethods', ['nope'], \InvalidArgumentException::class, 'Invalid editActionMethod'],

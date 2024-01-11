@@ -8,6 +8,7 @@ use Cake\Core\Configure;
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
 use MixerApi\Core\Model\Model;
+use ReflectionClass;
 
 /**
  * Decorates \Cake\Routing\Route\Route
@@ -85,9 +86,10 @@ class RouteDecorator
     {
         $defaults = (array)$route->defaults;
 
-        $methods = $defaults['_method'];
         if (isset($defaults['_method']) && !is_array($defaults['_method'])) {
             $methods = explode(', ', $defaults['_method']);
+        } else {
+            $methods = $defaults['_method'] ?? [];
         }
 
         $this->cakeConfigure = $cakeConfigure ?? new Configure();
@@ -96,11 +98,11 @@ class RouteDecorator
             ->setRoute($route)
             ->setTemplate($route->template)
             ->setName($route->getName())
-            ->setPlugin($defaults['plugin'])
+            ->setPlugin($defaults['plugin'] ?? null)
             ->setPrefix($defaults['prefix'] ?? null)
             ->setController($defaults['controller'] ?? null)
-            ->setAction($defaults['action'])
-            ->setMethods($methods ?? []);
+            ->setAction($defaults['action'] ?? null)
+            ->setMethods($methods);
 
         $fqn = $this->findControllerFqn();
         if ($fqn) {
@@ -215,7 +217,7 @@ class RouteDecorator
      * @param string|null $action The controller method
      * @return $this
      */
-    public function setAction($action)
+    public function setAction(?string $action)
     {
         $this->action = $action;
 
@@ -328,7 +330,7 @@ class RouteDecorator
     public function getControllerInstance(): ?Controller
     {
         if ($this->controllerFqn && class_exists($this->controllerFqn)) {
-            $controller = (new \ReflectionClass($this->controllerFqn))->newInstanceWithoutConstructor();
+            $controller = (new ReflectionClass($this->controllerFqn))->newInstanceWithoutConstructor();
 
             return $controller instanceof Controller ? $controller : null;
         }

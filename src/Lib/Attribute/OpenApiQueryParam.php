@@ -27,24 +27,23 @@ class OpenApiQueryParam
      * value.
      * @param string $style Example of the parameter’s potential value. The example SHOULD match the specified schema
      * and encoding properties if present.
-     * @param string|bool|int $example The expected format of the type, for instance date-time.
+     * @param string|int|bool $example The expected format of the type, for instance date-time.
      * @param bool $allowEmptyValue Are empty values allowed?
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        public string $name = '',
-        public string $ref = '',
-        public string $type = 'string',
-        public string $format = '',
-        public string $description = '',
-        public bool $isRequired = false,
-        public array $enum = [],
-        public bool $isDeprecated = false,
-        public bool $explode = false,
-        public string $style = '',
-        public string|bool|int $example = '',
-        public bool $allowEmptyValue = false
+        public readonly string $name = '',
+        public readonly string $ref = '',
+        public readonly string $type = 'string',
+        public readonly string $format = '',
+        public readonly string $description = '',
+        public readonly bool $isRequired = false,
+        public readonly array $enum = [],
+        public readonly bool $isDeprecated = false,
+        public readonly bool $explode = false,
+        public readonly string $style = '',
+        public readonly string|bool|int $example = '',
+        public readonly bool $allowEmptyValue = false
     ) {
         if (empty($ref) && empty($name)) {
             throw new SwaggerBakeRunTimeException('One of ref or name must be defined');

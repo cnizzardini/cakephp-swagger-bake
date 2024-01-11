@@ -1,31 +1,38 @@
 {
     "name": "cnizzardini/cakephp-swagger-bake",
-    "description": "Automatically generate OpenApi, Swagger, and Redoc documentation from your existing code",
+    "description": "Automatically generate OpenApi, Swagger, and Redoc documentation from your existing cakephp project",
     "type": "cakephp-plugin",
     "license": "MIT",
-    "keywords": ["cakephp swagger","cakephp4 swagger","cake swagger"],
+    "keywords": [
+        "cakephp swagger",
+        "cakephp5 swagger",
+        "cake swagger",
+        "cakephp openapi",
+        "cakephp5 openapi",
+        "cake openapi"
+    ],
     "require": {
-        "php": "^8.0",
-        "cakephp/cakephp": "^4.2",
+        "php": "^8.1",
+        "cakephp/cakephp": "^5.0",
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
-        "thecodingmachine/class-explorer": "^1.1",
-        "mixerapi/core": "^1.1.2"
+        "mixerapi/core": "^2.0"
     },
     "suggest": {
-        "cakephp/authentication": "Used by SwaggerBake #[OpenApiSecurity]",
         "cakephp/bake": "Used by SwaggerBake bake templates",
-        "friendsofcake/search": "Required by SwaggerBake #[OpenApiSearch]"
+        "friendsofcake/search": "Required by SwaggerBake #[OpenApiSearch]",
+        "mixerapi/mixerapi": "Streamline development of your API with MixerAPI"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0",
-        "friendsofcake/search": "^6.0",
-        "cakephp/authentication": "^2.0",
-        "cakephp/cakephp-codesniffer": "^4.2",
-        "phpstan/phpstan": "^0.12.32",
+        "phpunit/phpunit": "^10.0",
+        "friendsofcake/search": "^7.0",
+        "cakephp/authentication": "^3.0",
+        "cakephp/cakephp-codesniffer": "^5.0",
+        "phpstan/phpstan": "^1.8.5",
         "phpmd/phpmd": "^2.10",
-        "cakephp/bake": "^2.1",
-        "cakephp/debug_kit": "^4.4"
+        "cakephp/bake": "^3.0",
+        "cakephp/debug_kit": "^5.0",
+        "cakephp/migrations": "^4.0"
     },
     "autoload": {
         "psr-4": {

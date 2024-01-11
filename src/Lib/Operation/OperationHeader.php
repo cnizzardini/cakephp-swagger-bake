@@ -22,7 +22,7 @@ class OperationHeader
             return $operation;
         }
 
-        /** @var \SwaggerBake\Lib\Attribute\OpenApiHeader[] $headers */
+        /** @var array<\SwaggerBake\Lib\Attribute\OpenApiHeader> $headers */
         $headers = (new AttributeFactory($refMethod, OpenApiHeader::class))->createMany();
         if (!count($headers)) {
             return $operation;

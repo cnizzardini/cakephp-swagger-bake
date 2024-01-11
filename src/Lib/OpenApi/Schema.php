@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\OpenApi;
 
+use AllowDynamicProperties;
 use JsonSerializable;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Utility\ArrayUtility;
@@ -14,20 +15,14 @@ use SwaggerBake\Lib\Utility\ArrayUtility;
  * @see https://swagger.io/docs/specification/data-models/
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class Schema implements JsonSerializable, SchemaInterface
 {
     use SchemaTrait;
 
     /**
-     * @var bool
-     * @deprecated This will be removed in a future version
-     */
-    private bool $isPublic = true;
-
-    /**
      * @param string|null $title Title of the schema
-     * @param string[] $required A list of required properties
+     * @param array<string> $required A list of required properties
      * @param array $properties A mixed array of Schema and SchemaProperty
      * @param string|null $refEntity todo: needs documentation
      * @param array $items A list of items this Schema contains when this schema is an array.
@@ -156,7 +151,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param string[] $required Required
+     * @param array<string> $required Required
      * @return $this
      */
     public function setRequired(array $required)
@@ -188,7 +183,7 @@ class Schema implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param \SwaggerBake\Lib\OpenApi\Schema[]|\SwaggerBake\Lib\OpenApi\SchemaProperty[] $properties A mixed array of Schema and SchemaProperty
+     * @param array<\SwaggerBake\Lib\OpenApi\Schema>|array<\SwaggerBake\Lib\OpenApi\SchemaProperty> $properties A mixed array of Schema and SchemaProperty
      * @return $this
      */
     public function setProperties(array $properties)
@@ -347,38 +342,6 @@ class Schema implements JsonSerializable, SchemaInterface
     public function setXml(?Xml $xml)
     {
         $this->xml = $xml;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     * @deprecated This will be removed in a future version. Use setVisibility() instead.
-     */
-    public function isPublic(): bool
-    {
-        trigger_deprecation(
-            'cnizzardini/cakephp-swagger-bake',
-            'v2.2.3',
-            'This will be removed in a future version. Use setVisibility() instead.'
-        );
-
-        return $this->isPublic;
-    }
-
-    /**
-     * @param bool $isPublic indicates visibility
-     * @deprecated This will be removed in a future version. Use getVisibility() instead.
-     * @return $this
-     */
-    public function setIsPublic(bool $isPublic)
-    {
-        trigger_deprecation(
-            'cnizzardini/cakephp-swagger-bake',
-            'v2.2.3',
-            'This will be removed in a future version. Use setVisibility() instead.'
-        );
-        $this->isPublic = $isPublic;
 
         return $this;
     }

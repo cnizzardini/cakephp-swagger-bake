@@ -12,6 +12,7 @@ class DataTypeConversionTest extends TestCase
     private const OA_FORMAT_INT64 = 'int64';
     private const OA_FORMAT_INT32 = 'int32';
     private const OA_FORMAT_FLOAT = 'float';
+    private const OA_FORMAT_DATETIME = 'date-time';
 
     public function testToType(): void
     {

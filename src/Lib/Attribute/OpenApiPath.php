@@ -15,18 +15,17 @@ class OpenApiPath
      * @param string|null $ref An OpenAPI ref such as `#/paths/my-path`
      * @param string|null $summary Overwrites the default summary (if any)
      * @param string|null $description Overwrites the default description
-     * @param string[] $tags Sets the tags for all operations in the path. Tags set on individual operations will take
+     * @param array<string> $tags Sets the tags for all operations in the path. Tags set on individual operations will take
      *  precedence.
      * @see https://spec.openapis.org/oas/latest.html#path-item-object
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        public bool $isVisible = true,
-        public ?string $ref = null,
-        public ?string $summary = null,
-        public ?string $description = null,
-        public array $tags = []
+        public readonly bool $isVisible = true,
+        public readonly ?string $ref = null,
+        public readonly ?string $summary = null,
+        public readonly ?string $description = null,
+        public readonly array $tags = []
     ) {
     }
 }

@@ -8,6 +8,7 @@ use Cake\Core\Exception\CakeException;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
+use Exception;
 use MixerApi\Core\Model\Model;
 use MixerApi\Core\Model\ModelFactory;
 use MixerApi\Core\Utility\NamespaceUtility;
@@ -31,15 +32,15 @@ class ModelScanner
      * @param \SwaggerBake\Lib\Configuration $config Configuration
      */
     public function __construct(
-        private RouteScanner $routeScanner,
-        private Configuration $config
+        private readonly RouteScanner $routeScanner,
+        private readonly Configuration $config
     ) {
     }
 
     /**
      * Gets an array of ModelDecorator instances if the model is associated with a route and that route is visible.
      *
-     * @return \SwaggerBake\Lib\Model\ModelDecorator[]
+     * @return array<\SwaggerBake\Lib\Model\ModelDecorator>
      * @throws \ReflectionException
      */
     public function getModelDecorators(): array
@@ -56,7 +57,7 @@ class ModelScanner
                     if (!class_exists($table)) {
                         continue;
                     }
-                    $reflection = new \ReflectionClass($table);
+                    $reflection = new ReflectionClass($table);
                     if (!$reflection->isInstantiable() || !$reflection->isSubclassOf(Table::class)) {
                         continue;
                     }
@@ -66,7 +67,7 @@ class ModelScanner
                     }
                     $tableInstance = $this->getTableLocator()->get($class);
                     $model = (new ModelFactory($connection, $tableInstance))->create();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     continue;
                 }
 

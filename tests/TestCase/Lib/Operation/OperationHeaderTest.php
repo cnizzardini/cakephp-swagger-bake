@@ -3,36 +3,28 @@
 namespace SwaggerBake\Test\TestCase\Lib\Operation;
 
 use Cake\TestSuite\TestCase;
-use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Attribute\OpenApiHeader;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationHeader;
+use SwaggerBake\Test\TestCase\Helper\ReflectionAttributeTrait;
 
 class OperationHeaderTest extends TestCase
 {
+    use ReflectionAttributeTrait;
+
     public function test_get_operation_with_headers(): void
     {
-        $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-        $mockReflectionMethod->expects($this->once())
-            ->method(
-                'getAttributes'
-            )
-            ->with(OpenApiHeader::class)
-            ->will(
-                $this->returnValue([
-                    new ReflectionAttribute(OpenApiHeader::class, [
-                        'name' => 'X-HEADER',
-                        'type' => 'string',
-                        'description' => 'test desc',
-                        'isRequired' => true,
-                        'explode' => true,
-                        'allowEmptyValue' => true,
-                        'isDeprecated' => true,
-                        'format' => 'date',
-                        'example' => 'test example',
-                    ])
-                ])
-            );
+        $mockReflectionMethod = $this->mockReflectionMethod(OpenApiHeader::class, [
+            'name' => 'X-HEADER',
+            'type' => 'string',
+            'description' => 'test desc',
+            'isRequired' => true,
+            'explode' => true,
+            'allowEmptyValue' => true,
+            'isDeprecated' => true,
+            'format' => 'date',
+            'example' => 'test example',
+        ]);
 
         $operation = (new OperationHeader())
             ->getOperationWithHeaders(

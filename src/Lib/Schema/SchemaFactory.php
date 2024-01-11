@@ -7,6 +7,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Validation\Validator;
+use Exception;
 use MixerApi\Core\Model\Model;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -174,7 +175,7 @@ class SchemaFactory
     {
         try {
             $reflectionClass = new ReflectionClass($entity);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
 
@@ -193,12 +194,12 @@ class SchemaFactory
      * Returns key-value pair of property name => SchemaProperty
      *
      * @param \MixerApi\Core\Model\Model $model Model
-     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * @return array<\SwaggerBake\Lib\OpenApi\SchemaProperty>
      * @throws \ReflectionException
      */
     private function getPropertyAnnotations(Model $model): array
     {
-        /** @var \SwaggerBake\Lib\Attribute\OpenApiSchemaProperty[] $attributes */
+        /** @var array<\SwaggerBake\Lib\Attribute\OpenApiSchemaProperty> $attributes */
         $attributes = (new AttributeFactory(
             new ReflectionClass($model->getEntity()),
             OpenApiSchemaProperty::class
@@ -222,7 +223,7 @@ class SchemaFactory
     {
         try {
             $validator = $model->getTable()->validationDefault(new Validator());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return new Validator();
         }
 

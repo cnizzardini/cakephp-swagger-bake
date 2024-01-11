@@ -23,7 +23,7 @@ abstract class AbstractOpenApiParameter
      * @param string $type The data scalar type (e.g. string, integer)
      * @param string $format The data format (e.g. data-time, uuid)
      * @param string $description A description of the parameter
-     * @param string|bool|int|float $example An example scalar value of the parameter
+     * @param string|float|int|bool $example An example scalar value of the parameter
      * @param bool $isRequired Is the parameter required?
      * @param array $enum An enumerated list of values.
      * @param bool $isDeprecated Is the parameter deprecated?
@@ -34,22 +34,22 @@ abstract class AbstractOpenApiParameter
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        public string $name = '',
-        public string $ref = '',
-        public string $type = 'string',
-        public string $format = '',
-        public string $description = '',
-        public string|bool|int|float $example = '',
-        public bool $isRequired = false,
-        public array $enum = [],
-        public bool $isDeprecated = false,
-        public bool $allowEmptyValue = false,
-        public bool $explode = false,
-        public string $style = '',
-        public bool $allowReserved = false,
+        public readonly string $name = '',
+        public readonly string $ref = '',
+        public readonly string $type = 'string',
+        public readonly string $format = '',
+        public readonly string $description = '',
+        public readonly string|bool|int|float $example = '',
+        public readonly bool $isRequired = false,
+        public readonly array $enum = [],
+        public readonly bool $isDeprecated = false,
+        public readonly bool $allowEmptyValue = false,
+        public readonly bool $explode = false,
+        public readonly string $style = '',
+        public readonly bool $allowReserved = false,
     ) {
         if (empty($name) && empty($ref)) {
-            throw new InvalidArgumentException('One name or ref is required for ' . self::class);
+            throw new InvalidArgumentException('One of `name` or `ref` is required for ' . self::class);
         }
     }
 
@@ -61,15 +61,6 @@ abstract class AbstractOpenApiParameter
     public function create(): Parameter
     {
         switch (static::class) {
-            case OpenApiDtoQuery::class:
-                $parameter = new Parameter(
-                    in: 'query',
-                    ref: $this->ref,
-                    name: $this->name,
-                    allowEmptyValue: $this->allowEmptyValue,
-                    allowReserved: $this->allowReserved
-                );
-                break;
             case OpenApiHeader::class:
                 $parameter = new Parameter('header', $this->ref, $this->name);
                 break;

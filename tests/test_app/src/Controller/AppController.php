@@ -28,7 +28,7 @@ use Cake\Controller\Controller;
  */
 class AppController extends Controller
 {
-    public $paginate = [
+    public array $paginate = [
         'maxLimit' => 1000,
     ];
 

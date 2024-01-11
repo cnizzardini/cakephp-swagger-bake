@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Command;
 
+use Cake\Command\Command;
 use Cake\Console\Arguments;
-use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Routing\Router;
@@ -44,13 +44,9 @@ class ModelCommand extends Command
     }
 
     /**
-     * List Cake Entities that can be added to Swagger. Prints to console.
-     *
-     * @param \Cake\Console\Arguments $args Arguments
-     * @param \Cake\Console\ConsoleIo $io ConsoleIo
-     * @return int|void|null
+     * @inheritDoc
      */
-    public function execute(Arguments $args, ConsoleIo $io)
+    public function execute(Arguments $args, ConsoleIo $io): void
     {
         $this->loadConfig($args);
 

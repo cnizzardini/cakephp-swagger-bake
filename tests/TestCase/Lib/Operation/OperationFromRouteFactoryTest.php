@@ -8,7 +8,7 @@ use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\OpenApi\Path;
 use SwaggerBake\Lib\Route\RouteScanner;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
+use SwaggerBake\Lib\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationFromRouteFactory;
 
@@ -17,7 +17,7 @@ class OperationFromRouteFactoryTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 
@@ -51,8 +51,7 @@ class OperationFromRouteFactoryTest extends TestCase
      */
     public function test_create(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['index']
@@ -61,7 +60,7 @@ class OperationFromRouteFactoryTest extends TestCase
 
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
-        $cakeRoute = new RouteScanner($router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
 
         $routes = $cakeRoute->getRoutes();
 
@@ -79,8 +78,7 @@ class OperationFromRouteFactoryTest extends TestCase
 
     public function test_operation_is_put(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['update']
@@ -89,7 +87,7 @@ class OperationFromRouteFactoryTest extends TestCase
 
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
-        $cakeRoute = new RouteScanner($router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
 
         $routes = $cakeRoute->getRoutes();
         $operation = (new OperationFromRouteFactory($swagger, new Path('/')))->create(
@@ -105,8 +103,7 @@ class OperationFromRouteFactoryTest extends TestCase
 
     public function test_operation_not_created_if_http_method_missing(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['update']
@@ -115,7 +112,7 @@ class OperationFromRouteFactoryTest extends TestCase
 
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
         $swagger = (new SwaggerFactory($config))->create();
-        $cakeRoute = new RouteScanner($router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
 
         $route = $cakeRoute->getRoutes()['employees:edit'];
         $route->setMethods([]);

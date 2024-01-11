@@ -6,8 +6,6 @@ namespace SwaggerBake\Lib\Operation;
 use Cake\Form\Form;
 use ReflectionClass;
 use SwaggerBake\Lib\Attribute\AttributeFactory;
-use SwaggerBake\Lib\Attribute\OpenApiDtoQuery;
-use SwaggerBake\Lib\Attribute\OpenApiDtoRequestBody;
 use SwaggerBake\Lib\Attribute\OpenApiQueryParam;
 use SwaggerBake\Lib\Attribute\OpenApiSchemaProperty;
 use SwaggerBake\Lib\OpenApi\Parameter;
@@ -40,7 +38,7 @@ class DtoParser
     /**
      * Returns an array of Parameter instances for use in Query Parameters
      *
-     * @return \SwaggerBake\Lib\OpenApi\Parameter[]
+     * @return array<\SwaggerBake\Lib\OpenApi\Parameter>
      * @throws \ReflectionException
      */
     public function getParameters(): array
@@ -54,33 +52,16 @@ class DtoParser
 
             if ($queryParam instanceof OpenApiQueryParam) {
                 $parameters[$queryParam->name] = $queryParam->createParameter();
-                continue;
-            }
-
-            // @todo: remove OpenApiDtoQuery this code in v3.0.0
-            $openApiDtoQuery = (new AttributeFactory(
-                $reflectionProperty,
-                OpenApiDtoQuery::class
-            ))->createOneOrNull();
-
-            if ($openApiDtoQuery instanceof OpenApiDtoQuery) {
-                $parameters[$openApiDtoQuery->name] = $openApiDtoQuery->create();
-                trigger_deprecation(
-                    'cnizzardini/cakekphp-swagger-bake',
-                    'v2.2.5',
-                    'OpenApiDtoQuery is deprecated and will be removed in v3.0.0, use OpenApiQueryParam in ' .
-                    'DTOs instead.'
-                );
             }
         }
 
-        return $parameters;
+        return array_values($parameters);
     }
 
     /**
      * Returns an array of SchemaProperty instances for use in Body Requests or Responses.
      *
-     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * @return array<\SwaggerBake\Lib\OpenApi\SchemaProperty>
      * @throws \ReflectionException
      */
     public function getSchemaProperties(): array
@@ -94,22 +75,6 @@ class DtoParser
 
             if ($schemaProperty instanceof OpenApiSchemaProperty) {
                 $schemaProperties[$schemaProperty->name] = $schemaProperty->create();
-                continue;
-            }
-
-            // @todo: remove OpenApiDtoRequestBody in v3.0.0
-            $openApiDtoRequestBody = (new AttributeFactory(
-                $reflectionProperty,
-                OpenApiDtoRequestBody::class
-            ))->createOneOrNull();
-
-            if ($openApiDtoRequestBody instanceof OpenApiDtoRequestBody) {
-                $schemaProperties[$openApiDtoRequestBody->name] = $openApiDtoRequestBody->create();
-                trigger_deprecation(
-                    'cnizzardini/cakekphp-swagger-bake',
-                    'v2.2.5',
-                    'OpenApiDtoQuery is deprecated and will be removed in v3.0.0, use OpenApiSchemaProperty instead.'
-                );
             }
         }
 
@@ -118,7 +83,7 @@ class DtoParser
 
     /**
      * @link https://book.cakephp.org/4/en/core-libraries/form.html
-     * @return \SwaggerBake\Lib\OpenApi\SchemaProperty[]
+     * @return array<\SwaggerBake\Lib\OpenApi\SchemaProperty>
      * @throws \ReflectionException
      */
     private function getModellessFormSchemaProperties(): array
@@ -148,7 +113,7 @@ class DtoParser
 
     /**
      * @link https://book.cakephp.org/4/en/core-libraries/form.html
-     * @return \SwaggerBake\Lib\OpenApi\Parameter[]
+     * @return array<\SwaggerBake\Lib\OpenApi\Parameter>
      * @throws \ReflectionException
      */
     private function getModellessFormQueryParams(): array

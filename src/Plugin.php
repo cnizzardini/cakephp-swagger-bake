@@ -13,29 +13,11 @@ use SwaggerBake\Lib\Service\InstallerService;
 use SwaggerBake\Lib\Service\OpenApiBakerService;
 use SwaggerBake\Lib\Service\OpenApiControllerService;
 
-/**
- * Class Plugin
- *
- * @package SwaggerBake
- */
 class Plugin extends BasePlugin
 {
-    /**
-     * Plugin name.
-     *
-     * @var string
-     */
-    protected $name = 'SwaggerBake';
+    protected bool $routes = false;
 
-    /**
-     * @var bool
-     */
-    protected $routes = false;
-
-    /**
-     * @var bool
-     */
-    protected $middleware = false;
+    protected bool $middleware = false;
 
     /**
      * @inheritDoc

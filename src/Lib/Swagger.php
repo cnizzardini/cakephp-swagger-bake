@@ -3,11 +3,8 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib;
 
-use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use DebugKit\DebugMemory;
-use DebugKit\DebugTimer;
 use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelScanner;
@@ -30,36 +27,37 @@ class Swagger
      */
     private const ASSETS = __DIR__ . DS . '..' . DS . '..' . DS . 'assets' . DS;
 
-    private array $array = [];
-
-    private Configuration $config;
-
-    private FileUtility $fileUtility;
+    private array $array = [
+        'paths' => [],
+        'components' => [
+            'schemas' => [],
+        ],
+    ];
 
     /**
      * @param \SwaggerBake\Lib\Model\ModelScanner $modelScanner ModelScanner instance
-     * @param \SwaggerBake\Lib\Configuration $configuration Configuration instance
+     * @param \SwaggerBake\Lib\Configuration $config Configuration instance
      * @param \SwaggerBake\Lib\Utility\FileUtility|null $fileUtility FileUtility will be created automatically if
      *  argument is null.
      * @throws \ReflectionException
      */
     public function __construct(
-        ModelScanner $modelScanner,
-        Configuration $configuration,
-        ?FileUtility $fileUtility = null
+        private ModelScanner $modelScanner,
+        private Configuration $config,
+        private ?FileUtility $fileUtility = null
     ) {
-        if (Plugin::isLoaded('DebugKit')) {
-            DebugTimer::start('SwaggerBake');
-        }
-
-        $this->config = $configuration;
         $this->fileUtility = $fileUtility ?? new FileUtility();
+    }
 
+    /**
+     * Builds an OpenAPI array that can be converted to JSON.
+     *
+     * @return self
+     * @throws \ReflectionException
+     */
+    public function build(): Swagger
+    {
         $this->array = (new OpenApiFromYaml())->build(Yaml::parseFile($this->config->getYml()));
-
-        EventManager::instance()->dispatch(
-            new Event('SwaggerBake.initialize', $this)
-        );
 
         $xSwaggerBake = Yaml::parseFile(self::ASSETS . 'x-swagger-bake.yaml');
 
@@ -68,14 +66,15 @@ class Swagger
             $this->array['x-swagger-bake'] ?? []
         );
 
-        $this->array = (new OpenApiSchemaGenerator($modelScanner))->generate($this->array);
-        $this->array = (new OpenApiPathGenerator($this, $modelScanner->getRouteScanner(), $this->config))
+        EventManager::instance()->dispatch(
+            new Event('SwaggerBake.initialize', $this)
+        );
+
+        $this->array = (new OpenApiSchemaGenerator($this->modelScanner))->generate($this->array);
+        $this->array = (new OpenApiPathGenerator($this, $this->modelScanner->getRouteScanner(), $this->config))
             ->generate($this->array);
 
-        if (Plugin::isLoaded('DebugKit')) {
-            DebugTimer::stop('SwaggerBake');
-            DebugMemory::record('SwaggerBake');
-        }
+        return $this;
     }
 
     /**
@@ -93,14 +92,15 @@ class Swagger
             }
         }
 
-        foreach ($this->array['components']['schemas'] as $schema) {
+        foreach ($this->array['components']['schemas'] ?? [] as $schema) {
             if (!is_array($schema)) {
                 $schema->toArray();
             }
         }
 
         ksort($this->array['paths'], SORT_STRING);
-        if (is_array($this->array['components']['schemas'])) {
+
+        if (isset($this->array['components']['schemas']) && is_array($this->array['components']['schemas'])) {
             uksort($this->array['components']['schemas'], function ($a, $b) {
                 return strcasecmp(
                     preg_replace('/\s+/', '', $a),
@@ -196,7 +196,7 @@ class Swagger
     /**
      * Returns an array of Operation objects that do not have a 200-299 HTTP status code
      *
-     * @return \SwaggerBake\Lib\OpenApi\Operation[]
+     * @return array<\SwaggerBake\Lib\OpenApi\Operation>
      */
     public function getOperationsWithNoHttp20x(): array
     {
@@ -233,7 +233,7 @@ class Swagger
      */
     private function addAdditionalSchema(): void
     {
-        $paths = $this->array['paths'];
+        $paths = $this->array['paths'] ?? [];
         if (empty($paths)) {
             return;
         }

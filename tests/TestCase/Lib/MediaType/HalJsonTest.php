@@ -8,7 +8,7 @@ use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
-use SwaggerBake\Lib\Factory\SwaggerFactory;
+use SwaggerBake\Lib\SwaggerFactory;
 use SwaggerBake\Lib\MediaType\HalJson;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -22,24 +22,20 @@ class HalJsonTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
         'plugin.SwaggerBake.DepartmentEmployees',
     ];
-
-    private Router $router;
 
     private Configuration $config;
 
     public function setUp(): void
     {
         parent::setUp();
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees');
         });
-        $this->router = $router;
 
         $this->config = new Configuration([
             'prefix' => '/',
@@ -64,31 +60,26 @@ class HalJsonTest extends TestCase
      */
     public function test_item_with_association(): void
     {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
-        $routes = $cakeRoute->getRoutes();
+        $routeScanner = new RouteScanner(new Router(), $this->config);
+        $swagger = (new SwaggerFactory($this->config))->create();
 
         $schema = (new OperationResponseAssociation(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
-            $routes['employees:view'],
+            $swagger->build(),
+            $routeScanner->getRoutes()['employees:view'],
             null
         ))->build(new OpenApiResponse(
             associations: ['whiteList' => ['DepartmentEmployees']]
         ));
 
         $schema = (new HalJson())->buildSchema($schema, 'object');
-        $object = json_decode(json_encode($schema->jsonSerialize()));
+        $data = $schema->getItems()['properties']['_embedded']['items']['allOf'];
 
-        $this->assertTrue(isset($object->items->properties->_embedded->items->allOf));
-        $this->assertNotEmpty(
-            (new Collection($object->items->properties->_embedded->items->allOf))->filter(function($item) {
-                return isset($item['$ref']) && $item['$ref'] == HalJson::HAL_ITEM;
-            })
-        );
-        $this->assertNotEmpty(
-            (new Collection($object->items->properties->_embedded->items->allOf))->filter(function($item) {
-                return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
-            })
-        );
+        $this->assertNotEmpty(array_filter($data, function($item) {
+            return isset($item['$ref']) && $item['$ref'] == HalJson::HAL_ITEM;
+        }));
+        $this->assertNotEmpty(array_filter($data, function($item) {
+            return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
+        }));
     }
 
     /**
@@ -97,12 +88,12 @@ class HalJsonTest extends TestCase
      */
     public function test_item_collection_association(): void
     {
-        $cakeRoute = new RouteScanner($this->router, $this->config);
-        $routes = $cakeRoute->getRoutes();
+        $routeScanner = new RouteScanner(new Router(), $this->config);
+        $swagger = (new SwaggerFactory($this->config))->create();
 
         $schema = (new OperationResponseAssociation(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
-            $routes['employees:view'],
+            $swagger->build(),
+            $routeScanner->getRoutes()['employees:view'],
             null
         ))->build(new OpenApiResponse(
             schemaType: 'array',
@@ -110,22 +101,18 @@ class HalJsonTest extends TestCase
         ));
 
         $schema = (new HalJson())->buildSchema($schema, 'array');
-        $object = json_decode(json_encode($schema->jsonSerialize()));
 
-        $this->assertEquals(HalJson::HAL_COLLECTION, $object->allOf[0]->{'$ref'});
-        $this->assertTrue(isset($object->properties->_embedded->items->properties->_embedded->items->allOf));
+        $this->assertEquals(HalJson::HAL_COLLECTION, $schema->getAllOf()[0]['$ref']);
+        /** @var SchemaProperty $schemaProperty */
+        $schemaProperty = $schema->getProperties()['_embedded'];
+        $allOf = $schemaProperty->getItems()['properties']['_embedded']['items']['allOf'];
 
-        $allOf = $object->properties->_embedded->items->properties->_embedded->items->allOf;
-        $this->assertNotEmpty(
-            (new Collection($allOf))->filter(function($item) {
-                return isset($item['$ref']) && $item['$ref'] == HalJson::HAL_ITEM;
-            })
-        );
-        $this->assertNotEmpty(
-            (new Collection($allOf))->filter(function($item) {
-                return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
-            })
-        );
+        $this->assertNotEmpty(array_filter($allOf, function($item) {
+            return isset($item['$ref']) && $item['$ref'] == HalJson::HAL_ITEM;
+        }));
+        $this->assertNotEmpty(array_filter($allOf, function($item) {
+            return isset($item['$ref']) && $item['$ref'] == '#/x-swagger-bake/components/schemas/DepartmentEmployee';
+        }));
     }
 
     public function test_nested_associations(): void
@@ -149,11 +136,11 @@ class HalJsonTest extends TestCase
         ]);
 
         $schema = (new HalJson())->buildSchema($schema, 'object');
-        $object = json_decode(json_encode($schema->jsonSerialize()));
+        $properties = $schema->getItems()['properties'];
 
-        $this->assertObjectHasAttribute('test_string', $object->items->properties);
-        $this->assertObjectHasAttribute('test_ref_entity', $object->items->properties->_embedded->properties);
-        $this->assertCount(2, $object->items->properties->_embedded->properties->test_ref_entity->allOf);
-        $this->assertObjectHasAttribute('test_object', $object->items->properties->_embedded->properties);
+        $this->assertArrayHasKey('test_string', $properties);
+        $this->assertArrayHasKey('test_ref_entity', $properties['_embedded']['properties']);
+        $this->assertCount(2, $properties['_embedded']['properties']['test_ref_entity']['allOf']);
+        $this->assertArrayHasKey('test_object', $properties['_embedded']['properties']);
     }
 }

@@ -7,6 +7,8 @@ use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use InvalidArgumentException;
 use LogicException;
+use RuntimeException;
+use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -58,12 +60,12 @@ class Configuration
     protected string $exceptionSchema = 'Exception';
 
     /**
-     * @var string[] The requested mimetypes accepted by your API.
+     * @var array<string>  The requested mimetypes accepted by your API.
      */
     protected array $requestAccepts = ['application/json'];
 
     /**
-     * @var string[] The mimetypes your API responds with.
+     * @var array<string>  The mimetypes your API responds with.
      */
     protected array $responseContentTypes = ['application/json'];
 
@@ -74,7 +76,7 @@ class Configuration
     protected int $jsonOptions = JSON_PRETTY_PRINT;
 
     /**
-     * @var string[] The HTTP methods implemented for edit() actions.
+     * @var array<string>  The HTTP methods implemented for edit() actions.
      */
     protected array $editActionMethods = ['PATCH'];
 
@@ -103,8 +105,8 @@ class Configuration
         $this->root = $root;
         try {
             $config = !empty($config) ? $config : Configure::readOrFail('SwaggerBake');
-        } catch (\RuntimeException $e) {
-            throw new \SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException(
+        } catch (RuntimeException $e) {
+            throw new SwaggerBakeRunTimeException(
                 'SwaggerBake config missing. Have you added it to your `config/bootstrap.php`? ' . $e->getMessage(),
                 500,
                 $e
@@ -125,7 +127,7 @@ class Configuration
             }
             $setter = 'set' . ucfirst($property);
             if (!method_exists($this, $setter)) {
-                throw new \LogicException(
+                throw new LogicException(
                     sprintf(
                         'Method %s does not exist in class %s but is trying to be called.',
                         $setter,
@@ -188,7 +190,7 @@ class Configuration
         }
 
         $path = $this->root . $yml;
-        if (!file_exists($path) && !touch($path)) {
+        if ((!file_exists($path) && !is_writable($path)) || !touch($path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     "Invalid yml: `%s`. yml must exist on the file system. An attempt was made to create %s, but 
@@ -232,12 +234,12 @@ class Configuration
         }
 
         $path = $this->root . $json;
-        if (!file_exists($path) && !touch($path)) {
+        if ((!file_exists($path) && !is_writable($path)) || !touch($path)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    "Invalid json: `%s`. json must exist on the file system. An attempt was made to create %s, but 
-                    permission was denied or the file path is bad. Either fix the file system permissions, create the 
-                    file and/or both. $message",
+                    "Invalid json: `%s`. Config value for `json` must exist on the file system. An attempt was 
+                    made to create %s, but permission was denied or the file path is bad. Either fix the file system 
+                    permissions, create the file and/or both. $message",
                     $json,
                     $path
                 )
@@ -376,7 +378,7 @@ class Configuration
     /**
      * @return mixed|string
      */
-    public function getTitleFromYml()
+    public function getTitleFromYml(): mixed
     {
         $yml = $this->getParsedYml();
 
@@ -420,7 +422,7 @@ class Configuration
     }
 
     /**
-     * @param string[] $requestAccepts The requested mimetypes accepted by your API.
+     * @param array<string> $requestAccepts The requested mimetypes accepted by your API.
      * @return $this
      */
     public function setRequestAccepts(array $requestAccepts)
@@ -439,7 +441,7 @@ class Configuration
     }
 
     /**
-     * @param string[] $responseContentTypes The mimetypes your API responds with.
+     * @param array<string> $responseContentTypes The mimetypes your API responds with.
      * @return $this
      */
     public function setResponseContentTypes(array $responseContentTypes)
@@ -501,7 +503,7 @@ class Configuration
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getEditActionMethods(): array
     {
@@ -509,7 +511,7 @@ class Configuration
     }
 
     /**
-     * @param string[] $editActionMethods Valid types are POST, PUT, and PATCH.
+     * @param array<string> $editActionMethods Valid types are POST, PUT, and PATCH.
      * @return $this
      */
     public function setEditActionMethods(array $editActionMethods)
@@ -547,59 +549,5 @@ class Configuration
         ) {
             throw new InvalidArgumentException($message);
         }
-    }
-
-    /**
-     * @deprecated use property specific getters instead
-     * @param string $property The Configuration property name
-     * @return mixed
-     */
-    public function get(string $property)
-    {
-        trigger_deprecation(
-            'cnizzardini/cakephp-swagger-bake',
-            'v2.3.0',
-            'Configuration::get() will be removed in v3.0.0, use property specific getters instead'
-        );
-
-        $getter = 'get' . ucfirst($property);
-        if (!method_exists($this, $getter)) {
-            throw new \LogicException(
-                sprintf(
-                    'Method %s does not exist in class %s, but is trying to be called.',
-                    $getter,
-                    self::class
-                )
-            );
-        }
-
-        return $this->{$getter}();
-    }
-
-    /**
-     * @deprecated use property specific setters instead
-     * @param string $property Configuration property
-     * @param mixed $value Configuration value
-     * @return void
-     */
-    public function set(string $property, mixed $value): void
-    {
-        trigger_deprecation(
-            'cnizzardini/cakephp-swagger-bake',
-            'v2.3.0',
-            'Configuration::set() will be removed in v3.0.0, use property specific setters instead'
-        );
-
-        $setter = 'set' . ucfirst($property);
-        if (!method_exists($this, $setter)) {
-            throw new \LogicException(
-                sprintf(
-                    'Method %s does not exist in class %s, but is trying to be called.',
-                    $setter,
-                    self::class
-                )
-            );
-        }
-        $this->{$setter}($value);
     }
 }

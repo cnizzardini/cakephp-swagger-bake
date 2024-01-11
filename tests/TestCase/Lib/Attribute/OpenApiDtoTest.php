@@ -12,8 +12,10 @@ use SwaggerBake\Lib\Swagger;
 
 class OpenApiDtoTest extends TestCase
 {
-    /** @inheritdoc  */
-    public $fixtures = [
+    /**
+     * @var string[]
+     */
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 
@@ -42,43 +44,29 @@ class OpenApiDtoTest extends TestCase
     /**
      * When an OpenApiDto is used on a http get controller action, the properties are displayed as OpenAPI query
      * parameters.
-     *
-     * @todo update in v3.0.0
      */
     public function test_openapi_dto_query(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => ['dtoQuery', 'dtoQueryLegacy'],
+                'only' => ['dtoQuery'],
                 'map' => [
                     'dtoQuery' => [
                         'action' => 'dtoQuery',
                         'method' => 'GET',
                         'path' => 'dto-query'
-                    ],
-                    'dtoQueryLegacy' => [
-                        'action' => 'dtoQueryLegacy',
-                        'method' => 'GET',
-                        'path' => 'dto-query-legacy'
-                    ],
+                    ]
                 ]
             ]);
         });
 
-        $cakeRoute = new RouteScanner($router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
 
-        $operation = $arr['paths']['/employees/dto-query-legacy']['get'];
-        $properties = ['first_name', 'last_name', 'title', 'age', 'date'];
-        foreach ($properties as $x => $property) {
-            $this->assertEquals($property, $operation['parameters'][$x]['name']);
-        }
-
+        $properties = ['lazy', 'first_name', 'last_name', 'title', 'age', 'date',];
         $operation = $arr['paths']['/employees/dto-query']['get'];
-        $properties = array_merge(['lazy'], $properties);
         foreach ($properties as $x => $property) {
             $this->assertEquals($property, $operation['parameters'][$x]['name']);
         }
@@ -87,97 +75,32 @@ class OpenApiDtoTest extends TestCase
     /**
      * When an OpenApiDto is used on a http post controller action, the properties are displayed as OpenAPI schema
      * properties.
-     *
-     * @todo update in v3.0.0
      */
     public function test_openapi_dto_post(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
-                'only' => ['dtoPost','dtoPostLegacy', ],
+                'only' => ['dtoPost'],
                 'map' => [
                     'dtoPost' => [
                         'action' => 'dtoPost',
                         'method' => 'POST',
                         'path' => 'dto-post'
-                    ],
-                    'dtoPostLegacy' => [
-                        'action' => 'dtoPostLegacy',
-                        'method' => 'POST',
-                        'path' => 'dto-post-legacy'
-                    ],
+                    ]
                 ]
             ]);
         });
 
-        $cakeRoute = new RouteScanner($router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
 
-        $operation = $arr['paths']['/employees/dto-post-legacy']['post'];
-        $properties = $operation['requestBody']['content']['application/json']['schema']['properties'];
-        $names = ['first_name', 'last_name', 'title', 'age', 'date'];
-        foreach ($names as $property) {
-            $this->assertArrayHasKey($property, $properties);
-        }
-
+        $names = ['first_name', 'last_name', 'title', 'age', 'date', 'lazy', ];
         $operation = $arr['paths']['/employees/dto-post']['post'];
         $properties = $operation['requestBody']['content']['application/json']['schema']['properties'];
-        $names = array_merge(['lazy'], $names);
         foreach ($names as $property) {
             $this->assertArrayHasKey($property, $properties);
-        }
-    }
-
-    /**
-     * @deprecated remove in v3.0.0
-     */
-    public function test_openapi_dto_post_with_public_schema(): void
-    {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
-            $builder->setExtensions(['json']);
-            $builder->resources('Employees', [
-                'only' => ['dtoPublic','dtoPublicLegacy', ],
-                'map' => [
-                    'dtoPublic' => [
-                        'action' => 'dtoPublic',
-                        'method' => 'POST',
-                        'path' => 'dto-public'
-                    ],
-                    'dtoPublicLegacy' => [
-                        'action' => 'dtoPublicLegacy',
-                        'method' => 'POST',
-                        'path' => 'dto-public-legacy'
-                    ],
-                ]
-            ]);
-        });
-
-        $cakeRoute = new RouteScanner($router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
-        $arr = json_decode($swagger->toString(), true);
-
-        $parameterized = [
-            'dto-public-legacy' => 'EmployeeDataRequestPublicSchemaLegacy',
-            'dto-public' => 'EmployeeDataRequestPublicSchema',
-        ];
-
-        $names = ['first_name', 'last_name', 'title', 'age', 'date'];
-
-        foreach ($parameterized as $path => $class) {
-            $this->assertArrayHasKey($class, $arr['components']['schemas']);
-
-            $properties = $arr['components']['schemas'][$class]['properties'];
-            foreach ($names as $property) {
-                $this->assertArrayHasKey($property, $properties);
-            }
-
-            $operation = $arr['paths']['/employees/' . $path]['post'];
-            $ref = $operation['requestBody']['content']['application/json']['schema']['$ref'];
-            $this->assertEquals('#/components/schemas/' . $class, $ref);
         }
     }
 
@@ -187,8 +110,7 @@ class OpenApiDtoTest extends TestCase
      */
     public function test_openapi_dto_modelless_post_form(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['modellessFormPost'],
@@ -202,8 +124,8 @@ class OpenApiDtoTest extends TestCase
             ]);
         });
 
-        $cakeRoute = new RouteScanner($router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
         $operation = $arr['paths']['/employees/modelless-form-post']['post'];
         $properties = $operation['requestBody']['content']['application/json']['schema']['properties'];
@@ -231,8 +153,7 @@ class OpenApiDtoTest extends TestCase
      */
     public function test_openapi_dto_modelless_get_form(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['modellessFormGet'],
@@ -246,8 +167,8 @@ class OpenApiDtoTest extends TestCase
             ]);
         });
 
-        $cakeRoute = new RouteScanner($router, $this->config);
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
         $operation = $arr['paths']['/employees/modelless-form-get']['get'];
         $this->assertCount(3, $operation['parameters']);

@@ -112,7 +112,7 @@ class OperationRequestBody
      */
     private function applyForm(): void
     {
-        /** @var \SwaggerBake\Lib\Attribute\OpenApiForm[] $openApiForms */
+        /** @var array<\SwaggerBake\Lib\Attribute\OpenApiForm> $openApiForms */
         $openApiForms = (new AttributeFactory(
             $this->refMethod,
             OpenApiForm::class
@@ -180,7 +180,7 @@ class OperationRequestBody
             $dtoReflection,
             OpenApiSchemaProperty::class
         ))->createMany();
-        /** @var \SwaggerBake\Lib\Attribute\OpenApiSchemaProperty[] $schemaProperties */
+        /** @var array<\SwaggerBake\Lib\Attribute\OpenApiSchemaProperty> $schemaProperties */
         $properties = array_map(function ($prop) {
             return $prop->create();
         }, $schemaProperties);

@@ -4,6 +4,7 @@ namespace SwaggerBake\Test\TestCase\Lib\Schema;
 
 use Cake\Controller\Controller;
 use Cake\Datasource\ConnectionManager;
+use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 use MixerApi\Core\Model\ModelFactory;
 use SwaggerBake\Lib\Model\ModelDecorator;
@@ -15,7 +16,7 @@ use SwaggerBakeTest\App\Model\Table\DepartmentsTable;
 class SchemaFactoryTest extends TestCase
 {
     /** @inheritdoc  */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Departments',
     ];
 
@@ -23,7 +24,7 @@ class SchemaFactoryTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         $department = (new ModelFactory($connection, new DepartmentsTable()))->create();
-        $decorator = new ModelDecorator($department, $controller = new Controller());
+        $decorator = new ModelDecorator($department, $controller = new Controller(ServerRequestFactory::fromGlobals()));
         $this->assertEquals($controller, $decorator->getController());
         $schema = (new SchemaFactory())->create($decorator);
         $this->assertInstanceOf(Schema::class, $schema);
@@ -38,7 +39,7 @@ class SchemaFactoryTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         $department = (new ModelFactory($connection, new DepartmentsTable()))->create();
-        $decorator = new ModelDecorator($department, new Controller());
+        $decorator = new ModelDecorator($department, new Controller(ServerRequestFactory::fromGlobals()));
         $schema = (new SchemaFactory())->create($decorator, SchemaFactory::WRITEABLE_PROPERTIES);
         $this->assertCount(1, $schema->getProperties());
     }

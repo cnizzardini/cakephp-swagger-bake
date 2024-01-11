@@ -16,27 +16,27 @@ class Xml implements JsonSerializable
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var string|null
      */
-    private $namespace;
+    private ?string $namespace = null;
 
     /**
      * @var string|null
      */
-    private $prefix;
+    private ?string $prefix = null;
 
     /**
      * @var bool|null
      */
-    private $attribute;
+    private ?bool $attribute = null;
 
     /**
      * @var bool|null
      */
-    private $wrapped;
+    private ?bool $wrapped = null;
 
     /**
      * @return array

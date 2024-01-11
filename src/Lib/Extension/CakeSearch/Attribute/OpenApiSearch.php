@@ -9,26 +9,14 @@ use Attribute;
 class OpenApiSearch
 {
     /**
-     * @param string|null $tableClass The FQN of the table class. Use alias instead. This property will be removed in
-     *  `v3.0.0`.
+     * @param string $alias The table alias, see `TableLocator::get($alias)`
      * @param string $collection The CakePHP search collection
-     * @param string|null $alias The table alias
-     * @param array $options An array of options to pass into TableLocator::get()
-     * @todo convert to readonly properties in php 8.1
-     * @todo drop $tableClass from constructor and re-organize properties in v3.0.0
+     * @param array $options An array of options to pass into `TableLocator::get($alias, $options)`
      */
     public function __construct(
-        public ?string $tableClass = null,
+        public readonly string $alias,
         public string $collection = 'default',
-        public ?string $alias = null,
         public array $options = [],
     ) {
-        if ($this->tableClass !== null) {
-            trigger_deprecation(
-                'cnizzardini/cakephp-swagger-bake',
-                'v2.4.2',
-                'tableClass will be removed in a future version, use alias instead',
-            );
-        }
     }
 }

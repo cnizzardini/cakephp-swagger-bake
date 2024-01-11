@@ -189,7 +189,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     /**
      * @return mixed
      */
-    public function getExample()
+    public function getExample(): mixed
     {
         return $this->example;
     }
@@ -198,7 +198,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
      * @param mixed $example An example value
      * @return $this
      */
-    public function setExample($example)
+    public function setExample(mixed $example)
     {
         $this->example = $example;
 
@@ -279,7 +279,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
     }
 
     /**
-     * @param null|string $refEntity Reference YAML schema such as #/components/schema/MyEntity
+     * @param string|null $refEntity Reference YAML schema such as #/components/schema/MyEntity
      * @return $this
      */
     public function setRefEntity(?string $refEntity)

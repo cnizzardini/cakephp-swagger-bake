@@ -32,35 +32,14 @@ class OpenApiSchema
     public const VISIBLE_NEVER = 4;
 
     /**
-     * @deprecated deprecated because of misspelling
-     */
-    public const VISIBILE_DEFAULT = 1;
-
-    /**
-     * @deprecated deprecated because of misspelling
-     */
-    public const VISIBILE_ALWAYS = 2;
-
-    /**
-     * @deprecated deprecated because of misspelling
-     */
-    public const VISIBILE_HIDDEN = 3;
-
-    /**
-     * @deprecated deprecated because of misspelling
-     */
-    public const VISIBILE_NEVER = 4;
-
-    /**
      * @param int $visibility See class constants for options.
      * @param string|null $title The title of the schema
      * @param string|null $description The description of the schema
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        public int $visibility = 1,
-        public ?string $title = null,
-        public ?string $description = null
+        public readonly int $visibility = 1,
+        public readonly ?string $title = null,
+        public readonly ?string $description = null
     ) {
         if ($this->visibility < 1 || $this->visibility > 4) {
             throw new InvalidArgumentException(

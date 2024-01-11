@@ -16,11 +16,10 @@ class OpenApiSecurity
      * @param array $scopes The available scopes for the OAuth2 security scheme.
      * @see https://mixerapi.com/plugins/cakephp-swagger-bake/docs/attributes/#OpenApiPath
      * @see https://spec.openapis.org/oas/latest.html#operation-object
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        public string $name,
-        public array $scopes = []
+        public readonly string $name,
+        public readonly array $scopes = []
     ) {
     }
 }

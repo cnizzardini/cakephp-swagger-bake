@@ -97,7 +97,7 @@ final class HalJson implements MediaTypeInterface
 
     /**
      * @todo this method needs to actually be recursive
-     * @param \SwaggerBake\Lib\OpenApi\SchemaProperty[] $properties an array of SchemaProperty
+     * @param array<\SwaggerBake\Lib\OpenApi\SchemaProperty> $properties an array of SchemaProperty
      * @return array
      */
     private function recursion(array $properties): array

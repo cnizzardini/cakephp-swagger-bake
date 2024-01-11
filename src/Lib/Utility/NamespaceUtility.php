@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace SwaggerBake\Lib\Utility;
 
-use Cake\Cache\Engine\NullEngine;
-use Mouf\Composer\ClassNameMapper;
+use MixerApi\Core\Utility\NamespaceUtility as MixerApiNsUtil;
 use SwaggerBake\Lib\Configuration;
-use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
 
 /**
  * Class NamespaceUtility
@@ -27,9 +25,9 @@ class NamespaceUtility
     {
         $namespaces = $config->getNamespaces();
 
-        foreach ($namespaces['entities'] as $namespace) {
+        foreach ($namespaces['entities'] ?? [] as $namespace) {
             $entity = $namespace . 'Model\Entity\\' . $className;
-            if (class_exists($entity, true)) {
+            if (class_exists($entity)) {
                 return $entity;
             }
         }
@@ -62,17 +60,15 @@ class NamespaceUtility
     /**
      * Performs a recursive check for the given namespaces and returns an array of classes
      *
-     * @param string[] $namespaces array of namespaces strings (e.g. ['\App\\'])
+     * @param array<string> $namespaces array of namespaces strings (e.g. ['\App\\'])
      * @param string $ns an additional name to append to each namespace as part of the search (e.g. Controller)
      * @example getClasses(['\App\\'], 'Controller') to search for \App\Controller classes
-     * @return string[]
+     * @return array<string>
      * @throws \Exception
      */
     public static function getClasses(array $namespaces, string $ns = ''): array
     {
         $classes = [];
-
-        $classNameMapper = ClassNameMapper::createFromComposerFile(null, null, true);
 
         foreach ($namespaces as $namespace) {
             if (str_starts_with($namespace, '\\')) {
@@ -86,11 +82,9 @@ class NamespaceUtility
             $namespace = str_replace('\\\\', '\\', $namespace);
             $namespace .= $ns;
 
-            $explorer = new GlobClassExplorer($namespace, new NullEngine(), 0, $classNameMapper);
-
             $classes = array_merge(
                 $classes,
-                array_keys($explorer->getClassMap())
+                MixerApiNsUtil::findClasses($namespace)
             );
         }
 

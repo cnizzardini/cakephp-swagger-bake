@@ -20,11 +20,9 @@ class OpenApiHeaderTest extends TestCase
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
-
-    private Router $router;
 
     private Configuration $config;
 
@@ -36,9 +34,9 @@ class OpenApiHeaderTest extends TestCase
     public function test(): void
     {
         $this->__setUp();
-        $cakeRoute = new RouteScanner($this->router, $this->config);
+        $cakeRoute = new RouteScanner(new Router(), $this->config);
 
-        $swagger = new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config);
+        $swagger = (new Swagger(new ModelScanner($cakeRoute, $this->config), $this->config))->build();
         $arr = json_decode($swagger->toString(), true);
 
         $this->assertArrayHasKey('/employees/custom-get', $arr['paths']);
@@ -46,7 +44,7 @@ class OpenApiHeaderTest extends TestCase
         $operation = $arr['paths']['/employees/custom-get']['get'];
 
         $this->assertCount(1, array_filter($operation['parameters'], function ($param) {
-            return $param['name'] == 'X-HEAD-ATTRIBUTE';
+            return isset($param['name']) && $param['name'] == 'X-HEAD-ATTRIBUTE';
         }));
     }
 
@@ -73,8 +71,7 @@ class OpenApiHeaderTest extends TestCase
 
     private function __setUp(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'map' => [
@@ -86,7 +83,6 @@ class OpenApiHeaderTest extends TestCase
                 ]
             ]);
         });
-        $this->router = $router;
 
         $this->config = new Configuration([
             'prefix' => '/',

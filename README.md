@@ -5,36 +5,39 @@
 [![Build](https://github.com/cnizzardini/cakephp-swagger-bake/actions/workflows/php.yml/badge.svg)](https://github.com/cnizzardini/cakephp-swagger-bake/actions/workflows/php.yml)
 [![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-swagger-bake/badge.svg?branch=master)](https://coveralls.io/github/cnizzardini/cakephp-swagger-bake?branch=master)
 [![MixerApi](https://img.shields.io/badge/mixer-api-red?logo=data:image/png;base64,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)](http://mixerapi.com)
-[![CakePHP](https://img.shields.io/badge/cakephp-^4.2-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
-[![Minimum PHP Version](https://img.shields.io/badge/php-^8.0-8892BF.svg?logo=php)](https://php.net/)
+[![CakePHP](https://img.shields.io/badge/cakephp-^5-red?logo=cakephp)](https://book.cakephp.org/5/en/index.html)
+[![Minimum PHP Version](https://img.shields.io/badge/php-^8.1-8892BF.svg?logo=php)](https://php.net/)
 [![OpenAPI](https://img.shields.io/badge/openapi-3.0-green?logo=openapi-initiative)](https://www.openapis.org/)
 
 Automatically generate OpenApi, Swagger, and Redoc documentation from your existing CakePHP code
 
-- Creates OpenApi paths and operations from your [RESTful](https://book.cakephp.org/4/en/development/rest.html) routes 
+- Creates OpenApi paths and operations from your [RESTful](https://book.cakephp.org/5/en/development/rest.html) routes 
 and controllers.
 - Creates OpenAPI Schema from your Entities and Tables.
 - Integrates with: 
-[Paginator](https://book.cakephp.org/4/en/controllers/components/pagination.html), 
+[Paginator](https://book.cakephp.org/5/en/controllers/components/pagination.html), 
 [friendsofcake/search](https://github.com/FriendsOfCake/search), 
-[Validator](https://api.cakephp.org/4.0/class-Cake.Validation.Validator.html), and 
+[Validator](https://api.cakephp.org/5.0/class-Cake.Validation.Validator.html), and 
 [Bake](#bake-theme).
 - Provides additional functionality through Attributes and Doc Blocks.
+
+The current release is for CakePHP 5 and PHP 8.1, see previous releases for older versions of CakePHP and PHP.
+
+| Version | Branch                                                                    | Cake Version | PHP Version | 
+|---------|---------------------------------------------------------------------------|--------------|-------------|
+| 3.*     | master                                                                    | ^5.0         | ^8.1        |
+| 2.*     | [2.x](https://github.com/cnizzardini/cakephp-swagger-bake/tree/2.x)       | ^4.2         | ^8.0        |
+| 1.*     | [1.next](https://github.com/cnizzardini/cakephp-swagger-bake/tree/1.next) | ^4.0         | ^7.2        | 
 
 Check out the demo applications for examples.
 
 | Demos                                                           | Source                                                               | 
 |-----------------------------------------------------------------|----------------------------------------------------------------------|
-| [Swagger Bake Demo (v2)](http://cakephpswaggerbake.cnizz.com/)  | https://github.com/cnizzardini/cakephp-swagger-bake-demo             |
-| [Swagger Bake Demo (v1)](http://cakephpswaggerbake1.cnizz.com/) | https://github.com/cnizzardini/cakephp-swagger-bake-demo/tree/1.next | 
-| [Swagger/MixerAPI Demo (v1)](https://demo.mixerapi.com/)        | https://github.com/mixerapi/demo                                     | 
+| [Swagger Bake v3 demo](http://cakephpswaggerbake.cnizz.com/)    | https://github.com/cnizzardini/cakephp-swagger-bake-demo             |
+| [MixerAPI + Swagger Bake demo (v3)](https://demo.mixerapi.com/) | https://github.com/mixerapi/demo                                     | 
+| v2 demo                                                         | https://github.com/cnizzardini/cakephp-swagger-bake-demo/tree/2.next |
+| v1 demo                                                         | https://github.com/cnizzardini/cakephp-swagger-bake-demo/tree/1.next |
 
-This is built for CakePHP 4.x only. Supported versions:
-
-| Version | Branch                                                                    | Cake Version  | PHP Version | 
-|---------|---------------------------------------------------------------------------|---------------|-------------|
-| 2.*     | master                                                                    | ^4.2          | 8.0+        |
-| 1.*     | [1.next](https://github.com/cnizzardini/cakephp-swagger-bake/tree/1.next) | ^4.0          | 7.2+        | 
 
 ## Table of Contents
 - [Installation](#installation)
@@ -51,13 +54,13 @@ This is built for CakePHP 4.x only. Supported versions:
 
 ## Installation
 
-SwaggerBake requires CakePHP4 and a few dependencies that will be automatically installed via composer.
+You can install via the [composer](https://getcomposer.org/) dependency manager:
 
 ```console
 composer require cnizzardini/cakephp-swagger-bake
 ```
 
-Run `bin/cake plugin load SwaggerBake` or manually load the plugin: 
+Next load the plugin via `bin/cake plugin load SwaggerBake` or if you prefer manually: 
 
 ```php
 # src/Application.php
@@ -68,18 +71,16 @@ public function bootstrap(): void
 }
 ```
 
-For standard applications that have not split their API into plugins, the automated setup should work. Otherwise 
-use the manual setup. 
+For standard applications that have not split their API into plugins, the automated setup is the easiest. Otherwise, 
+skip to the manual setup. 
 
 ### Automated Setup
 
-Run the installer: 
+Use the `swagger install` command and then [add a route](#add-route).
 
 ```console
 bin/cake swagger install
 ```
-
-Then [load the config](#load-the-config) and [add a route](#add-route).
 
 ### Manual Setup
 
@@ -92,21 +93,13 @@ file [here](assets/swagger_bake.php) for further explanation. Then just [add a r
 For more read sections on [Multiple Instances of SwaggerBake](#multiple-instances-of-swagger-bake) 
 and [Extending Views and Controllers](#extending-views-and-controllers)
 
-### Load the config
-
-In your `config/bootstrap.php` file:
-
-```php
-Configure::load('swagger_bake', 'default', false);
-```
-
 ### Add Route
 
 Create a route for the SwaggerUI page in `config/routes.php`, example:
 
 ```php
 $builder->connect(
-    '/api',
+    '/api', # this will be the "homepage" for your Swagger or Redoc UI
     ['plugin' => 'SwaggerBake', 'controller' => 'Swagger', 'action' => 'index']
 );
 ``` 
@@ -116,7 +109,7 @@ will exist at `/api/swagger.json`.
 
 ## Getting Started
 
-- You can generate OpenAPI json from the command line at anytime by running: 
+- You can generate OpenAPI json from the command line at anytime by running the `swagger bake` command: 
 
 ```console
 bin/cake swagger bake
@@ -128,7 +121,7 @@ to SwaggerUI (or Redoc) in your web browser.
 - You can also generate OpenAPI programmatically: 
 
 ```php
-$swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create();
+$swagger = (new \SwaggerBake\Lib\SwaggerFactory())->create()->build();
 $swagger->getArray(); # returns swagger array
 $swagger->toString(); # returns swagger json
 $swagger->writeFile('/full/path/to/your/swagger.json'); # writes swagger.json
@@ -139,7 +132,7 @@ RESTful controllers.
 
 ### Routes
 
-Your [RESTful routes](https://book.cakephp.org/4/en/development/routing.html#restful-routing) are used to build 
+Your [RESTful routes](https://book.cakephp.org/5/en/development/routing.html#restful-routing) are used to build 
 OpenAPI paths and operations.
 
 ### Controllers
@@ -153,7 +146,7 @@ actions for additional OpenAPI data.
  * 
  * This displays as the operations long description
  * 
- * @link https://book.cakephp.org/4/en/index.html External documentation
+ * @link https://book.cakephp.org/5/en/index.html External documentation
  * @deprecated Indicates the operation is deprecated
  * @throws \Cake\Http\Exception\BadRequestException Appears as 400 response with this description
  * @throws \Exception Appears as 500 response with this description
@@ -195,8 +188,6 @@ may be used. These can be imported individually from the `SwaggerBake\Lib\Attrib
 | [OpenApiSchemaProperty](docs/attributes.md#OpenApiSchemaProperty)     | Entity or Class    | Modifies an OpenAPI schema property or defines OpenApiResponse schema                                              |
 | [OpenApiSearch](docs/attributes.md#OpenApiSearch)                     | Controller Action  | Create OpenAPI query params from CakePHP Search plugin                                                             |
 | [OpenApiSecurity](docs/attributes.md#OpenApiSecurity)                 | Controller Action  | Create/modify OpenAPI security                                                                                     |
-| [~~OpenApiDtoQuery~~](docs/attributes.md#OpenApiDtoQuery)             | DTO class property | Builds OpenAPI query param from Data Transfer Objects (deprecated, use OpenApiQueryParam in v2.2.5+)               |
-| [~~OpenApiDtoRequestBody~~](docs/attributes.md#OpenApiDtoRequestBody) | DTO class property | Builds OpenAPI request body property from Data Transfer Objects (deprecated, use OpenApiSchemaProperty in v2.2.5+) |
 
 ## Event System
 
@@ -262,7 +253,7 @@ class MyException implements OpenApiExceptionSchemaInterface
 
 ## Extending Views and Controllers
 
-It's possible to write extensions for SwaggerBake. Read the [extensions documentation](docs/extensions.md). There are 
+It's possible to write extensions for SwaggerBake. Read the [extension documentation](docs/extensions.md). There are 
 several other options to extend functionality documented below:
 
 #### Using Your Own SwaggerUI
@@ -278,18 +269,19 @@ This is easy to do. Just create your own route and controller, then reference th
 
 ```php
 // config/routes.php
-$builder->connect('/my-swagger-docs', ['controller' => 'MySwagger', 'action' => 'index']);
+$builder->connect(
+    '/my-swagger-docs', 
+    ['controller' => 'MySwagger', 'action' => 'index']
+);
 ```
 
 To get started, copy [SwaggerController](src/Controller/SwaggerController.php) into your project.
-
-Note: SwaggerUiComponent has been deprecated in version 2.3.0 and will be removed in version 3.
 
 #### Using Your Own Layout and Templates
 
 You will need to use your own controller (see above). From there you can copy the [layouts](templates/layout) and 
 [templates](templates/Swagger) into your project and inform your controller action to use them instead. Checkout out 
-the CakePHP documentation on [Views](https://book.cakephp.org/4/en/views.html) for specifics. This can be useful if 
+the CakePHP documentation on [Views](https://book.cakephp.org/5/en/views.html) for specifics. This can be useful if 
 you'd like to add additional functionality to SwaggerUI (or Redoc) using their APIs or if your project is not 
 installed in your web servers document root (i.e. a sub-folder).
 
@@ -304,13 +296,7 @@ configurations should point to your plugins paths and namespaces. Next, create a
     public function initialize(): void
     {
         parent::initialize();
-        Configure::load('OtherApi.swagger_bake', 'default', false); // note: `false` for the third argument is important
-         
-        /*
-         * Only load the component if you are using a version older than v2.3.0. This component will be deprecated 
-         * in v3.0.0
-         */ 
-        $this->loadComponent('SwaggerBake.SwaggerUi');
+        Configure::load('OtherApi.swagger_bake', 'default', false); // note: `false` for the third argument is important         
     }
 ```
 
@@ -373,17 +359,17 @@ Make sure a controller actually exists for the route resource.
 ### Missing routes
 
 Make sure yours route are properly defined in `config/routes.php` per the 
-[CakePHP RESTful routing](https://book.cakephp.org/4/en/development/routing.html#restful-routing) documentation.
+[CakePHP RESTful routing](https://book.cakephp.org/5/en/development/routing.html#restful-routing) documentation.
 
 ### Missing request or response samples
 
-Sample schema is determined using [CakePHP naming conventions](https://book.cakephp.org/4/en/intro/conventions.html). 
+Sample schema is determined using [CakePHP naming conventions](https://book.cakephp.org/5/en/intro/conventions.html). 
 Does your controller name match your model names? For customizing response schema see 
 [OpenApiResponse](docs/attributes.md#OpenApiResponse).
 
 ### Missing request schema
 
-Sample schema is determined using [CakePHP naming conventions](https://book.cakephp.org/4/en/intro/conventions.html).
+Sample schema is determined using [CakePHP naming conventions](https://book.cakephp.org/5/en/intro/conventions.html).
 Does your controller name match your model names? For customizing request schema see 
 [OpenApiRequestBody](docs/attributes.md#OpenApiRequestBody).
 
@@ -419,7 +405,7 @@ public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
 }
 ```
 
-Read more about [CakePHP middleware](https://book.cakephp.org/4/en/controllers/middleware.html) in the official 
+Read more about [CakePHP middleware](https://book.cakephp.org/5/en/controllers/middleware.html) in the official 
 documentation.
 
 ## Contribute

@@ -14,14 +14,12 @@ use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Attribute\OpenApiSecurity;
 use SwaggerBake\Lib\Extension\CakeSearch\Attribute\OpenApiSearch;
+use SwaggerBake\Test\TestCase\Lib\Attribute\OpenApiDtoTest;
 use SwaggerBakeTest\App\Dto\CustomResponseSchema;
 use SwaggerBakeTest\App\Dto\CustomResponseSchemaPublic;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
-use SwaggerBakeTest\App\Dto\EmployeeDataRequestLegacy;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
-use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchemaLegacy;
 use SwaggerBakeTest\App\Form\TestForm;
-use SwaggerBakeTest\App\Model\Table\EmployeesTable;
 
 #[OpenApiPath(
     description: 'description here',
@@ -29,7 +27,7 @@ use SwaggerBakeTest\App\Model\Table\EmployeesTable;
 )]
 class EmployeesController extends AppController
 {
-    public $defaultTable = 'Employees';
+    public ?string $defaultTable = 'Employees';
 
     public function initialize() : void
     {
@@ -187,74 +185,10 @@ class EmployeesController extends AppController
 
 
     /**
-     * @see OpenApiDtoTest::test_openapi_dto_query()
-     */
-    #[OpenApiDto(class: EmployeeDataRequest::class)]
-    public function dtoQuery(): void
-    {
-
-    }
-
-    /**
-     * @see OpenApiDtoTest::test_openapi_dto_query()
-     * @deprecated remove in v3.0.0
-     */
-    #[OpenApiDto(class: EmployeeDataRequestLegacy::class)]
-    public function dtoQueryLegacy(): void
-    {
-
-    }
-
-    /**
-     * @see OpenApiDtoTest::test_openapi_dto_post()
-     */
-    #[OpenApiDto(class: EmployeeDataRequest::class)]
-    public function dtoPost(): void
-    {
-
-    }
-
-    /**
-     * @see OpenApiDtoTest::test_openapi_dto_post()
-     * @deprecated remove in v3.0.0
-     */
-    #[OpenApiDto(class: EmployeeDataRequestLegacy::class)]
-    public function dtoPostLegacy(): void
-    {
-
-    }
-
-    /**
-     * @deprecated remove in v3.0.0
-     */
-    #[OpenApiDto(class: EmployeeDataRequestPublicSchemaLegacy::class)]
-    public function dtoPublicLegacy(): void
-    {
-
-    }
-
-    /**
      * @deprecated This can be updated to just use alias in v3.0.0
      */
-    #[OpenApiSearch(tableClass: EmployeesTable::class)]
-    public function search(): void
-    {
-        $query = $this->Employees
-            ->find('search', [
-                'search' => $this->request->getQueryParams(),
-                'collection' => 'default'
-            ]);
-        $employees = $this->paginate($query);
-
-        $this->set(compact('employees'));
-        $this->viewBuilder()->setOption('serialize', ['employees']);
-    }
-
-    /**
-     * @deprecated This can be removed in v3.0.0
-     */
     #[OpenApiSearch(alias: 'Employees')]
-    public function search2(): void
+    public function search(): void
     {
         $query = $this->Employees
             ->find('search', [
@@ -272,6 +206,24 @@ class EmployeesController extends AppController
         $response = 'nokay';
         $this->set(compact('response'));
         $this->viewBuilder()->setOption('serialize', ['response']);
+    }
+
+    /**
+     * @see OpenApiDtoTest::test_openapi_dto_query()
+     */
+    #[OpenApiDto(class: EmployeeDataRequest::class)]
+    public function dtoQuery(): void
+    {
+
+    }
+
+    /**
+     * @see OpenApiDto::test_openapi_dto_post()
+     */
+    #[OpenApiDto(class: EmployeeDataRequest::class)]
+    public function dtoPost(): void
+    {
+
     }
 
     /**

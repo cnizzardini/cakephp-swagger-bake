@@ -23,7 +23,6 @@ class SchemaTest extends TestCase
             $required = ['field'],
             $schema->setRequired($required)->getRequired()
         );
-        $this->assertTrue($schema->setIsPublic(true)->isPublic());
     }
 
     public function test_push_property(): void

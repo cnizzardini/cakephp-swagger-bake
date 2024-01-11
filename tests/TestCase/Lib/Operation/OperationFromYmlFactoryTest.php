@@ -10,7 +10,7 @@ use SwaggerBake\Lib\Operation\OperationSecurity;
 
 class OperationFromYmlFactoryTest extends TestCase
 {
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
 

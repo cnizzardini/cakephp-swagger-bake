@@ -10,7 +10,6 @@ use SwaggerBake\Lib\OpenApi\Content;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\OpenApi\OperationExternalDoc;
 use SwaggerBake\Lib\OpenApi\Response;
-use SwaggerBake\Lib\Swagger;
 
 /**
  * Adds data from Doc Blocks to the Operation.
@@ -18,13 +17,11 @@ use SwaggerBake\Lib\Swagger;
 class OperationDocBlock
 {
     /**
-     * @param \SwaggerBake\Lib\Swagger $swagger an instance of Swagger
      * @param \SwaggerBake\Lib\Configuration $config an instance of Configuration
      * @param \SwaggerBake\Lib\OpenApi\Operation $operation an instance of Operation
      * @param \phpDocumentor\Reflection\DocBlock $doc an instance of DocBlock
      */
     public function __construct(
-        private Swagger $swagger,
         private Configuration $config,
         private Operation $operation,
         private DocBlock $doc
@@ -81,7 +78,7 @@ class OperationDocBlock
         });
 
         foreach ($throws as $throw) {
-            $exception = (new ExceptionResponse($this->swagger, $this->config))->build($throw);
+            $exception = (new ExceptionResponse($this->config))->build($throw);
             $response = new Response($exception->getCode(), $exception->getDescription());
             $schema = $exception->getSchema();
             if ($schema != null) {

@@ -5,11 +5,9 @@ namespace SwaggerBake\Test\TestCase\Lib\Operation;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use PHPStan\BetterReflection\Reflection\ReflectionAttribute;
 use SwaggerBake\Lib\Attribute\OpenApiDto;
 use SwaggerBake\Lib\Attribute\OpenApiForm;
 use SwaggerBake\Lib\Attribute\OpenApiRequestBody;
-use SwaggerBake\Lib\Attribute\OpenApiSchema;
 use SwaggerBake\Lib\Model\ModelScanner;
 use SwaggerBake\Lib\OpenApi\Schema;
 use SwaggerBake\Lib\Route\RouteScanner;
@@ -17,23 +15,21 @@ use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\OpenApi\Operation;
 use SwaggerBake\Lib\Operation\OperationRequestBody;
 use SwaggerBake\Lib\Swagger;
+use SwaggerBake\Test\TestCase\Helper\ReflectionAttributeTrait;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequest;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotion;
-use SwaggerBakeTest\App\Dto\EmployeeDataRequestLegacy;
-use SwaggerBakeTest\App\Dto\EmployeeDataRequestConstructorPromotionLegacy;
 use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchema;
-use SwaggerBakeTest\App\Dto\EmployeeDataRequestPublicSchemaLegacy;
 
 class OperationRequestBodyTest extends TestCase
 {
+    use ReflectionAttributeTrait;
+
     /**
      * @var string[]
      */
-    public $fixtures = [
+    public array $fixtures = [
         'plugin.SwaggerBake.Employees',
     ];
-
-    private Router $router;
 
     private array $config;
 
@@ -46,9 +42,9 @@ class OperationRequestBodyTest extends TestCase
     {
         $this->__setUp();
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
+        $swagger = (new Swagger($cakeModels, $config))->build();
 
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
@@ -64,7 +60,7 @@ class OperationRequestBodyTest extends TestCase
 
                     ]),
                     $this->returnValue([
-                        new ReflectionAttribute(OpenApiForm::class, [
+                        $this->mockReflectionAttribute(OpenApiForm::class, [
                             'name' => 'test',
                             'type' => 'string',
                             'isRequired' => false,
@@ -102,9 +98,9 @@ class OperationRequestBodyTest extends TestCase
     {
         $this->__setUp();
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
+        $swagger = (new Swagger($cakeModels, $config))->build();
 
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
@@ -130,7 +126,7 @@ class OperationRequestBodyTest extends TestCase
 
                         ]),
                         $this->returnValue([
-                            new ReflectionAttribute(OpenApiDto::class, [
+                            $this->mockReflectionAttribute(OpenApiDto::class, [
                                 'class' => $class,
                             ])
                         ]),
@@ -155,81 +151,6 @@ class OperationRequestBodyTest extends TestCase
             $schema = $content->getSchema();
             $this->assertEquals('object', $schema->getType());
             $this->assertTrue($schema->isCustomSchema());
-
-            if ($class == EmployeeDataRequestPublicSchemaLegacy::class) {
-                $this->assertEquals(OpenApiSchema::VISIBLE_DEFAULT, $schema->getVisibility());
-            }
-
-            $properties = $schema->getProperties();
-            $this->assertArrayHasKey('last_name', $properties, "failed for $class");
-            $this->assertArrayHasKey('first_name', $properties, "failed for $class");
-        }
-    }
-
-    /**
-     * @deprecated Remove in v3.0.0
-     */
-    public function test_openapi_dto_legacy(): void
-    {
-        $this->__setUp();
-        $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
-        $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
-
-        $routes = $cakeRoute->getRoutes();
-        $route = $routes['employees:add'];
-
-        $dto = [
-            EmployeeDataRequestLegacy::class,
-            EmployeeDataRequestConstructorPromotionLegacy::class,
-            EmployeeDataRequestPublicSchemaLegacy::class
-        ];
-
-        foreach ($dto as $class) {
-            $mockReflectionMethod = $this->createPartialMock(\ReflectionMethod::class, ['getAttributes']);
-            $mockReflectionMethod->expects($this->any())
-                ->method(
-                    'getAttributes'
-                )
-                ->will(
-                    $this->onConsecutiveCalls(
-                        $this->returnValue([
-
-                        ]),
-                        $this->returnValue([
-
-                        ]),
-                        $this->returnValue([
-                            new ReflectionAttribute(OpenApiDto::class, [
-                                'class' => $class,
-                            ])
-                        ]),
-                        $this->returnValue([
-
-                        ]),
-                    )
-                );
-
-            $operationRequestBody = new OperationRequestBody(
-                $swagger,
-                new Operation('hello', 'post'),
-                $route,
-                $mockReflectionMethod
-            );
-
-            $operation = $operationRequestBody->getOperationWithRequestBody();
-
-            $requestBody = $operation->getRequestBody();
-            $content = $requestBody->getContentByType('application/x-www-form-urlencoded');
-
-            $schema = $content->getSchema();
-            $this->assertEquals('object', $schema->getType());
-            $this->assertTrue($schema->isCustomSchema());
-
-            if ($class == EmployeeDataRequestPublicSchemaLegacy::class) {
-                $this->assertEquals(OpenApiSchema::VISIBLE_DEFAULT, $schema->getVisibility());
-            }
 
             $properties = $schema->getProperties();
             $this->assertArrayHasKey('last_name', $properties, "failed for $class");
@@ -241,9 +162,9 @@ class OperationRequestBodyTest extends TestCase
     {
         $this->__setUp();
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
+        $swagger = (new Swagger($cakeModels, $config))->build();
 
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
@@ -265,7 +186,7 @@ class OperationRequestBodyTest extends TestCase
 
                     ]),
                     $this->returnValue([
-                        new ReflectionAttribute(OpenApiRequestBody::class, [
+                        $this->mockReflectionAttribute(OpenApiRequestBody::class, [
                             'ignoreCakeSchema' => true,
                         ])
                     ]),
@@ -286,14 +207,12 @@ class OperationRequestBodyTest extends TestCase
 
     public function test_ref(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['create']
             ]);
         });
-        $this->router = $router;
 
         $this->config = [
             'prefix' => '/',
@@ -312,9 +231,9 @@ class OperationRequestBodyTest extends TestCase
         ];
 
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
+        $swagger = (new Swagger($cakeModels, $config))->build();
 
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
@@ -327,7 +246,7 @@ class OperationRequestBodyTest extends TestCase
             ->will(
                 $this->onConsecutiveCalls(
                     $this->returnValue([
-                        new ReflectionAttribute(OpenApiRequestBody::class, [
+                        $this->mockReflectionAttribute(OpenApiRequestBody::class, [
                             'ref' => '#/components/schema/Pet',
                         ])
                     ]),
@@ -360,14 +279,12 @@ class OperationRequestBodyTest extends TestCase
 
     public function test_crud_and_annotation(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['create']
             ]);
         });
-        $this->router = $router;
 
         $this->config = [
             'prefix' => '/',
@@ -386,9 +303,9 @@ class OperationRequestBodyTest extends TestCase
         ];
 
         $config = new Configuration($this->config, SWAGGER_BAKE_TEST_APP);
-        $cakeRoute = new RouteScanner($this->router, $config);
+        $cakeRoute = new RouteScanner(new Router(), $config);
         $cakeModels = new ModelScanner($cakeRoute, $config);
-        $swagger = new Swagger($cakeModels, $config);
+        $swagger = (new Swagger($cakeModels, $config))->build();
 
         $routes = $cakeRoute->getRoutes();
         $route = $routes['employees:add'];
@@ -404,7 +321,7 @@ class OperationRequestBodyTest extends TestCase
                     $this->returnValue([]),
                     $this->returnValue([]),
                     $this->returnValue([
-                        new ReflectionAttribute(OpenApiRequestBody::class, [
+                        $this->mockReflectionAttribute(OpenApiRequestBody::class, [
                             'description' => $desc = 'test',
                         ])
                     ]),
@@ -428,14 +345,12 @@ class OperationRequestBodyTest extends TestCase
 
     private function __setUp(): void
     {
-        $router = new Router();
-        $router::scope('/', function (RouteBuilder $builder) {
+        Router::createRouteBuilder('/')->scope('/', function (RouteBuilder $builder) {
             $builder->setExtensions(['json']);
             $builder->resources('Employees', [
                 'only' => ['create']
             ]);
         });
-        $this->router = $router;
 
         $this->config = [
             'prefix' => '/',

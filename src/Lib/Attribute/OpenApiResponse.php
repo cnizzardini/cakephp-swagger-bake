@@ -22,23 +22,17 @@ class OpenApiResponse
      *      swagger_bake config are used.
      * @param array|null $associations Configuration for displaying a resources associations. See documentation.
      * @param string|null $schemaFormat This is really only applicable for schemaTypes of string.
-     * @todo convert to readonly properties in PHP 8.1
      */
     public function __construct(
-        public string $schemaType = 'object',
-        public string $statusCode = '200',
-        public ?string $ref = null,
-        public ?string $schema = null,
-        public ?string $description = null,
-        public ?array $mimeTypes = null,
+        public readonly string $schemaType = 'object',
+        public readonly string $statusCode = '200',
+        public readonly ?string $ref = null,
+        public readonly ?string $schema = null,
+        public readonly ?string $description = null,
+        public readonly ?array $mimeTypes = null,
         public ?array $associations = null,
-        public ?string $schemaFormat = null,
+        public readonly ?string $schemaFormat = null,
     ) {
-        $this->ref = $ref ?? '';
-        $this->description = $description ?? '';
-        $this->mimeTypes = $mimeTypes ?? null;
-
-        $this->schemaFormat = $schemaFormat ?? '';
         if (is_array($associations)) {
             $this->associations = array_replace(
                 ['table' => null, 'whiteList' => null],
