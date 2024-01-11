@@ -26,7 +26,7 @@ The current release is for CakePHP 5 and PHP 8.1, see previous releases for olde
 | Version | Branch                                                                    | Cake Version | PHP Version | 
 |---------|---------------------------------------------------------------------------|--------------|-------------|
 | 3.*     | master                                                                    | ^5.0         | ^8.1        |
-| 2.*     | [2.next](https://github.com/cnizzardini/cakephp-swagger-bake/tree/2.next) | ^4.2         | ^8.0        |
+| 2.*     | [2.x](https://github.com/cnizzardini/cakephp-swagger-bake/tree/2.x)       | ^4.2         | ^8.0        |
 | 1.*     | [1.next](https://github.com/cnizzardini/cakephp-swagger-bake/tree/1.next) | ^4.0         | ^7.2        | 
 
 Check out the demo applications for examples.
