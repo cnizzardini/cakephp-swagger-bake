@@ -503,7 +503,13 @@ add the `#[OpenApiSchema]` attribute to your schema class to change the default 
 #### Associations
 
 The association property allows you to include associations defined in your Table class within your OpenAPI response
-sample schema. To include all immediately associated tables (depth of one):
+sample schema. To not include associations:
+
+```php
+#[OpenApiResponse(associations: false)]
+```
+
+To include all immediately associated tables (depth of one):
 
 ```php
 #[OpenApiResponse(associations: [])]
