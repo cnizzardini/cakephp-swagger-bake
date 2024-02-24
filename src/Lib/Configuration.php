@@ -190,14 +190,12 @@ class Configuration
         }
 
         $path = $this->root . $yml;
-        if ((!file_exists($path) && !is_writable($path)) || !touch($path)) {
+        if (!file_exists($path)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    "Invalid yml: `%s`. yml must exist on the file system. An attempt was made to create %s, but 
-                    permission was denied or the file path is bad. Either fix the file system permissions, create the 
-                    file and/or both. $message",
-                    $yml,
-                    $path
+                    'A YML file is required but none was found at "%s". See "%s" for a sample file.',
+                    $path,
+                    '$vendor/cnizzardini/cakephp-swagger-bake/assets/swagger.yml'
                 )
             );
         }

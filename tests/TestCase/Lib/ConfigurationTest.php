@@ -51,13 +51,6 @@ class ConfigurationTest extends TestCase
 
     /**
      * @dataProvider dataProviderInvalidConfig
-     *
-     * @param string $property The config property
-     * @param mixed $value The value of the $property
-     * @param string $exceptionClass The expected exception
-     * @param string $exceptionMsg A string the exception message should contain
-     *
-     * @return void
      */
     public function test_invalid_configs_should_throw_exceptions_with_invalid_data(
         string $property,
@@ -87,7 +80,7 @@ class ConfigurationTest extends TestCase
         return [
             ['prefix', 'nope', \InvalidArgumentException::class, 'Invalid prefix'],
             ['yml', 'nope', \InvalidArgumentException::class, 'Value should start with'],
-            ['yml', $invalidPath . 'nope', \InvalidArgumentException::class, 'yml must exist on the file'],
+            ['yml', $invalidPath . 'nope', \InvalidArgumentException::class, 'A YML file is required but none was found'],
             ['json', 'nope', \InvalidArgumentException::class, 'Value should start with'],
             ['json', $invalidPath . 'nope', \InvalidArgumentException::class, 'Config value for `json` must exist'],
             ['webPath', 'nope', \InvalidArgumentException::class, 'Invalid webPath'],
