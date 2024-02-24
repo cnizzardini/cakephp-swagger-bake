@@ -72,6 +72,14 @@ class OperationResponseAssociation
                 ->setProperties([]);
         }
 
+        // if $associations['whiteList'] is set to false no associations need to be loaded
+        if (isset($associations['whiteList']) && $associations['whiteList'] === false) {
+            $entity = $this->inflector::singularize($table->getAlias());
+            $schema = $this->getOrCreateAssociatedSchema($entity, $table->getAlias());
+
+            return $schema;
+        }
+
         if (!isset($associations['whiteList']) || !count($associations['whiteList'])) {
             $associations['whiteList'] = [];
             /** @var \Cake\ORM\Association $association */
