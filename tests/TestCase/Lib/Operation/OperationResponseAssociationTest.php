@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Test\TestCase\Lib\Operation;
 
@@ -8,12 +9,10 @@ use Cake\TestSuite\TestCase;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
 use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
-use SwaggerBake\Lib\SwaggerFactory;
 use SwaggerBake\Lib\OpenApi\Schema;
-use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Operation\OperationResponseAssociation;
-use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Route\RouteScanner;
+use SwaggerBake\Lib\SwaggerFactory;
 
 class OperationResponseAssociationTest extends TestCase
 {
@@ -30,7 +29,7 @@ class OperationResponseAssociationTest extends TestCase
     private Configuration $config;
 
     /**
-     * @var RouteDecorator[]
+     * @var \SwaggerBake\Lib\Route\RouteDecorator[]
      */
     private array $routes;
 
@@ -55,7 +54,7 @@ class OperationResponseAssociationTest extends TestCase
                 'controllers' => ['\SwaggerBakeTest\App\\'],
                 'entities' => ['\SwaggerBakeTest\App\\'],
                 'tables' => ['\SwaggerBakeTest\App\\'],
-            ]
+            ],
         ], SWAGGER_BAKE_TEST_APP);
 
         $cakeRoute = new RouteScanner(new Router(), $this->config);
@@ -182,7 +181,7 @@ class OperationResponseAssociationTest extends TestCase
             associations: ['table' => 'EmployeeSalaries', 'whiteList' => ['Employees']]
         ));
 
-        /** @var SchemaProperty $schemaProperty */
+        /** @var \SwaggerBake\Lib\OpenApi\SchemaProperty $schemaProperty */
         $schemaProperty = $schema->getProperties()['employee'];
         $this->assertEquals('employee', $schemaProperty->getName());
     }
