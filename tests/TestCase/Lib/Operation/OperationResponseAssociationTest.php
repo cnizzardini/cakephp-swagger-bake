@@ -104,8 +104,9 @@ class OperationResponseAssociationTest extends TestCase
 
     public function test_false_white_list(): void
     {
+        $swagger = (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create();
         $assoc = new OperationResponseAssociation(
-            (new SwaggerFactory($this->config, new RouteScanner($this->router, $this->config)))->create(),
+            $swagger,
             $this->routes['employees:view'],
             null
         );
