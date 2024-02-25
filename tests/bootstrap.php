@@ -18,7 +18,7 @@ define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
 define('CAKE', CORE_PATH . 'src' . DS);
 define('TEST_APP', SWAGGER_BAKE_TEST_APP);
 define('WWW_ROOT', SWAGGER_BAKE_TEST_APP . DS . 'webroot');
-define('APP', SWAGGER_BAKE_TEST_APP . DS . 'src' . DS);
+define('APP', SWAGGER_BAKE_TEST_APP . 'src' . DS);
 define('CONFIG', SWAGGER_BAKE_TEST_APP . 'config' . DS);
 
 ini_set('error_reporting', E_ALL);
