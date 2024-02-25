@@ -102,6 +102,26 @@ class OperationResponseAssociationTest extends TestCase
         $this->assertArrayHasKey('employee_titles', $schema->getProperties()['employee']->getProperties());
     }
 
+    public function test_false_white_list(): void
+    {
+        $swagger = (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create();
+        $assoc = new OperationResponseAssociation(
+            $swagger,
+            $this->routes['employees:view'],
+            null
+        );
+
+        $schema = $assoc->build(new OpenApiResponse(
+            schemaType: 'object',
+            associations: ['whiteList' => false]
+        ));
+
+        $this->assertInstanceOf(Schema::class, $schema);
+        $this->assertArrayNotHasKey('department_employees', $schema->getProperties());
+        $this->assertArrayNotHasKey('employee_salaries', $schema->getProperties());
+        $this->assertArrayNotHasKey('employee_titles', $schema->getProperties());
+    }
+
     public function test_null_schema(): void
     {
         $assoc = new OperationResponseAssociation(
