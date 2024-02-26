@@ -66,6 +66,7 @@ class RouteScanner
 
         if (!$this->config->isHotReload() && PHP_SAPI !== 'cli') {
             $this->routes = $routes;
+            
             return;
         }
 
