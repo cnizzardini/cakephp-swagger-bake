@@ -28,11 +28,17 @@ class RouteScanner
     private array $routes;
 
     /**
+     * @var \SwaggerBake\Lib\Configuration
+     */
+    private Configuration $config;
+
+    /**
      * @param \Cake\Routing\Router $router CakePHP Router
      * @param \SwaggerBake\Lib\Configuration $config Swagger Configuration
      */
     public function __construct(private Router $router, Configuration $config)
     {
+        $this->config = $config;
         $this->prefix = $config->getPrefix();
         $this->loadRoutes();
     }
@@ -57,6 +63,11 @@ class RouteScanner
         }
 
         $routes = [];
+
+        if (!$this->config->isHotReload() && PHP_SAPI !== 'cli') {
+            $this->routes = $routes;
+            return;
+        }
 
         foreach ($this->router::routes() as $route) {
             if (!$this->isRouteAllowed($route)) {

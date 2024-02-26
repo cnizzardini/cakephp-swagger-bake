@@ -46,6 +46,10 @@ class ModelScanner
     {
         $return = [];
 
+        if (!$this->config->isHotReload() && PHP_SAPI !== 'cli') {
+            return $return;
+        }
+
         $connection = ConnectionManager::get($this->config->getConnectionName());
         $namespaces = $this->config->getNamespaces();
 
