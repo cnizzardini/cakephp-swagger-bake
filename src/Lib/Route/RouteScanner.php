@@ -28,9 +28,9 @@ class RouteScanner
     private array $routes;
 
     /**
-     * @var \SwaggerBake\Lib\Configuration
+     * @var bool
      */
-    private Configuration $config;
+    private bool $isHotReload;
 
     /**
      * @param \Cake\Routing\Router $router CakePHP Router
@@ -38,7 +38,7 @@ class RouteScanner
      */
     public function __construct(private Router $router, Configuration $config)
     {
-        $this->config = $config;
+        $this->isHotReload = $config->isHotReload();
         $this->prefix = $config->getPrefix();
         $this->loadRoutes();
     }
@@ -64,9 +64,9 @@ class RouteScanner
 
         $routes = [];
 
-        if (!$this->config->isHotReload() && PHP_SAPI !== 'cli') {
+        if (!$this->isHotReload && PHP_SAPI !== 'cli') {
             $this->routes = $routes;
-            
+
             return;
         }
 
