@@ -70,7 +70,7 @@ class SwaggerSchemaTest extends TestCase
         $this->assertEquals('date', $employee['properties']['hire_date']['format']);
 
         $this->assertTrue($employee['properties']['read']['readOnly']);
-        $this->assertTrue($employee['properties']['write']['writeOnly']);
+        $this->assertArrayNotHasKey('write', $employee['properties']);
         $this->assertArrayNotHasKey('hide', $employee['properties']);
 
         foreach (['birth_date', 'first_name', 'last_name', 'gender', 'hire_date',] as $property) {

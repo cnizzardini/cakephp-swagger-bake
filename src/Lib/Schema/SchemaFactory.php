@@ -134,7 +134,9 @@ class SchemaFactory
         $factory = new SchemaPropertyFactory($this->validator, $docBlock);
 
         foreach ($model->getProperties() as $property) {
-            $return[$property->getName()] = $factory->create($property);
+            if (!$property->isHidden()) {
+                $return[$property->getName()] = $factory->create($property);
+            }
         }
 
         $return = array_merge($return, $this->getPropertyAnnotations($model));
