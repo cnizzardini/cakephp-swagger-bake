@@ -118,6 +118,10 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false, 'nullable' => false]
         );
 
+        if (isset($vars['enum']) && is_array($vars['enum'])) {
+            $vars['enum'] = array_values($vars['enum']);
+        }
+
         return $vars;
     }
 

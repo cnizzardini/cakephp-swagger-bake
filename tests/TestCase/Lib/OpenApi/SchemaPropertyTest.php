@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Test\TestCase\Lib\OpenApi;
 
 use Cake\TestSuite\TestCase;
-use SwaggerBake\Lib\OpenApi\Schema;
+use InvalidArgumentException;
 use SwaggerBake\Lib\OpenApi\SchemaProperty;
 
 class SchemaPropertyTest extends TestCase
@@ -21,7 +22,13 @@ class SchemaPropertyTest extends TestCase
 
     public function test_invalid_type_throws_exception(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new SchemaProperty('test', 'invalid');
+    }
+
+    public function test_enum_properties_is_indexed_numerically(): void
+    {
+        $vars = (new SchemaProperty())->setEnum(['test' => 'test'])->toArray();
+        $this->assertArrayHasKey(0, $vars['enum']);
     }
 }
