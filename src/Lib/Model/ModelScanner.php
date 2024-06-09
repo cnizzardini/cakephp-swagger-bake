@@ -65,7 +65,15 @@ class ModelScanner
                     if (str_ends_with($class, 'Table')) {
                         $class = substr($class, 0, strlen($class) - 5);
                     }
-                    $tableInstance = $this->getTableLocator()->get($class);
+
+                    // Extract the plugin name from the namespace
+                    $namespaceParts = explode('\\', $reflection->getNamespaceName());
+                    $plugin = count($namespaceParts) > 1 && ($namespaceParts[0] != 'App') ? $namespaceParts[0] : null;
+                
+                    // If a plugin is present, prepend it to the class name
+                    $fullyQualifiedClassName = $plugin ? $plugin . '.' . $class : $class;
+                    $tableInstance = $this->getTableLocator()->get($fullyQualifiedClassName);  
+
                     $model = (new ModelFactory($connection, $tableInstance))->create();
                 } catch (Exception $e) {
                     continue;
