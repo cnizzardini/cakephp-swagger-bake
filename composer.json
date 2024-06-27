@@ -44,6 +44,7 @@
             "SwaggerBake\\Test\\": "tests/",
             "SwaggerBakeTest\\App\\": "tests/test_app/src/",
             "Demo\\": "tests/test_app/plugins/Demo/src/",
+            "Orgname\\Special\\": "tests/test_app/plugins/Orgname/Special/src/",
             "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
         }
     },
