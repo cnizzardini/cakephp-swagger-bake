@@ -91,4 +91,27 @@ class RouteDecoratorTest extends TestCase
             $routeDecorator->getControllerFqn()
         );
     }
+
+    /**
+     * When `__construct` is called with a route plugin containing a forward `/` slash, the slash is flipped `\` and
+     * the controller FQN is found.
+     */
+    public function test_plugins_with_forward_slash(): void
+    {
+        $defaults = [
+            'plugin' => 'Orgname/Special',
+            'prefix' => null,
+            'controller' => 'My',
+            'action' => 'index',
+            '_method' => ['GET', 'POST']
+        ];
+
+        $routeDecorator = (new RouteDecorator(new Route('/my/index', $defaults)));
+        $this->assertEquals($defaults['plugin'], $routeDecorator->getPlugin());
+        $this->assertEquals($defaults['_method'], $routeDecorator->getMethods());
+        $this->assertEquals(
+            'Orgname\Special\Controller\MyController',
+            $routeDecorator->getControllerFqn()
+        );
+    }
 }

@@ -350,7 +350,7 @@ class RouteDecorator
         }
 
         $app = $this->cakeConfigure::read('App.namespace');
-        $fqn = $this->plugin ? $this->plugin . '\\' : $app . '\\';
+        $fqn = $this->plugin ? str_replace('/', '\\', $this->plugin) . '\\' : $app . '\\';
         $fqn .= 'Controller\\';
         $fqn .= $this->prefix ? str_replace('/', '\\', $this->prefix) . '\\' : '';
 
