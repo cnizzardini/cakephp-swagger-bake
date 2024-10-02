@@ -219,13 +219,11 @@ class Configuration
      */
     public function setJson(string $json)
     {
-        $message = 'Generally this value should be placed in your projects webroot directory.';
-
         if (!str_starts_with(haystack: $json, needle: '/')) {
             throw new InvalidArgumentException(
                 sprintf(
                     "Invalid json: `%s`. Value should start with a `/` and be relative to your 
-                    applications ROOT. $message",
+                    applications ROOT. Generally this value should be placed in your projects webroot directory.",
                     $json
                 )
             );
