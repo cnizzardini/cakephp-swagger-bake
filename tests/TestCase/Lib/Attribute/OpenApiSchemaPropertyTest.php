@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Test\TestCase\Lib\Attribute;
 
@@ -19,5 +20,11 @@ class OpenApiSchemaPropertyTest extends TestCase
 
         $property = (new OpenApiSchemaProperty(name: 'test', type: 'array', items: ['type' => 'object']))->create();
         $this->assertEquals(['type' => 'object'], $property->getItems());
+    }
+
+    public function test_is_nullable(): void
+    {
+        $property = (new OpenApiSchemaProperty(name: 'test', type: 'string', isNullable: true))->create();
+        $this->assertTrue($property->isNullable());
     }
 }
