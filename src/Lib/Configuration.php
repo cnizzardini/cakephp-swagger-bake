@@ -231,19 +231,6 @@ class Configuration
             );
         }
 
-        $path = $this->root . $json;
-        if ((!file_exists($path) && !is_writable($path)) || !touch($path)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    "Invalid json: `%s`. Config value for `json` must exist on the file system. An attempt was 
-                    made to create %s, but permission was denied or the file path is bad. Either fix the file system 
-                    permissions, create the file and/or both. $message",
-                    $json,
-                    $path
-                )
-            );
-        }
-
         $this->json = $json;
 
         return $this;
