@@ -91,7 +91,8 @@ abstract class AbstractSchemaProperty
             ->setReadOnly($this->isReadOnly)
             ->setWriteOnly($this->isWriteOnly)
             ->setRequired($this->isRequired)
-            ->setEnum($this->enum ?? []);
+            ->setEnum($this->enum ?? [])
+            ->setNullable($this->isNullable);
 
         if ($schemaProperty->getType() === 'array') {
             $schemaProperty->setItems($this->items ?? []);
