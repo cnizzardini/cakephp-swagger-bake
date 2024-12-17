@@ -410,7 +410,7 @@ class OperationResponse
                 $schema->setXml((new OpenApiXml())->setName('response'));
             }
 
-            if (!empty($this->refMethod->getAttributes(OpenApiPaginator::class))) {
+            if (isset($this->refMethod) && !empty($this->refMethod->getAttributes(OpenApiPaginator::class))) {
                 $schema = Inflector::singularize($this->route->getController() ?? throw new UnexpectedValueException());
                 $schema = $this->getMimeTypeSchema($mimeType, 'array', '#/components/schemas/' . $schema);
             }
