@@ -74,7 +74,6 @@ class OperationQueryParameter
         $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorPage');
         $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorLimit');
         $this->pushSortParameter($paginator);
-        $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorOrder');
         $this->operation->pushRefParameter('#/x-swagger-bake/components/parameters/paginatorDirection');
     }
 
