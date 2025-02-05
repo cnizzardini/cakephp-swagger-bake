@@ -103,7 +103,6 @@ class OperationResponse
                     continue;
                 }
 
-                $response->pushContent(new Content($mimeType, ''));
                 $this->operation->pushResponse($response);
             }
         }
