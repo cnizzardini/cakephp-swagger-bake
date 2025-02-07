@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['~5.0', '^5.0']
+        version: ['~5.0.0', '^5.0']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
