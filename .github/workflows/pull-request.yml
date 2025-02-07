@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    name: PHP 8.3 Test / Analysis
+    name: PHP 8.4 Test / Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
