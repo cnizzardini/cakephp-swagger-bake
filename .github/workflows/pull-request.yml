@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    name: PHP 8.3 Test / Analysis
+    name: PHP 8.4 Test / Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -14,7 +14,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: '8.4'
           extensions: mbstring, intl, xdebug
 
       - name: PHP Version
@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['~5.0']
+        version: ['~5.0.0', '^5.0']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
