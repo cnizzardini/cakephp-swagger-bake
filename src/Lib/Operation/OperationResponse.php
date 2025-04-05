@@ -46,7 +46,7 @@ class OperationResponse
         private Operation $operation,
         private RouteDecorator $route,
         private ?Schema $schema = null,
-        private ?ReflectionMethod $refMethod = null
+        private ?ReflectionMethod $refMethod = null,
     ) {
     }
 
@@ -155,7 +155,7 @@ class OperationResponse
         /** @var \SwaggerBake\Lib\Attribute\OpenApiSchema|null $openApiSchema */
         $openApiSchema = (new AttributeFactory(
             $reflection,
-            OpenApiSchema::class
+            OpenApiSchema::class,
         ))->createOneOrNull();
 
         $schema = $this->createResponseSchema($reflection, $openApiResponse, $openApiSchema);
@@ -163,7 +163,7 @@ class OperationResponse
         // class level attributes
         $schemaProperties = (new AttributeFactory(
             $reflection,
-            OpenApiSchemaProperty::class
+            OpenApiSchemaProperty::class,
         ))->createMany();
 
         foreach ($schemaProperties as $schemaProperty) {
@@ -174,7 +174,7 @@ class OperationResponse
         foreach ($reflection->getProperties() as $reflectionProperty) {
             $schemaProperty = (new AttributeFactory(
                 $reflectionProperty,
-                OpenApiSchemaProperty::class
+                OpenApiSchemaProperty::class,
             ))->createOneOrNull();
 
             if ($schemaProperty instanceof OpenApiSchemaProperty) {
@@ -214,7 +214,7 @@ class OperationResponse
     private function createResponseSchema(
         ReflectionClass $reflectionClass,
         OpenApiResponse $openApiResponse,
-        ?OpenApiSchema $openApiSchema
+        ?OpenApiSchema $openApiSchema,
     ): Schema {
         // create base schema from implementation
         if ($reflectionClass->implementsInterface(CustomSchemaInterface::class)) {
@@ -286,11 +286,11 @@ class OperationResponse
             $schema = $this->getMimeTypeSchema(
                 $mimeType,
                 $openApiResponse->schemaType,
-                $assocSchema
+                $assocSchema,
             );
             $response->pushContent(new Content(
                 $mimeType,
-                $openApiResponse->schemaFormat ? $schema->setFormat($openApiResponse->schemaFormat) : $schema
+                $openApiResponse->schemaFormat ? $schema->setFormat($openApiResponse->schemaFormat) : $schema,
             ));
             $this->operation->pushResponse($response);
 

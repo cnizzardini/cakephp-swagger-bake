@@ -44,7 +44,7 @@ class Swagger
     public function __construct(
         private ModelScanner $modelScanner,
         private Configuration $config,
-        private ?FileUtility $fileUtility = null
+        private ?FileUtility $fileUtility = null,
     ) {
         $this->fileUtility = $fileUtility ?? new FileUtility();
     }
@@ -63,11 +63,11 @@ class Swagger
 
         $this->array['x-swagger-bake'] = array_merge_recursive(
             $xSwaggerBake['x-swagger-bake'],
-            $this->array['x-swagger-bake'] ?? []
+            $this->array['x-swagger-bake'] ?? [],
         );
 
         EventManager::instance()->dispatch(
-            new Event('SwaggerBake.initialize', $this)
+            new Event('SwaggerBake.initialize', $this),
         );
 
         $this->array = (new OpenApiSchemaGenerator($this->modelScanner))->generate($this->array);
@@ -104,7 +104,7 @@ class Swagger
             uksort($this->array['components']['schemas'], function ($a, $b) {
                 return strcasecmp(
                     preg_replace('/\s+/', '', $a),
-                    preg_replace('/\s+/', '', $b)
+                    preg_replace('/\s+/', '', $b),
                 );
             });
         }
@@ -140,7 +140,7 @@ class Swagger
         $this->addAdditionalSchema();
 
         EventManager::instance()->dispatch(
-            new Event('SwaggerBake.beforeRender', $this)
+            new Event('SwaggerBake.beforeRender', $this),
         );
 
         $json = json_encode($this->getArray(), $this->config->getJsonOptions());
@@ -211,7 +211,7 @@ class Swagger
                 $operations,
                 array_filter($path->getOperations(), function ($operation) {
                     return !$operation->hasSuccessResponseCode();
-                })
+                }),
             );
         }
 
@@ -283,7 +283,7 @@ class Swagger
                         ->setType('array')
                         ->setItems([
                             '$ref' => $schema->getRefPath(),
-                        ])
+                        ]),
                 );
             } else {
                 $content->setSchema($schema->getRefPath());

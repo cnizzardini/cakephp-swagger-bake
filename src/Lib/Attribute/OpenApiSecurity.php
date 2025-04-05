@@ -19,7 +19,7 @@ class OpenApiSecurity
      */
     public function __construct(
         public readonly string $name,
-        public readonly array $scopes = []
+        public readonly array $scopes = [],
     ) {
     }
 }

@@ -86,7 +86,7 @@ class Parameter implements JsonSerializable
         // reduce JSON clutter if these values are equal to their defaults
         return ArrayUtility::removeValuesMatching(
             $vars,
-            ['deprecated' => false, 'allowEmptyValue' => false, 'explode' => false, 'allowReserved' => false]
+            ['deprecated' => false, 'allowEmptyValue' => false, 'explode' => false, 'allowReserved' => false],
         );
     }
 

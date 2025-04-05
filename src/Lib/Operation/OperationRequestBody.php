@@ -37,7 +37,7 @@ class OperationRequestBody
         private Operation $operation,
         private RouteDecorator $route,
         private ?ReflectionMethod $refMethod = null,
-        private ?Schema $schema = null
+        private ?Schema $schema = null,
     ) {
         $this->config = $swagger->getConfig();
     }
@@ -73,7 +73,7 @@ class OperationRequestBody
     {
         $openApiRequestBody = (new AttributeFactory(
             $this->refMethod,
-            OpenApiRequestBody::class
+            OpenApiRequestBody::class,
         ))->createOneOrNull();
 
         if (!$openApiRequestBody instanceof OpenApiRequestBody) {
@@ -91,7 +91,7 @@ class OperationRequestBody
             $pieces = explode('/', $openApiRequestBody->ref);
             $entity = end($pieces);
             $schema = $this->getSchemaWithRequiredProperties(
-                $this->swagger->getSchemaByName($entity)
+                $this->swagger->getSchemaByName($entity),
             );
         }
 
@@ -100,7 +100,7 @@ class OperationRequestBody
         }
 
         $this->operation->setRequestBody(
-            $openApiRequestBody->createRequestBody($requestBody)
+            $openApiRequestBody->createRequestBody($requestBody),
         );
     }
 
@@ -115,7 +115,7 @@ class OperationRequestBody
         /** @var array<\SwaggerBake\Lib\Attribute\OpenApiForm> $openApiForms */
         $openApiForms = (new AttributeFactory(
             $this->refMethod,
-            OpenApiForm::class
+            OpenApiForm::class,
         ))->createMany();
 
         if (empty($openApiForms)) {
@@ -126,7 +126,7 @@ class OperationRequestBody
 
         foreach ($openApiForms as $attribute) {
             $schema->pushProperty(
-                $attribute->create()
+                $attribute->create(),
             );
         }
 
@@ -149,7 +149,7 @@ class OperationRequestBody
     {
         $openApiDto = (new AttributeFactory(
             $this->refMethod,
-            OpenApiDto::class
+            OpenApiDto::class,
         ))->createOneOrNull();
 
         if (!$openApiDto instanceof OpenApiDto || !class_exists($openApiDto->class)) {
@@ -160,7 +160,7 @@ class OperationRequestBody
         $dtoReflection = new ReflectionClass($openApiDto->class);
         $openApiSchema = (new AttributeFactory(
             $dtoReflection,
-            OpenApiSchema::class
+            OpenApiSchema::class,
         ))->createOneOrNull();
 
         // add schema to #/components/schemas ?
@@ -178,7 +178,7 @@ class OperationRequestBody
         // get openapi schema properties defined on the class
         $schemaProperties = (new AttributeFactory(
             $dtoReflection,
-            OpenApiSchemaProperty::class
+            OpenApiSchemaProperty::class,
         ))->createMany();
         /** @var array<\SwaggerBake\Lib\Attribute\OpenApiSchemaProperty> $schemaProperties */
         $properties = array_map(function ($prop) {
@@ -215,7 +215,7 @@ class OperationRequestBody
         if ($this->refMethod instanceof ReflectionMethod) {
             $openApiRequestBody = (new AttributeFactory(
                 $this->refMethod,
-                OpenApiRequestBody::class
+                OpenApiRequestBody::class,
             ))->createOneOrNull();
         }
 

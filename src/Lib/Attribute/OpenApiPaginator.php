@@ -16,7 +16,7 @@ class OpenApiPaginator
      */
     public function __construct(
         public readonly array $sortEnum = [],
-        public readonly bool $useSortTextInput = false
+        public readonly bool $useSortTextInput = false,
     ) {
     }
 }

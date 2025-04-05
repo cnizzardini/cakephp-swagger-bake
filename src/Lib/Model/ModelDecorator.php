@@ -14,7 +14,7 @@ class ModelDecorator
      */
     public function __construct(
         private Model $model,
-        private ?Controller $controller = null
+        private ?Controller $controller = null,
     ) {
     }
 

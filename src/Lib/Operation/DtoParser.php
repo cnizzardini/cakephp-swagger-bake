@@ -47,7 +47,7 @@ class DtoParser
         foreach ($this->reflection->getProperties() as $reflectionProperty) {
             $queryParam = (new AttributeFactory(
                 $reflectionProperty,
-                OpenApiQueryParam::class
+                OpenApiQueryParam::class,
             ))->createOneOrNull();
 
             if ($queryParam instanceof OpenApiQueryParam) {
@@ -70,7 +70,7 @@ class DtoParser
         foreach ($this->reflection->getProperties() as $reflectionProperty) {
             $schemaProperty = (new AttributeFactory(
                 $reflectionProperty,
-                OpenApiSchemaProperty::class
+                OpenApiSchemaProperty::class,
             ))->createOneOrNull();
 
             if ($schemaProperty instanceof OpenApiSchemaProperty) {
@@ -102,7 +102,7 @@ class DtoParser
             $attr = $schema->field($name);
             $schemaProperty = new SchemaProperty(
                 name: $name,
-                type: DataTypeConversion::toType($attr['type'])
+                type: DataTypeConversion::toType($attr['type']),
             );
             $schemaProperty = (new SchemaPropertyValidation($validator, $schemaProperty, $name))->withValidations();
             $schemaProperties[$name] = $schemaProperty;

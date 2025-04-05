@@ -36,7 +36,7 @@ class OpenApiResponse
         if (is_array($associations)) {
             $this->associations = array_replace(
                 ['table' => null, 'whiteList' => null],
-                $associations
+                $associations,
             );
         }
     }

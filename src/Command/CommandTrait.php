@@ -30,7 +30,7 @@ trait CommandTrait
             Configure::load($config, 'default');
         } catch (CakeException $e) {
             throw new SwaggerBakeRunTimeException(
-                "SwaggerBake config file `$config` is missing or " . get_class($e) . ' ' . $e->getMessage()
+                "SwaggerBake config file `$config` is missing or " . get_class($e) . ' ' . $e->getMessage(),
             );
         }
 

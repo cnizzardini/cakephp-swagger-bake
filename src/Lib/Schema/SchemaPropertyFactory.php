@@ -24,7 +24,7 @@ class SchemaPropertyFactory
      */
     public function __construct(
         private Validator $validator,
-        private ?DocBlock $docBlock = null
+        private ?DocBlock $docBlock = null,
     ) {
     }
 
@@ -94,7 +94,7 @@ class SchemaPropertyFactory
             function ($tag) use ($property) {
                 /** @var \phpDocumentor\Reflection\DocBlock\Tags\Property $tag */
                 return $tag->getVariableName() === $property->getName();
-            }
+            },
         );
 
         return !empty($results) ? reset($results) : null;

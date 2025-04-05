@@ -22,7 +22,7 @@ class SwaggerFactory
      */
     public function __construct(
         private ?Configuration $config = null,
-        private ?RouteScanner $routeScanner = null
+        private ?RouteScanner $routeScanner = null,
     ) {
         $this->config = $config ?? new Configuration();
 
