@@ -404,16 +404,16 @@ order of operations is used to build the response:
 3. `associations`
 4. The schema inferred from CakePHP conventions.
 
-| Property                      | Type / Default    | OA Spec | Description                                                                                                                                                           |
-|-------------------------------|-------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| schemaType                    | string `"object"` | Y       | The schema response type, generally `"object"` or `"array"`                                                                                                           |
-| statusCode                    | string `"200"`    | Y       | The HTTP response code                                                                                                                                                |
-| ref                           | ?string `null`    | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                                                                                           |
-| [schema](#Schema)             | ?string `null`    | Y       | An FQN describing a custom response schema. The class must have either one or more `#[OpenApiSchemaProperty]` attribute, implement `CustomSchemaInterface` or both.   |
-| description                   | ?string `null`    | Y       | Description of the response                                                                                                                                           |
-| mimeTypes                     | ?array `null`     | Y       | An array of mime types the response can, if null settings from swagger_bake config are used.                                                                          |
-| [associations](#Associations) | ?array `null`     | N       | Adds associated tables to the response sample schema, see examples below.                                                                                             |
-| schemaFormat                  | ?string `null`    | Y       | The schema format, generally only used for schemaType of string.                                                                                                      |
+| Property                      | Type / Default    | OA Spec | Description                                                                                                                                                         |
+|-------------------------------|-------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| schemaType                    | string `"object"` | Y       | The schema response type: `"object"`, `"array"` or `"collection"`                                                                                                   |
+| statusCode                    | string `"200"`    | Y       | The HTTP response code                                                                                                                                              |
+| ref                           | ?string `null`    | Y       | The OpenAPI schema (e.g. `"#/components/schemas/ModelName"`                                                                                                         |
+| [schema](#Schema)             | ?string `null`    | Y       | An FQN describing a custom response schema. The class must have either one or more `#[OpenApiSchemaProperty]` attribute, implement `CustomSchemaInterface` or both. |
+| description                   | ?string `null`    | Y       | Description of the response                                                                                                                                         |
+| mimeTypes                     | ?array `null`     | Y       | An array of mime types the response can, if null settings from swagger_bake config are used.                                                                        |
+| [associations](#Associations) | ?array `null`     | N       | Adds associated tables to the response sample schema, see examples below.                                                                                           |
+| schemaFormat                  | ?string `null`    | Y       | The schema format, generally only used for schemaType of string.                                                                                                    |
 
 Defining a multiple mimeTypes and 400-409 status code range and an expected 200 response:
 

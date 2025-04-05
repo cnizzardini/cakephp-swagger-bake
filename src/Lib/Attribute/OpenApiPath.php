@@ -25,7 +25,7 @@ class OpenApiPath
         public readonly ?string $ref = null,
         public readonly ?string $summary = null,
         public readonly ?string $description = null,
-        public readonly array $tags = []
+        public readonly array $tags = [],
     ) {
     }
 }

@@ -32,7 +32,10 @@ final class JsonLd implements MediaTypeInterface
     {
         $this->validateSchemaType($schemaType);
 
-        return $schemaType === 'array' ? $this->collection($schema) : $this->item($schema);
+        return match ($schemaType) {
+            'array', 'collection' => $this->collection($schema),
+            default => $this->item($schema),
+        };
     }
 
     /**

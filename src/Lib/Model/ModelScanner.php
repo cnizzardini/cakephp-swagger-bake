@@ -33,7 +33,7 @@ class ModelScanner
      */
     public function __construct(
         private readonly RouteScanner $routeScanner,
-        private readonly Configuration $config
+        private readonly Configuration $config,
     ) {
     }
 
@@ -101,7 +101,7 @@ class ModelScanner
         $result = (new Collection($routes))->filter(
             function (RouteDecorator $routeDecorator) use ($model) {
                 return $this->routeHasModel($routeDecorator, $model);
-            }
+            },
         );
 
         return $result->first();

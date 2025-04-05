@@ -83,7 +83,7 @@ abstract class AbstractOpenApiParameter
                 (new Schema())
                     ->setType($this->type)
                     ->setEnum($this->enum)
-                    ->setFormat($this->format)
+                    ->setFormat($this->format),
             );
 
         return $parameter;

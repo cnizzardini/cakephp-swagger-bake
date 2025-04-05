@@ -22,7 +22,7 @@ class Response implements JsonSerializable
     public function __construct(
         private string $code,
         private ?string $description = null,
-        private array $content = []
+        private array $content = [],
     ) {
     }
 

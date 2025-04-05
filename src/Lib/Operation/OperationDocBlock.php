@@ -24,7 +24,7 @@ class OperationDocBlock
     public function __construct(
         private Configuration $config,
         private Operation $operation,
-        private DocBlock $doc
+        private DocBlock $doc,
     ) {
     }
 

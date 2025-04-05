@@ -42,7 +42,7 @@ class OperationResponseAssociation
         private readonly RouteDecorator $route,
         private readonly ?Schema $schema = null,
         private ?LocatorInterface $locator = null,
-        private ?Inflector $inflector = null
+        private ?Inflector $inflector = null,
     ) {
         $this->locator = $locator ?? TableRegistry::getTableLocator();
         $this->inflector = $inflector ?? new Inflector();
@@ -109,7 +109,7 @@ class OperationResponseAssociation
         Table $table,
         Schema $schema,
         array $assoc,
-        ?array $current = null
+        ?array $current = null,
     ): Schema {
         $current = $current ?? array_slice($assoc, 0, 1);
         try {
@@ -119,8 +119,8 @@ class OperationResponseAssociation
                 sprintf(
                     'OpenApiResponse association not found. Declared on %s result in error: %s',
                     $this->route->getControllerFqn() . '::' . $this->route->getAction(),
-                    $e->getMessage()
-                )
+                    $e->getMessage(),
+                ),
             );
         }
 

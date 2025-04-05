@@ -39,11 +39,11 @@ class OpenApiSchema
     public function __construct(
         public readonly int $visibility = 1,
         public readonly ?string $title = null,
-        public readonly ?string $description = null
+        public readonly ?string $description = null,
     ) {
         if ($this->visibility < 1 || $this->visibility > 4) {
             throw new InvalidArgumentException(
-                'OpenApiSchema visibility must be 1 through 4. See class constants'
+                'OpenApiSchema visibility must be 1 through 4. See class constants',
             );
         }
     }

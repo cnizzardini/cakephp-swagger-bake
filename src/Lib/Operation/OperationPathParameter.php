@@ -28,7 +28,7 @@ class OperationPathParameter
         private Operation $operation,
         private RouteDecorator $route,
         private ?ReflectionMethod $reflectionMethod = null,
-        private ?Schema $schema = null
+        private ?Schema $schema = null,
     ) {
     }
 
@@ -74,8 +74,8 @@ class OperationPathParameter
                     name: $id,
                     description: $description ?? null,
                     required: true,
-                    schema: (new Schema())->setType($type ?? 'string')->setFormat($format ?? '')
-                )
+                    schema: (new Schema())->setType($type ?? 'string')->setFormat($format ?? ''),
+                ),
             );
         }
     }
@@ -95,7 +95,7 @@ class OperationPathParameter
         /** @var array<\SwaggerBake\Lib\Attribute\OpenApiPathParam> $openApiPathParams */
         $openApiPathParams = (new AttributeFactory(
             $this->reflectionMethod,
-            OpenApiPathParam::class
+            OpenApiPathParam::class,
         ))->createMany();
 
         $parameters = $this->operation->getParameters();
