@@ -14,7 +14,7 @@ trait MediaTypeTrait
      */
     private function validateSchemaType(string $schemaType): void
     {
-        if (!in_array($schemaType, ['array', 'object'])) {
+        if (!in_array($schemaType, ['array', 'object', 'collection'])) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Argument must be array or object but was given schemaType `%s`. If you\'re using the ' .
