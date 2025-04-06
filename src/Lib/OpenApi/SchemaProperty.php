@@ -86,7 +86,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
          */
         $vars = ArrayUtility::removeKeysMatching(
             $vars,
-            ['name','isRequired','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity', 'isHidden']
+            ['name','isRequired','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity', 'isHidden'],
         );
 
         if (!empty($this->refEntity)) {
@@ -102,7 +102,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
                 'format','title','description','multipleOf','minimum','maximum','minLength','maxLength','pattern',
                 'minItems','maxItems','minProperties','maxProperties','items','enum','default','exclusiveMinimum',
                 'exclusiveMaximum','uniqueItems','nullable','type','oneOf',
-            ]
+            ],
         );
 
         /*
@@ -115,7 +115,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
          */
         $vars = ArrayUtility::removeValuesMatching(
             $vars,
-            ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false, 'nullable' => false]
+            ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false, 'nullable' => false],
         );
 
         if (isset($vars['enum']) && is_array($vars['enum'])) {
@@ -123,7 +123,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
         }
 
         if (isset($vars['items'])) {
-            $vars['items'] = (object) reset($vars['items']);
+            $vars['items'] = (object)reset($vars['items']);
         }
 
         return $vars;

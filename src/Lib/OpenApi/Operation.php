@@ -44,7 +44,7 @@ class Operation implements JsonSerializable
         private array $responses = [],
         private array $security = [],
         private bool $isDeprecated = false,
-        private int $sortOrder = 100
+        private int $sortOrder = 100,
     ) {
         $this->setHttpMethod($httpMethod);
         $this->setParameters($parameters);
@@ -196,7 +196,7 @@ class Operation implements JsonSerializable
     {
         if (!in_array($type, Parameter::IN)) {
             throw new InvalidArgumentException(
-                "Invalid parameter type `$type`, must be one: " . implode(', ', Parameter::IN)
+                "Invalid parameter type `$type`, must be one: " . implode(', ', Parameter::IN),
             );
         }
 

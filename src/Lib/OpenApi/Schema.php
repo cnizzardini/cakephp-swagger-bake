@@ -56,7 +56,7 @@ class Schema implements JsonSerializable, SchemaInterface
         private int $visibility = OpenApiSchema::VISIBLE_DEFAULT,
         private ?string $refPath = null,
         private bool $isCustomSchema = false,
-        private mixed $example = null
+        private mixed $example = null,
     ) {
     }
 
@@ -70,7 +70,7 @@ class Schema implements JsonSerializable, SchemaInterface
         // always unset
         $vars = ArrayUtility::removeKeysMatching(
             $vars,
-            ['name','refEntity','isPublic', 'refPath', 'visibility', 'isCustomSchema',]
+            ['name','refEntity','isPublic', 'refPath', 'visibility', 'isCustomSchema',],
         );
 
         // must stay in this order to prevent https://github.com/cnizzardini/cakephp-swagger-bake/issues/30
@@ -83,7 +83,7 @@ class Schema implements JsonSerializable, SchemaInterface
         // remove null or empty properties to avoid swagger.json clutter
         $vars = ArrayUtility::removeEmptyVars(
             $vars,
-            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml','required']
+            ['title','properties','items','oneOf','anyOf','allOf','not','enum','format','type','xml','required'],
         );
 
         // remove null properties only

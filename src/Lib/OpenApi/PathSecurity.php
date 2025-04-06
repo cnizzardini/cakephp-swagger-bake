@@ -21,7 +21,7 @@ class PathSecurity implements JsonSerializable
      */
     public function __construct(
         private string $name = '',
-        private array $scopes = []
+        private array $scopes = [],
     ) {
     }
 

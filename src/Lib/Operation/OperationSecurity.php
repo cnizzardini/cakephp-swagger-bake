@@ -22,7 +22,7 @@ class OperationSecurity
      */
     public function __construct(
         private Operation $operation,
-        private ?ReflectionMethod $refMethod
+        private ?ReflectionMethod $refMethod,
     ) {
     }
 
@@ -60,7 +60,7 @@ class OperationSecurity
             $this->operation->pushSecurity(
                 (new PathSecurity())
                     ->setName($sec->name)
-                    ->setScopes($sec->scopes)
+                    ->setScopes($sec->scopes),
             );
         }
     }

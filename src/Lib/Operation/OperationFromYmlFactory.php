@@ -27,12 +27,12 @@ class OperationFromYmlFactory
             operationId: $yaml['operationId'],
             httpMethod: $httpMethod,
             tags: $yaml['tags'] ?? [],
-            isDeprecated: $yaml['deprecated'] ?? false
+            isDeprecated: $yaml['deprecated'] ?? false,
         );
 
         if (isset($yaml['externalDocs']['url'])) {
             $operation->setExternalDocs(
-                (new OperationExternalDoc($yaml['externalDocs']['url'], $yaml['externalDocs']['description']))
+                new OperationExternalDoc($yaml['externalDocs']['url'], $yaml['externalDocs']['description']),
             );
         }
 

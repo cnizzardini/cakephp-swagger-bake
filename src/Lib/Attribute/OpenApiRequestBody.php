@@ -24,7 +24,7 @@ class OpenApiRequestBody
         public readonly string $description = '',
         public readonly array $mimeTypes = [],
         public readonly bool $required = true,
-        public readonly bool $ignoreCakeSchema = false
+        public readonly bool $ignoreCakeSchema = false,
     ) {
     }
 

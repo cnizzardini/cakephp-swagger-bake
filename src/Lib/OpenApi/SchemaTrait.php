@@ -31,7 +31,7 @@ trait SchemaTrait
         if ($type !== null && !in_array($type, OpenApiDataType::TYPES)) {
             throw new InvalidArgumentException(
                 "Schema type of `$type` is invalid. Must be one of: " .
-                implode(',', OpenApiDataType::TYPES)
+                implode(',', OpenApiDataType::TYPES),
             );
         }
 

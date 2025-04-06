@@ -19,8 +19,8 @@ trait MediaTypeTrait
                 sprintf(
                     'Argument must be array or object but was given schemaType `%s`. If you\'re using the ' .
                     'SwagResponseSchema annotation, try defining schemaType.',
-                    $schemaType
-                )
+                    $schemaType,
+                ),
             );
         }
     }

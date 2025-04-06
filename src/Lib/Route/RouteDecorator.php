@@ -315,7 +315,7 @@ class RouteDecorator
 
                 return $piece;
             },
-            explode('/', $this->template)
+            explode('/', $this->template),
         );
 
         return implode('/', $pieces);

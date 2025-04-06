@@ -84,7 +84,7 @@ class NamespaceUtility
 
             $classes = array_merge(
                 $classes,
-                MixerApiNsUtil::findClasses($namespace)
+                MixerApiNsUtil::findClasses($namespace),
             );
         }
 

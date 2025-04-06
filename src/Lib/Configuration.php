@@ -109,14 +109,14 @@ class Configuration
             throw new SwaggerBakeRunTimeException(
                 'SwaggerBake config missing. Have you added it to your `config/bootstrap.php`? ' . $e->getMessage(),
                 500,
-                $e
+                $e,
             );
         }
 
         foreach (['yml', 'json', 'webPath', 'prefix'] as $property) {
             if (!array_key_exists(key: $property, array: $config)) {
                 throw new InvalidArgumentException(
-                    "Property `$property` must be defined in your config/swagger_bake.php configuration file."
+                    "Property `$property` must be defined in your config/swagger_bake.php configuration file.",
                 );
             }
         }
@@ -131,8 +131,8 @@ class Configuration
                     sprintf(
                         'Method %s does not exist in class %s but is trying to be called.',
                         $setter,
-                        self::class
-                    )
+                        self::class,
+                    ),
                 );
             }
             $this->{$setter}($value);
@@ -155,7 +155,7 @@ class Configuration
     {
         $this->throwInvalidArgExceptionIfPrefixInvalid(
             $prefix,
-            "Invalid prefix: $prefix. Prefix must be a valid URI path such as `/` or `/api`."
+            "Invalid prefix: $prefix. Prefix must be a valid URI path such as `/` or `/api`.",
         );
 
         $this->prefix = $prefix;
@@ -184,8 +184,8 @@ class Configuration
                 sprintf(
                     "Invalid yml: `%s`. Value should start with a / an be relative to your 
                     applications ROOT. $message",
-                    $yml
-                )
+                    $yml,
+                ),
             );
         }
 
@@ -195,8 +195,8 @@ class Configuration
                 sprintf(
                     'A YML file is required but none was found at "%s". See "%s" for a sample file.',
                     $path,
-                    '$vendor/cnizzardini/cakephp-swagger-bake/assets/swagger.yml'
-                )
+                    '$vendor/cnizzardini/cakephp-swagger-bake/assets/swagger.yml',
+                ),
             );
         }
 
@@ -226,8 +226,8 @@ class Configuration
                 sprintf(
                     "Invalid json: `%s`. Value should start with a `/` and be relative to your 
                     applications ROOT. $message",
-                    $json
-                )
+                    $json,
+                ),
             );
         }
 
@@ -239,8 +239,8 @@ class Configuration
                     made to create %s, but permission was denied or the file path is bad. Either fix the file system 
                     permissions, create the file and/or both. $message",
                     $json,
-                    $path
-                )
+                    $path,
+                ),
             );
         }
 
@@ -267,7 +267,7 @@ class Configuration
             $webPath,
             "Invalid webPath: `$webPath`. webPath must be a valid web accessible path based e.g. /swagger.json. 
             Generally if your application serves the json file from something like https://example.com/swagger.json 
-            this value should be /swagger.json "
+            this value should be /swagger.json ",
         );
 
         $this->webPath = $webPath;
@@ -293,7 +293,7 @@ class Configuration
         $allowed = ['swagger','redoc'];
         if (!in_array($docType, $allowed)) {
             throw new InvalidArgumentException(
-                "Invalid docType: $docType. Doctype must be one of " . implode(', ', $allowed)
+                "Invalid docType: $docType. Doctype must be one of " . implode(', ', $allowed),
             );
         }
         $this->docType = $docType;
@@ -490,8 +490,8 @@ class Configuration
                 sprintf(
                     'Invalid connectionName supplied: %s. Must be one of %s',
                     $connectionName,
-                    implode(', ', $configuredConnections)
-                )
+                    implode(', ', $configuredConnections),
+                ),
             );
         }
 
@@ -524,8 +524,8 @@ class Configuration
                 sprintf(
                     'Invalid editActionMethod supplied: %s. Must be one of %s',
                     implode(', ', $results),
-                    implode(', ', $methods)
-                )
+                    implode(', ', $methods),
+                ),
             );
         }
 

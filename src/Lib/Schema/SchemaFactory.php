@@ -69,7 +69,7 @@ class SchemaFactory
         EventManager::instance()->dispatch(
             new Event('SwaggerBake.Schema.created', $schema, [
                 'modelDecorator' => $modelDecorator,
-            ])
+            ]),
         );
 
         return $schema;
@@ -204,7 +204,7 @@ class SchemaFactory
         /** @var array<\SwaggerBake\Lib\Attribute\OpenApiSchemaProperty> $attributes */
         $attributes = (new AttributeFactory(
             new ReflectionClass($model->getEntity()),
-            OpenApiSchemaProperty::class
+            OpenApiSchemaProperty::class,
         ))->createMany();
 
         $return = [];

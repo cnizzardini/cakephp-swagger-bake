@@ -43,7 +43,7 @@ class SchemaPropertyFormat
     public function __construct(
         private Validator $validator,
         private SchemaProperty $schemaProperty,
-        ModelProperty $property
+        ModelProperty $property,
     ) {
         $this->propertyName = $property->getName();
     }

@@ -42,7 +42,7 @@ class InstallCommand extends Command
         $continue = $io->ask(
             'If your API exists in a plugin or you have some other non-standard setup, please follow ' .
             'the manual installation steps. Do you want to continue?',
-            'Y'
+            'Y',
         );
 
         if (strtoupper($continue) !== 'Y') {

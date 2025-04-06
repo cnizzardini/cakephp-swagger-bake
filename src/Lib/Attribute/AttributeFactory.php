@@ -14,7 +14,7 @@ final class AttributeFactory
      */
     public function __construct(
         private Reflector $reflection,
-        private string $attributeClass
+        private string $attributeClass,
     ) {
     }
 

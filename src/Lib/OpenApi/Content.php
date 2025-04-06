@@ -20,7 +20,7 @@ class Content implements JsonSerializable
      */
     public function __construct(
         private string $mimeType,
-        private Schema|string $schema
+        private Schema|string $schema,
     ) {
     }
 

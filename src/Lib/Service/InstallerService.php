@@ -17,7 +17,7 @@ class InstallerService
      */
     public function __construct(
         private string $configDir = CONFIG,
-        ?FileUtility $fileUtility = null
+        ?FileUtility $fileUtility = null,
     ) {
         $this->fileUtility = $fileUtility ?? new FileUtility();
     }
@@ -37,7 +37,7 @@ class InstallerService
         $swaggerYml = $this->configDir . 'swagger.yml';
         if (!$this->fileUtility->copy($fromAssets, $swaggerYml)) {
             throw new InstallException(
-                "Error copying base OpenAPI YAML from `$fromAssets` to `$swaggerYml`"
+                "Error copying base OpenAPI YAML from `$fromAssets` to `$swaggerYml`",
             );
         }
 
@@ -45,7 +45,7 @@ class InstallerService
         $swaggerBake = $this->configDir . 'swagger_bake.php';
         if (!$this->fileUtility->copy($fromAssets, $swaggerBake)) {
             throw new InstallException(
-                "Error copying swagger_bake config from `$fromAssets` to `$swaggerBake`"
+                "Error copying swagger_bake config from `$fromAssets` to `$swaggerBake`",
             );
         }
 
@@ -82,7 +82,7 @@ class InstallerService
     {
         if (!str_starts_with($prefix, '/') || !filter_var('http://localhost' . $prefix, FILTER_VALIDATE_URL)) {
             throw new InstallException(
-                "Prefix is invalid. Prefix `$prefix` should start with a `/` and be a valid URL path."
+                "Prefix is invalid. Prefix `$prefix` should start with a `/` and be a valid URL path.",
             );
         }
 
@@ -90,8 +90,8 @@ class InstallerService
             throw new InstallException(
                 sprintf(
                     'Assets directory `%s` does not exist. Please correct the issue or install manually.',
-                    self::ASSETS
-                )
+                    self::ASSETS,
+                ),
             );
         }
 
@@ -101,7 +101,7 @@ class InstallerService
             throw (new InstallException())
                 ->setQuestion(
                     'The installer found an existing swagger.yml and/or swagger_bake.php file. ' .
-                    'Do you want to continue & overwrite these files?'
+                    'Do you want to continue & overwrite these files?',
                 );
         }
     }
