@@ -122,7 +122,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             $vars['enum'] = array_values($vars['enum']);
         }
 
-        if (isset($vars['items'])) {
+        if (!empty($vars['items'])) {
             $vars['items'] = (object)reset($vars['items']);
         }
 
