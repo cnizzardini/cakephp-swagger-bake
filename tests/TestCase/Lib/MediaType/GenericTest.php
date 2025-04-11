@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwaggerBake\Test\TestCase\Lib\MediaType;
 
@@ -36,7 +37,7 @@ class GenericTest extends TestCase
                 'controllers' => ['\SwaggerBakeTest\App\\'],
                 'entities' => ['\SwaggerBakeTest\App\\'],
                 'tables' => ['\SwaggerBakeTest\App\\'],
-            ]
+            ],
         ], SWAGGER_BAKE_TEST_APP);
     }
 
@@ -47,7 +48,7 @@ class GenericTest extends TestCase
         $schema = (new Generic($swagger))->buildSchema('#/components/schemas/thing', 'array');
         $this->assertEquals(
             '#/x-swagger-bake/components/schemas/Generic-Collection',
-            $schema->getAllOf()[0]['$ref']
+            $schema->getAllOf()[0]['$ref'],
         );
         $this->assertArrayHasKey('data', $schema->getProperties());
     }
@@ -70,7 +71,7 @@ class GenericTest extends TestCase
                     ->setName('PostalCode')
                     ->setProperties([
                         (new SchemaProperty())->setName('id'),
-                        (new SchemaProperty())->setName('PostalCode')
+                        (new SchemaProperty())->setName('PostalCode'),
                     ]),
             ]);
 
@@ -81,7 +82,7 @@ class GenericTest extends TestCase
         $this->assertArrayHasKey('PostalCode', $items['properties']);
         $this->assertEquals(
             '#/x-swagger-bake/components/schemas/Generic-Collection',
-            $schema->getAllOf()[0]['$ref']
+            $schema->getAllOf()[0]['$ref'],
         );
         $this->assertArrayHasKey('data', $schema->getProperties());
 
