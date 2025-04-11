@@ -84,5 +84,8 @@ class GenericTest extends TestCase
             $schema->getAllOf()[0]['$ref']
         );
         $this->assertArrayHasKey('data', $schema->getProperties());
+
+        $arr = json_decode(json_encode($schema->toArray()), true);
+        $this->assertArrayHasKey('Country', $arr['properties']['data']['items']['properties']);
     }
 }
