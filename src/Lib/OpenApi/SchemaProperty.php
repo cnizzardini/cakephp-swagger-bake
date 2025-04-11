@@ -122,8 +122,11 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
             $vars['enum'] = array_values($vars['enum']);
         }
 
-        if (!empty($vars['items'])) {
-            $vars['items'] = (object)reset($vars['items']);
+        if (!empty($vars['items']) && $vars['type'] === 'array' && count($vars['items']) === 1) {
+            $item = reset($vars['items']);
+            if (is_array($item) && $item['type'] === 'object') {
+                $vars['items'] = (object)$item;
+            }
         }
 
         return $vars;
