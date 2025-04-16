@@ -27,7 +27,7 @@ class SchemaPropertyValidation
     public function __construct(
         private Validator $validator,
         private SchemaProperty $schemaProperty,
-        ModelProperty|string $property
+        ModelProperty|string $property,
     ) {
         $this->propertyName = is_string($property) ? $property : $property->getName();
     }

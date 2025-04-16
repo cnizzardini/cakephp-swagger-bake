@@ -43,7 +43,7 @@ class OpenApiQueryParam
         public readonly bool $explode = false,
         public readonly string $style = '',
         public readonly string|bool|int $example = '',
-        public readonly bool $allowEmptyValue = false
+        public readonly bool $allowEmptyValue = false,
     ) {
         if (empty($ref) && empty($name)) {
             throw new SwaggerBakeRunTimeException('One of ref or name must be defined');
@@ -55,8 +55,8 @@ class OpenApiQueryParam
                     'Invalid Data Type, given %s for %s but must be one of: %s',
                     $type,
                     $name,
-                    implode(',', OpenApiDataType::TYPES)
-                )
+                    implode(',', OpenApiDataType::TYPES),
+                ),
             );
         }
     }
@@ -81,7 +81,7 @@ class OpenApiQueryParam
                 (new Schema())
                     ->setType($this->type)
                     ->setEnum($this->enum)
-                    ->setFormat($this->format)
+                    ->setFormat($this->format),
             );
     }
 }

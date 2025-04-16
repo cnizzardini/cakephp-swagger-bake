@@ -19,7 +19,7 @@ class OperationExternalDoc implements JsonSerializable
      */
     public function __construct(
         private string $url,
-        private string $description = ''
+        private string $description = '',
     ) {
     }
 

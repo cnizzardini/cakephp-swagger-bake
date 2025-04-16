@@ -70,8 +70,8 @@ class Extension implements ExtensionInterface
                 sprintf(
                     'Extension `%s` could not be run because the subject must be an instance of `%s`',
                     self::class,
-                    Operation::class
-                )
+                    Operation::class,
+                ),
             );
         }
 
@@ -123,7 +123,7 @@ class Extension implements ExtensionInterface
         $parameter->setSchema(
             (new Schema())
                 ->setDescription($filter->getComparison())
-                ->setType('string')
+                ->setType('string'),
         );
 
         return $parameter;
@@ -143,7 +143,7 @@ class Extension implements ExtensionInterface
 
         $filters = $manager->getFilters($openApiSearch->collection);
         foreach ($filters as $filter) {
-            $decoratedFilters[] = (new FilterDecorator($filter));
+            $decoratedFilters[] = new FilterDecorator($filter);
         }
 
         return $decoratedFilters;
@@ -158,7 +158,7 @@ class Extension implements ExtensionInterface
         if (!$table->hasBehavior('Search')) {
             throw new SwaggerBakeRunTimeException(sprintf(
                 'Search behavior must be loaded on %s',
-                $table::class
+                $table::class,
             ));
         }
 

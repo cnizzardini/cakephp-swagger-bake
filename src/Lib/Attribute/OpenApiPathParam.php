@@ -43,7 +43,7 @@ class OpenApiPathParam extends AbstractOpenApiParameter
             description: $description,
             example: $example,
             isRequired: $isRequired,
-            allowReserved: $allowReserved
+            allowReserved: $allowReserved,
         );
     }
 
@@ -62,7 +62,7 @@ class OpenApiPathParam extends AbstractOpenApiParameter
             ->setSchema(
                 (new Schema())
                     ->setType($this->type)
-                    ->setFormat($this->format)
+                    ->setFormat($this->format),
             );
     }
 }

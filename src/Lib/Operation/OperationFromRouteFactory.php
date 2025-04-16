@@ -87,7 +87,7 @@ class OperationFromRouteFactory
         $operation = new Operation(
             operationId: $route->getName() . ':' . strtolower($httpMethod),
             httpMethod: $httpMethod,
-            sortOrder: $sortOrder
+            sortOrder: $sortOrder,
         );
 
         $operation = $this->createOperation($operation, $route, $openApiOperation);
@@ -125,7 +125,7 @@ class OperationFromRouteFactory
                 'reflectionMethod' => $refMethod,
                 'route' => $route,
                 'schema' => $schema,
-            ])
+            ]),
         );
 
         return $operation;
@@ -166,7 +166,7 @@ class OperationFromRouteFactory
     private function createOperation(
         Operation $operation,
         RouteDecorator $route,
-        ?OpenApiOperation $openApiOperation
+        ?OpenApiOperation $openApiOperation,
     ): Operation {
         if ($openApiOperation instanceof OpenApiOperation) {
             $operation->setSummary($openApiOperation->summary);
@@ -178,7 +178,7 @@ class OperationFromRouteFactory
                     new OperationExternalDoc(
                         $openApiOperation->externalDocs['url'] ?? '',
                         $openApiOperation->externalDocs['description'] ?? '',
-                    )
+                    ),
                 );
             }
             if (is_numeric($openApiOperation->sortOrder)) {

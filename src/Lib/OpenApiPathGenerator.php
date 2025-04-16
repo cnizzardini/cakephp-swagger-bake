@@ -25,7 +25,7 @@ class OpenApiPathGenerator
     public function __construct(
         private Swagger $swagger,
         private RouteScanner $routeScanner,
-        private Configuration $config
+        private Configuration $config,
     ) {
     }
 
@@ -74,7 +74,7 @@ class OpenApiPathGenerator
             }
 
             EventManager::instance()->dispatch(
-                new Event('SwaggerBake.Path.created', $path)
+                new Event('SwaggerBake.Path.created', $path),
             );
 
             if (!empty($path->getOperations())) {

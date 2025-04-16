@@ -41,7 +41,7 @@ class SchemaFromYamlFactory
                     ->setAttribute($yml['xml']['attribute'] ?? null)
                     ->setNamespace($yml['xml']['namespace'] ?? null)
                     ->setPrefix($yml['xml']['prefix'] ?? null)
-                    ->setWrapped($yml['xml']['wrapped'] ?? null)
+                    ->setWrapped($yml['xml']['wrapped'] ?? null),
             );
         }
 
@@ -54,14 +54,14 @@ class SchemaFromYamlFactory
              */
             if (!empty($propertyVar['type']) && $propertyVar['type'] === 'object') {
                 $schema->pushProperty(
-                    $this->create($propertyName, $propertyVar)
+                    $this->create($propertyName, $propertyVar),
                 );
             /*
              * Property is a property
              */
             } else {
                 $schema->pushProperty(
-                    $factory->create($propertyName, $propertyVar)
+                    $factory->create($propertyName, $propertyVar),
                 );
             }
         }

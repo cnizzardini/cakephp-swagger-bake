@@ -23,7 +23,7 @@ class RequestBody implements JsonSerializable
         private ?string $description = null,
         private array $content = [],
         private bool $required = false,
-        private bool $ignoreCakeSchema = false
+        private bool $ignoreCakeSchema = false,
     ) {
     }
 

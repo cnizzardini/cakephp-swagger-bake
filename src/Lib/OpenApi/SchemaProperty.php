@@ -86,7 +86,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
          */
         $vars = ArrayUtility::removeKeysMatching(
             $vars,
-            ['name','isRequired','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity', 'isHidden']
+            ['name','isRequired','requirePresenceOnCreate','requirePresenceOnUpdate','refEntity', 'isHidden'],
         );
 
         if (!empty($this->refEntity)) {
@@ -102,7 +102,7 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
                 'format','title','description','multipleOf','minimum','maximum','minLength','maxLength','pattern',
                 'minItems','maxItems','minProperties','maxProperties','items','enum','default','exclusiveMinimum',
                 'exclusiveMaximum','uniqueItems','nullable','type','oneOf',
-            ]
+            ],
         );
 
         /*
@@ -115,11 +115,18 @@ class SchemaProperty implements JsonSerializable, SchemaInterface
          */
         $vars = ArrayUtility::removeValuesMatching(
             $vars,
-            ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false, 'nullable' => false]
+            ['readOnly' => false, 'writeOnly' => false, 'deprecated' => false, 'nullable' => false],
         );
 
         if (isset($vars['enum']) && is_array($vars['enum'])) {
             $vars['enum'] = array_values($vars['enum']);
+        }
+
+        if (!empty($vars['items']) && $vars['type'] === 'array' && count($vars['items']) === 1) {
+            $item = reset($vars['items']);
+            if (is_array($item) && $item['type'] === 'object') {
+                $vars['items'] = (object)$item;
+            }
         }
 
         return $vars;

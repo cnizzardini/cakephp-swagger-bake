@@ -72,7 +72,7 @@ abstract class AbstractSchemaProperty
         public readonly ?int $minProperties = null,
         public readonly ?int $maxProperties = null,
         public readonly array $enum = [],
-        public readonly array $items = []
+        public readonly array $items = [],
     ) {
     }
 

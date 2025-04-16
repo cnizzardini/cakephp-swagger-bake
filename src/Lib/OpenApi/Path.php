@@ -29,7 +29,7 @@ class Path implements JsonSerializable
         private ?string $ref = null,
         private ?string $summary = null,
         private ?string $description = null,
-        private array $tags = []
+        private array $tags = [],
     ) {
         $this->setOperations($operations);
     }

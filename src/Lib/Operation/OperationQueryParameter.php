@@ -166,14 +166,14 @@ class OperationQueryParameter
 
         if (!class_exists($dto->class)) {
             throw new SwaggerBakeRunTimeException(
-                sprintf('DTO class %s not found', $dto->class)
+                sprintf('DTO class %s not found', $dto->class),
             );
         }
 
         // get openapi schema query params defined on the class
         $queryParams = (new AttributeFactory(
             new ReflectionClass($dto->class),
-            OpenApiQueryParam::class
+            OpenApiQueryParam::class,
         ))->createMany();
         /** @var array<\SwaggerBake\Lib\Attribute\OpenApiQueryParam> $queryParams */
         $parameters = array_map(function ($param) {

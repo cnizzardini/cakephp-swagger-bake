@@ -46,7 +46,7 @@ class OperationResponse
         private Operation $operation,
         private RouteDecorator $route,
         private ?Schema $schema = null,
-        private ?ReflectionMethod $refMethod = null
+        private ?ReflectionMethod $refMethod = null,
     ) {
     }
 
@@ -147,59 +147,62 @@ class OperationResponse
      */
     private function addResponseSchema(Response $response, string $mimeType, OpenApiResponse $openApiResponse): bool
     {
-        if ($openApiResponse->schema) {
-            $reflection = new ReflectionClass($openApiResponse->schema);
-            /** @var \SwaggerBake\Lib\Attribute\OpenApiSchema|null $openApiSchema */
-            $openApiSchema = (new AttributeFactory(
-                $reflection,
-                OpenApiSchema::class
-            ))->createOneOrNull();
-
-            $schema = $this->createResponseSchema($reflection, $openApiResponse, $openApiSchema);
-
-            // class level attributes
-            $schemaProperties = (new AttributeFactory(
-                $reflection,
-                OpenApiSchemaProperty::class
-            ))->createMany();
-            foreach ($schemaProperties as $schemaProperty) {
-                $schema->pushProperty($schemaProperty->create());
-            }
-
-            // property level attributes
-            foreach ($reflection->getProperties() as $reflectionProperty) {
-                $schemaProperty = (new AttributeFactory(
-                    $reflectionProperty,
-                    OpenApiSchemaProperty::class
-                ))->createOneOrNull();
-
-                if ($schemaProperty instanceof OpenApiSchemaProperty) {
-                    $schema->pushProperty($schemaProperty->create());
-                }
-            }
-
-            if ($openApiResponse->schemaType == 'array') {
-                $schema->setType('array');
-                if (
-                    !$openApiSchema instanceof OpenApiSchema
-                    || $openApiSchema->visibility === OpenApiSchema::VISIBLE_NEVER
-                ) {
-                    $clonedSchema = clone $schema;
-                    $schema = $clonedSchema
-                        ->setName($schema->getName())
-                        ->setProperties([])
-                        ->setItems(['properties' => $schema->getProperties()]);
-                    unset($clonedSchema);
-                }
-            }
-
-            $response->pushContent(new Content($mimeType, $schema));
-            $this->operation->pushResponse($response);
-
-            return true;
+        if ($openApiResponse->schema === null) {
+            return false;
         }
 
-        return false;
+        $reflection = new ReflectionClass($openApiResponse->schema);
+        /** @var \SwaggerBake\Lib\Attribute\OpenApiSchema|null $openApiSchema */
+        $openApiSchema = (new AttributeFactory(
+            $reflection,
+            OpenApiSchema::class,
+        ))->createOneOrNull();
+
+        $schema = $this->createResponseSchema($reflection, $openApiResponse, $openApiSchema);
+
+        // class level attributes
+        $schemaProperties = (new AttributeFactory(
+            $reflection,
+            OpenApiSchemaProperty::class,
+        ))->createMany();
+
+        foreach ($schemaProperties as $schemaProperty) {
+            $schema->pushProperty($schemaProperty->create());
+        }
+
+        // property level attributes
+        foreach ($reflection->getProperties() as $reflectionProperty) {
+            $schemaProperty = (new AttributeFactory(
+                $reflectionProperty,
+                OpenApiSchemaProperty::class,
+            ))->createOneOrNull();
+
+            if ($schemaProperty instanceof OpenApiSchemaProperty) {
+                $schema->pushProperty($schemaProperty->create());
+            }
+        }
+
+        if ($openApiResponse->schemaType == 'array') {
+            $schema->setType('array');
+            if (
+                !$openApiSchema instanceof OpenApiSchema
+                || $openApiSchema->visibility === OpenApiSchema::VISIBLE_NEVER
+            ) {
+                $clonedSchema = clone $schema;
+                $schema = $clonedSchema
+                    ->setName($schema->getName())
+                    ->setProperties([])
+                    ->setItems(['properties' => $schema->getProperties()]);
+                unset($clonedSchema);
+            }
+        } elseif ($openApiResponse->schemaType == 'collection') {
+            $schema = $this->getMimeTypeSchema($mimeType, $openApiResponse->schemaType, $schema);
+        }
+
+        $response->pushContent(new Content($mimeType, $schema));
+        $this->operation->pushResponse($response);
+
+        return true;
     }
 
     /**
@@ -211,7 +214,7 @@ class OperationResponse
     private function createResponseSchema(
         ReflectionClass $reflectionClass,
         OpenApiResponse $openApiResponse,
-        ?OpenApiSchema $openApiSchema
+        ?OpenApiSchema $openApiSchema,
     ): Schema {
         // create base schema from implementation
         if ($reflectionClass->implementsInterface(CustomSchemaInterface::class)) {
@@ -283,11 +286,11 @@ class OperationResponse
             $schema = $this->getMimeTypeSchema(
                 $mimeType,
                 $openApiResponse->schemaType,
-                $assocSchema
+                $assocSchema,
             );
             $response->pushContent(new Content(
                 $mimeType,
-                $openApiResponse->schemaFormat ? $schema->setFormat($openApiResponse->schemaFormat) : $schema
+                $openApiResponse->schemaFormat ? $schema->setFormat($openApiResponse->schemaFormat) : $schema,
             ));
             $this->operation->pushResponse($response);
 
