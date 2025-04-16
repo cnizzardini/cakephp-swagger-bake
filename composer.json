@@ -16,7 +16,7 @@
         "cakephp/cakephp": "^5.0",
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
-        "mixerapi/core": "^2.0"
+        "mixerapi/core": "master-dev"
     },
     "suggest": {
         "cakephp/bake": "Used by SwaggerBake bake templates",
@@ -79,5 +79,11 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/MasaKni/core.git"
+        }
+    ]
 }
