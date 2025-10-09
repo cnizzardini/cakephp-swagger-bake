@@ -37,15 +37,18 @@ class OperationQueryParameter
 
     /**
      * Adds query parameters to the Operation
+     * All operation methods are allowed (GET, PUT, POST, DELETE...)
      *
      * @return \SwaggerBake\Lib\OpenApi\Operation
      * @throws \ReflectionException
      */
     public function getOperationWithQueryParameters(): Operation
     {
+        /* Query Parameters are no more limited to GET operation
         if ($this->operation->getHttpMethod() != 'GET') {
             return $this->operation;
         }
+        */
 
         if (!$this->refMethod instanceof ReflectionMethod) {
             return $this->operation;
