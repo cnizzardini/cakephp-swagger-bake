@@ -162,7 +162,8 @@ class Extension implements ExtensionInterface
             ));
         }
 
-        /** @var \Search\Model\Behavior\SearchBehavior $search */
+        /** @var \Search\Model\Behavior\SearchBehavior&\Cake\ORM\Behavior $search */
+        /** @phpstan-ignore-next-line */
         $search = $table->getBehavior('Search');
 
         return $search->searchManager();
