@@ -43,10 +43,6 @@ class OperationQueryParameter
      */
     public function getOperationWithQueryParameters(): Operation
     {
-        if ($this->operation->getHttpMethod() != 'GET') {
-            return $this->operation;
-        }
-
         if (!$this->refMethod instanceof ReflectionMethod) {
             return $this->operation;
         }
