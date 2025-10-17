@@ -42,6 +42,7 @@ class OperationResponseAssociationTest extends TestCase
         });
 
         $this->config = new Configuration([
+            'connectionName' => 'test',
             'prefix' => '/',
             'yml' => '/config/swagger-bare-bones.yml',
             'json' => '/webroot/swagger.json',
@@ -67,6 +68,7 @@ class OperationResponseAssociationTest extends TestCase
 
         $assoc = new OperationResponseAssociation(
             $swagger,
+            $this->config,
             $this->routes['employees:view'],
             $swagger->getSchemaByName('Employee'),
         );
@@ -88,6 +90,7 @@ class OperationResponseAssociationTest extends TestCase
 
         $assoc = new OperationResponseAssociation(
             $swagger,
+            $this->config,
             $this->routes['employees:view'],
             $swagger->getSchemaByName('Employee'),
         );
@@ -106,6 +109,7 @@ class OperationResponseAssociationTest extends TestCase
         $swagger = (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create();
         $assoc = new OperationResponseAssociation(
             $swagger,
+            $this->config,
             $this->routes['employees:view'],
             null
         );
@@ -125,6 +129,7 @@ class OperationResponseAssociationTest extends TestCase
     {
         $assoc = new OperationResponseAssociation(
             (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create(),
+            $this->config,
             $this->routes['employees:view'],
             null
         );
@@ -146,6 +151,7 @@ class OperationResponseAssociationTest extends TestCase
 
         (new OperationResponseAssociation(
             (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create(),
+            $this->config,
             $this->routes['employees:view'],
             null
         ))->build(new OpenApiResponse(
@@ -162,6 +168,7 @@ class OperationResponseAssociationTest extends TestCase
 
         (new OperationResponseAssociation(
             (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create(),
+            $this->config,
             $route,
             null
         ))->build(new OpenApiResponse(
@@ -174,6 +181,7 @@ class OperationResponseAssociationTest extends TestCase
     {
         $schema = (new OperationResponseAssociation(
             (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create(),
+            $this->config,
             $this->routes['employees:view'],
             null
         ))->build(new OpenApiResponse(
@@ -191,6 +199,7 @@ class OperationResponseAssociationTest extends TestCase
         $this->expectException(SwaggerBakeRunTimeException::class);
         (new OperationResponseAssociation(
             (new SwaggerFactory($this->config, new RouteScanner(new Router(), $this->config)))->create(),
+            $this->config,
             $this->routes['employees:view'],
             null
         ))->build(new OpenApiResponse(

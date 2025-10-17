@@ -39,6 +39,7 @@ class JsonLdTest extends TestCase
         });
 
         $this->config = new Configuration([
+            'connectionName' => 'test',
             'prefix' => '/',
             'yml' => '/config/swagger-bare-bones.yml',
             'json' => '/webroot/swagger.json',
@@ -66,6 +67,7 @@ class JsonLdTest extends TestCase
 
         $schema = (new OperationResponseAssociation(
             $swagger->build(),
+            $this->config,
             $routeScanner->getRoutes()['employees:view'],
             null
         ))->build(new OpenApiResponse(
@@ -95,6 +97,7 @@ class JsonLdTest extends TestCase
 
         $schema = (new OperationResponseAssociation(
             $swagger->build(),
+            $this->config,
             $routeScanner->getRoutes()['employees:view'],
             null
         ))->build(new OpenApiResponse(

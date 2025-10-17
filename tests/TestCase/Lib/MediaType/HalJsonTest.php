@@ -38,6 +38,7 @@ class HalJsonTest extends TestCase
         });
 
         $this->config = new Configuration([
+            'connectionName' => 'test',
             'prefix' => '/',
             'yml' => '/config/swagger-bare-bones.yml',
             'json' => '/webroot/swagger.json',
@@ -65,6 +66,7 @@ class HalJsonTest extends TestCase
 
         $schema = (new OperationResponseAssociation(
             $swagger->build(),
+            $this->config,
             $routeScanner->getRoutes()['employees:view'],
             null
         ))->build(new OpenApiResponse(
@@ -93,6 +95,7 @@ class HalJsonTest extends TestCase
 
         $schema = (new OperationResponseAssociation(
             $swagger->build(),
+            $this->config,
             $routeScanner->getRoutes()['employees:view'],
             null
         ))->build(new OpenApiResponse(
