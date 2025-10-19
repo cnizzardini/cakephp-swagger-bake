@@ -281,8 +281,12 @@ class OperationResponse
     private function addAssociatedSchema(Response $response, string $mimeType, OpenApiResponse $openApiResponse): bool
     {
         if (is_array($openApiResponse->associations)) {
-            $assocSchema = (new OperationResponseAssociation($this->swagger, $this->route, $this->schema))
-                ->build($openApiResponse);
+            $assocSchema = (new OperationResponseAssociation(
+                $this->swagger,
+                $this->config,
+                $this->route,
+                $this->schema,
+            ))->build($openApiResponse);
             $schema = $this->getMimeTypeSchema(
                 $mimeType,
                 $openApiResponse->schemaType,

@@ -16,6 +16,7 @@ use Cake\Utility\Inflector;
 use InvalidArgumentException;
 use MixerApi\Core\Model\ModelFactory;
 use SwaggerBake\Lib\Attribute\OpenApiResponse;
+use SwaggerBake\Lib\Configuration;
 use SwaggerBake\Lib\Exception\SwaggerBakeRunTimeException;
 use SwaggerBake\Lib\Model\ModelDecorator;
 use SwaggerBake\Lib\OpenApi\Schema;
@@ -39,6 +40,7 @@ class OperationResponseAssociation
      */
     public function __construct(
         private readonly Swagger $swagger,
+        private readonly Configuration $config,
         private readonly RouteDecorator $route,
         private readonly ?Schema $schema = null,
         private ?LocatorInterface $locator = null,
@@ -162,7 +164,8 @@ class OperationResponseAssociation
         if (!$schema) {
             $assocTable = $this->locator->get($tableName);
             try {
-                $model = (new ModelFactory(ConnectionManager::get('default'), $assocTable))->create();
+                $connection = ConnectionManager::get($this->config->getConnectionName());
+                $model = (new ModelFactory($connection, $assocTable))->create();
             } catch (DatabaseException $e) {
                 throw new SwaggerBakeRunTimeException('Error building association: ' . $e->getMessage());
             }
