@@ -24,6 +24,7 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: |
           composer self-update
+          composer clear-cache
           composer validate
           composer install --prefer-dist --no-progress
 
@@ -49,6 +50,7 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: |
           composer self-update
+          composer clear-cache
           composer validate
           composer install --prefer-dist --no-progress
 
@@ -85,6 +87,7 @@ jobs:
       - name: CakePHP ${{matrix.version}} Compatability
         run: |
           composer self-update
+          composer clear-cache
           rm -rf composer.lock
           composer require cakephp/cakephp:${{matrix.version}} --no-update
           composer install --prefer-dist --no-progress
