@@ -16,7 +16,7 @@
         "cakephp/cakephp": "^5.0",
         "symfony/yaml": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.1",
-        "mixerapi/core": "^2.1"
+        "mixerapi/core": "^2.0"
     },
     "suggest": {
         "cakephp/bake": "Used by SwaggerBake bake templates",
