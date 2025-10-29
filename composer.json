@@ -59,9 +59,7 @@
         "phpstan": "phpstan analyse src/",
         "test": "phpunit --colors=always",
         "phpmd": "phpmd src/ ansi phpmd.xml",
-        "coverage": "phpunit --coverage-html coverage-reports/",
-        "grumphp-init": "grumphp git:init",
-        "grumphp": "grumphp"
+        "coverage": "phpunit --coverage-html coverage-reports/"
     },
     "support": {
         "issues": "https://github.com/cnizzardini/cakephp-swagger-bake/issues",

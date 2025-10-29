@@ -452,11 +452,3 @@ PHPUnit, PHPCS, PHPSTAN, and PHPMD:
 ```console
 composer analyze
 ```
-
-[GrumPHP](https://github.com/phpro/grumphp) can be used to run tests and static analyzers in a pre-commit hook.
-
-```console
-composer grumphp-init
-```
-
-I've set grumphp to be installed globally: https://github.com/phpro/grumphp/blob/master/doc/installation/global.md
