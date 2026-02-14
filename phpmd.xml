@@ -42,7 +42,6 @@
     <rule ref="rulesets/unusedcode.xml">
         <exclude name="UnusedPrivateField"/>
     </rule>
-    <rule ref="rulesets/unusedcode.xml/UnusedPrivateMethod" />
     <rule ref="rulesets/controversial.xml/CamelCaseParameterName" />
     <rule ref="rulesets/controversial.xml/CamelCaseMethodName" />
     <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
