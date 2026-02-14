@@ -39,7 +39,9 @@
         </properties>
     </rule>
     <rule ref="rulesets/naming.xml/ShortMethodName" />
-    <rule ref="rulesets/unusedcode.xml/UnusedPrivateField" />
+    <rule ref="rulesets/unusedcode.xml">
+        <exclude name="UnusedPrivateField"/>
+    </rule>
     <rule ref="rulesets/unusedcode.xml/UnusedPrivateMethod" />
     <rule ref="rulesets/controversial.xml/CamelCaseParameterName" />
     <rule ref="rulesets/controversial.xml/CamelCaseMethodName" />

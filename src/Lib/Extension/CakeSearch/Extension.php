@@ -43,7 +43,7 @@ class Extension implements ExtensionInterface
     {
         EventManager::instance()
             ->on('SwaggerBake.Operation.created', function (Event $event): void {
-                $operation = $this->getOperation($event); // phpcs:ignore
+                $this->getOperation($event);
             });
     }
 

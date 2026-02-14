@@ -13,7 +13,7 @@ use SwaggerBake\Lib\Service\InstallerService;
 use SwaggerBake\Lib\Service\OpenApiBakerService;
 use SwaggerBake\Lib\Service\OpenApiControllerService;
 
-class Plugin extends BasePlugin
+class SwaggerBakePlugin extends BasePlugin
 {
     protected bool $routes = false;
 
