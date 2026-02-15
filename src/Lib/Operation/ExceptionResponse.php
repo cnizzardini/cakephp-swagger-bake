@@ -87,17 +87,15 @@ class ExceptionResponse
 
         $this->code = empty($httpCode) ? '500' : $httpCode;
         $this->description = $description;
-        $this->schema = $this->fallback($exceptionFqn);
+        $this->schema = $this->fallback();
 
         return $this;
     }
 
     /**
      * @deprecated this method may be removed in version 3.
-     * @param string $exceptionFqn The FQN of the exception class.
-     * @return string|null
      */
-    private function fallback(string $exceptionFqn): ?string
+    private function fallback(): ?string
     {
         if (empty($this->config->getExceptionSchema())) {
             return null;

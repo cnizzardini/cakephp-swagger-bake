@@ -28,7 +28,7 @@ class EmployeesTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
         $this->addBehavior('Search.Search');
-        $this->searchManager()
+        $this->getBehavior('Search')->searchManager()
             ->add('first_name', 'Search.Like', [
                 'before' => true,
                 'after' => true,
