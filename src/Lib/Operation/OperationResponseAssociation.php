@@ -61,7 +61,16 @@ class OperationResponseAssociation
     {
         $associations = $openApiResponse->associations;
         if (!isset($associations['table'])) {
-            $associations['table'] = $this->route->getController();
+            $controller = $this->route->getControllerInstance();
+            if ($controller !== null && method_exists($controller, 'fetchTable')) {
+                try {
+                    $associations['table'] = $controller->fetchTable()->getAlias();
+                } catch (\Throwable) {
+                    $associations['table'] = $this->route->getController();
+                }
+            } else {
+                $associations['table'] = $this->route->getController();
+            }
         }
 
         $table = $this->locator->get($associations['table']);
