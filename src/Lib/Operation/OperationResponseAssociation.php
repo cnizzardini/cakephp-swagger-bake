@@ -62,16 +62,7 @@ class OperationResponseAssociation
     {
         $associations = $openApiResponse->associations;
         if (!isset($associations['table'])) {
-            $controller = $this->route->getControllerInstance();
-            if ($controller !== null && method_exists($controller, 'fetchTable')) {
-                try {
-                    $associations['table'] = $controller->fetchTable()->getAlias();
-                } catch (Throwable) {
-                    $associations['table'] = $this->route->getController();
-                }
-            } else {
-                $associations['table'] = $this->route->getController();
-            }
+            $associations['table'] = $this->resolveTableAlias();
         }
 
         $table = $this->locator->get($associations['table']);
@@ -105,6 +96,25 @@ class OperationResponseAssociation
         }
 
         return $schema;
+    }
+
+    /**
+     * Resolves the table alias from the controller's fetchTable() method, falling back to the controller name.
+     *
+     * @return string
+     */
+    protected function resolveTableAlias(): string
+    {
+        $controller = $this->route->getControllerInstance();
+        if ($controller !== null && method_exists($controller, 'fetchTable')) {
+            try {
+                return $controller->fetchTable()->getAlias();
+            } catch (Throwable) {
+                return $this->route->getController();
+            }
+        }
+
+        return $this->route->getController();
     }
 
     /**
