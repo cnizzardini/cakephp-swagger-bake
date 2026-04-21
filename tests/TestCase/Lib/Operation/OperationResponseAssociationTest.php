@@ -216,6 +216,7 @@ class OperationResponseAssociationTest extends TestCase
 
         $assoc = new OperationResponseAssociation(
             $swagger,
+            $this->config,
             $this->routes['customtable:view'],
         );
 
