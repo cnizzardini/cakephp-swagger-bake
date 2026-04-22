@@ -25,6 +25,7 @@ use SwaggerBake\Lib\OpenApi\SchemaProperty;
 use SwaggerBake\Lib\Route\RouteDecorator;
 use SwaggerBake\Lib\Schema\SchemaFactory;
 use SwaggerBake\Lib\Swagger;
+use Throwable;
 
 /**
  * Handles OpenApiResponse attributes containing the association option.
@@ -61,7 +62,7 @@ class OperationResponseAssociation
     {
         $associations = $openApiResponse->associations;
         if (!isset($associations['table'])) {
-            $associations['table'] = $this->route->getController();
+            $associations['table'] = $this->resolveTableAlias();
         }
 
         $table = $this->locator->get($associations['table']);
@@ -95,6 +96,25 @@ class OperationResponseAssociation
         }
 
         return $schema;
+    }
+
+    /**
+     * Resolves the table alias from the controller's fetchTable() method, falling back to the controller name.
+     *
+     * @return string
+     */
+    private function resolveTableAlias(): string
+    {
+        $controller = $this->route->getControllerInstance();
+        if ($controller !== null && method_exists($controller, 'fetchTable')) {
+            try {
+                return $controller->fetchTable()->getAlias();
+            } catch (Throwable) {
+                return $this->route->getController();
+            }
+        }
+
+        return $this->route->getController();
     }
 
     /**
