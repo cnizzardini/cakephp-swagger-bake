@@ -103,7 +103,7 @@ class OperationResponseAssociation
      *
      * @return string
      */
-    protected function resolveTableAlias(): string
+    private function resolveTableAlias(): string
     {
         $controller = $this->route->getControllerInstance();
         if ($controller !== null && method_exists($controller, 'fetchTable')) {
