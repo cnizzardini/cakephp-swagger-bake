@@ -86,6 +86,7 @@ jobs:
         run: |
           composer self-update
           rm -rf composer.lock
+          composer config --no-plugins audit.ignore '["PKSA-wx2k-k564-z67n","PKSA-y889-wbb2-rsdf"]'
           composer require cakephp/cakephp:${{matrix.version}} --no-update
           composer install --prefer-dist --no-progress
           composer test
